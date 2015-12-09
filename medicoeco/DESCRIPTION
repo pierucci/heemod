@@ -1,10 +1,11 @@
 Package: medicoeco
 Title: What the Package Does (one line, title case)
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
+Authors@R: c(person("Antoine", "Filipovic-Pierucci", email = "pierucci@gmail.com", role = c("aut", "cre")),
+  person("Kevin", "Zarka", email = "kevin.zarka@urc-eco.fr", role = c("aut")))
 Description: What the package does (one paragraph).
 Depends:
     R (>= 3.2.2)
-License: What license is it under?
+License: GPL (>= 3)
 LazyData: true
 RoxygenNote: 5.0.1

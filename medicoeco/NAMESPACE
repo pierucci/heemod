@@ -3,5 +3,8 @@
 S3method(print,eval_parameters)
 S3method(print,uneval_parameters)
 S3method(update,uneval_parameters)
+export(check_matrix)
+export(define_matrix)
 export(define_parameters)
+export(eval_matrix)
 export(names_parameters)
