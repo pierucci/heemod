@@ -1,11 +1,14 @@
 Package: medicoeco
-Title: What the Package Does (one line, title case)
-Version: 0.0.0.9000
-Authors@R: c(person("Antoine", "Filipovic-Pierucci", email = "pierucci@gmail.com", role = c("aut", "cre")),
+Title: Models fo Health Economic Evaluation
+Version: 0.1-1
+Authors@R: c(person("Antoine", "Filipovic-Pierucci", email = "pierucci@gmail.com",
+  role = c("aut", "cre")),
   person("Kevin", "Zarka", email = "kevin.zarka@urc-eco.fr", role = c("aut")))
-Description: What the package does (one paragraph).
+Description: Health Economic Evalution MODelling (HEEMOD). Markov models (homogenous and non-homogenous)
+  for health economic evaluation. Model comparison, sensitivity and probabilistic analysis.
 Depends:
-    R (>= 3.2.2)
+    R (>= 3.2.2), magrittr, dplyr
+Imports: lazyeval
 License: GPL (>= 3)
 LazyData: true
 RoxygenNote: 5.0.1

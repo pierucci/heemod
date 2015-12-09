@@ -29,7 +29,7 @@
 #' matters since only parameters defined earlier can be
 #' referenced in later expressions.
 #' 
-#' @param ... Name-value pairs of expressions.
+#' @param ... Name-value pairs of expressions definig parameters.
 #' @param x An object of class \code{uneval_parameters}.
 #' @param BEFORE character, length 1. Name of parameters 
 #'   before which new parameters are to be added.
@@ -158,7 +158,7 @@ eval_parameters <- function(x, cycles = 1) {
 #' @return A character vector of parameter names.
 #' @export
 #' 
-names_parameters <- function(x) {
+get_parameter_names <- function(x) {
   names(x)[names(x) != "markov_chain"]
 }
 
@@ -170,7 +170,7 @@ update.uneval_parameters <- function(x, ..., BEFORE) {
   if (! missing(BEFORE)) {
     new_values <- setdiff(
       names(.dots),
-      c("markov_chain", names_parameters(x))
+      c("markov_chain", get_parameter_names(x))
     )
     res <- modifyList(x, .dots)
     

@@ -2,16 +2,88 @@
 % Please edit documentation in R/matrix.R
 \name{define_matrix}
 \alias{define_matrix}
-\title{Title}
+\alias{update.uneval_matrix}
+\title{Define Transision Matrix for Markov Model}
 \usage{
 define_matrix(..., state_names = LETTERS[seq_len(sqrt(length(list(...))))])
+
+\method{update}{uneval_matrix}(x, ...)
 }
 \arguments{
-\item{...}{}
+\item{...}{Name-value pairs of expressions definig matrix
+cells. Can refer to parameters defined with 
+\link{\code{define_parameters}}.}
 
-\item{state_names}{}
+\item{state_names}{character vector, optional. State 
+names.}
+
+\item{x}{An object of class \code{uneval_matrix}.}
+}
+\value{
+An object of class \code{uneval_matrix} (actually
+  a named list of \code{lazy} expressions).
 }
 \description{
-Title
+Define a matrix of transition probabilities. Probability 
+can depend on parameters defined with 
+\link{\code{define_parameters}}, and can thus be 
+time-dependent.
+}
+\details{
+Parameters names are searched first in a parameter object
+defined with \link{\code{define_parameters}} and linked 
+with the matrix through \link{\code{define_model}}; then 
+in the environment where the matrix was defined.
+
+Matric cells are listed by row.
+
+Only matrix size is checked during this step (the matrix 
+must be square). Other conditions (such as rowsums being 
+equal to 1) are tested later, during model evaluation.
+
+For the \code{update} function existing matrix cells are 
+replaced with the new expression. Cells are referenced by
+name. Cell naming follows the \code{cell_x_y} convention,
+with \code{x} being the row number and \code{y} the 
+column number.
+}
+\examples{
+
+# simple 3x3 transition matrix
+
+mat_1 <- define_matrix(
+  .2, 0, .8,
+  0, .1, .9,
+  0, 0, 1
+)
+mat_1
+
+# referencing parameters
+# rr must be present in a parameter object
+# that must later be linked with define_model
+
+define_matrix(
+  .5 - rr, rr,
+  .4, .6
+)
+
+# updating cells from mat_1
+
+update(
+  mat_1,
+  cell_2_1 = .2,
+  cell_2_3 = .7
+)
+
+# only matrix size is check, it is thus possible
+# to define an incorrect matrix
+
+# this matrix will generate an error later,
+# during model evaluation
+
+define_matrix(
+  .5, 3,
+  -1, 2
+)
 }
 

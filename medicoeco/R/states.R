@@ -1,103 +1,63 @@
-define_states <- function(...) {
-  .dots <- list(...)
-  
-  check_states(.dots)
-  
-  structure(.dots,
-            class = c("uneval_states", class(.dots)))
-}
-
-print.uneval_states <- function(x, ...) {
-  cat(sprintf(
-    "A list of %i unevaluated states with %i values each.\n\n",
-    state_count(x),
-    names_state_values(x) %>% length
-  ))
-  cat("State names:\n\n")
-  cat(names_states(x), sep = "\n")
-  
-  cat("\nState values:\n\n")
-  cat(names_state_values(x), sep = "\n")
-}
-
-check_states <- function(x)
-  stopifnot(
-    list_all_same(lapply(x, length)),
-    list_all_same(lapply(x, function(y) sort(names(y))))
-  )
-
-eval_states <- function(x, parameters) {
-  
-  f <- function(x) {
-    # bottleneck!
-    mutate_(parameters, .dots = x)[c("markov_cycle",
-                                     names(x))]
-  }
-  
-  res <- lapply(x, f)
-  
-  structure(res,
-            class = c("eval_states", class(res)))
-}
-
-print.eval_states <- function(x, ...) {
-  cat(sprintf(
-    "A list of %i evaluated states with %i values each, %i markov cycles.\n\n",
-    state_count(x),
-    names_state_values(x) %>% length,
-    nrow(x)[[1]]
-  ))
-  cat("State names:\n\n")
-  cat(names_states(x), sep = "\n")
-  
-  cat("\nState values:\n\n")
-  cat(names_state_values(x), sep = "\n")
-}
-
-state <- function(...) {
+#' Define a Markov Model State
+#' 
+#' Define the values characterising a Markov Model state for
+#' 1 cycle.
+#' 
+#' As with \link{\code{define_parameters}}, state values are defined
+#' sequencially. Later state definition can thus only refer to values
+#' defined earlier.
+#' 
+#' For the \code{update} function, existing values are
+#' updated, new values are added at the end by default
+#' if \code{BEFORE} is not specified. Values order
+#' matters since only values defined earlier can be
+#' referenced in later expressions.
+#' 
+#' @param ... Name-value pairs of expressions defining state
+#'   values.
+#' @param x An object of class \code{state}.
+#' @param BEFORE character, length 1. Name of state values 
+#'   before which new values are to be added.
+#'   
+#' @return An object of class \code{state} (actually a named
+#'   list of \code{lazy} expressions).
+#' @export
+#' 
+#' @examples
+#' 
+#' st <- define_state(
+#'   cost = 6453,
+#'   utility = .876
+#' )
+#' st
+#' 
+#' # this will fail at model evaluation
+#' st_2 <- define_state(
+#'   total_cost = cost_1 + cost_2
+#' )
+#' update(
+#'   st_2,
+#'   cost_1 = 14,
+#'   cost_2 = 53
+#' )
+#' 
+#' # use BEFORE instead
+#' 
+#' update(
+#'   st_2,
+#'   cost_1 = 14,
+#'   cost_2 = 53,
+#'   BEFORE = "total_cost"
+#' )
+#' 
+define_state <- function(...) {
   .dots <- lazyeval::lazy_dots(...)
   structure(.dots,
             class = c("state", class(.dots)))
 }
 
-print.state <- function(x, ...) {
-  cat(sprintf("An unevaluated state with %i values.\n\n", length(x)))
-  
-  nv <- names(x)
-  ex <- unlist(lapply(x, function(y) deparse(y$expr)))
-  
-  paste(nv, ex, sep = " = ") %>%
-    cat(sep = "\n") 
-}
-
-state_count <- function(x)
-  length(names_states(x))
-
-names_state_values <- function(x, ...)
-  UseMethod("names_state_values")
-
-names_state_values.uneval_states <- function(x)
-  names(x[[1]])
-
-names_state_values.eval_states <- function(x)
-  names(x[[1]])[-1]
-
-names_states <- function(x, ...)
-  UseMethod("names_states")
-
-names_states.default <- function(x, ...)
-  names(x)
-
-update.uneval_states <- function(x, ...){
-  .dots <- lazyeval::lazy_dots(...)
-  
-  stopifnot(
-    all(names(.dots) %in% names(x))
-  )
-  
-  modifyList(x, .dots)
-}
-
+#' @export
+#' @rdname state
 update.state <- function(x, ..., BEFORE) {
   .dots <- lazyeval::lazy_dots(...)
   
@@ -115,4 +75,210 @@ update.state <- function(x, ..., BEFORE) {
   } else {
     modifyList(x, .dots)
   }
+}
+
+#' @export
+print.state <- function(x, ...) {
+  cat(sprintf("An unevaluated state with %i values.\n\n", length(x)))
+  
+  nv <- names(x)
+  ex <- unlist(lapply(x, function(y) deparse(y$expr)))
+  
+  paste(nv, ex, sep = " = ") %>%
+    cat(sep = "\n") 
+}
+
+
+#' Define Markov Model States
+#' 
+#' Define the states of a Markov model by combining 
+#' \code{state} objects.
+#' 
+#' State names have to correspond to those specified through
+#' \link{\code{define_matrix}}.
+#' 
+#' All states should have the same value names.
+#' 
+#' The \code{update} function can modify existing states or 
+#' add new ones.
+#' 
+#' @param ... Name-value pairs of expressions defining model
+#'   states.
+#' @param x An \code{uneval_states} object.
+#'   
+#' @return An object of class \link{\code{uneval_states}} (a
+#'   list of \code{state} objects).
+#' @export
+#' 
+#' @examples
+#' 
+#' s1 <- define_state(cost = 1, util = 1)
+#' s2 <- define_state(cost = 3, util = .4)
+#' 
+#' states_mod <- define_state_list(
+#'   healthy = s1,
+#'   sick = s2
+#' )
+#' 
+#' states_mod
+#' 
+#' s1_bis <- define_state(cost = 0, util = 1)
+#' s3 <- define_state(cost = 10, util = .1)
+#' 
+#' update(
+#'   states_mod,
+#'   healthy = s1_bis,
+#'   sicker = s3
+#' )
+#' 
+define_state_list <- function(...) {
+  .dots <- list(...)
+  
+  check_states(.dots)
+  
+  structure(
+    .dots,
+    class = c("uneval_states", class(.dots))
+  )
+}
+
+#' @export
+#' @rdname define_states
+update.uneval_states <- function(x, ...) {
+  .dots <- lazyeval::lazy_dots(...)
+  
+  res <- modifyList(x, .dots)
+  check_states(res)
+  
+  res
+}
+
+#' @export
+print.uneval_states <- function(x, ...) {
+  cat(sprintf(
+    "A list of %i unevaluated states with %i values each.\n\n",
+    state_count(x),
+    get_state_value_names(x) %>% length
+  ))
+  cat("State names:\n\n")
+  cat(get_state_names(x), sep = "\n")
+  
+  cat("\nState values:\n\n")
+  cat(get_state_value_names(x), sep = "\n")
+}
+# medicoeco::define_state_list()
+
+#' Check Model States for Consistency
+#' 
+#' For internal use.
+#' 
+#' All states should have the same value names.
+#'
+#' @param x 
+#'
+#' @return \code{NULL}
+check_states <- function(x){
+  stopifnot(
+    list_all_same(lapply(x, length)),
+    list_all_same(lapply(x, function(y) sort(names(y))))
+  )
+  NULL
+}
+
+#' Evaluate Markov Model States
+#' 
+#' @param x An \code{uneval_states} object generated by 
+#'   \link{\code{define_states}}.
+#' @param parameters An \code{eval_parameters} object 
+#'   generated by \link{\code{eval_parameters}}.
+#'   
+#' @return An \code{eval_states} object, a list with one
+#'   data.frame per state containing a column per state
+#'   value and a line per cycle.
+#' @export
+#' 
+eval_states <- function(x, parameters) {
+  
+  f <- function(x) {
+    # bottleneck!
+    mutate_(parameters, .dots = x)[c("markov_cycle",
+                                     names(x))]
+  }
+  
+  res <- lapply(x, f)
+  
+  structure(res,
+            class = c("eval_states", class(res)))
+}
+
+#' @export
+print.eval_states <- function(x, ...) {
+  cat(sprintf(
+    "A list of %i evaluated states with %i values each, %i markov cycles.\n\n",
+    state_count(x),
+    get_state_value_names(x) %>% length,
+    nrow(x)[[1]]
+  ))
+  cat("State names:\n\n")
+  cat(get_state_names(x), sep = "\n")
+  
+  cat("\nState values:\n\n")
+  cat(get_state_value_names(x), sep = "\n")
+}
+
+#' Return Number of State
+#'
+#' For internal use.
+#' 
+#' Work with both \code{uneval_states} and \code{eval_states}.
+#'
+#' @param x An object containing states.
+#'
+#' @return An integer: number of states.
+#' 
+state_count <- function(x){
+  length(get_state_names(x))
+}
+
+#' Return Names of State Values
+#'
+#' @param x An object containing states.
+#' @param ... Additional arguments passed to methods.
+#'
+#' @return A character vector of state value names.
+#' @export
+#' 
+get_state_value_names <- function(x, ...){
+  UseMethod("get_state_value_names")
+}
+
+#' @export
+get_state_value_names.uneval_states <- function(x){
+  names(x[[1]])
+}
+#' @export
+get_state_value_names.eval_states <- function(x){
+  names(x[[1]])[-1]
+}
+#' @export
+get_state_value_names.states <- function(x){
+  names(x)
+}
+
+#' Get State Names
+#' 
+#' Retrieve state names from an object containing states.
+#'
+#' @param x An object containing states.
+#' @param ... Additional arguments passed to methods.
+#'
+#' @return A character vector of state names.
+#' @export
+get_state_names <- function(x, ...){
+  UseMethod("get_state_names")
+}
+
+#' @export
+get_state_names.default <- function(x, ...){
+  names(x)
 }

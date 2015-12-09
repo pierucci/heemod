@@ -2,16 +2,23 @@
 % Please edit documentation in R/matrix.R
 \name{eval_matrix}
 \alias{eval_matrix}
-\title{Title}
+\title{Evaluate Markov Model Transition Matrix}
 \usage{
 eval_matrix(x, parameters)
 }
 \arguments{
-\item{x}{}
+\item{x}{an \code{uneval_matrix} object.}
 
-\item{parameters}{}
+\item{parameters}{an \code{eval_parameters} object.}
+}
+\value{
+An \code{eval_matrix} object (actually a list of 
+  transition matrix, one per cycle).
 }
 \description{
-Title
+Evaluate a transition matrix using evaluated parameters.
+}
+\details{
+Runs checks on the transition matrix during evaluation.
 }
 

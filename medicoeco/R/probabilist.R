@@ -1,3 +1,14 @@
+#' Title
+#'
+#' @param model 
+#' @param cycles 
+#' @param init 
+#' @param newdata 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 simulate_cohort_iter <- function(model, cycles,
                                  init, newdata) {
   

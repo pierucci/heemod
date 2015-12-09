@@ -10,7 +10,7 @@ define_parameters(...)
 \method{update}{uneval_parameters}(x, ..., BEFORE)
 }
 \arguments{
-\item{...}{Name-value pairs of expressions.}
+\item{...}{Name-value pairs of expressions definig parameters.}
 
 \item{x}{An object of class \code{uneval_parameters}.}
 

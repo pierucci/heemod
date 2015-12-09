@@ -2,16 +2,25 @@
 % Please edit documentation in R/matrix.R
 \name{check_matrix}
 \alias{check_matrix}
-\title{Title}
+\title{Check Markov Model Transition Matrix}
 \usage{
 check_matrix(x, ...)
 }
 \arguments{
-\item{x}{}
+\item{x}{a matrix.}
 
-\item{...}{}
+\item{...}{A list of informations to print when checks 
+fail, for debugging purposes.}
 }
 \description{
-Title
+Check whether a matrix fullfills the conditions to be a 
+transition matrix.
+}
+\details{
+This function is called by \code{\link{eval_matrix}} and 
+should not be used directly.
+
+Checks whether all rows sum to 1 and all probabilities
+are between 0 and 1.
 }
 
