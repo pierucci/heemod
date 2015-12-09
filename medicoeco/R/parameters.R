@@ -23,17 +23,18 @@
 #' then in the environment where \code{define_parameters} 
 #' was called.
 #' 
-#' For the \code{update} function, existing parameters are
-#' updated, new parameters are added at the end by default
-#' if \code{BEFORE} is not specified. Parameter order
-#' matters since only parameters defined earlier can be
+#' For the \code{modify} function, existing parameters are 
+#' modified, new parameters are added at the end by default 
+#' if \code{BEFORE} is not specified. Parameter order 
+#' matters since only parameters defined earlier can be 
 #' referenced in later expressions.
 #' 
-#' @param ... Name-value pairs of expressions definig parameters.
+#' @param ... Name-value pairs of expressions definig
+#'   parameters.
 #' @param x An object of class \code{uneval_parameters}.
 #' @param BEFORE character, length 1. Name of parameters 
 #'   before which new parameters are to be added.
-#'      
+#'   
 #' @return An object of class \code{uneval_parameters} 
 #'   (actually a named list of \code{lazy} expressions).
 #' @export
@@ -82,7 +83,7 @@
 #' 
 #' # adding new parameters
 #' 
-#' update(
+#' modify(
 #'   param,
 #'   const = 4.4,
 #'   age_2 = age ^ 2
@@ -90,17 +91,17 @@
 #' 
 #' # modify existing parameters
 #' 
-#' update(
+#' modify(
 #'   param,
 #'   age_start = 40
 #' )
 #' 
 #' # specify new parameter position
 #' 
-#' update(
+#' modify(
 #'   param,
 #'   var = 3.14,
-#'   BEFORE = age
+#'   BEFORE = "age"
 #' )
 #' 
 define_parameters <- function(...) {
@@ -125,6 +126,8 @@ define_parameters <- function(...) {
 #' @return An object of class \code{eval_parameters}
 #'   (actually a data.frame with one column per parameter
 #'   and one row per cycle).
+#' 
+#' @export
 #' 
 #' @examples
 #' param <- define_parameters(
@@ -162,9 +165,28 @@ get_parameter_names <- function(x) {
   names(x)[names(x) != "markov_chain"]
 }
 
+
+#' Modify Object
+#' 
+#' This generic function allows the modification of various 
+#' objects such as parameters, transitions matrix or states.
+#' 
+#' More details are available on the respective help page of
+#' each object definition.
+#' 
+#' @param x Various objects.
+#' @param ... Modifications.
+#'   
+#' @return Same class as \code{x}.
+#' @export
+#' 
+modify <- function(x, ...) {
+  UseMethod("modify")
+}
+
 #' @export
 #' @rdname define_parameters
-update.uneval_parameters <- function(x, ..., BEFORE) {
+modify.uneval_parameters <- function(x, ..., BEFORE) {
   .dots <- lazyeval::lazy_dots(...)
   
   if (! missing(BEFORE)) {
@@ -177,8 +199,7 @@ update.uneval_parameters <- function(x, ..., BEFORE) {
     pos_before <- which(names(res) == BEFORE)
     
     stopifnot(
-      length(BEFORE) > 1,
-      pos_before > 1
+      length(BEFORE) == 1
     )
     
     c(

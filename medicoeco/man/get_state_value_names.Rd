@@ -4,7 +4,7 @@
 \alias{get_state_value_names}
 \title{Return Names of State Values}
 \usage{
-get_state_value_names(x, ...)
+get_state_value_names(x)
 }
 \arguments{
 \item{x}{An object containing states.}

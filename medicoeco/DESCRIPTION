@@ -1,14 +1,13 @@
 Package: medicoeco
-Title: Models fo Health Economic Evaluation
+Title: Models for Health Economic Evaluation
 Version: 0.1-1
-Authors@R: c(person("Antoine", "Filipovic-Pierucci", email = "pierucci@gmail.com",
-  role = c("aut", "cre")),
-  person("Kevin", "Zarka", email = "kevin.zarka@urc-eco.fr", role = c("aut")))
+Author: Kevin Zarka [aut], Antoine Filipovic-Pierucci [aut,cre]
+Maintainer: Antoine Filipovic-Pierucci <pierucci@gmail.com>
 Description: Health Economic Evalution MODelling (HEEMOD). Markov models (homogenous and non-homogenous)
   for health economic evaluation. Model comparison, sensitivity and probabilistic analysis.
 Depends:
-    R (>= 3.2.2), magrittr, dplyr
-Imports: lazyeval
+    R (>= 3.2.2)
+Imports: lazyeval, magrittr, dplyr, purrr
 License: GPL (>= 3)
 LazyData: true
 RoxygenNote: 5.0.1

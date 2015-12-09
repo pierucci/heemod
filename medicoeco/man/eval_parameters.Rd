@@ -26,7 +26,7 @@ param <- define_parameters(
   age = age_start + markov_cycle
 )
 
-eval_parameters(param, cycles = 15)
+medicoeco::eval_parameters(param, cycles = 15)
 
 }
 

@@ -1,4 +1,8 @@
-#' Title
+#' Simulate Markov Model
+#' 
+#' This function name should change.
+#' 
+#' Examples should be given.
 #' 
 #' @param model An \code{uneval_model} object.
 #' @param init numeric vector, same length as number of 
@@ -13,7 +17,6 @@
 #'   cycle and total state values.
 #' @export
 #' 
-#' @examples
 simulate_cohort <- function(model, init, cycles, ...) {
   e_model <- eval_model(model = model, 
                         init = init, 
@@ -29,14 +32,16 @@ simulate_cohort <- function(model, init, cycles, ...) {
   )
 }
 
-#' Title
-#'
-#' @param x 
-#'
-#' @return
-#' @export
-#'
-#' @examples
+#' Compute State Values per Cycle
+#' 
+#' Given an evaluated model, computes the total state values
+#' per cycle.
+#' 
+#' @param x An object of class \code{eval_model}.
+#'   
+#' @return A data.frame of state values, one column per
+#'   state value and one row per cycle.
+#'   
 compute_values <- function(x) {
   states_names <- get_state_names(get_states(x))
   state_values_names <- get_state_value_names(get_states(x))

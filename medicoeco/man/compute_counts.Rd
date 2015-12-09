@@ -18,7 +18,7 @@ at the beginning.}
 \code{initial}, \code{exponential} or \code{linear}.
 See details.}
 
-\item{round}{}
+\item{round}{logical scalar. Should individual counts be rounded?}
 }
 \value{
 A \code{cycle_counts} object.

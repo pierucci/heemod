@@ -39,7 +39,7 @@ in each state, per cycle.
 }
 \examples{
 
-param <- define_parmeters(
+param <- define_parameters(
   a = markov_cycle + 1 * 2
 )
 

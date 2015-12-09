@@ -2,12 +2,12 @@
 #' 
 #' Define a matrix of transition probabilities. Probability 
 #' can depend on parameters defined with 
-#' \link{\code{define_parameters}}, and can thus be 
+#' \code{\link{define_parameters}}, and can thus be 
 #' time-dependent.
 #' 
 #' Parameters names are searched first in a parameter object
-#' defined with \link{\code{define_parameters}} and linked 
-#' with the matrix through \link{\code{define_model}}; then 
+#' defined with \code{\link{define_parameters}} and linked 
+#' with the matrix through \code{\link{define_model}}; then 
 #' in the environment where the matrix was defined.
 #' 
 #' Matric cells are listed by row.
@@ -16,7 +16,7 @@
 #' must be square). Other conditions (such as rowsums being 
 #' equal to 1) are tested later, during model evaluation.
 #' 
-#' For the \code{update} function existing matrix cells are 
+#' For the \code{modify} function existing matrix cells are 
 #' replaced with the new expression. Cells are referenced by
 #' name. Cell naming follows the \code{cell_x_y} convention,
 #' with \code{x} being the row number and \code{y} the 
@@ -24,7 +24,7 @@
 #' 
 #' @param ... Name-value pairs of expressions definig matrix
 #'   cells. Can refer to parameters defined with 
-#'   \link{\code{define_parameters}}.
+#'   \code{\link{define_parameters}}.
 #' @param state_names character vector, optional. State 
 #'   names.
 #' @param x An object of class \code{uneval_matrix}.
@@ -55,7 +55,7 @@
 #' 
 #' # updating cells from mat_1
 #' 
-#' update(
+#' modify(
 #'   mat_1,
 #'   cell_2_1 = .2,
 #'   cell_2_3 = .7
@@ -73,7 +73,7 @@
 #' )
 define_matrix <- function(
   ...,
-  state_names = LETTERS[seq_len(sqrt(length(list(...))))]
+  state_names = LETTERS[seq_len(sqrt(length(lazyeval::lazy_dots(...))))]
 ) {
   .dots <- lazyeval::lazy_dots(...)
   n <- sqrt(length(.dots))
@@ -90,7 +90,7 @@ define_matrix <- function(
   
   structure(.dots,
             class = c("uneval_matrix", class(.dots)),
-            names_states = state_names)
+            state_names = state_names)
 }
 
 #' Check Markov Model Transition Matrix
@@ -145,7 +145,7 @@ eval_matrix <- function(x, parameters) {
   
   # bottleneck!
   res <- tab_res %>%
-    map_rows(f, .labels = FALSE) %$%
+    purrr::map_rows(f, .labels = FALSE) %$%
     .out %>%
     unlist(recursive = FALSE)
   
@@ -169,25 +169,24 @@ get_state_names.eval_matrix <- function(x, ...){
 #' 
 #' For internal use.
 #'
-#' @param x 
-#' @param ... 
+#' @param x A transition matrix, evaluated or not.
 #'
 #' @return An integer: matrix order.
-get_matrix_order <- function(x, ...){
+get_matrix_order <- function(x){
   UseMethod("get_matrix_order")
   }
 
 #' @export
-get_matrix_order.uneval_matrix <- function(x, ...){
+get_matrix_order.uneval_matrix <- function(x){
   sqrt(length(x))}
 
 #' @export
-get_matrix_order.eval_matrix <- function(x, ...){
+get_matrix_order.eval_matrix <- function(x){
   ncol(x[[1]])}
 
 #' @export
 #' @rdname define_matrix
-update.uneval_matrix <- function(x, ...){
+modify.uneval_matrix <- function(x, ...){
   .dots <- lazyeval::lazy_dots(...)
   
   stopifnot(

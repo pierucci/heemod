@@ -2,15 +2,16 @@
 % Please edit documentation in R/parameters.R
 \name{define_parameters}
 \alias{define_parameters}
-\alias{update.uneval_parameters}
+\alias{modify.uneval_parameters}
 \title{Define Markov Model Parameters}
 \usage{
 define_parameters(...)
 
-\method{update}{uneval_parameters}(x, ..., BEFORE)
+\method{modify}{uneval_parameters}(x, ..., BEFORE)
 }
 \arguments{
-\item{...}{Name-value pairs of expressions definig parameters.}
+\item{...}{Name-value pairs of expressions definig
+parameters.}
 
 \item{x}{An object of class \code{uneval_parameters}.}
 
@@ -46,10 +47,10 @@ definition (only parameters defined earlier are visible)
 then in the environment where \code{define_parameters} 
 was called.
 
-For the \code{update} function, existing parameters are
-updated, new parameters are added at the end by default
-if \code{BEFORE} is not specified. Parameter order
-matters since only parameters defined earlier can be
+For the \code{modify} function, existing parameters are 
+modified, new parameters are added at the end by default 
+if \code{BEFORE} is not specified. Parameter order 
+matters since only parameters defined earlier can be 
 referenced in later expressions.
 }
 \examples{
@@ -96,7 +97,7 @@ param <- define_parameters(
 
 # adding new parameters
 
-update(
+modify(
   param,
   const = 4.4,
   age_2 = age ^ 2
@@ -104,17 +105,17 @@ update(
 
 # modify existing parameters
 
-update(
+modify(
   param,
   age_start = 40
 )
 
 # specify new parameter position
 
-update(
+modify(
   param,
   var = 3.14,
-  BEFORE = age
+  BEFORE = "age"
 )
 
 }

@@ -7,7 +7,7 @@
 check_states(x)
 }
 \arguments{
-\item{x}{}
+\item{x}{An object of class \code{uneval_states}.}
 }
 \value{
 \code{NULL}

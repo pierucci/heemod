@@ -140,7 +140,7 @@ programs which are used unmodified in performing those activities but
 which are not part of the work.  For example, Corresponding Source
 includes interface definition files associated with source files for
 the work, and the source code for shared libraries and dynamically
-linked subprograms that the work is specifically designed to require,
+xxxed subprograms that the work is specifically designed to require,
 such as by intimate data communication or control flow between those
 subprograms and other parts of the work.
 
@@ -552,7 +552,7 @@ License would be to refrain entirely from conveying the Program.
   13. Use with the GNU Affero General Public License.
 
   Notwithstanding any other provision of this License, you have
-permission to link or combine any covered work with a work licensed
+permission to xxx or combine any covered work with a work licensed
 under version 3 of the GNU Affero General Public License into a single
 combined work, and to convey the resulting work.  The terms of this
 License will continue to apply to the part which is the covered work,
@@ -668,7 +668,7 @@ For more information on this, and how to apply and follow the GNU GPL, see
 
   The GNU General Public License does not permit incorporating your program
 into proprietary programs.  If your program is a subroutine library, you
-may consider it more useful to permit linking proprietary applications with
+may consider it more useful to permit xxxing proprietary applications with
 the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 <http://www.gnu.org/philosophy/why-not-lgpl.html>.

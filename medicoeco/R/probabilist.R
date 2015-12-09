@@ -1,14 +1,21 @@
-#' Title
-#'
-#' @param model 
-#' @param cycles 
-#' @param init 
-#' @param newdata 
-#'
-#' @return
+#' Simulate Iteratively a Markov Model Over New Parameter
+#' Values
+#' 
+#' This function name should change.
+#' 
+#' @param model An \code{uneval_model} object.
+#' @param cycles positive integer. Number of Markov Cycles 
+#'   to compute.
+#' @param init numeric vector, same length as number of 
+#'   model states. Number of individuals in each model state
+#'   at the beginning.
+#' @param newdata a data.frame whose names match parameters
+#'   names. \code{model} will be evaluated iteratively,
+#'   taking successivel values from each row.
+#'   
+#' @return A data.frame containing the values of \code{newdata} and each Markov Model evaluation in \code{res}.
 #' @export
-#'
-#' @examples
+#' 
 simulate_cohort_iter <- function(model, cycles,
                                  init, newdata) {
   

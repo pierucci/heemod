@@ -2,17 +2,18 @@
 % Please edit documentation in R/matrix.R
 \name{define_matrix}
 \alias{define_matrix}
-\alias{update.uneval_matrix}
+\alias{modify.uneval_matrix}
 \title{Define Transision Matrix for Markov Model}
 \usage{
-define_matrix(..., state_names = LETTERS[seq_len(sqrt(length(list(...))))])
+define_matrix(...,
+  state_names = LETTERS[seq_len(sqrt(length(lazyeval::lazy_dots(...))))])
 
-\method{update}{uneval_matrix}(x, ...)
+\method{modify}{uneval_matrix}(x, ...)
 }
 \arguments{
 \item{...}{Name-value pairs of expressions definig matrix
 cells. Can refer to parameters defined with 
-\link{\code{define_parameters}}.}
+\code{\link{define_parameters}}.}
 
 \item{state_names}{character vector, optional. State 
 names.}
@@ -26,13 +27,13 @@ An object of class \code{uneval_matrix} (actually
 \description{
 Define a matrix of transition probabilities. Probability 
 can depend on parameters defined with 
-\link{\code{define_parameters}}, and can thus be 
+\code{\link{define_parameters}}, and can thus be 
 time-dependent.
 }
 \details{
 Parameters names are searched first in a parameter object
-defined with \link{\code{define_parameters}} and linked 
-with the matrix through \link{\code{define_model}}; then 
+defined with \code{\link{define_parameters}} and linked 
+with the matrix through \code{\link{define_model}}; then 
 in the environment where the matrix was defined.
 
 Matric cells are listed by row.
@@ -41,7 +42,7 @@ Only matrix size is checked during this step (the matrix
 must be square). Other conditions (such as rowsums being 
 equal to 1) are tested later, during model evaluation.
 
-For the \code{update} function existing matrix cells are 
+For the \code{modify} function existing matrix cells are 
 replaced with the new expression. Cells are referenced by
 name. Cell naming follows the \code{cell_x_y} convention,
 with \code{x} being the row number and \code{y} the 
@@ -69,7 +70,7 @@ define_matrix(
 
 # updating cells from mat_1
 
-update(
+modify(
   mat_1,
   cell_2_1 = .2,
   cell_2_3 = .7

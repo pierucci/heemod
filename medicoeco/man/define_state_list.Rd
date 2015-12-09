@@ -2,9 +2,12 @@
 % Please edit documentation in R/states.R
 \name{define_state_list}
 \alias{define_state_list}
+\alias{modify.uneval_states}
 \title{Define Markov Model States}
 \usage{
 define_state_list(...)
+
+\method{modify}{uneval_states}(x, ...)
 }
 \arguments{
 \item{...}{Name-value pairs of expressions defining model
@@ -13,7 +16,7 @@ states.}
 \item{x}{An \code{uneval_states} object.}
 }
 \value{
-An object of class \link{\code{uneval_states}} (a
+An object of class \code{uneval_states} (a
   list of \code{state} objects).
 }
 \description{
@@ -22,11 +25,11 @@ Define the states of a Markov model by combining
 }
 \details{
 State names have to correspond to those specified through
-\link{\code{define_matrix}}.
+\code{\link{define_matrix}}.
 
 All states should have the same value names.
 
-The \code{update} function can modify existing states or 
+The \code{modify} function can modify existing states or 
 add new ones.
 }
 \examples{
@@ -44,7 +47,7 @@ states_mod
 s1_bis <- define_state(cost = 0, util = 1)
 s3 <- define_state(cost = 10, util = .1)
 
-update(
+modify(
   states_mod,
   healthy = s1_bis,
   sicker = s3

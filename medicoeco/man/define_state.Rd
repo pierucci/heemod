@@ -2,9 +2,12 @@
 % Please edit documentation in R/states.R
 \name{define_state}
 \alias{define_state}
+\alias{modify.state}
 \title{Define a Markov Model State}
 \usage{
 define_state(...)
+
+\method{modify}{state}(x, ..., BEFORE)
 }
 \arguments{
 \item{...}{Name-value pairs of expressions defining state
@@ -24,12 +27,12 @@ Define the values characterising a Markov Model state for
 1 cycle.
 }
 \details{
-As with \link{\code{define_parameters}}, state values are defined
+As with \code{\link{define_parameters}}, state values are defined
 sequencially. Later state definition can thus only refer to values
 defined earlier.
 
-For the \code{update} function, existing values are
-updated, new values are added at the end by default
+For the \code{modify} function, existing values are
+modified, new values are added at the end by default
 if \code{BEFORE} is not specified. Values order
 matters since only values defined earlier can be
 referenced in later expressions.
@@ -46,7 +49,7 @@ st
 st_2 <- define_state(
   total_cost = cost_1 + cost_2
 )
-update(
+modify(
   st_2,
   cost_1 = 14,
   cost_2 = 53
@@ -54,7 +57,7 @@ update(
 
 # use BEFORE instead
 
-update(
+modify(
   st_2,
   cost_1 = 14,
   cost_2 = 53,

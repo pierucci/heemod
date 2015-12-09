@@ -4,12 +4,10 @@
 \alias{get_matrix_order}
 \title{Return Markov Model Transition Matrix Order}
 \usage{
-get_matrix_order(x, ...)
+get_matrix_order(x)
 }
 \arguments{
-\item{x}{}
-
-\item{...}{}
+\item{x}{A transition matrix, evaluated or not.}
 }
 \value{
 An integer: matrix order.
