@@ -39,3 +39,12 @@ list_all_same <- function(x) {
     Map(function(y) identical(y, x[[1]]), x)
   ))
 }
+
+#' Returns "s" if x > 1
+#'
+#' @param x integer.
+#'
+#' @return "s" or ""
+plur <- function(x) {
+  if (x > 1) "s" else ""
+}

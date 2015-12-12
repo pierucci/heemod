@@ -61,6 +61,12 @@ define_state <- function(...) {
 modify.state <- function(x, ..., BEFORE) {
   .dots <- lazyeval::lazy_dots(...)
   
+  # !mod!
+  # message d'erreur informatif quand valeurs pas dans
+  # bon ordre
+  #
+  # voire correction automatique ?
+  
   if (! missing(BEFORE)) {
     new_values <- setdiff(names(.dots), names(x))
     res <- modifyList(x, .dots)
@@ -79,7 +85,9 @@ modify.state <- function(x, ..., BEFORE) {
 
 #' @export
 print.state <- function(x, ...) {
-  cat(sprintf("An unevaluated state with %i values.\n\n", length(x)))
+  cat(sprintf(
+    "An unevaluated state with %i value%s.\n\n",
+    length(x), plur(length(x))))
   
   nv <- names(x)
   ex <- unlist(lapply(x, function(y) deparse(y$expr)))
@@ -136,6 +144,21 @@ define_state_list <- function(...) {
   
   check_states(.dots)
   
+  
+  state_names <- names(.dots)
+  
+  if (is.null(state_names)) {
+    message("No named state -> generating names.")
+    state_names <- LETTERS[seq_along(.dots)]
+    names(.dots) <- state_names
+  }
+  
+  if (any(state_names == "")) {
+    warning("Not all states are named -> generating names.")
+    state_names <- LETTERS[seq_along(.dots)]
+    names(.dots) <- state_names
+  }
+  
   structure(
     .dots,
     class = c("uneval_states", class(.dots))
@@ -155,10 +178,15 @@ modify.uneval_states <- function(x, ...) {
 
 #' @export
 print.uneval_states <- function(x, ...) {
+  n_state <- state_count(x)
+  n_values <- get_state_value_names(x) %>% length
+  
   cat(sprintf(
-    "A list of %i unevaluated states with %i values each.\n\n",
-    state_count(x),
-    get_state_value_names(x) %>% length
+    "A list of %i unevaluated state%s with %i value%s each.\n\n",
+    n_state,
+    plur(n_state),
+    n_values,
+    plur(n_values)
   ))
   cat("State names:\n\n")
   cat(get_state_names(x), sep = "\n")
@@ -214,11 +242,18 @@ eval_states <- function(x, parameters) {
 
 #' @export
 print.eval_states <- function(x, ...) {
+  n_state <- state_count(x)
+  n_state_values <- get_state_value_names(x) %>% length
+  n_cycle <- nrow(x)[[1]]
+  
   cat(sprintf(
-    "A list of %i evaluated states with %i values each, %i markov cycles.\n\n",
-    state_count(x),
-    get_state_value_names(x) %>% length,
-    nrow(x)[[1]]
+    "A list of %i evaluated state%s with %i value%s each, %i markov cycle%s.\n\n",
+    n_state,
+    plur(n_state),
+    n_state_values,
+    plur(n_state_values),
+    n_cycle,
+    plur(n_cycle)
   ))
   cat("State names:\n\n")
   cat(get_state_names(x), sep = "\n")
@@ -238,6 +273,8 @@ print.eval_states <- function(x, ...) {
 #' @return An integer: number of states.
 #' 
 state_count <- function(x){
+  # !mod!
+  # rename get_state_count
   length(get_state_names(x))
 }
 

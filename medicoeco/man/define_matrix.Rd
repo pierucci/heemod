@@ -3,12 +3,18 @@
 \name{define_matrix}
 \alias{define_matrix}
 \alias{modify.uneval_matrix}
+\alias{plot.eval_matrix}
+\alias{plot.uneval_matrix}
 \title{Define Transision Matrix for Markov Model}
 \usage{
 define_matrix(...,
   state_names = LETTERS[seq_len(sqrt(length(lazyeval::lazy_dots(...))))])
 
 \method{modify}{uneval_matrix}(x, ...)
+
+\method{plot}{uneval_matrix}(x, cycle = 0)
+
+\method{plot}{eval_matrix}(x, cycle = 0)
 }
 \arguments{
 \item{...}{Name-value pairs of expressions definig matrix
@@ -19,6 +25,9 @@ cells. Can refer to parameters defined with
 names.}
 
 \item{x}{An object of class \code{uneval_matrix}.}
+
+\item{cycle}{scalar integer. For transition matrix
+plotting, which markov cycle to plot?}
 }
 \value{
 An object of class \code{uneval_matrix} (actually

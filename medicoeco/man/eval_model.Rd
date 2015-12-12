@@ -5,7 +5,7 @@
 \title{Evaluate Markov Model}
 \usage{
 eval_model(model, cycles = 1, init = c(1, rep(0,
-  state_count(get_states(model)) - 1)), ...)
+  state_count(get_states(model)) - 1)), count_args = NULL)
 }
 \arguments{
 \item{model}{An \code{uneval_model} object.}
@@ -17,8 +17,8 @@ to compute.}
 model states. Number of individuals in each model state
 at the beginning.}
 
-\item{...}{Additional arguments passed to 
-\code{compute_counts}.}
+\item{count_args}{Additional arguments passed as a list
+to \code{compute_counts}.}
 }
 \value{
 An \code{eval_model} object (actually a list of 

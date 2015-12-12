@@ -75,14 +75,21 @@ define_model <- function(
 
 #' @export
 print.uneval_model <- function(x, ...) {
+  n_parm <- length(get_parameter_names(get_parameters(x)))
+  n_states <- get_states(x) %>% state_count
+  n_state_values <- get_states(x) %>% get_state_value_names %>% length
+  
   cat(sprintf(
     "An unevaluated Markov model:
-    %i parameters,
-    %i states,
-    %i state values.\n",
-    length(get_parameter_names(get_parameters(x))),
-    get_states(x) %>% state_count,
-    get_states(x) %>% get_state_value_names %>% length
+    %i parameter%s,
+    %i state%s,
+    %i state value%s.\n",
+    n_parm,
+    plur(n_parm),
+    n_states,
+    plur(n_states),
+    n_state_values,
+    plur(n_state_values)
   ))
 }
 
@@ -178,8 +185,8 @@ get_counts <- function(x){
 #' @param init numeric vector, same length as number of 
 #'   model states. Number of individuals in each model state
 #'   at the beginning.
-#' @param ... Additional arguments passed to 
-#'   \code{compute_counts}.
+#' @param count_args Additional arguments passed as a list
+#'   to \code{compute_counts}.
 #'   
 #' @return An \code{eval_model} object (actually a list of 
 #'   evaluated parameters, matrix, states and cycles 
@@ -218,7 +225,7 @@ eval_model <- function(
   model,
   cycles = 1, 
   init = c(1, rep(0, state_count(get_states(model)) - 1)),
-  ...
+  count_args = NULL
 ) {
   
   stopifnot(
@@ -232,7 +239,11 @@ eval_model <- function(
                                    parameters)
   states <- eval_states(get_states(model), parameters)
   
-  count_table <- compute_counts(transition_matrix, init, ...)
+  count_table <- do.call(
+    compute_counts,
+    c(transition_matrix = list(transition_matrix),
+      init = list(init),
+      count_args))
   
   structure(
     list(
@@ -320,5 +331,15 @@ compute_counts <- function(
   
   structure(out, class = c("cycle_counts", class(out)))
   
+}
+
+#' @export
+get_state_value_names.uneval_model <- function(x) {
+  get_state_value_names(get_states(x))
+}
+
+#' @export
+get_state_names.uneval_model <- function(x) {
+  get_state_names(get_states(x))
 }
 

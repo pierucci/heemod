@@ -189,6 +189,12 @@ modify <- function(x, ...) {
 modify.uneval_parameters <- function(x, ..., BEFORE) {
   .dots <- lazyeval::lazy_dots(...)
   
+  # !mod!
+  # message d'erreur informatif quand parametres pas dans
+  # bon ordre
+  #
+  # voire correction automatique ?
+  
   if (! missing(BEFORE)) {
     new_values <- setdiff(
       names(.dots),
@@ -214,7 +220,8 @@ modify.uneval_parameters <- function(x, ..., BEFORE) {
 
 #' @export
 print.uneval_parameters <- function(x, ...) {
-  cat(sprintf("%i unevaluated parameter(s).\n\n", length(x)))
+  cat(sprintf("%i unevaluated parameter%s.\n\n",
+              length(x), plur(length(x))))
   n <- names(x)
   ex <- unlist(lapply(x, function(y) deparse(y$expr)))
   
@@ -225,9 +232,11 @@ print.uneval_parameters <- function(x, ...) {
 #' @export
 print.eval_parameters <- function(x, ...) {
   cat(sprintf(
-    "%i evaluated parameter(s), %i markov cycles.\n\n",
+    "%i evaluated parameter%s, %i markov cycle%s.\n\n",
     ncol(x) - 1,
-    nrow(x)
+    plur(ncol(x) - 1),
+    nrow(x),
+    plur(nrow(x)),
   ))
   
   print(as.tbl(x), ...)

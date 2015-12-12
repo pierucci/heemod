@@ -28,6 +28,8 @@
 #' @param state_names character vector, optional. State 
 #'   names.
 #' @param x An object of class \code{uneval_matrix}.
+#' @param cycle scalar integer. For transition matrix
+#'   plotting, which markov cycle to plot?
 #'   
 #' @return An object of class \code{uneval_matrix} (actually
 #'   a named list of \code{lazy} expressions).
@@ -112,10 +114,15 @@ define_matrix <- function(
 #'   
 check_matrix <- function(x, ...) {
   info <- list(...)
-  if (! all(all.equal(
-    rowSums(x),
-    rep(1, nrow(x)))) |
-    ! all(x >= 0 & x <= 1)) {
+  if (! all(
+    isTRUE(
+      all.equal(
+        rowSums(x),
+        rep(1, nrow(x))
+      )
+    )
+  ) |
+  ! all(x >= 0 & x <= 1)) {
     print(info)
     stop("Incorrect matrix!")
   }
@@ -174,7 +181,7 @@ get_state_names.eval_matrix <- function(x, ...){
 #' @return An integer: matrix order.
 get_matrix_order <- function(x){
   UseMethod("get_matrix_order")
-  }
+}
 
 #' @export
 get_matrix_order.uneval_matrix <- function(x){
@@ -187,6 +194,10 @@ get_matrix_order.eval_matrix <- function(x){
 #' @export
 #' @rdname define_matrix
 modify.uneval_matrix <- function(x, ...){
+  
+  # !mod!
+  # modifier par rr simplment
+  
   .dots <- lazyeval::lazy_dots(...)
   
   stopifnot(
@@ -229,4 +240,21 @@ print.eval_matrix <- function(x, ...) {
   
   if (length(head(x, ...)) < length(x))
     cat("...\n")
+}
+
+
+#' @export
+#' @rdname define_matrix
+plot.uneval_matrix <- function(x, cycle = 0) {
+  # !mod!
+  # use plot methods from package markovchains
+  stop("Unimplemented")
+}
+
+#' @export
+#' @rdname define_matrix
+plot.eval_matrix <- function(x, cycle = 0) {
+  # !mod!
+  # use plot methods from package markovchains
+  stop("Unimplementer")
 }
