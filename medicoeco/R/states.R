@@ -113,8 +113,7 @@ print.state <- function(x, ...) {
   nv <- names(x)
   ex <- unlist(lapply(x, function(y) deparse(y$expr)))
   
-  paste(nv, ex, sep = " = ") %>%
-    cat(sep = "\n") 
+  cat(paste(nv, ex, sep = " = "), sep = "\n") 
 }
 
 
@@ -205,7 +204,7 @@ modify.uneval_state_list <- function(.OBJECT, ...) {
 #' @export
 print.uneval_state_list <- function(x, ...) {
   n_state <- get_state_number(x)
-  n_values <- get_state_value_names(x) %>% length
+  n_values <- length(get_state_value_names(x))
   
   cat(sprintf(
     "A list of %i unevaluated state%s with %i value%s each.\n\n",

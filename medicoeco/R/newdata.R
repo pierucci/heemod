@@ -74,10 +74,14 @@ eval_model_newdata <- function(model, cycles,
       count_args = count_args
     )
   }
-  newdata %>%
-    (dplyr::rowwise) %>%
-    (dplyr::do)(model = eval_newdata(., model)) %>%
-    (dplyr::bind_cols)(newdata)
+  
+  dplyr::bind_cols(
+    dplyr::do(
+      dplyr::rowwise(newdata),
+      model = eval_newdata(., model)
+    ),
+    newdata
+  )
 }
 
 #' Iteratively Run Markov Models Over New Parameter Sets 

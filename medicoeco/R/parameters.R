@@ -139,10 +139,12 @@ define_parameters <- function(...) {
 #' 
 eval_parameters <- function(x, cycles = 1) {
   # other datastructure?
-  res <- data.frame(
-    markov_cycle = seq(from = 0, to = cycles - 1)
-  ) %>%
-    mutate_(.dots = x)
+  res <- mutate_(
+    data.frame(
+      markov_cycle = seq(from = 0, to = cycles - 1)
+    ),
+    .dots = x
+  )
   
   structure(
     res,
@@ -238,8 +240,7 @@ print.uneval_parameters <- function(x, ...) {
   n <- names(x)
   ex <- unlist(lapply(x, function(y) deparse(y$expr)))
   
-  paste(n, ex, sep = " = ") %>%
-    cat(sep = "\n")
+  cat(paste(n, ex, sep = " = "), sep = "\n")
 }
 
 #' @export

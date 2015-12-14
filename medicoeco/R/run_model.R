@@ -112,9 +112,9 @@ run_models <- function(...,
   stopifnot(
     all("uneval_model" %in% unlist(lapply(list_models, class))),
     list_all_same(lapply(list_models,
-                         . %>% get_state_names %>% sort)),
+                         function(x) sort(get_state_names(x)))),
     list_all_same(lapply(list_models,
-                         . %>% get_state_value_names %>% sort))
+                         function(x) sort(get_state_value_names(x))))
   )
   
   if (missing(init)) {

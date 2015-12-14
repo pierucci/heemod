@@ -5,10 +5,6 @@
 #' @importFrom dplyr group_by
 #' @importFrom dplyr as.tbl
 #' 
-#' @importFrom magrittr %>%
-#' @importFrom magrittr %$%
-#' @importFrom magrittr equals
-#' 
 #' @importFrom purrr map_rows
 #' 
 #' @importFrom lazyeval lazy

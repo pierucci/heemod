@@ -85,8 +85,8 @@ define_matrix <- function(
   )
   
   names(.dots) <- sprintf("cell_%i_%i",
-                          seq_len(n) %>% rep(each = n),
-                          seq_len(n) %>% rep(n))
+                           rep(seq_len(n), each = n),
+                           rep(seq_len(n), n))
   
   structure(.dots,
             class = c("uneval_matrix", class(.dots)),
@@ -142,10 +142,13 @@ eval_matrix <- function(x, parameters) {
   }
   
   # bottleneck!
-  res <- tab_res %>%
-    purrr::map_rows(f, .labels = FALSE) %$%
-    .out %>%
-    unlist(recursive = FALSE)
+  
+  res <- unlist(
+    purrr::map_rows(
+      tab_res, f, .labels = FALSE
+    )$.out,
+    recursive = FALSE
+  )
   
   structure(res,
             class = c("eval_matrix", class(res)),

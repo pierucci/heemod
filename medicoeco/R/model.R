@@ -55,10 +55,13 @@ define_model <- function(
   stopifnot(
     get_state_number(states) == 0 |
       get_state_number(states) == get_matrix_order(transition_matrix),
-    get_parameter_names(parameters) %>%
-      intersect(get_state_value_names(states)) %>%
-      length %>%
-      magrittr::equals(0),
+    length(
+      intersect(
+        get_parameter_names(parameters),
+        get_state_value_names(states)
+      )
+    ) == 0,
+    
     identical(
       sort(get_state_names(states)),
       sort(get_state_names(transition_matrix))
@@ -76,8 +79,8 @@ define_model <- function(
 #' @export
 print.uneval_model <- function(x, ...) {
   n_parm <- length(get_parameter_names(get_parameters(x)))
-  n_states <- get_states(x) %>% get_state_number
-  n_state_values <- get_states(x) %>% get_state_value_names %>% length
+  n_states <- get_state_number(get_states(x))
+  n_state_values <- length(get_state_value_names(get_states(x)))
   
   cat(sprintf(
     "An unevaluated Markov model:
@@ -293,13 +296,15 @@ compute_counts <- function(
     accumulate = TRUE
   )
   
-  res <- matrix(
-    unlist(list_counts),
-    byrow = TRUE,
-    ncol = get_matrix_order(transition_matrix)
-  ) %>%
-    as.data.frame %>%
-    (dplyr::as.tbl)
+  res <- dplyr::as.tbl(
+    as.data.frame(
+      matrix(
+        unlist(list_counts),
+        byrow = TRUE,
+        ncol = get_matrix_order(transition_matrix)
+      )
+    )
+  )
   
   colnames(res) <- get_state_names(transition_matrix)
   
