@@ -10,7 +10,7 @@
 define_matrix(...,
   state_names = LETTERS[seq_len(sqrt(length(lazyeval::lazy_dots(...))))])
 
-\method{modify}{uneval_matrix}(x, ...)
+\method{modify}{uneval_matrix}(.OBJECT, ...)
 
 \method{plot}{uneval_matrix}(x, cycle = 0)
 

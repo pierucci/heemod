@@ -7,13 +7,13 @@
 \usage{
 define_state(...)
 
-\method{modify}{state}(x, ..., BEFORE)
+\method{modify}{state}(.OBJECT, ..., BEFORE)
 }
 \arguments{
 \item{...}{Name-value pairs of expressions defining state
 values.}
 
-\item{x}{An object of class \code{state}.}
+\item{.OBJECT}{An object of class \code{state}.}
 
 \item{BEFORE}{character, length 1. Name of state values 
 before which new values are to be added.}

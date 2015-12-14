@@ -1,23 +1,30 @@
 #' Run one or more Markov Model
 #' 
-#' Runs a set of unevaluated Markov Models. All models 
-#' should have the same states and state value names.
+#' Runs one or more unevaluated Markov Models. When more 
+#' than one model is provided, all models should have the 
+#' same states and state value names.
 #' 
-#' A classical situation where more than one model needs to 
-#' be run is to compare different care startegies.
+#' 
+#' A usual situation where more than one model needs to be 
+#' run is when comparing different care startegies.
 #' 
 #' In order to compute comparisons Markov Models must be 
 #' similar (same states and state value names). Thus models 
 #' should only differ through parameters, transition matrix 
-#' cell values and values attached to states (but not value 
-#' names).
+#' cell values and values attached to states (but not state 
+#' value names).
 #' 
-#' The initial number of individuals in each model state and
-#' the number of cycle will be the same for all models.
+#' The initial number of individuals in each state and the 
+#' number of cycle will be the same for all models.
 #' 
-#' This function can run only one model.
+#' Internally this function does 2 operations: first
+#' evaluating parameters, transition matrix, state values
+#' and computing individual counts through
+#' \code{\link{eval_model}}; and then using individual
+#' counts and evaluated state values to compute values at
+#' each cycle through \code{compute_values}.
 #' 
-#' @param ... \code{uneval_model} objects.
+#' @param ... One or more \code{uneval_model} object.
 #' @param init numeric vector, same length as number of 
 #'   model states. Number of individuals in each model state
 #'   at the beginning.
@@ -26,11 +33,58 @@
 #' @param count_args Additional arguments passed as a list 
 #'   to \code{compute_counts}.
 #'   
-#' @return A list of individual counts and state values per 
-#'   cycle and total state values.
+#' @return A list of evaluated models with computed values.
 #' @export
 #' 
 #' @examples 
+
+#' # running a single model
+#' 
+#' mod1 <-
+#'   define_model(
+#'     transition_matrix = define_matrix(
+#'       .5, .5,
+#'       .1, .9
+#'     ),
+#'     states = define_state_list(
+#'       define_state(
+#'         cost = 543
+#'       ),
+#'       define_state(
+#'         cost = 432
+#'       )
+#'     )
+#'   )
+#' 
+#' res <- run_model(
+#'   mod1,
+#'   init = c(100, 0),
+#'   cycles = 2
+#' )
+#' 
+#' # running several models
+#' mod2 <-
+#'   define_model(
+#'     transition_matrix = define_matrix(
+#'       .5, .5,
+#'       .1, .9
+#'     ),
+#'     states = define_state_list(
+#'       define_state(
+#'         cost = 789
+#'       ),
+#'       define_state(
+#'         cost = 456
+#'       )
+#'     )
+#'   )
+#' 
+#' 
+#' res2 <- run_model(
+#'   mod1, mod2,
+#'   init = c(100, 0),
+#'   cycles = 10
+#' )
 #' 
 run_models <- function(..., init, cycles, count_args = NULL) {
   
@@ -58,29 +112,11 @@ run_models <- function(..., init, cycles, count_args = NULL) {
                          . %>% get_state_value_names %>% sort))
   )
   
-  run_mod <- function(model) {
-    e_model <- eval_model(model = model, 
-                          init = init, 
-                          cycles = cycles,
-                          count_args = count_args)
-    values <- compute_values(e_model)
-    total_sum <- colSums(values[- 1])
-    
-    structure(
-      list(
-        table_counts = get_counts(e_model),
-        table_values = values,
-        total_values = total_sum
-      ), 
-      class = "eval_model",
-      init = init,
-      cycles = cycles,
-      count_args = if (is.null(count_args)) NA else count_args
-    )
-  }
-  
   structure(
-    lapply(list_models, run_mod),
+    lapply(list_models, eval_model, 
+           init = init, 
+           cycles = cycles,
+           count_args = count_args),
     names = model_names,
     class = "eval_model_list",
     init = init,
@@ -95,35 +131,66 @@ run_model <- function(...) {
   run_models(...)
 }
 
-#' Compute State Values per Cycle
-#' 
-#' Given an evaluated model, computes the total state values
-#' per cycle.
-#' 
-#' @param x An object of class \code{eval_model}.
-#'   
-#' @return A data.frame of state values, one column per
-#'   state value and one row per cycle.
-#'   
-compute_values <- function(x) {
-  states_names <- get_state_names(get_states(x))
-  state_values_names <- get_state_value_names(get_states(x))
-  
-  res <- data.frame(
-    markov_cycle = get_parameters(x)$markov_cycle
+#' @export
+print.eval_model_list <- function(x) {
+  cat(sprintf(
+    "%i Markov model%s, run for %i cycle%s.\n\n",
+    length(x),
+    plur(length(x)),
+    attr(x, "cycles"),
+    plur(attr(x, "cycles"))
+  ))
+  cat("Model names:\n\n")
+  cat(names(x), sep = "\n")
+}
+
+#' @export
+summary.eval_model_list <- function(x) {
+  message("unimplemeted")
+}
+
+#' @export
+print.summary_eval_model_list <- function(x) {
+  message("unimplemeted")
+}
+
+#' @export
+print.eval_model <- function(x, width = Inf, ...) {
+  cat(
+    sprintf(
+      "A Markov model, run for %i cycle%s",
+      attr(x, "cycles"),
+      plur(attr(x, "cycles"))
+    )
   )
-  # bottleneck!
-  for (state_value in state_values_names) {
-    res[state_value] <- 0
-    
-    for (state in states_names) {
-      res[state_value] <-
-        res[state_value] +
-        get_counts(x)[, state] * 
-        get_states(x)[[state]][, state_value]
-    }
-  }
-  res
+  
+  cat(
+    "Initial individual counts:\n\n"
+  )
+  
+  print(
+    data.frame(
+      "State names" = names(get_counts(x)),
+      "Initial counts" = attr(x, "init")
+    )
+  )
+  
+  cat(
+    "Individual counts per cycle:\n\n"
+  )
+  
+  print(get_counts(x), width = width, ...)
+  
+  cat(
+    "State values per cycle:\n\n"
+  )
+  
+  print(get_state_values(x), width = width, ...)
+  
+  cat(
+    "Total state values:\n\n"
+  )
+  
 }
 
 

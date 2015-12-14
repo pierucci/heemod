@@ -10,7 +10,7 @@ run_models(..., init, cycles, count_args = NULL)
 run_model(...)
 }
 \arguments{
-\item{...}{\code{uneval_model} objects.}
+\item{...}{One or more \code{uneval_model} object.}
 
 \item{init}{numeric vector, same length as number of 
 model states. Number of individuals in each model state
@@ -23,26 +23,81 @@ to compute.}
 to \code{compute_counts}.}
 }
 \value{
-A list of individual counts and state values per 
-  cycle and total state values.
+A list of evaluated models with computed values.
 }
 \description{
-Runs a set of unevaluated Markov Models. All models 
-should have the same states and state value names.
+Runs one or more unevaluated Markov Models. When more 
+than one model is provided, all models should have the 
+same states and state value names.
 }
 \details{
-A classical situation where more than one model needs to 
-be run is to compare different care startegies.
+A usual situation where more than one model needs to be 
+run is when comparing different care startegies.
 
 In order to compute comparisons Markov Models must be 
 similar (same states and state value names). Thus models 
 should only differ through parameters, transition matrix 
-cell values and values attached to states (but not value 
-names).
+cell values and values attached to states (but not state 
+value names).
 
-The initial number of individuals in each model state and
-the number of cycle will be the same for all models.
+The initial number of individuals in each state and the 
+number of cycle will be the same for all models.
 
-This function can run only one model.
+Internally this function does 2 operations: first
+evaluating parameters, transition matrix, state values
+and computing individual counts through
+\code{\link{eval_model}}; and then using individual
+counts and evaluated state values to compute values at
+each cycle through \code{compute_values}.
+}
+\examples{
+# running a single model
+
+mod1 <-
+  define_model(
+    transition_matrix = define_matrix(
+      .5, .5,
+      .1, .9
+    ),
+    states = define_state_list(
+      define_state(
+        cost = 543
+      ),
+      define_state(
+        cost = 432
+      )
+    )
+  )
+
+res <- run_model(
+  mod1,
+  init = c(100, 0),
+  cycles = 2
+)
+
+# running several models
+mod2 <-
+  define_model(
+    transition_matrix = define_matrix(
+      .5, .5,
+      .1, .9
+    ),
+    states = define_state_list(
+      define_state(
+        cost = 789
+      ),
+      define_state(
+        cost = 456
+      )
+    )
+  )
+
+
+res2 <- run_model(
+  mod1, mod2,
+  init = c(100, 0),
+  cycles = 10
+)
+
 }
 

@@ -114,19 +114,12 @@ define_matrix <- function(
 #'   
 check_matrix <- function(x, ...) {
   info <- list(...)
-  if (! all(
+  stopifnot(
     isTRUE(
-      all.equal(
-        rowSums(x),
-        rep(1, nrow(x))
-      )
-    )
-  ) |
-  ! all(x >= 0 & x <= 1)) {
-    print(info)
-    stop("Incorrect matrix!")
-  }
-  NULL
+      all.equal(rowSums(x), rep(1, nrow(x)))
+    ),
+    all(x >= 0 & x <= 1)
+  )
 }
 
 #' Evaluate Markov Model Transition Matrix
@@ -163,11 +156,13 @@ eval_matrix <- function(x, parameters) {
 
 #' @export
 get_state_names.uneval_matrix <- function(x, ...){
-  attr(x, "state_names")}
+  attr(x, "state_names")
+}
 
 #' @export
 get_state_names.eval_matrix <- function(x, ...){
-  attr(x, "state_names")}
+  attr(x, "state_names")
+}
 
 #' Return Markov Model Transition Matrix Order
 #' 
@@ -185,15 +180,17 @@ get_matrix_order <- function(x){
 
 #' @export
 get_matrix_order.uneval_matrix <- function(x){
-  sqrt(length(x))}
+  sqrt(length(x))
+}
 
 #' @export
 get_matrix_order.eval_matrix <- function(x){
-  ncol(x[[1]])}
+  ncol(x[[1]])
+}
 
 #' @export
 #' @rdname define_matrix
-modify.uneval_matrix <- function(x, ...){
+modify.uneval_matrix <- function(.OBJECT, ...){
   
   # !mod!
   # modifier par rr simplment
@@ -201,10 +198,10 @@ modify.uneval_matrix <- function(x, ...){
   .dots <- lazyeval::lazy_dots(...)
   
   stopifnot(
-    all(names(.dots) %in% names(x))
+    all(names(.dots) %in% names(.OBJECT))
   )
   
-  modifyList(x, .dots)
+  modifyList(.OBJECT, .dots)
 }
 
 #' @export

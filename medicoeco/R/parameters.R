@@ -31,7 +31,7 @@
 #' 
 #' @param ... Name-value pairs of expressions definig
 #'   parameters.
-#' @param x An object of class \code{uneval_parameters}.
+#' @param .OBJECT An object of class \code{uneval_parameters}.
 #' @param BEFORE character, length 1. Name of parameters 
 #'   before which new parameters are to be added.
 #'   
@@ -162,7 +162,7 @@ eval_parameters <- function(x, cycles = 1) {
 #' @export
 #' 
 get_parameter_names <- function(x) {
-  names(x)[names(x) != "markov_chain"]
+  names(x)[names(x) != "markov_cycle"]
 }
 
 
@@ -174,21 +174,24 @@ get_parameter_names <- function(x) {
 #' More details are available on the respective help page of
 #' each object definition.
 #' 
-#' @param x Various objects.
+#' @param .OBJECT Various objects.
 #' @param ... Modifications.
 #'   
 #' @return Same class as \code{x}.
 #' @export
 #' 
-modify <- function(x, ...) {
+modify <- function(.OBJECT, ...) {
   UseMethod("modify")
 }
 
 #' @export
 #' @rdname define_parameters
-modify.uneval_parameters <- function(x, ..., BEFORE) {
+modify.uneval_parameters <- function(.OBJECT, ..., BEFORE) {
   .dots <- lazyeval::lazy_dots(...)
   
+  stopifnot(
+    all(names(.dots) != "markov_cycle")
+  )
   # !mod!
   # message d'erreur informatif quand parametres pas dans
   # bon ordre
@@ -196,25 +199,35 @@ modify.uneval_parameters <- function(x, ..., BEFORE) {
   # voire correction automatique ?
   
   if (! missing(BEFORE)) {
-    new_values <- setdiff(
-      names(.dots),
-      c("markov_chain", get_parameter_names(x))
-    )
-    res <- modifyList(x, .dots)
     
-    pos_before <- which(names(res) == BEFORE)
+    BEFORE <- if (is.language(substitute(BEFORE))) {
+      deparse(substitute(BEFORE))
+    } else {
+      BEFORE
+    }
     
     stopifnot(
       length(BEFORE) == 1
     )
     
-    c(
-      res[seq_len(pos_before - 1)],
-      res[new_values],
-      res[seq(from = pos_before, to = length(res))]
+    new_values <- setdiff(
+      names(.dots),
+      c("markov_chain", get_parameter_names(.OBJECT))
+    )
+    res <- modifyList(.OBJECT, .dots)
+    
+    pos_before <- which(names(res) == BEFORE)
+    
+    structure(
+      c(
+        res[seq_len(pos_before - 1)],
+        res[new_values],
+        res[seq(from = pos_before, to = length(res) - length(new_values))]
+      ),
+      class = "uneval_parameters"
     )
   } else {
-    modifyList(x, .dots)
+    modifyList(.OBJECT, .dots)
   }
 }
 
@@ -230,14 +243,14 @@ print.uneval_parameters <- function(x, ...) {
 }
 
 #' @export
-print.eval_parameters <- function(x, ...) {
+print.eval_parameters <- function(x, width = Inf, ...) {
   cat(sprintf(
-    "%i evaluated parameter%s, %i markov cycle%s.\n\n",
+    "%i evaluated parameter%s, %i Markov cycle%s.\n\n",
     ncol(x) - 1,
     plur(ncol(x) - 1),
     nrow(x),
-    plur(nrow(x)),
+    plur(nrow(x))
   ))
   
-  print(as.tbl(x), ...)
+  print(dplyr::as.tbl(x), width = width, ...)
 }

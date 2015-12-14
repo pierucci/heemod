@@ -7,13 +7,13 @@
 \usage{
 define_parameters(...)
 
-\method{modify}{uneval_parameters}(x, ..., BEFORE)
+\method{modify}{uneval_parameters}(.OBJECT, ..., BEFORE)
 }
 \arguments{
 \item{...}{Name-value pairs of expressions definig
 parameters.}
 
-\item{x}{An object of class \code{uneval_parameters}.}
+\item{.OBJECT}{An object of class \code{uneval_parameters}.}
 
 \item{BEFORE}{character, length 1. Name of parameters 
 before which new parameters are to be added.}

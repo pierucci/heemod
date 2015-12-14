@@ -4,10 +4,10 @@
 \alias{modify}
 \title{Modify Object}
 \usage{
-modify(x, ...)
+modify(.OBJECT, ...)
 }
 \arguments{
-\item{x}{Various objects.}
+\item{.OBJECT}{Various objects.}
 
 \item{...}{Modifications.}
 }

@@ -2,12 +2,12 @@
 % Please edit documentation in R/states.R
 \name{define_state_list}
 \alias{define_state_list}
-\alias{modify.uneval_states}
+\alias{modify.uneval_state_list}
 \title{Define Markov Model States}
 \usage{
 define_state_list(...)
 
-\method{modify}{uneval_states}(x, ...)
+\method{modify}{uneval_state_list}(.OBJECT, ...)
 }
 \arguments{
 \item{...}{Name-value pairs of expressions defining model
@@ -16,7 +16,7 @@ states.}
 \item{x}{An \code{uneval_states} object.}
 }
 \value{
-An object of class \code{uneval_states} (a
+An object of class \code{uneval_state_list} (a
   list of \code{state} objects).
 }
 \description{
