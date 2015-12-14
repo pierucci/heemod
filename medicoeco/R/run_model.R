@@ -88,7 +88,7 @@
 #' )
 #' 
 run_models <- function(...,
-                       init = c(1, rep(0, get_state_number(get_states(model)) - 1)),
+                       init = c(1, rep(0, get_state_number(get_states(list(...)[[1]])) - 1)),
                        cycles = 1,
                        count_args = NULL,
                        newdata = NULL) {
