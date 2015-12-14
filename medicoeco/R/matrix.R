@@ -1,4 +1,4 @@
-#' Define Transision Matrix for Markov Model
+#' Define Transition Matrix for Markov Model
 #' 
 #' Define a matrix of transition probabilities. Probability 
 #' can depend on parameters defined with 
@@ -27,9 +27,7 @@
 #'   \code{\link{define_parameters}}.
 #' @param state_names character vector, optional. State 
 #'   names.
-#' @param x An object of class \code{uneval_matrix}.
-#' @param cycle scalar integer. For transition matrix
-#'   plotting, which markov cycle to plot?
+#' @param .OBJECT An object of class \code{uneval_matrix}.
 #'   
 #' @return An object of class \code{uneval_matrix} (actually
 #'   a named list of \code{lazy} expressions).
@@ -237,21 +235,4 @@ print.eval_matrix <- function(x, ...) {
   
   if (length(head(x, ...)) < length(x))
     cat("...\n")
-}
-
-
-#' @export
-#' @rdname define_matrix
-plot.uneval_matrix <- function(x, cycle = 0) {
-  # !mod!
-  # use plot methods from package markovchains
-  stop("Unimplemented")
-}
-
-#' @export
-#' @rdname define_matrix
-plot.eval_matrix <- function(x, cycle = 0) {
-  # !mod!
-  # use plot methods from package markovchains
-  stop("Unimplementer")
 }

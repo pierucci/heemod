@@ -74,6 +74,14 @@ y = 123',
 
 test_that(
   "State list definition", {
+    s1 <- define_state(
+      x = 234,
+      y = 123
+    )
+    s2 <- define_state(
+      x = 987,
+      y = 1726
+    )
     sl1 <- define_state_list(
       X1 = s1,
       X2 = s2

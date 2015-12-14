@@ -79,6 +79,10 @@ b = a + 543',
 
 test_that(
   "Parameter evaluation", {
+    par1 <- define_parameters(
+      a = 2,
+      b = a * markov_cycle
+    )
     e_par1 <- eval_parameters(
       par1, 10
     )
@@ -90,24 +94,14 @@ Source: local data frame [10 x 3]
 
    markov_cycle     a     b
           (int) (dbl) (dbl)
-1             0    12    12
-2             1    12    16
-3             2    12    20
-4             3    12    24
-5             4    12    28
-6             5    12    32
-7             6    12    36
-8             7    12    40
-9             8    12    44
-10            9    12    48",
+1             0     2     0
+2             1     2     2
+3             2     2     4",
       fixed = TRUE
     )
     expect_output(
       str(e_par1),
-      "Classes ‘eval_parameters’ and 'data.frame':	10 obs. of  3 variables:
- $ markov_cycle: int  0 1 2 3 4 5 6 7 8 9
- $ a",
-      fixed = TRUE
+      "10 obs\\. of  3 variables"
     )
     expect_equal(
       get_parameter_names(e_par1),

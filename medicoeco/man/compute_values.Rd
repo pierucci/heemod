@@ -4,17 +4,19 @@
 \alias{compute_values}
 \title{Compute State Values per Cycle}
 \usage{
-compute_values(x)
+compute_values(states, counts)
 }
 \arguments{
-\item{x}{An object of class \code{eval_state_list}.}
+\item{states}{An object of class \code{eval_state_list}.}
+
+\item{counts}{An object of class \code{cycle_counts}.}
 }
 \value{
 A data.frame of state values, one column per
   state value and one row per cycle.
 }
 \description{
-Given an evaluated model, computes the total state values
+Given states and counts, computes the total state values
 per cycle.
 }
 

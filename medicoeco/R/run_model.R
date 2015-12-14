@@ -32,6 +32,7 @@
 #'   to compute.
 #' @param count_args Additional arguments passed as a list 
 #'   to \code{compute_counts}.
+#' @param newdata data.frame. New parameter values.
 #'   
 #' @return A list of evaluated models with computed values.
 #' @export
@@ -86,7 +87,11 @@
 #'   cycles = 10
 #' )
 #' 
-run_models <- function(..., init, cycles, count_args = NULL) {
+run_models <- function(...,
+                       init = c(1, rep(0, get_state_number(get_states(model)) - 1)),
+                       cycles = 1,
+                       count_args = NULL,
+                       newdata = NULL) {
   
   list_models <- list(...)
   
@@ -112,11 +117,28 @@ run_models <- function(..., init, cycles, count_args = NULL) {
                          . %>% get_state_value_names %>% sort))
   )
   
+  if (missing(init)) {
+    init<- c(1, rep(0, get_state_number(get_states(list_models[[1]])) - 1))
+  }
+  
+  stopifnot(
+    length(init) == get_state_number(list_models[[1]]),
+    all(init >= 0)
+  )
+  
+  if (is.null(names(init)))
+    names(init) <- get_state_names(list_models[[1]])
+  
+  stopifnot(
+    all(sort(names(init)) == sort(get_state_names(list_models[[1]])))
+  )
+  
   structure(
     lapply(list_models, eval_model, 
            init = init, 
            cycles = cycles,
            count_args = count_args),
+    uneval_model_list = list_models,
     names = model_names,
     class = "eval_model_list",
     init = init,
@@ -125,14 +147,22 @@ run_models <- function(..., init, cycles, count_args = NULL) {
   )
 }
 
+
+
 #' @export
 #' @rdname run_models
-run_model <- function(...) {
-  run_models(...)
+run_model <- function(...,
+                      init,
+                      cycles = 1,
+                      count_args = NULL,
+                      newdata = NULL) {
+  run_models(..., init = init, cycles = cycles, 
+             count_args = count_args,
+             newdata = newdata)
 }
 
 #' @export
-print.eval_model_list <- function(x) {
+print.eval_model_list <- function(x, ...) {
   cat(sprintf(
     "%i Markov model%s, run for %i cycle%s.\n\n",
     length(x),
@@ -145,52 +175,72 @@ print.eval_model_list <- function(x) {
 }
 
 #' @export
-summary.eval_model_list <- function(x) {
-  message("unimplemeted")
+summary.eval_model_list <- function(object, ...) {
+  res <- unlist(
+    lapply(
+      object,
+      function(y) colSums((y$values)[- 1])
+    )
+  )
+  
+  res <- matrix(
+    res,
+    nrow = length(object),
+    byrow = TRUE,
+    dimnames = list(
+      names(object),
+      get_state_value_names(object[[1]])
+    )
+  )
+  
+  structure(
+    list(res = res,
+         cycles = attr(object, "cycles"),
+         init = attr(object, "init"),
+         count_args = attr(object, "count_args")),
+    class = "summary_eval_model_list"
+  )
 }
 
 #' @export
-print.summary_eval_model_list <- function(x) {
-  message("unimplemeted")
+print.summary_eval_model_list <- function(x, ...) {
+  cat(sprintf(
+    "%i Markov model%s run for %i cycle%s.\n\n",
+    nrow(x$res),
+    plur(nrow(x$res)),
+    x$cycles,
+    plur(x$cycles)
+  ))
+  cat("Initial states:\n\n")
+  print(matrix(
+    x$init,
+    dimnames = list(
+      names(x$init),
+      "N"
+    )
+  ))
+  print(x$res)
 }
 
 #' @export
 print.eval_model <- function(x, width = Inf, ...) {
-  cat(
-    sprintf(
-      "A Markov model, run for %i cycle%s",
-      attr(x, "cycles"),
-      plur(attr(x, "cycles"))
-    )
-  )
+  cat(sprintf("A Markov model, run for %i cycle%s.\n\n",
+              attr(x, "cycles"),
+              plur(attr(x, "cycles"))
+  ))
   
-  cat(
-    "Initial individual counts:\n\n"
-  )
+  cat("Initial individual counts:\n\n")
+  print(data.frame(
+    "State names" = names(get_counts(x)),
+    "Initial counts" = attr(x, "init"),
+    check.names = FALSE
+  ))
   
-  print(
-    data.frame(
-      "State names" = names(get_counts(x)),
-      "Initial counts" = attr(x, "init")
-    )
-  )
-  
-  cat(
-    "Individual counts per cycle:\n\n"
-  )
-  
+  cat("Individual counts per cycle:\n\n")
   print(get_counts(x), width = width, ...)
   
-  cat(
-    "State values per cycle:\n\n"
-  )
-  
+  cat("State values per cycle:\n\n")
   print(get_state_values(x), width = width, ...)
-  
-  cat(
-    "Total state values:\n\n"
-  )
-  
 }
 
 

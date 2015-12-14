@@ -53,8 +53,8 @@ define_model <- function(
 ) {
   
   stopifnot(
-    state_count(states) == 0 |
-      state_count(states) == get_matrix_order(transition_matrix),
+    get_state_number(states) == 0 |
+      get_state_number(states) == get_matrix_order(transition_matrix),
     get_parameter_names(parameters) %>%
       intersect(get_state_value_names(states)) %>%
       length %>%
@@ -76,11 +76,12 @@ define_model <- function(
 #' @export
 print.uneval_model <- function(x, ...) {
   n_parm <- length(get_parameter_names(get_parameters(x)))
-  n_states <- get_states(x) %>% state_count
+  n_states <- get_states(x) %>% get_state_number
   n_state_values <- get_states(x) %>% get_state_value_names %>% length
   
   cat(sprintf(
     "An unevaluated Markov model:
+
     %i parameter%s,
     %i state%s,
     %i state value%s.\n",
@@ -133,7 +134,6 @@ get_matrix.default <- function(x){
   x$transition_matrix
 }
 
-#' @export
 get_states <- function(x){
   UseMethod("get_states")
 }
@@ -143,7 +143,6 @@ get_states.default <- function(x){
   x$states
 }
 
-#' @export
 get_counts <- function(x){
   UseMethod("get_counts")
 }
@@ -209,14 +208,15 @@ get_counts.eval_model <- function(x){
 #' 
 eval_model <- function(
   model,
-  cycles = 1, 
-  init = c(1, rep(0, state_count(get_states(model)) - 1)),
+  cycles, 
+  init,
   count_args = NULL
 ) {
   
   stopifnot(
     cycles > 0,
-    all(cycles >= 0)
+    length(cycles) == 1,
+    all(init >= 0)
   )
   
   parameters <- eval_parameters(get_parameters(model),
@@ -232,9 +232,7 @@ eval_model <- function(
       count_args))
   
   
-  values <- compute_values(states)
-  
-  total_sum <- colSums(values[- 1])
+  values <- compute_values(states, count_table)
   
   structure(
     list(
@@ -244,7 +242,13 @@ eval_model <- function(
       counts = count_table,
       values = values
     ),
-    class = c("eval_model"))
+    class = c("eval_model"),
+    init = init,
+    cycles = cycles)
+}
+
+get_state_values <- function(x) {
+  x$values
 }
 
 #' Compute Count of Individual in Each State per Cycle
@@ -328,20 +332,22 @@ compute_counts <- function(
 
 #' Compute State Values per Cycle
 #' 
-#' Given an evaluated model, computes the total state values
+#' Given states and counts, computes the total state values
 #' per cycle.
 #' 
-#' @param x An object of class \code{eval_state_list}.
+#' @param states An object of class \code{eval_state_list}.
+#' @param counts An object of class \code{cycle_counts}.
 #'   
 #' @return A data.frame of state values, one column per
 #'   state value and one row per cycle.
 #'   
-compute_values <- function(x) {
-  states_names <- get_state_names(x)
-  state_values_names <- get_state_value_names(x)
+compute_values <- function(states, counts) {
+  
+  states_names <- get_state_names(states)
+  state_values_names <- get_state_value_names(states)
   
   res <- data.frame(
-    markov_cycle = get_parameters(x)$markov_cycle
+    markov_cycle = states[[1]]$markov_cycle
   )
   # bottleneck!
   for (state_value in state_values_names) {
@@ -350,8 +356,8 @@ compute_values <- function(x) {
     for (state in states_names) {
       res[state_value] <-
         res[state_value] +
-        get_counts(x)[, state] * 
-        get_states(x)[[state]][, state_value]
+        counts[, state] * 
+        states[[state]][, state_value]
     }
   }
   res
@@ -364,7 +370,7 @@ get_state_value_names.uneval_model <- function(x) {
 }
 
 #' @export
-get_state_names.uneval_model <- function(x) {
+get_state_names.uneval_model <- function(x, ...) {
   get_state_names(get_states(x))
 }
 

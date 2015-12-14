@@ -13,7 +13,7 @@ define_state_list(...)
 \item{...}{Name-value pairs of expressions defining model
 states.}
 
-\item{x}{An \code{uneval_states} object.}
+\item{.OBJECT}{An \code{uneval_states} object.}
 }
 \value{
 An object of class \code{uneval_state_list} (a

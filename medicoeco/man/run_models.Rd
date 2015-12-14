@@ -5,9 +5,10 @@
 \alias{run_models}
 \title{Run one or more Markov Model}
 \usage{
-run_models(..., init, cycles, count_args = NULL)
+run_models(..., init = c(1, rep(0, get_state_number(get_states(model)) - 1)),
+  cycles = 1, count_args = NULL, newdata = NULL)
 
-run_model(...)
+run_model(..., init, cycles = 1, count_args = NULL, newdata = NULL)
 }
 \arguments{
 \item{...}{One or more \code{uneval_model} object.}
@@ -21,6 +22,8 @@ to compute.}
 
 \item{count_args}{Additional arguments passed as a list 
 to \code{compute_counts}.}
+
+\item{newdata}{data.frame. New parameter values.}
 }
 \value{
 A list of evaluated models with computed values.

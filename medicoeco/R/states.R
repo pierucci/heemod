@@ -133,7 +133,7 @@ print.state <- function(x, ...) {
 #' 
 #' @param ... Name-value pairs of expressions defining model
 #'   states.
-#' @param x An \code{uneval_states} object.
+#' @param .OBJECT An \code{uneval_states} object.
 #'   
 #' @return An object of class \code{uneval_state_list} (a
 #'   list of \code{state} objects).
@@ -266,27 +266,6 @@ eval_state_list <- function(x, parameters) {
             class = c("eval_state_list", class(res)))
 }
 
-#' @export
-print.eval_states <- function(x, ...) {
-  n_state <- state_count(x)
-  n_state_values <- get_state_value_names(x) %>% length
-  n_cycle <- nrow(x)[[1]]
-  
-  cat(sprintf(
-    "A list of %i evaluated state%s with %i value%s each, %i markov cycle%s.\n\n",
-    n_state,
-    plur(n_state),
-    n_state_values,
-    plur(n_state_values),
-    n_cycle,
-    plur(n_cycle)
-  ))
-  cat("State names:\n\n")
-  cat(get_state_names(x), sep = "\n")
-  
-  cat("\nState values:\n\n")
-  cat(get_state_value_names(x), sep = "\n")
-}
 
 #' Return Number of State
 #'
@@ -323,6 +302,10 @@ get_state_value_names.uneval_state_list <- function(x) {
 #' @export
 get_state_value_names.eval_state_list <- function(x){
   names(x[[1]])[-1]
+}
+#' @export
+get_state_value_names.eval_model <- function(x){
+  dplyr::setdiff(names(x$values), "markov_cycle")
 }
 #' @export
 get_state_value_names.state <- function(x){

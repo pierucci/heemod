@@ -70,6 +70,11 @@ X2 0.6 0.4',
 
 test_that(
   "Functions on matrix objects", {
+    mat1 <- define_matrix(
+      state_names = c("X1", "X2"),
+      .3, .7,
+      .6, .4
+    )
     expect_error(
       check_matrix(
         matrix(
