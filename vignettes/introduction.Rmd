@@ -1,0 +1,63 @@
+---
+title: "Introduction"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r, echo=FALSE, include=FALSE}
+library(heemod)
+```
+
+When building a Markov model for health economic evaluation you must :
+
+  * Specify transition probabilities between states ;
+  * Specify values attached to states (costs, utilities...) ;
+  * Combine those informations and run the model.
+  
+This documents is an introduction to `heemod`'s basic steps to define and run a model. Other vignettes provide more details and examples on specific topics :
+
+  * homogenous: How to specify, run and interpret a simple Markov model with no time-varying element ;
+  * non-homogenous: Example analysis of a more complex Markov model with time-varying transition probabilities.
+
+# Transition probabilities
+
+The probability to change from one state to another during a time period is called a *transition probability*. The time period is called a *cycle*.
+
+Transition proabilities between states can be specified through a 2-way table where the lines correspond the states at the beginning of a cycle and the columns to the states at the end of a cycle. For example consider a model with 2 states `A` and `B` :
+
+|       | A | B |
+|-------|---|---|
+| **A** | 1 | 2 |
+| **B** | 3 | 4 |
+
+When starting a cycle state `A` (line `A`), the probability to still be in state `A` at the end of the cycle is found in colunm `A` (cell `1`) and the probability to change to state `B` is found in column `B` (cell `2`).
+
+Similarly, when starting a cycle from state `B` (line `B`), the probability to be in state `A` or `B` at the end of the cycle are found in cells `3` or `4` respectively.
+
+In the context of Markov models, this 2-way table is called a *transition matrix*. A transition matrix can be defined easily with `heemod` with the `define_matrix` function. If we consider the previous example, where cell values have been replaced by actual probabilities:
+
+|       | A | B |
+|-------|---|---|
+| **A** | 0.9 | 0.1 |
+| **B** | 0.2 | 0.8 |
+
+It can be declared with the following command:
+
+```{r}
+mat_trans <- define_matrix(
+  .9, .1,
+  .2, .8
+)
+mat_trans
+```
+
+
+# Attach values to states
+
+# Combine information in a model
+
+# Run a model

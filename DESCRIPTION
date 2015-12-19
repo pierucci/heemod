@@ -9,5 +9,6 @@ Depends: R (>= 3.2.2)
 Imports: lazyeval, dplyr, purrr
 License: GPL (>= 3) + file LICENSE
 LazyData: true
+VignetteBuilder: knitr
 RoxygenNote: 5.0.1
 Suggests: testthat

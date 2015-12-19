@@ -1,4 +1,5 @@
 #' @importFrom dplyr filter
+#' @importFrom dplyr filter_
 #' @importFrom dplyr mutate
 #' @importFrom dplyr mutate_
 #' @importFrom dplyr do
