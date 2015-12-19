@@ -1,4 +1,4 @@
-`heemod` is a toolset for health ecomomic evaluation modelling. It aims to provide a simple and consistent interface for Markov models specification and comparison. Non homogenous Markov models (with time varying properties) are supported.
+`heemod` is a toolset for health ecomomic evaluation modelling. It aims to provide a simple and consistent interface for Markov models specification and comparison. Non-homogenous Markov models (with time varying properties) are supported.
 
 Most of the analyses presented in [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do) can be performed with `heemod`.
 
@@ -12,7 +12,7 @@ You can install:
 install.packages("heemod")
 ```
 
-  * the latest development version from github with (warning: package `devtools` needed):
+  * the latest development version from github (warning: package `devtools` needed) with:
 
 ```r
 if (packageVersion("devtools") < 1.6) {
@@ -29,7 +29,7 @@ devtools::install_github("pierucci/heemod")
 
 # Learning heemod
 
-To get started read the intro vignette: `vignette("introduction", package = "dplyr")`.
+To get started read the intro vignette: `vignette("introduction", package = "heemod")`.
 
 Specific analysis examples (mostly inspired from Decision Modelling for Health Economic Evaluation) can be found in the following vignettes:
 
