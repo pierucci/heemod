@@ -1,12 +1,11 @@
-Package: medicoeco
+Package: heemod
 Title: Models for Health Economic Evaluation
 Version: 0.1-1
 Author: Kevin Zarca [aut], Antoine Filipovic-Pierucci [aut,cre]
 Maintainer: Antoine Filipovic-Pierucci <pierucci@gmail.com>
 Description: Health Economic Evalution MODelling (HEEMOD). Markov models (homogenous and non-homogenous)
   for health economic evaluation. Model comparison, sensitivity and probabilistic analysis.
-Depends: 
-    R (>= 3.2.2)
+Depends: R (>= 3.2.2)
 Imports: lazyeval, dplyr, purrr
 License: GPL (>= 3)
 LazyData: true
