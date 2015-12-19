@@ -1,4 +1,4 @@
 library(testthat)
-library(medicoeco)
+library(heemod)
 
-test_check("medicoeco")
+test_check("heemod")
