@@ -23,26 +23,26 @@ devtools::install_github("pierucci/heemod")
 
 # Main features
 
-  * Time-varying transition probabilities ;
-  * Time-varying values attached to states ;
+  * Time-varying transition probabilities.
+  * Time-varying values attached to states.
   * Heterogeneity analysis.
 
 # Learning heemod
 
 To get started read the intro vignette: `vignette("introduction", package = "dplyr")`.
 
-Specific analysis examples (mostly inspired from Decision Modelling for Health Economic Evaluation) can be found in the following vignettes :
+Specific analysis examples (mostly inspired from Decision Modelling for Health Economic Evaluation) can be found in the following vignettes:
 
-  * Homogenous Markov model in `vignette("homogenous", package = "heemod")` ;
-  * Non-homogenous Markov model in `vignette("non-homogenous", package = "heemod")` ;
-  * Heterogeneity analysis in `vignette("heterogeneity", package = "heemod")` ;
-  * Probabilistic incertitude analysis in `vignette("probabilistic", package = "heemod")` ;
+  * Homogenous Markov model in `vignette("homogenous", package = "heemod")`.
+  * Non-homogenous Markov model in `vignette("non-homogenous", package = "heemod")`.
+  * Heterogeneity analysis in `vignette("heterogeneity", package = "heemod")`.
+  * Probabilistic incertitude analysis in `vignette("probabilistic", package = "heemod")`.
   * Model comparison in `vignette("comparison", package = "heemod")`.
 
 # Future developments
 
 In version 1.0 :
 
-  * Probabilistic incertitude analysis ;
-  * Deterministic sensitivity analysis ;
+  * Probabilistic incertitude analysis.
+  * Deterministic sensitivity analysis.
   * Graphical analysis of Markov models.

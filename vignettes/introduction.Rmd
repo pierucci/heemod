@@ -12,40 +12,40 @@ vignette: >
 library(heemod)
 ```
 
-When building a Markov model for health economic evaluation you must :
+When building a Markov model for health economic evaluation the following steps must be performed:
 
-  * Specify transition probabilities between states ;
-  * Specify values attached to states (costs, utilities...) ;
+  * Specify transition probabilities between states.
+  * Specify values attached to states (costs, utilities...).
   * Combine those informations and run the model.
   
-This documents is an introduction to `heemod`'s basic steps to define and run a model. Other vignettes provide more details and examples on specific topics :
+This documents is an introduction to `heemod`'s basic steps to define and run a model. Other vignettes provide more details and examples on specific topics:
 
-  * homogenous: How to specify, run and interpret a simple Markov model with no time-varying element ;
+  * homogenous: How to specify, run and interpret a simple Markov model with no time-varying element.
   * non-homogenous: Example analysis of a more complex Markov model with time-varying transition probabilities.
 
 # Transition probabilities
 
 The probability to change from one state to another during a time period is called a *transition probability*. The time period is called a *cycle*.
 
-Transition proabilities between states can be specified through a 2-way table where the lines correspond the states at the beginning of a cycle and the columns to the states at the end of a cycle. For example consider a model with 2 states `A` and `B` :
+Transition proabilities between states can be specified through a 2-way table where the lines correspond the states at the beginning of a cycle and the columns to the states at the end of a cycle. For example consider a model with 2 states `A` and `B`:
 
 |       | A | B |
 |-------|---|---|
 | **A** | 1 | 2 |
 | **B** | 3 | 4 |
 
-When starting a cycle state `A` (line `A`), the probability to still be in state `A` at the end of the cycle is found in colunm `A` (cell `1`) and the probability to change to state `B` is found in column `B` (cell `2`).
+When starting a cycle in state `A` (line `A`), the probability to still be in state `A` at the end of the cycle is found in colunm `A` (cell `1`) and the probability to change to state `B` is found in column `B` (cell `2`).
 
 Similarly, when starting a cycle from state `B` (line `B`), the probability to be in state `A` or `B` at the end of the cycle are found in cells `3` or `4` respectively.
 
-In the context of Markov models, this 2-way table is called a *transition matrix*. A transition matrix can be defined easily with `heemod` with the `define_matrix` function. If we consider the previous example, where cell values have been replaced by actual probabilities:
+In the context of Markov models, this 2-way table is called a *transition matrix*. A transition matrix can be defined easily in `heemod` with the `define_matrix` function. If we consider the previous example, where cell values have been replaced by actual probabilities:
 
-|       | A | B |
-|-------|---|---|
+|       |  A  |  B  |
+|-------|-----|-----|
 | **A** | 0.9 | 0.1 |
 | **B** | 0.2 | 0.8 |
 
-It can be declared with the following command:
+This transition matrix can be declared with the following command:
 
 ```{r}
 mat_trans <- define_matrix(
@@ -55,9 +55,67 @@ mat_trans <- define_matrix(
 mat_trans
 ```
 
-
 # Attach values to states
+
+In health economic evaluation, values are attached to states. Cost and utility are classical examples of such values. To continue with the previous example, the following values can be attachd to state `A` and `B`:
+
+  * State `A` has a cost of 1234 per cycle and an utility of 0.85.
+  * State `B` has a cost of 4321 per cycle and an utility of 0.50.
+  
+A state and its values can be defined with `define_state`:
+
+```{r}
+state_A <- define_state(
+  cost = 1234,
+  utility = 0.85
+)
+state_A
+
+state_B <- define_state(
+  cost = 4321,
+  utility = 0.50
+)
+state_B
+```
+
+In order to specify that both states belong to the same model they must be combined together with `define_state_list`:
+
+```{r}
+state_list <- define_state_list(
+  state_A,
+  state_B
+)
+state_list
+```
 
 # Combine information in a model
 
+Now that the transition matrix and the state values are defined, we can combine them to create a Markov model with `define_model`:
+
+```{r}
+mod_1 <- define_model(
+  transition_matrix = mat_trans,
+  states = state_list
+)
+mod_1
+```
+
 # Run a model
+
+The model can then be run with `run_model` for a given number of cycles:
+
+```{r}
+res_mod_1 <- run_model(
+  mod_1,
+  cycles = 5
+)
+res_mod_1
+```
+
+The result can be explored with `summary`:
+
+```{r}
+summary(res_mod_1)
+```
+
+By default the model is run for one individual starting in the first state (here state `A`).
