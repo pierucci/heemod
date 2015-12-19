@@ -11,4 +11,4 @@ License: GPL (>= 3) + file LICENSE
 LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
-Suggests: testthat
+Suggests: testthat, knitr
