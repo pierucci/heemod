@@ -64,13 +64,13 @@ code > span.er { color: #ff0000; font-weight: bold; }
 </ul>
 <p>This documents is an introduction to <code>heemod</code>’s basic steps to define and run a model. Other vignettes provide more details and examples on specific topics:</p>
 <ul>
-<li>homogenous: How to specify, run and interpret a simple Markov model with no time-varying element.</li>
-<li>non-homogenous: Example analysis of a more complex Markov model with time-varying transition probabilities.</li>
+<li><code>homogenous</code>: How to specify, run and interpret a simple Markov model with no time-varying element.</li>
+<li><code>non-homogenous</code>: Example analysis of a more complex Markov model with time-varying transition probabilities.</li>
 </ul>
 <div id="transition-probabilities" class="section level1">
 <h1>Transition probabilities</h1>
 <p>The probability to change from one state to another during a time period is called a <em>transition probability</em>. The time period is called a <em>cycle</em>.</p>
-<p>Transition proabilities between states can be specified through a 2-way table where the lines correspond the states at the beginning of a cycle and the columns to the states at the end of a cycle. For example consider a model with 2 states <code>A</code> and <code>B</code>:</p>
+<p>Transition proabilities between states can be specified through a 2-way table where the lines correspond to the states at the beginning of a cycle and the columns to the states at the end of a cycle. For example consider a model with 2 states <code>A</code> and <code>B</code>:</p>
 <table>
 <thead>
 <tr class="header">
@@ -116,7 +116,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 </tr>
 </tbody>
 </table>
-<p>This transition matrix can be declared with the following command:</p>
+<p>This transition matrix can be defined with the following command:</p>
 <pre class="sourceCode r"><code class="sourceCode r">mat_trans &lt;-<span class="st"> </span><span class="kw">define_matrix</span>(
   .<span class="dv">9</span>, .<span class="dv">1</span>,
   .<span class="dv">2</span>, .<span class="dv">8</span>
@@ -175,9 +175,44 @@ state_B</code></pre>
 </div>
 <div id="combine-information-in-a-model" class="section level1">
 <h1>Combine information in a model</h1>
+<p>Now that the transition matrix and the state values are defined, we can combine them to create a Markov model with <code>define_model</code>:</p>
+<pre class="sourceCode r"><code class="sourceCode r">mod_1 &lt;-<span class="st"> </span><span class="kw">define_model</span>(
+  <span class="dt">transition_matrix =</span> mat_trans,
+  <span class="dt">states =</span> state_list
+)
+mod_1</code></pre>
+<pre><code>## An unevaluated Markov model:
+## 
+##     0 parameter,
+##     2 states,
+##     2 state values.</code></pre>
 </div>
 <div id="run-a-model" class="section level1">
 <h1>Run a model</h1>
+<p>The model can then be run with <code>run_model</code> for a given number of cycles:</p>
+<pre class="sourceCode r"><code class="sourceCode r">res_mod_1 &lt;-<span class="st"> </span><span class="kw">run_model</span>(
+  mod_1,
+  <span class="dt">cycles =</span> <span class="dv">5</span>
+)</code></pre>
+<pre><code>## No named model -&gt; generating names.</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">res_mod_1</code></pre>
+<pre><code>## 1 Markov model, run for 5 cycles.
+## 
+## Model names:
+## 
+## A</code></pre>
+<p>The result can be explored with <code>summary</code>:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(res_mod_1)</code></pre>
+<pre><code>## 1 Markov model run for 5 cycles.
+## 
+## Initial states:
+## 
+##   N
+## A 1
+## B 0
+##       cost  utility
+## A 9317.536 3.893137</code></pre>
+<p>By default the model is run for one person starting in the first state (here state <code>A</code>).</p>
 </div>
 
 
