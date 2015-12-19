@@ -1,18 +1,7 @@
----
-title: "Introduction"
-date: "`r Sys.Date()`"
-output:
-  rmarkdown::html_vignette:
-    keep_md: true
-vignette: >
-  %\VignetteIndexEntry{Introduction}
-  %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
----
+# Introduction
+`r Sys.Date()`  
 
-```{r, echo=FALSE, include=FALSE}
-library(heemod)
-```
+
 
 When building a Markov model for health economic evaluation the following steps must be performed:
 
@@ -49,12 +38,21 @@ In the context of Markov models, this 2-way table is called a *transition matrix
 
 This transition matrix can be defined with the following command:
 
-```{r}
+
+```r
 mat_trans <- define_matrix(
   .9, .1,
   .2, .8
 )
 mat_trans
+```
+
+```
+## An unevaluated matrix, 2 states.
+## 
+##   A   B  
+## A 0.9 0.1
+## B 0.2 0.8
 ```
 
 # Attach values to states
@@ -66,13 +64,23 @@ In health economic evaluation, values are attached to states. Cost and utility a
   
 A state and its values can be defined with `define_state`:
 
-```{r}
+
+```r
 state_A <- define_state(
   cost = 1234,
   utility = 0.85
 )
 state_A
+```
 
+```
+## An unevaluated state with 2 values.
+## 
+## cost = 1234
+## utility = 0.85
+```
+
+```r
 state_B <- define_state(
   cost = 4321,
   utility = 0.50
@@ -80,21 +88,51 @@ state_B <- define_state(
 state_B
 ```
 
+```
+## An unevaluated state with 2 values.
+## 
+## cost = 4321
+## utility = 0.5
+```
+
 In order to specify that both states belong to the same model they must be combined together with `define_state_list`:
 
-```{r}
+
+```r
 state_list <- define_state_list(
   state_A,
   state_B
 )
+```
+
+```
+## No named state -> generating names.
+```
+
+```r
 state_list
+```
+
+```
+## A list of 2 unevaluated states with 2 values each.
+## 
+## State names:
+## 
+## A
+## B
+## 
+## State values:
+## 
+## cost
+## utility
 ```
 
 # Combine information in a model
 
 Now that the transition matrix and the state values are defined, we can combine them to create a Markov model with `define_model`:
 
-```{r}
+
+```r
 mod_1 <- define_model(
   transition_matrix = mat_trans,
   states = state_list
@@ -102,22 +140,59 @@ mod_1 <- define_model(
 mod_1
 ```
 
+```
+## An unevaluated Markov model:
+## 
+##     0 parameter,
+##     2 states,
+##     2 state values.
+```
+
 # Run a model
 
 The model can then be run with `run_model` for a given number of cycles:
 
-```{r}
+
+```r
 res_mod_1 <- run_model(
   mod_1,
   cycles = 5
 )
+```
+
+```
+## No named model -> generating names.
+```
+
+```r
 res_mod_1
+```
+
+```
+## 1 Markov model, run for 5 cycles.
+## 
+## Model names:
+## 
+## A
 ```
 
 The result can be explored with `summary`:
 
-```{r}
+
+```r
 summary(res_mod_1)
+```
+
+```
+## 1 Markov model run for 5 cycles.
+## 
+## Initial states:
+## 
+##   N
+## A 1
+## B 0
+##       cost  utility
+## A 9317.536 3.893137
 ```
 
 By default the model is run for one person starting in the first state (here state `A`).
