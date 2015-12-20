@@ -5,11 +5,13 @@
 \alias{run_models}
 \title{Run one or more Markov Model}
 \usage{
-run_models(..., init = c(1, rep(0,
+run_models(..., init = c(1L, rep(0L,
   get_state_number(get_states(list(...)[[1]])) - 1)), cycles = 1,
   count_args = NULL, newdata = NULL)
 
-run_model(..., init, cycles = 1, count_args = NULL, newdata = NULL)
+run_model(..., init = c(1L, rep(0L,
+  get_state_number(get_states(list(...)[[1]])) - 1)), cycles = 1,
+  count_args = NULL, newdata = NULL)
 }
 \arguments{
 \item{...}{One or more \code{uneval_model} object.}

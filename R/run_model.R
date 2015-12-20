@@ -88,12 +88,16 @@
 #' )
 #' 
 run_models <- function(...,
-                       init = c(1, rep(0, get_state_number(get_states(list(...)[[1]])) - 1)),
+                       init = c(1L, rep(0L, get_state_number(get_states(list(...)[[1]])) - 1)),
                        cycles = 1,
                        count_args = NULL,
                        newdata = NULL) {
-  
   list_models <- list(...)
+  
+  stopifnot(
+    all(unlist(lapply(list_models,
+                      function(x) "uneval_model" %in% class(x))))
+  )
   
   model_names <- names(list_models)
   
@@ -116,11 +120,7 @@ run_models <- function(...,
     list_all_same(lapply(list_models,
                          function(x) sort(get_state_value_names(x))))
   )
-  
-  if (missing(init)) {
-    init<- c(1, rep(0, get_state_number(get_states(list_models[[1]])) - 1))
-  }
-  
+
   stopifnot(
     length(init) == get_state_number(list_models[[1]]),
     all(init >= 0)
@@ -151,15 +151,7 @@ run_models <- function(...,
 
 #' @export
 #' @rdname run_models
-run_model <- function(...,
-                      init,
-                      cycles = 1,
-                      count_args = NULL,
-                      newdata = NULL) {
-  run_models(..., init = init, cycles = cycles, 
-             count_args = count_args,
-             newdata = newdata)
-}
+run_model <- run_models
 
 #' @export
 print.eval_model_list <- function(x, ...) {
