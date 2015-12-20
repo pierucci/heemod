@@ -27,24 +27,24 @@ This example is an implementation of the assessment of a new total hip replaceme
 
 This model has 5 states:
 
-  * Primary THR: individuals receiving either the standard or the new THR, outcomes are either succes of primary THR or death;
-  * Success of primary THR: after receiving primary THR if the surgery is successfull;
-  * Revision of primary THR: individuals whose primary THR failed, outcomes are either succes of revision THR or death;
-  * Suddess of primary THR: after receiving revision THR if the surgery is successfull;
-  * Death, either cause by THR or another cause.
+  * Primary THR: starting state, individuals receive either the standard or the new THR, outcomes are either succes of primary THR or death (operative mortality rate of primary THR `omrPTHR`);
+  * Success of primary THR: state after receiving primary THR if the surgery is successfull, individuals can stay in this state, need a THR revision, or die;
+  * Revision of primary THR: for individuals whose primary THR failed, outcomes are either success of revision THR or death (operative mortality rate of revision THR `omrRTHR`);
+  * Success of revision THR: state after receiving revision THR if the surgery is successfull, individuals can stay in this state, need a THR re-revision, or die;
+  * Death, either caused by THR or another cause.
   
 Two transition probabilities are time-varying in this model:
 
   * Probability of death by another cause increases with age;
   * Probability of primary THR revision increases with time.
   
-Other-cause death probabilities vary with age and gender with the following values:
+Other-cause death probabilities (mortality rate `mr`) vary with age and gender with the following values:
 
 ```{r}
 death_prob <- data.frame(
   age = rep(seq(35, 85, 10), each = 2),
-  gender = rep(0:1, 6),
-  prob = c(
+  sex = rep(0:1, 6),
+  mr = c(
     1.51e-3, .99e-3, 3.93e-3,
     2.6e-3, 10.9e-3, 6.7e-3,
     31.6e-3, 19.3e-3, 80.1e-3,
@@ -66,11 +66,45 @@ $$
 \lambda = exp(cons + ageC \times age + maleC \times sex)
 $$
 
-Where $age$ and $sex$ are individual characteristics, $cons = -5.49094$, $ageC = -0.0367$ and $maleC = 0.768536$.
+Where `age` and `sex` (female = 0, male = 1) are individual characteristics, `cons` = -5.49094, `ageC` = -0.0367 and `maleC` = 0.768536.
+
+Revision THR re-revision (`rrr`) probability is set to be constant at 0.04 per year.
 
 # Defining parameters
 
-The key element to specify time-varying elements in `heemod` is through the use of a package-defined variable, `markov_model`. This variable takes increasing values with each cycles, starting from 0. For example the age of individuals can be defined as `Initial age + markov_cycle`.
+The key element to specify time-varying elements in `heemod` is through the use of a package-defined variable, `markov_model`. This variable takes increasing values with each cycles, starting from 1. For example the age of individuals at any moment can be defined as `Initial age + markov_cycle`.
 
-In order to define this more complex Markov model, parameters need to be defined through `define_parameters`.
+In order to build this more complex Markov model, parameters need to be defined through `define_parameters`. The equations decribed in the previous section can be simply written, here for a female population (`sex` = 0) starting at 60 years old (`age_init` = 60):
+
+```{r}
+# a function to return mr, given age and sex
+mr_func <- function(age, sex)
+  merge(data.frame(age = floor(age/10-.5)*10+5, sex = sex), death_prob)$mr
+
+param_thr <- define_parameters(
+    t = markov_cycle,
+    
+    age_init = 60,
+    sex = 0,
+    age = age_init + t,
+    
+    omrPTHR = .02,
+    omrRTHR = .02,
+    rrr = .04,
+    
+    cons = -5.49094,
+    ageC = -.0367,
+    maleC = .768536,
+    lambda = exp(cons+ageC*age_init+maleC*sex),
+    gamma = 1.45367786,
+    
+    # rrNP1 = .260677,
+    
+    standardRR = 1 - exp(lambda*((t-1)^gamma-t^gamma)),
+    
+    mr = mr_func(age_cat, sex)
+)
+param_thr
+```
+
 
