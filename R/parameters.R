@@ -141,7 +141,7 @@ eval_parameters <- function(x, cycles = 1) {
   # other datastructure?
   res <- mutate_(
     data.frame(
-      markov_cycle = seq(from = 0, to = cycles - 1)
+      markov_cycle = seq_len(cycles)
     ),
     .dots = x
   )
