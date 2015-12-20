@@ -48,7 +48,7 @@ mat_mono
 
 The combined therapy group has its transition probabilities multiplied by `rr`, the relative risk of event for the population treated by combined therapy. Since $rr < 1$, the combined therapy group has less chance to transition to worst health states.
 
-The probabilities to stay in the same state are equal to $1 - \sum p_{t}$ where $p_{t}$ are the probabilities to change state (since all transition probabilities from a given state must sum to 1).
+The probabilities to stay in the same state are equal to $1 - \sum p_{trans}$ where $p_{trans}$ are the probabilities to change to another state (because all transition probabilities from a given state must sum to 1).
 
 
 ```r
@@ -89,9 +89,9 @@ cost_zido <- 2278
 cost_lami <- 2086
 ```
 
-In addition to drugs costs (called `cost_drugs` in the model), each state is associated to healthcare costs (called `cost_health`). Cost are discounted at a rate of 6% with the `discount` function.
+In addition to drugs costs (called `cost_drugs` in the model), each state is associated to healthcare costs (called `cost_health`). Cost are discounted at a 6% rate with the `discount` function.
 
-Efficacy in this study is measured in terms of life expectancy (called `life_year` in the model). Each state thus has a value of 1 life year per year, except death who has a value of 0. Life-years are not discounted.
+Efficacy in this study is measured in terms of life expectancy (called `life_year` in the model). Each state thus has a value of 1 life year per year, except death who has a value of 0. Life-years are not discounted in this example.
 
 For example state A can be defined with `define_state`:
 
@@ -143,7 +143,7 @@ D_mono <-
   )
 ```
 
-Similarly, for the the combined therapy treatment group, only `cost_drug` diffesr from the monotherapy treatment group:
+Similarly, for the the combined therapy treatment group, only `cost_drug` differs from the monotherapy treatment group:
 
 
 ```r
@@ -237,7 +237,7 @@ states_comb <-
 
 # Model definition
 
-Models can now be defined by combining a transition matrix and a state list:
+Models can now be defined by combining a transition matrix and a state list with `define_model`:
 
 
 ```r
@@ -303,3 +303,10 @@ summary(res_mod)
 ## comb    89433.47   43596.75   81026.56 13.864239
 ```
 
+The incremental cost-effectiveness ratio of the combiend therapy strategy is thus:
+
+$$
+\frac{81026.56 - 44613.85}{13.864239 - 7.979173} = 6187.307
+$$
+
+6187GBP per life-year gained.

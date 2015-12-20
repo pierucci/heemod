@@ -1,11 +1,76 @@
 ---
-title: "Time-varying Markov models"
+title: "Time-varying Markov models (non-homogenous)"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Time-varying Markov models}
+  %\VignetteIndexEntry{Time-varying Markov models (non-homogenous)}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
 
-Soon!
+```{r, echo=FALSE, include=FALSE}
+library(heemod)
+```
+
+With more complex Markov models in health economic evaluation, transition probabilities between states can vary with time. Those are called *non-homogenous* or *time-inhomogenous* Markov models. A further distinction can be made:
+
+  1. transition probabilities depend on how long __the entire model__ has been running (model-time varying): this situation can be modelled with a non-homogenous Markov model;
+  2. transition probabilities depend on how long __an individual__ has been in a state (individual-time varying): this situation usually needs to be modelled with a microsimulation.
+
+However in some special cases non-homogenous Markov models can be used in situation 2. This is when the state having individual-time varying transition probabilities is the starting state __and__ it is not possible to go back to that state after having left it. In this situation individual-time is equivalent to model-time. This is the case for this example.
+
+If you are not familiar with `heemod`, first consult the [introduction vignette](https://cran.r-project.org/web/packages/heemod/vignettes/introduction.html).
+
+# Model description
+
+This example is an implementation of the assessment of a new total hip replacement (THR) technology described in chapter 3.5 of [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do). A more detailed report is available [at this location](https://www.york.ac.uk/media/che/documents/papers/technicalpapers/CHE%20Technical%20Paper%2028.pdf), event though this reports goes a bit further in the analysis.
+
+This model has 5 states:
+
+  * Primary THR: individuals receiving either the standard or the new THR, outcomes are either succes of primary THR or death;
+  * Success of primary THR: after receiving primary THR if the surgery is successfull;
+  * Revision of primary THR: individuals whose primary THR failed, outcomes are either succes of revision THR or death;
+  * Suddess of primary THR: after receiving revision THR if the surgery is successfull;
+  * Death, either cause by THR or another cause.
+  
+Two transition probabilities are time-varying in this model:
+
+  * Probability of death by another cause increases with age;
+  * Probability of primary THR revision increases with time.
+  
+Other-cause death probabilities vary with age and gender with the following values:
+
+```{r}
+death_prob <- data.frame(
+  age = rep(seq(35, 85, 10), each = 2),
+  gender = rep(0:1, 6),
+  prob = c(
+    1.51e-3, .99e-3, 3.93e-3,
+    2.6e-3, 10.9e-3, 6.7e-3,
+    31.6e-3, 19.3e-3, 80.1e-3,
+    53.5e-3, 187.9e-3, 154.8e-3
+  )
+)
+death_prob
+```
+
+Primary THR revision probability increases with time with the following formula (a Weibull distribution):
+
+$$
+P_{revision} = 1 - \exp(\lambda \times ((t-1)^\gamma-t^\gamma))
+$$
+
+Where $t$ is the time since revision, $\gamma = 1.45367786$ and:
+
+$$
+\lambda = exp(cons + ageC \times age + maleC \times sex)
+$$
+
+Where $age$ and $sex$ are individual characteristics, $cons = -5.49094$, $ageC = -0.0367$ and $maleC = 0.768536$.
+
+# Defining parameters
+
+The key element to specify time-varying elements in `heemod` is through the use of a package-defined variable, `markov_model`. This variable takes increasing values with each cycles, starting from 0. For example the age of individuals can be defined as `Initial age + markov_cycle`.
+
+In order to define this more complex Markov model, parameters need to be defined through `define_parameters`.
+
