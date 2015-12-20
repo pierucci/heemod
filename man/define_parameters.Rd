@@ -10,10 +10,11 @@ define_parameters(...)
 \method{modify}{uneval_parameters}(.OBJECT, ..., BEFORE)
 }
 \arguments{
-\item{...}{Name-value pairs of expressions definig
+\item{...}{Name-value pairs of expressions definig 
 parameters.}
 
-\item{.OBJECT}{An object of class \code{uneval_parameters}.}
+\item{.OBJECT}{An object of class
+\code{uneval_parameters}.}
 
 \item{BEFORE}{character, length 1. Name of parameters 
 before which new parameters are to be added.}
@@ -38,9 +39,9 @@ instead be stated relatively to \code{markov_cycle}
 cycles). Alternatively, \code{dplyr} functions such as 
 \code{n()} or \code{row_numbers()} can be used.
 
-This function relies heavily on the \code{dplyr} and 
-\code{lazy_eval} packages. Parameter definitions should 
-thus mimic the use of functions such as \code{mutate}.
+This function relies heavily on the \code{dplyr} package.
+Parameter definitions should thus mimic the use of
+functions such as \code{mutate}.
 
 Variable names are searched first in the parameter 
 definition (only parameters defined earlier are visible) 

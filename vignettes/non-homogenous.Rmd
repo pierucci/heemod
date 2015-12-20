@@ -12,12 +12,12 @@ vignette: >
 library(heemod)
 ```
 
-With more complex Markov models in health economic evaluation, transition probabilities between states can vary with time. Those are called *non-homogenous* or *time-inhomogenous* Markov models. A further distinction can be made:
+In more complex Markov models in health economic evaluation transition probabilities between states can vary with time. These models are called *non-homogenous* or *time-inhomogenous* Markov models. A further distinction can be made depending on whether:
 
-  1. transition probabilities depend on how long __the entire model__ has been running (model-time varying): this situation can be modelled with a non-homogenous Markov model;
-  2. transition probabilities depend on how long __an individual__ has been in a state (individual-time varying): this situation usually needs to be modelled with a microsimulation.
+  1. transition probabilities depend on how long __the entire model__ has been running (model-time variation): this situation can be modelled with a non-homogenous Markov model;
+  2. transition probabilities depend on how long __an individual__ has been in a state (individual-time variation): this situation usually needs to be modelled with a microsimulation.
 
-However in some special cases non-homogenous Markov models can be used in situation 2. This is when the state having individual-time varying transition probabilities is the starting state __and__ it is not possible to go back to that state after having left it. In this situation individual-time is equivalent to model-time. This is the case for this example.
+However in some special cases non-homogenous Markov models can be used in situation 2, when the state with transition probabilities depending on individual-time is the starting state __and__ it is not possible to go back to that state after having left it. In this situation individual-time is equivalent to model-time. This is the case in the following example.
 
 If you are not familiar with `heemod`, first consult the [introduction vignette](https://cran.r-project.org/web/packages/heemod/vignettes/introduction.html).
 
@@ -27,11 +27,11 @@ This example is an implementation of the assessment of a new total hip replaceme
 
 This model has 5 states:
 
-  * Primary THR: starting state, individuals receive either the standard or the new THR, outcomes are either succes of primary THR or death (operative mortality rate of primary THR `omrPTHR`);
-  * Success of primary THR: state after receiving primary THR if the surgery is successfull, individuals can stay in this state, need a THR revision, or die;
-  * Revision of primary THR: for individuals whose primary THR failed, outcomes are either success of revision THR or death (operative mortality rate of revision THR `omrRTHR`);
-  * Success of revision THR: state after receiving revision THR if the surgery is successfull, individuals can stay in this state, need a THR re-revision, or die;
-  * Death, either caused by THR or another cause.
+  * Primary THR: starting state, individuals receive either the standard or the new THR (called NP1), outcomes are either success of primary THR or death (the operative mortality rate of primary THR will be called `omrPTHR`);
+  * Success of primary THR: state after receiving primary THR if the surgery is successfull, individuals can stay in this state, need a THR revision, or die of other causes;
+  * Revision of primary THR: for individuals whose primary THR needed revision, outcomes are either success of revision THR or death (the operative mortality rate of revision THR will be called `omrRTHR`);
+  * Success of revision THR: state after receiving revision THR if the surgery is successfull, individuals can stay in this state, need a THR re-revision, or die of other causes;
+  * Death (either caused by THR or another cause).
   
 Two transition probabilities are time-varying in this model:
 
@@ -68,20 +68,28 @@ $$
 
 Where `age` and `sex` (female = 0, male = 1) are individual characteristics, `cons` = -5.49094, `ageC` = -0.0367 and `maleC` = 0.768536.
 
+For the NP1 procedure the revision probability is modified by the relative risk `rrNP1` = 0.260677.
+
+$$
+P_{revision} = 1 - \exp(\lambda \times rrNP1 \times ((t-1)^\gamma-t^\gamma))
+$$
+
 Revision THR re-revision (`rrr`) probability is set to be constant at 0.04 per year.
 
-# Defining parameters
+# Parameters definition
 
 The key element to specify time-varying elements in `heemod` is through the use of a package-defined variable, `markov_model`. This variable takes increasing values with each cycles, starting from 1. For example the age of individuals at any moment can be defined as `Initial age + markov_cycle`.
 
-In order to build this more complex Markov model, parameters need to be defined through `define_parameters`. The equations decribed in the previous section can be simply written, here for a female population (`sex` = 0) starting at 60 years old (`age_init` = 60):
+In order to build this more complex Markov model, parameters need to be defined through `define_parameters`. The equations decribed in the previous section can be written easily, here for a female population (`sex` = 0) starting at 60 years old (`age_init` = 60):
 
 ```{r}
 # a function to return mr, given age and sex
-mr_func <- function(age, sex)
-  merge(data.frame(age = floor(age/10-.5)*10+5, sex = sex), death_prob)$mr
-
-param_thr <- define_parameters(
+mr_func <- function(age, sex) {
+  age  <- floor(age/10-.5)*10+5
+  age <- ifelse(age > 85, 85, age)
+  merge(data.frame(age = age, sex = sex), death_prob)$mr
+}
+param_standard <- define_parameters(
     t = markov_cycle,
     
     age_init = 60,
@@ -98,13 +106,119 @@ param_thr <- define_parameters(
     lambda = exp(cons+ageC*age_init+maleC*sex),
     gamma = 1.45367786,
     
-    # rrNP1 = .260677,
+    rrNP1 = .260677,
     
     standardRR = 1 - exp(lambda*((t-1)^gamma-t^gamma)),
     
-    mr = mr_func(age_cat, sex)
+    mr = mr_func(age, sex)
 )
-param_thr
+param_standard
 ```
 
+The parameters for the NP1 group are almost the same as for the standard group, with the exception of the primary THR revision probability formula. Parameters can by modified through the function `modify`:
 
+```{r}
+param_np1 <- modify(
+  param_standard,
+  standardRR = 1 - exp(lambda*rrNP1*((t-1)^gamma-t^gamma))
+)
+param_np1
+```
+
+# Transition matrix definition
+
+Now that parameters are defined, the probability transitions can be easily written:
+
+```{r}
+mat_trans <- define_matrix(
+    state_names = c(
+      "PrimaryTHR",
+      "SuccessP",
+      "RevisionTHR",
+      "SuccessR",
+      "Death"
+    ),
+    0, 1-omrPTHR,         0,          0,          omrPTHR,
+    0, 1-(standardRR+mr), standardRR, 0,          mr,
+    0, 0,                 0, 1-(omrRTHR+mr), omrRTHR+mr,
+    0, 0,                 rrr,        1-(mr+rrr), mr,
+    0, 0,                 0,          0,          1
+)
+mat_trans
+```
+
+# State definition
+
+Utilities and costs are then associated to states. In this model costs are discounted at a rate of 6% and utilities at a rate of 1.5%.
+
+```{r}
+state_list <- define_state_list(
+    PrimaryTHR = define_state(
+      utility = 0,
+      cost = 0
+    ),
+    SuccessP = define_state(
+      utility = discount(.85, .015),
+      cost = 0
+    ),
+    RevisionTHR = define_state(
+      utility = discount(.30, .015),
+      cost = discount(5294, .06)
+    ),
+    SuccessR = define_state(
+      utility = discount(.75, .015),
+      cost = 0
+    ),
+    Death = define_state(
+      utility = 0,
+      cost = 0
+    )
+  )
+state_list
+```
+
+# Model definition
+
+Now that parameters, transition matrix and states are defined we can define the models for the control group and the NP1 treatment:
+
+```{r}
+mod_standard <- define_model(
+  parameters = param_standard,
+  transition_matrix = mat_trans,
+  states = state_list
+)
+mod_standard
+
+mod_np1 <- define_model(
+  parameters = param_np1,
+  transition_matrix = mat_trans,
+  states = state_list
+)
+```
+
+# Analyse models
+
+Both models can now be run for 60 years, for 1 person starting in `PrimaryTHR`:
+
+```{r}
+res_mod <- run_models(
+  standard = mod_standard,
+  np1 = mod_np1,
+  cycles = 60
+)
+res_mod
+```
+
+A comparison of both models can be done with `summary`:
+
+```{r}
+summary(res_mod)
+```
+
+Since standard treatment costs 394 and NP1 costs 579, the ICER for a population of women aged 60 can be calculated with the following formula:
+
+$$
+\frac{(58.90 + 579) - (221.96 + 394)}{14.72 - 14.68} = 548.5
+$$
+
+The new treatment costs 548.5 GBP per QALY gained.

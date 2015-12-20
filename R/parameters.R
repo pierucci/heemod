@@ -14,9 +14,9 @@
 #' cycles). Alternatively, \code{dplyr} functions such as 
 #' \code{n()} or \code{row_numbers()} can be used.
 #' 
-#' This function relies heavily on the \code{dplyr} and 
-#' \code{lazy_eval} packages. Parameter definitions should 
-#' thus mimic the use of functions such as \code{mutate}.
+#' This function relies heavily on the \code{dplyr} package.
+#' Parameter definitions should thus mimic the use of
+#' functions such as \code{mutate}.
 #' 
 #' Variable names are searched first in the parameter 
 #' definition (only parameters defined earlier are visible) 
@@ -29,9 +29,10 @@
 #' matters since only parameters defined earlier can be 
 #' referenced in later expressions.
 #' 
-#' @param ... Name-value pairs of expressions definig
+#' @param ... Name-value pairs of expressions definig 
 #'   parameters.
-#' @param .OBJECT An object of class \code{uneval_parameters}.
+#' @param .OBJECT An object of class
+#'   \code{uneval_parameters}.
 #' @param BEFORE character, length 1. Name of parameters 
 #'   before which new parameters are to be added.
 #'   
