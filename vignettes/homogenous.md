@@ -1,18 +1,7 @@
----
-title: "Simple Markov models (homogenous)"
-date: "`r Sys.Date()`"
-output:
-  rmarkdown::html_vignette:
-    keep_md: true
-vignette: >
-  %\VignetteIndexEntry{Simple Markov models (homogenous)}
-  %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
----
+# Simple Markov models (homogenous)
+`r Sys.Date()`  
 
-```{r, echo=FALSE, include=FALSE}
-library(heemod)
-```
+
 
 The most simple Markov models in health economic evaluation are models were transition probabilities between states do not change with time. Those are called *homogenous* or *time-homogenous* Markov models.
 
@@ -35,7 +24,8 @@ Four states are described, from best to worst healtwise:
 
 Transition probabilities for the monotherapy study group are rather simple to implement:
 
-```{r}
+
+```r
 mat_mono <-
   define_matrix(
     .721, .202, .067, .010,
@@ -46,11 +36,22 @@ mat_mono <-
 mat_mono
 ```
 
+```
+## An unevaluated matrix, 4 states.
+## 
+##   A     B     C     D    
+## A 0.721 0.202 0.067 0.01 
+## B 0     0.581 0.407 0.012
+## C 0     0     0.75  0.25 
+## D 0     0     0     1
+```
+
 The combined therapy group has its transition probabilities multiplied by `rr`, the relative risk of event for the population treated by combined therapy. Since $rr < 1$, the combined therapy group has less chance to transition to worst health states.
 
 The probabilities to stay in the same state are equal to $1 - \sum p_{t}$ where $p_{t}$ are the probabilities to change state (since all transition probabilities from a given state must sum to 1).
 
-```{r}
+
+```r
 rr <- .509
 
 mat_comb <-
@@ -63,11 +64,27 @@ mat_comb <-
 mat_comb
 ```
 
+```
+## An unevaluated matrix, 4 states.
+## 
+##   A                                         B                            
+## A 1 - (0.202 * rr + 0.067 * rr + 0.01 * rr) 0.202 * rr                   
+## B 0                                         1 - (0.407 * rr + 0.012 * rr)
+## C 0                                         0                            
+## D 0                                         0                            
+##   C             D         
+## A 0.067 * rr    0.01 * rr 
+## B 0.407 * rr    0.012 * rr
+## C 1 - 0.25 * rr 0.25 * rr 
+## D 0             1
+```
+
 # State values
 
 The costs of lamivudine and zidovudine are defined:
 
-```{r}
+
+```r
 cost_zido <- 2278
 cost_lami <- 2086
 ```
@@ -78,7 +95,8 @@ Efficacy in this study is measured in terms of life expectancy (called `life_yea
 
 For example state A can be defined with `define_state`:
 
-```{r}
+
+```r
 A_mono <-
   define_state(
     cost_health = 2756,
@@ -89,9 +107,19 @@ A_mono <-
 A_mono
 ```
 
+```
+## An unevaluated state with 4 values.
+## 
+## cost_health = 2756
+## cost_drugs = cost_zido
+## cost_total = discount(cost_health + cost_drugs, 0.06)
+## life_year = 1
+```
+
 The other states for the monotherapy treatment group can be specified in the same way:
 
-```{r}
+
+```r
 B_mono <-
   define_state(
     cost_health = 3052,
@@ -117,7 +145,8 @@ D_mono <-
 
 Similarly, for the the combined therapy treatment group, only `cost_drug` diffesr from the monotherapy treatment group:
 
-```{r}
+
+```r
 A_comb <-
   define_state(
     cost_health = 3052,
@@ -152,7 +181,8 @@ D_comb <-
 
 All states from a treatment group must be combined in a state list with `define_state_list`:
 
-```{r}
+
+```r
 states_mono <-
   define_state_list(
     A_mono,
@@ -160,13 +190,38 @@ states_mono <-
     C_mono,
     D_mono
   )
+```
+
+```
+## No named state -> generating names.
+```
+
+```r
 states_mono
+```
+
+```
+## A list of 4 unevaluated states with 4 values each.
+## 
+## State names:
+## 
+## A
+## B
+## C
+## D
+## 
+## State values:
+## 
+## cost_health
+## cost_drugs
+## cost_total
+## life_year
 ```
 
 Similarly for combined therapy:
 
-```{r}
 
+```r
 states_comb <-
   define_state_list(
     A_comb,
@@ -176,11 +231,16 @@ states_comb <-
   )
 ```
 
+```
+## No named state -> generating names.
+```
+
 # Model definition
 
 Models can now be defined by combining a transition matrix and a state list:
 
-```{r}
+
+```r
 mod_mono <- define_model(
   transition_matrix = mat_mono,
   states = states_mono
@@ -188,9 +248,18 @@ mod_mono <- define_model(
 mod_mono
 ```
 
+```
+## An unevaluated Markov model:
+## 
+##     0 parameter,
+##     4 states,
+##     4 state values.
+```
+
 For the combined therapy model:
 
-```{r}
+
+```r
 mod_comb <- define_model(
   transition_matrix = mat_comb,
   states = states_comb
@@ -201,7 +270,8 @@ mod_comb <- define_model(
 
 Both models can then be run for 20 years with `run_model`. Models are given simple names (`mono` and `comb`) in order to facilitate result interpretation:
 
-```{r}
+
+```r
 res_mod <- run_models(
   mono = mod_mono,
   comb = mod_comb,
@@ -213,7 +283,23 @@ By default models are run for one person starting in the first state (here state
 
 Model values can then be compared with `summary`:
 
-```{r}
+
+```r
 summary(res_mod)
+```
+
+```
+## 2 Markov models run for 20 cycles.
+## 
+## Initial states:
+## 
+##   N
+## A 1
+## B 0
+## C 0
+## D 0
+##      cost_health cost_drugs cost_total life_year
+## mono    45479.45   18176.56   44613.85  7.979173
+## comb    89433.47   43596.75   81026.56 13.864239
 ```
 
