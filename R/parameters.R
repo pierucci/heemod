@@ -129,12 +129,15 @@ define_parameters <- function(...) {
 #'   and one row per cycle).
 #' 
 #' @examples
+#' 
+#' \dontrun{
 #' param <- define_parameters(
 #'   age_start = 60,
 #'   age = age_start + markov_cycle
 #' )
 #' 
 #' eval_parameters(param, cycles = 15)
+#' }
 #' 
 eval_parameters <- function(x, cycles = 1) {
   # other datastructure?

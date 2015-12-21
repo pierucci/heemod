@@ -21,12 +21,15 @@ Evaluate parameters specified through
 \code{define_parameters}, for a given number of cycles.
 }
 \examples{
+
+\dontrun{
 param <- define_parameters(
   age_start = 60,
   age = age_start + markov_cycle
 )
 
 eval_parameters(param, cycles = 15)
+}
 
 }
 

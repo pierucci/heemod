@@ -38,6 +38,7 @@ in each state, per cycle.
 }
 \examples{
 
+\dontrun{
 param <- define_parameters(
   a = markov_cycle + 1 * 2
 )
@@ -63,6 +64,7 @@ eval_model(
   init = c(10, 5),
   cycles = 5
 )
+}
 
 }
 

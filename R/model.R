@@ -178,6 +178,7 @@ get_counts.eval_model <- function(x){
 #' 
 #' @examples
 #' 
+#' \dontrun{
 #' param <- define_parameters(
 #'   a = markov_cycle + 1 * 2
 #' )
@@ -203,6 +204,7 @@ get_counts.eval_model <- function(x){
 #'   init = c(10, 5),
 #'   cycles = 5
 #' )
+#' }
 #' 
 eval_model <- function(
   model,
