@@ -11,4 +11,7 @@
 #' @importFrom lazyeval lazy
 #' @importFrom lazyeval lazy_dots
 #' @importFrom lazyeval lazy_eval
+#' 
+#' @importFrom utils head
+#' @importFrom utils modifyList
 NULL
