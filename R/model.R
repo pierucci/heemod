@@ -112,7 +112,6 @@ get_parameters <- function(x){
   UseMethod("get_parameters")
 }
 
-#' @export
 get_parameters.default <- function(x){
   x$parameters
 }
@@ -132,7 +131,6 @@ get_matrix <- function(x){
   UseMethod("get_matrix")
 }
 
-#' @export
 get_matrix.default <- function(x){
   x$transition_matrix
 }
@@ -141,7 +139,6 @@ get_states <- function(x){
   UseMethod("get_states")
 }
 
-#' @export
 get_states.default <- function(x){
   x$states
 }
@@ -150,7 +147,6 @@ get_counts <- function(x){
   UseMethod("get_counts")
 }
 
-#' @export
 get_counts.eval_model <- function(x){
   x$counts
 }
@@ -179,7 +175,6 @@ get_counts.eval_model <- function(x){
 #' @return An \code{eval_model} object (actually a list of 
 #'   evaluated parameters, matrix, states and cycles 
 #'   counts).
-#' @export
 #' 
 #' @examples
 #' 
@@ -368,13 +363,10 @@ compute_values <- function(states, counts) {
   res
 }
 
-
-#' @export
 get_state_value_names.uneval_model <- function(x) {
   get_state_value_names(get_states(x))
 }
 
-#' @export
 get_state_names.uneval_model <- function(x, ...) {
   get_state_names(get_states(x))
 }

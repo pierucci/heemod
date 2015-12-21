@@ -3,7 +3,7 @@
 \name{define_state_list}
 \alias{define_state_list}
 \alias{modify.uneval_state_list}
-\title{Define Markov Model States}
+\title{Define Markov Model State List}
 \usage{
 define_state_list(...)
 

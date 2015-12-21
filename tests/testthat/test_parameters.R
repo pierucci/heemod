@@ -94,9 +94,9 @@ Source: local data frame [10 x 3]
 
    markov_cycle     a     b
           (int) (dbl) (dbl)
-1             0     2     0
-2             1     2     2
-3             2     2     4",
+1             1     2     2
+2             2     2     4
+3             3     2     6",
       fixed = TRUE
     )
     expect_output(

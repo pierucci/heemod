@@ -155,12 +155,10 @@ eval_matrix <- function(x, parameters) {
             state_names = get_state_names(x))
 }
 
-#' @export
 get_state_names.uneval_matrix <- function(x, ...){
   attr(x, "state_names")
 }
 
-#' @export
 get_state_names.eval_matrix <- function(x, ...){
   attr(x, "state_names")
 }
@@ -179,12 +177,10 @@ get_matrix_order <- function(x){
   UseMethod("get_matrix_order")
 }
 
-#' @export
 get_matrix_order.uneval_matrix <- function(x){
   sqrt(length(x))
 }
 
-#' @export
 get_matrix_order.eval_matrix <- function(x){
   ncol(x[[1]])
 }

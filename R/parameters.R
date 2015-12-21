@@ -128,8 +128,6 @@ define_parameters <- function(...) {
 #'   (actually a data.frame with one column per parameter
 #'   and one row per cycle).
 #' 
-#' @export
-#' 
 #' @examples
 #' param <- define_parameters(
 #'   age_start = 60,
@@ -162,7 +160,6 @@ eval_parameters <- function(x, cycles = 1) {
 #'   \code{eval_parameters} object.
 #'   
 #' @return A character vector of parameter names.
-#' @export
 #' 
 get_parameter_names <- function(x) {
   names(x)[names(x) != "markov_cycle"]

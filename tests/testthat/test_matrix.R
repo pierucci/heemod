@@ -100,7 +100,7 @@ test_that(
       )
     )
     expect_equal(
-      get_matrix_order(mat1),
+      heemod:::get_matrix_order(mat1),
       2
     )
     expect_equal(

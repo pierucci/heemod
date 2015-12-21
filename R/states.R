@@ -117,7 +117,7 @@ print.state <- function(x, ...) {
 }
 
 
-#' Define Markov Model States
+#' Define Markov Model State List
 #' 
 #' Define the states of a Markov model by combining 
 #' \code{state} objects.
@@ -249,7 +249,6 @@ check_states <- function(x){
 #' @return An \code{eval_states} object, a list with one
 #'   data.frame per state containing a column per state
 #'   value and a line per cycle.
-#' @export
 #' 
 eval_state_list <- function(x, parameters) {
   
@@ -288,25 +287,23 @@ get_state_number <- function(x){
 #' @param ... Additional arguments passed to methods.
 #'
 #' @return A character vector of state value names.
-#' @export
 #' 
 get_state_value_names <- function(x){
   UseMethod("get_state_value_names")
 }
 
-#' @export
 get_state_value_names.uneval_state_list <- function(x) {
   names(x[[1]])
 }
-#' @export
+
 get_state_value_names.eval_state_list <- function(x){
   names(x[[1]])[-1]
 }
-#' @export
+
 get_state_value_names.eval_model <- function(x){
   dplyr::setdiff(names(x$values), "markov_cycle")
 }
-#' @export
+
 get_state_value_names.state <- function(x){
   names(x)
 }
@@ -319,12 +316,10 @@ get_state_value_names.state <- function(x){
 #' @param ... Additional arguments passed to methods.
 #'
 #' @return A character vector of state names.
-#' @export
 get_state_names <- function(x, ...){
   UseMethod("get_state_names")
 }
 
-#' @export
 get_state_names.default <- function(x, ...){
   names(x)
 }
@@ -339,4 +334,3 @@ print.eval_state_list <- function(x, ...) {
     plur(nrow(x[[1]]))
   ))
 }
-
