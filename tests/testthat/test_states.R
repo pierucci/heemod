@@ -201,7 +201,7 @@ test_that(
       str(e_st),
       "List of 2
  $ X1:'data.frame':	10 obs. of  2 variables:
-  ..$ markov_cycle: int [1:10] 0 1 2 3 4 5 6 7 8 9
+  ..$ markov_cycle: int [1:10] 1 2 3 4 5 6 7 8 9 10
   ..$ A           :",
       fixed = TRUE
     )

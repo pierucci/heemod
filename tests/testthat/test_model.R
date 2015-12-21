@@ -115,7 +115,7 @@ A",
     expect_output(
       str(summary(e_mod)),
       'List of 4
- $ res       : num [1, 1:2] 1625 1584',
+ $ res       : num [1, 1:2] 1593 1515',
       fixed = TRUE
     )
     expect_output(
@@ -128,7 +128,7 @@ Initial states:
 X1 1
 X2 0
          x        y
-A 1625.231 1584.104',
+A 1592.538 1514.507',
       fixed = TRUE
     )
     expect_error(
@@ -225,7 +225,7 @@ B",
     expect_output(
       str(summary(e_mod2)),
       'List of 4
- $ res       : num [1:2, 1:2] 1625 1170 1584 615',
+ $ res       : num [1:2, 1:2] 1593 1170 1515 615',
       fixed = TRUE
     )
     expect_output(
@@ -238,7 +238,7 @@ Initial states:
 X1 1
 X2 0
          x        y
-A 1625.231 1584.104
+A 1592.538 1514.507
 B 1170.000  615.000',
       fixed = TRUE
     )
