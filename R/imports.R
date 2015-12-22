@@ -14,4 +14,5 @@
 #' 
 #' @importFrom utils head
 #' @importFrom utils modifyList
+#' @importFrom utils globalVariables
 NULL
