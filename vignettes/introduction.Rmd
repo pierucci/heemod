@@ -24,8 +24,8 @@ When building a Markov model for health economic evaluation, the following steps
   
 Other vignettes provide more details and examples on specific topics:
 
-  * [Simple Markov models](https://cran.r-project.org/web/packages/heemod/vignettes/homogenous.html): How to specify, run and interpret a simple Markov model with no time-varying elements.
-  * [Time-varying Markov models](https://cran.r-project.org/web/packages/heemod/vignettes/non-homogenous.html): Example analysis of a more complex Markov model with time-varying transition probabilities.
+  * Simple Markov models: `vignette("homogenous", package = "heemod")`: How to specify, run and interpret a simple Markov model with no time-varying elements.
+  * Time-varying Markov models: `vignette("non-homogenous", package = "heemod")`: Example analysis of a more complex Markov model with time-varying transition probabilities.
 
 # Transition probabilities
 
