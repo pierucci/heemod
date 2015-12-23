@@ -21,7 +21,7 @@ In more complex Markov models in health economic evaluation transition probabili
 
 However in some special cases non-homogenous Markov models can be used in situation 2, when the state with transition probabilities depending on individual-time is the starting state __and__ it is not possible to go back to that state after having left it. In this situation individual-time is equivalent to model-time. This is the case in the following example.
 
-If you are not familiar with `heemod`, first consult the [introduction vignette](https://cran.r-project.org/web/packages/heemod/vignettes/introduction.html).
+If you are not familiar with `heemod`, first consult the introduction vignette`vignette("introduction", package = "heemod")`.
 
 # Model description
 
