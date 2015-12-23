@@ -5,7 +5,7 @@
 
 The most simple Markov models in health economic evaluation are models were transition probabilities between states do not change with time. Those are called *homogenous* or *time-homogenous* Markov models.
 
-If you are not familiar with `heemod`, first consult the [introduction vignette](https://cran.r-project.org/web/packages/heemod/vignettes/introduction.html).
+If you are not familiar with `heemod`, first consult the introduction vignette`vignette("introduction", package = "heemod")`.
 
 # Model description
 
