@@ -259,3 +259,9 @@ print.eval_matrix <- function(x, ...) {
   if (length(head(x, ...)) < length(x))
     cat("...\n")
 }
+
+#' @export
+plot.uneval_matrix <- function(x, ...) {
+  res <- to_char_uneval_matrix(x)
+  plotmat(t(res), ...)
+}
