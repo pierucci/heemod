@@ -107,6 +107,10 @@
 #' 
 define_parameters <- function(...) {
   .dots <- lazyeval::lazy_dots(...)
+  define_parameters_(.dots)
+}
+
+define_parameters_ <- function(.dots) {
   
   stopifnot(
     all(names(.dots) != "markov_cycle")
@@ -141,7 +145,7 @@ define_parameters <- function(...) {
 #' 
 eval_parameters <- function(x, cycles = 1) {
   # other datastructure?
-  res <- mutate_(
+  res <- dplyr::mutate_(
     data.frame(
       markov_cycle = seq_len(cycles)
     ),
@@ -186,11 +190,23 @@ get_parameter_names <- function(x) {
 modify <- function(.OBJECT, ...) {
   UseMethod("modify")
 }
+modify_ <- function(.OBJECT, .dots, ...) {
+  UseMethod("modify_")
+}
 
 #' @export
 #' @rdname define_parameters
 modify.uneval_parameters <- function(.OBJECT, ..., BEFORE) {
   .dots <- lazyeval::lazy_dots(...)
+  
+  if (! missing(BEFORE) & is.language(substitute(BEFORE))) {
+    BEFORE <- deparse(substitute(BEFORE))
+  }
+  
+  modify_(.OBJECT = .OBJECT, .dots = .dots, BEFORE = BEFORE)
+}
+
+modify_.uneval_parameters <- function(.OBJECT, .dots, BEFORE) {
   
   stopifnot(
     all(names(.dots) != "markov_cycle")
@@ -203,11 +219,6 @@ modify.uneval_parameters <- function(.OBJECT, ..., BEFORE) {
   
   if (! missing(BEFORE)) {
     
-    BEFORE <- if (is.language(substitute(BEFORE))) {
-      deparse(substitute(BEFORE))
-    } else {
-      BEFORE
-    }
     
     stopifnot(
       length(BEFORE) == 1
