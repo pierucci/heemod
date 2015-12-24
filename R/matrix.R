@@ -263,5 +263,5 @@ print.eval_matrix <- function(x, ...) {
 #' @export
 plot.uneval_matrix <- function(x, ...) {
   res <- to_char_uneval_matrix(x)
-  plotmat(t(res), ...)
+  diagram::plotmat(t(res), ...)
 }

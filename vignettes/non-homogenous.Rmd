@@ -147,6 +147,13 @@ mat_trans <- define_matrix(
 mat_trans
 ```
 
+While it is possible to plot the matrix thanks to the `diagram` package, the results may not always be easy to read.
+
+```{r}
+plot(mat_trans)
+```
+
+
 # State definition
 
 Utilities and costs are then associated to states. In this model costs are discounted at a rate of 6% and utilities at a rate of 1.5%.
