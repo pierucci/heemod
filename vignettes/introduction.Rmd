@@ -1,9 +1,7 @@
 ---
 title: "An Introduction to heemod"
 date: "`r Sys.Date()`"
-output:
-  rmarkdown::html_vignette:
-    keep_md: true
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{An Introduction to heemod}
   %\VignetteEngine{knitr::rmarkdown}

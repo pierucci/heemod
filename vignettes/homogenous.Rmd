@@ -1,9 +1,7 @@
 ---
 title: "Simple Markov models (homogenous)"
 date: "`r Sys.Date()`"
-output:
-  rmarkdown::html_vignette:
-    keep_md: true
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Simple Markov models (homogenous)}
   %\VignetteEngine{knitr::rmarkdown}

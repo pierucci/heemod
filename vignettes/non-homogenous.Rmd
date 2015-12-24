@@ -1,9 +1,7 @@
 ---
 title: "Time-varying Markov models (non-homogenous)"
 date: "`r Sys.Date()`"
-output:
-  rmarkdown::html_vignette:
-    keep_md: true
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Time-varying Markov models (non-homogenous)}
   %\VignetteEngine{knitr::rmarkdown}
