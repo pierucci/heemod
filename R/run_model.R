@@ -147,8 +147,6 @@ run_models <- function(...,
   )
 }
 
-
-
 #' @export
 #' @rdname run_models
 run_model <- run_models

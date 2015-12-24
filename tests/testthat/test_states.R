@@ -53,6 +53,18 @@ y = 123',
   ..$ expr: num 111",
       fixed = TRUE
     )
+    expect_identical(
+      modify(
+        s1,
+        z = 111,
+        BEFORE = x
+      ),
+      modify(
+        s1,
+        z = 111,
+        BEFORE = "x"
+      )
+    )
     expect_error(
       define_state(
         markov_cycle = 876

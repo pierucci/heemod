@@ -76,6 +76,15 @@ define_matrix <- function(
   state_names = LETTERS[seq_len(sqrt(length(lazyeval::lazy_dots(...))))]
 ) {
   .dots <- lazyeval::lazy_dots(...)
+  
+  define_matrix_(.dots = .dots, state_names = state_names)
+}
+
+define_matrix_ <- function(
+  .dots,
+  state_names = LETTERS[seq_len(sqrt(length(.dots)))]
+) {
+  
   n <- sqrt(length(.dots))
   
   stopifnot(
@@ -85,8 +94,8 @@ define_matrix <- function(
   )
   
   names(.dots) <- sprintf("cell_%i_%i",
-                           rep(seq_len(n), each = n),
-                           rep(seq_len(n), n))
+                          rep(seq_len(n), each = n),
+                          rep(seq_len(n), n))
   
   structure(.dots,
             class = c("uneval_matrix", class(.dots)),
@@ -193,6 +202,14 @@ modify.uneval_matrix <- function(.OBJECT, ...){
   # modifier par rr simplment
   
   .dots <- lazyeval::lazy_dots(...)
+  
+  modify_(.OBJECT = .OBJECT, .dots = .dots)
+}
+
+modify_.uneval_matrix <- function(.OBJECT, .dots){
+  
+  # !mod!
+  # modifier par rr simplment
   
   stopifnot(
     all(names(.dots) %in% names(.OBJECT))
