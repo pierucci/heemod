@@ -218,6 +218,16 @@ modify_.uneval_matrix <- function(.OBJECT, .dots){
   modifyList(.OBJECT, .dots)
 }
 
+to_char_uneval_matrix <- function(x) {
+  ex <- unlist(lapply(x, function(y) deparse(y$expr)))
+  
+  matrix(ex,
+         byrow = TRUE,
+         ncol = get_matrix_order(x),
+         dimnames = list(get_state_names(x),
+                         get_state_names(x)))
+}
+
 #' @export
 print.uneval_matrix <- function(x, ...) {
   cat(sprintf(
@@ -225,12 +235,9 @@ print.uneval_matrix <- function(x, ...) {
     get_matrix_order(x)
   ))
   
-  ex <- unlist(lapply(x, function(y) deparse(y$expr)))
-  print(matrix(ex,
-               byrow = TRUE,
-               ncol = get_matrix_order(x),
-               dimnames = list(get_state_names(x),
-                               get_state_names(x))),
+  res <- to_char_uneval_matrix(x)
+  
+  print(res,
         quote = FALSE,
         ...)
 }
