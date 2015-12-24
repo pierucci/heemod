@@ -21,7 +21,7 @@
 #' @return A data.frame containing the values of 
 #'   \code{newdata} and each Markov Model evaluation in 
 #'   \code{res}.
-#' @export
+#'   
 #' 
 #' @examples
 #' 
