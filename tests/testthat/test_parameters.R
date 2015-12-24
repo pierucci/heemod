@@ -64,6 +64,20 @@ b = a + 543',
       ),
       3
     )
+    expect_equal(
+      modify(
+        par1,
+        a = 4321,
+        c = 333,
+        BEFORE = a
+      ),
+      modify(
+        par1,
+        a = 4321,
+        c = 333,
+        BEFORE = "a"
+      )
+    )
     expect_error(
       modify(
         par1,

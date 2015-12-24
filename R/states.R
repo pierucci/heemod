@@ -53,6 +53,10 @@
 define_state <- function(...) {
   .dots <- lazyeval::lazy_dots(...)
   
+  define_state_(.dots)
+}
+
+define_state_ <- function(.dots) {
   stopifnot(
     ! is.null(names(.dots)),
     ! any(names(.dots) == ""),
@@ -68,6 +72,15 @@ define_state <- function(...) {
 modify.state <- function(.OBJECT, ..., BEFORE) {
   .dots <- lazyeval::lazy_dots(...)
   
+  if (! missing(BEFORE) & is.language(substitute(BEFORE))) {
+    BEFORE <- deparse(substitute(BEFORE))
+  }
+  
+  
+  modify_(.OBJECT = .OBJECT, .dots = .dots, BEFORE = BEFORE)
+}
+
+modify_.state <- function(.OBJECT, .dots, BEFORE) {
   stopifnot(
     all(names(.dots) != "markov_cycle")
   )
@@ -78,12 +91,6 @@ modify.state <- function(.OBJECT, ..., BEFORE) {
   # voire correction automatique ?
   
   if (! missing(BEFORE)) {
-    
-    BEFORE <- if (is.language(substitute(BEFORE))) {
-      deparse(substitute(BEFORE))
-    } else {
-      BEFORE
-    }
     
     stopifnot(
       length(BEFORE) == 1
@@ -162,6 +169,9 @@ print.state <- function(x, ...) {
 define_state_list <- function(...) {
   .dots <- list(...)
   
+  define_state_list_(.dots)
+}
+define_state_list_ <- function(.dots) {
   stopifnot(
     ! any(duplicated(names(.dots))),
     all(unlist(lapply(.dots,
@@ -195,6 +205,10 @@ define_state_list <- function(...) {
 modify.uneval_state_list <- function(.OBJECT, ...) {
   .dots <- list(...)
   
+  modify_(.OBJECT = .OBJECT, .dots = .dots)
+}
+
+modify_.uneval_state_list <- function(.OBJECT, .dots) {
   res <- modifyList(.OBJECT, .dots)
   check_states(res)
   
