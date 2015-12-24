@@ -6,7 +6,7 @@ Maintainer: Antoine Filipovic-Pierucci <pierucci@gmail.com>
 Description: Health Economic Evaluation MODelling (HEEMOD). Markov models (homogenous and non-homogenous)
   for health economic evaluation. Model comparison, sensitivity and probabilistic analysis.
 Depends: R (>= 3.2.2)
-Imports: lazyeval, dplyr, purrr
+Imports: lazyeval, dplyr, purrr, diagram
 License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr

@@ -36,6 +36,7 @@ new values.
 }
 \examples{
 
+\dontrun{
 par1 <- define_parameters(
   a = 1,
   b = 1 / (markov_cycle + a)
@@ -67,6 +68,7 @@ eval_model_newdata(
   init = 1:0,
   newdata = new_tab
 )
+}
 
 }
 

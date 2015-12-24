@@ -25,6 +25,7 @@
 #' 
 #' @examples
 #' 
+#' \dontrun{
 #' par1 <- define_parameters(
 #'   a = 1,
 #'   b = 1 / (markov_cycle + a)
@@ -56,6 +57,7 @@
 #'   init = 1:0,
 #'   newdata = new_tab
 #' )
+#' }
 #' 
 eval_model_newdata <- function(model, cycles,
                                init, count_args = NULL,
