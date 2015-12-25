@@ -3,12 +3,15 @@
 \name{define_matrix}
 \alias{define_matrix}
 \alias{modify.uneval_matrix}
+\alias{plot.uneval_matrix}
 \title{Define Transition Matrix for Markov Model}
 \usage{
 define_matrix(...,
   state_names = LETTERS[seq_len(sqrt(length(lazyeval::lazy_dots(...))))])
 
 \method{modify}{uneval_matrix}(.OBJECT, ...)
+
+\method{plot}{uneval_matrix}(x, ...)
 }
 \arguments{
 \item{...}{Name-value pairs of expressions definig matrix
@@ -58,6 +61,8 @@ mat_1 <- define_matrix(
   0, 0, 1
 )
 mat_1
+
+plot(mat1)
 
 # referencing parameters
 # rr must be present in a parameter object

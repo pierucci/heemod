@@ -44,6 +44,8 @@
 #' )
 #' mat_1
 #' 
+#' plot(mat1)
+#' 
 #' # referencing parameters
 #' # rr must be present in a parameter object
 #' # that must later be linked with define_model
@@ -261,6 +263,7 @@ print.eval_matrix <- function(x, ...) {
 }
 
 #' @export
+#' @rdname define_matrix
 plot.uneval_matrix <- function(x, ...) {
   res <- to_char_uneval_matrix(x)
   diagram::plotmat(t(res), ...)
