@@ -2,22 +2,38 @@
 % Please edit documentation in R/resamp.R
 \name{define_resample}
 \alias{define_resample}
-\title{Define parameters distribution for probabilistc analysis}
+\title{Define Parameters Distribution for Probabilistc Analysis}
 \usage{
 define_resample(..., mat_cor = diag(length(list(...))))
 }
 \arguments{
-\item{...}{Name-value pairs of expressions definig 
+\item{...}{Name-value pairs of expressions defining 
 parameter distributions.}
 
 \item{mat_cor}{A correlation matrix for parameters.}
 }
 \value{
-An object of class \code{resamp_definition}.
+An object of class \code{resamp_definition}. 
+  Contains \code{list_qdist}, a list of quantile
+  functions and \code{mat_cor} a correlation matrix.
 }
 \description{
 Define the properties of parameter distributions and 
 their correlation structure for probabilistic incertitude
 analysis of Markov models.
+}
+\details{
+If no correlation matrix is specified parameters are 
+assumed to be independant.
+}
+\examples{
+define_resample(
+    age_init = r_norm(60, 10),
+    cost_init = r_norm(1000, 100),
+    mat_cor = matrix(c(
+        1, .4,
+        .4, 1
+    ), byrow = TRUE, ncol = 2)
+)
 }
 

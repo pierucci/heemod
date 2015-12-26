@@ -17,4 +17,6 @@
 #' @importFrom utils globalVariables
 #' 
 #' @importFrom diagram plotmat
+#' 
+#' @importFrom mvnfast rmvn
 NULL
