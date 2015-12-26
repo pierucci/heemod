@@ -19,21 +19,28 @@
 #' @example R/example_define_resample.example
 #' 
 define_resample <- function(...,
-                            mat_cor = diag(length(list(...)))) {
+                            correlation = diag(length(list(...)))) {
   list_qdist <- list(...)
   
   stopifnot(
-    length(unique(names(list_qdist))) == length(list_qdist),
-    nrow(mat_cor) == ncol(mat_cor),
-    nrow(mat_cor) == length(list_qdist),
-    all(mat_cor >= -1) & all(mat_cor <= 1),
-    isTRUE(all.equal(diag(mat_cor), rep(1, ncol(mat_cor))))
+    length(unique(names(list_qdist))) == length(list_qdist)
+  )
+  
+  if (class(correlation) == "correlation_matrix") {
+    correlation <- eval_correlation(correlation, names(list_qdist))
+  }
+  
+  stopifnot(
+    nrow(correlation) == ncol(correlation),
+    nrow(correlation) == length(list_qdist),
+    all(correlation >= -1) & all(correlation <= 1),
+    isTRUE(all.equal(diag(correlation), rep(1, ncol(correlation))))
   )
   
   structure(
     list(
       list_qdist = list_qdist,
-      mat_cor = mat_cor
+      correlation = correlation
     ),
     class = "resamp_definition"
   )
@@ -51,6 +58,77 @@ define_resample <- function(...,
 #' 
 r_norm <- function(mean, sd) {
   function(x) qnorm(p = x, mean = mean, sd = sd)
+}
+
+#' Define a Correlation Structure for Probabilistic 
+#' Incertitude Analysis
+#' 
+#' Not all correlation need to be specified for all variable
+#' combinations, unspecified correlations are assumed to be
+#' 0.
+#' 
+#' @param ... A list of parameter names and correlation 
+#'   coeficients of the form \code{var1, var2, cor(var1, 
+#'   var2), var3, var4, cor(var3, var4), ...}
+#'   
+#' @return An object of class \code{correlation_matrix}.
+#' @export
+#' 
+#' @examples
+#' 
+#' cm <- define_correlation(
+#'     var1, var2, .4,
+#'     var1, var3, -.2,
+#'     var2, var3, .1
+#'   )
+#' 
+define_correlation <- function(...) {
+  .dots <- lazyeval::lazy_dots(...)
+  
+  define_cor_mat_(.dots)
+}
+
+define_correlation_ <- function(.dots) {
+  stopifnot(
+    length(.dots) %% 3 == 0
+  )
+  
+  f <- function(i) {
+    if (i %% 3 == 0) {
+      lazyeval::lazy_eval(.dots[[i]])
+    } else {
+      deparse(.dots[[i]]$expr)
+    }
+  }
+  
+  list_res <- lapply(seq_along(.dots), f)
+  
+  res <- dplyr::data_frame(
+    v1 = unlist(list_res[seq(from = 1, to = length(list_res), by = 3)]),
+    v2 = unlist(list_res[seq(from = 2, to = length(list_res), by = 3)]),
+    cor = unlist(list_res[seq(from = 3, to = length(list_res), by = 3)])
+  )
+  
+  stopifnot(
+    ! any(duplicated(
+      mapply(
+        function(x, y) paste(sort(c(x, y)), collapse = ""),
+        res$v1, res$v2
+      )))
+  )
+  structure(res, class = "correlation_matrix")
+}
+
+eval_correlation <- function(x, var_names) {
+  res <- diag(length(var_names))
+  colnames(res) <- var_names
+  rownames(res) <- var_names
+  
+  for (i in seq_len(nrow(x))) {
+    res[x$v1[i], x$v2[i]] <- x$cor[i]
+    res[x$v2[i], x$v1[i]] <- x$cor[i]
+  }
+  res
 }
 
 #' Run Probabilistic Incertitude Analysis
@@ -96,7 +174,7 @@ eval_resample <- function(resample, N) {
     mvnfast::rmvn(
       n = N,
       mu = rep(0, length(resample$list_qdist)),
-      sigma = resample$mat_cor
+      sigma = resample$correlation
     )
   )
   

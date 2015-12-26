@@ -4,7 +4,7 @@
 \alias{define_resample}
 \title{Define Parameters Distribution for Probabilistc Analysis}
 \usage{
-define_resample(..., mat_cor = diag(length(list(...))))
+define_resample(..., correlation = diag(length(list(...))))
 }
 \arguments{
 \item{...}{Name-value pairs of expressions defining 
@@ -27,13 +27,14 @@ If no correlation matrix is specified parameters are
 assumed to be independant.
 }
 \examples{
+mc <- define_correlation(
+  age_init, cost_init, .4
+)
+
 define_resample(
     age_init = r_norm(60, 10),
     cost_init = r_norm(1000, 100),
-    mat_cor = matrix(c(
-        1, .4,
-        .4, 1
-    ), byrow = TRUE, ncol = 2)
+    correlation = mc
 )
 }
 
