@@ -16,7 +16,7 @@
 #'   functions and \code{mat_cor} a correlation matrix.
 #' @export
 #' 
-#' @example R/example_define_resample.example
+#' @example inst/examples/example_define_resample.R
 #' 
 define_resample <- function(...,
                             correlation = diag(length(list(...)))) {
@@ -141,7 +141,7 @@ eval_correlation <- function(x, var_names) {
 #' @return A list with one data.frame per model.
 #' @export
 #'
-#' @example R/example_run_probabilistic.example
+#' @example inst/examples/example_run_probabilistic.R
 #' 
 run_probabilistic <- function(model, resample, N) {
   
