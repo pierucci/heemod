@@ -3,6 +3,7 @@
 ## Enhancements
 
   * added ability to plot matrix.
+  * added framework for pobabilistic incertitude analysis.
   
 ## Bug fixes
 
