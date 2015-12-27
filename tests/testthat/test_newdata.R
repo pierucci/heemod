@@ -59,7 +59,13 @@ test_that(
     expect_output(
       str(ndt1),
       "List of 2
- $ A:Classes 'tbl_df', 'tbl' and 'data.frame':	11 obs. of  2 variables:
+ $ A:Classes",
+      fixed= TRUE
+    )
+    
+    expect_output(
+      str(ndt1),
+      "and 'data.frame':	11 obs. of  2 variables:
   ..$ age_init: int [1:11] 40 41 42 43 44 45 46 47 48 49 ...
   ..$ cost    : num [1:11] 5418 5436 5455 5474 5493 ..",
       fixed= TRUE
@@ -136,7 +142,13 @@ test_that(
     expect_output(
       str(ndt1),
       "List of 2
- $ A:Classes 'tbl_df', 'tbl' and 'data.frame':	10 obs. of  3 variables:
+ $ A:Classes",
+      fixed = TRUE
+    )
+    
+    expect_output(
+      str(ndt1),
+      "and 'data.frame':	10 obs. of  3 variables:
   ..$ age_init : num [1:10] 65.5 71.3 76.5 74.4 59.9 ...
   ..$ cost_init: num [1:10] 1118 948 1212 1024 1045 ...
   ..$ cost     : num [1:10] 12515 10923 13662 11742 11",
