@@ -8,6 +8,10 @@
 ## Bug fixes
 
   * added *_ functions.
+  
+## Removed
+
+  * `run_model_newdata()` cannot run `uneval_model` anymore.
 
 # 0.1.0
 
