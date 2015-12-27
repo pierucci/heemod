@@ -147,8 +147,12 @@ eval_matrix <- function(x, parameters) {
   
   tab_res <- mutate_(parameters, .dots = x)[names(x)]
   
+  n <- get_matrix_order(x)
+  
   f <- function(...) {
-    res <- matrix(c(...), byrow = TRUE, nrow = get_matrix_order(x))
+    res <- matrix(c(...),
+                  byrow = TRUE,
+                  nrow = n)
     check_matrix(res)
     list(res)
   }
