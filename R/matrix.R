@@ -28,6 +28,7 @@
 #' @param state_names character vector, optional. State 
 #'   names.
 #' @param .OBJECT An object of class \code{uneval_matrix}.
+#' @param x An \code{uneval_matrix} to plot.
 #'   
 #' @return An object of class \code{uneval_matrix} (actually
 #'   a named list of \code{lazy} expressions).
@@ -44,7 +45,7 @@
 #' )
 #' mat_1
 #' 
-#' plot(mat1)
+#' plot(mat_1)
 #' 
 #' # referencing parameters
 #' # rr must be present in a parameter object

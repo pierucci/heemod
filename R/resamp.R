@@ -7,17 +7,21 @@
 #' If no correlation matrix is specified parameters are 
 #' assumed to be independant.
 #' 
+#' The correlation patrix need only be specified for
+#' correlated parameters. 
+#' 
 #' @param ... Name-value pairs of expressions defining 
 #'   parameter distributions.
-#' @param mat_cor A correlation matrix for parameters.
+#' @param correlation A correlation matrix for parameters or
+#'   the output of \code{\link{define_correlation}}.
 #'   
 #' @return An object of class \code{resamp_definition}. 
-#'   Contains \code{list_qdist}, a list of quantile
-#'   functions and \code{mat_cor} a correlation matrix.
+#'   Contains \code{list_qdist}, a list of quantile 
+#'   functions and \code{correlation} a correlation matrix.
 #' @export
 #' 
 #' @example inst/examples/example_define_resample.R
-#' 
+#'   
 define_resample <- function(...,
                             correlation = diag(length(list(...)))) {
   list_qdist <- list(...)
@@ -26,7 +30,7 @@ define_resample <- function(...,
     length(unique(names(list_qdist))) == length(list_qdist)
   )
   
-  if (class(correlation) == "correlation_matrix") {
+  if ("correlation_matrix" %in% class(correlation)) {
     correlation <- eval_correlation(correlation, names(list_qdist))
   }
   
@@ -34,7 +38,8 @@ define_resample <- function(...,
     nrow(correlation) == ncol(correlation),
     nrow(correlation) == length(list_qdist),
     all(correlation >= -1) & all(correlation <= 1),
-    isTRUE(all.equal(diag(correlation), rep(1, ncol(correlation))))
+    isTRUE(all.equal(as.vector(diag(correlation)),
+                     rep(1, ncol(correlation))))
   )
   
   structure(
@@ -85,7 +90,7 @@ r_norm <- function(mean, sd) {
 define_correlation <- function(...) {
   .dots <- lazyeval::lazy_dots(...)
   
-  define_cor_mat_(.dots)
+  define_correlation_(.dots)
 }
 
 define_correlation_ <- function(.dots) {
@@ -116,7 +121,7 @@ define_correlation_ <- function(.dots) {
         res$v1, res$v2
       )))
   )
-  structure(res, class = "correlation_matrix")
+  structure(res, class = c("correlation_matrix", class(res)))
 }
 
 eval_correlation <- function(x, var_names) {
@@ -133,7 +138,7 @@ eval_correlation <- function(x, var_names) {
 
 #' Run Probabilistic Incertitude Analysis
 #'
-#' @param model The result of \code{\code{run_model}}.
+#' @param model The result of \code{\link{run_model}}.
 #' @param resample Resampling distribution for parameters
 #' defined by \code{\link{define_resample}}.
 #' @param N > 0. Number of simulation to run.

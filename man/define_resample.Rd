@@ -10,12 +10,13 @@ define_resample(..., correlation = diag(length(list(...))))
 \item{...}{Name-value pairs of expressions defining 
 parameter distributions.}
 
-\item{mat_cor}{A correlation matrix for parameters.}
+\item{correlation}{A correlation matrix for parameters or
+the output of \code{\link{define_correlation}}.}
 }
 \value{
 An object of class \code{resamp_definition}. 
-  Contains \code{list_qdist}, a list of quantile
-  functions and \code{mat_cor} a correlation matrix.
+  Contains \code{list_qdist}, a list of quantile 
+  functions and \code{correlation} a correlation matrix.
 }
 \description{
 Define the properties of parameter distributions and 
@@ -25,6 +26,9 @@ analysis of Markov models.
 \details{
 If no correlation matrix is specified parameters are 
 assumed to be independant.
+
+The correlation patrix need only be specified for
+correlated parameters.
 }
 \examples{
 mc <- define_correlation(

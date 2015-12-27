@@ -7,7 +7,7 @@
 run_probabilistic(model, resample, N)
 }
 \arguments{
-\item{model}{The result of \code{\code{run_model}}.}
+\item{model}{The result of \code{\link{run_model}}.}
 
 \item{resample}{Resampling distribution for parameters
 defined by \code{\link{define_resample}}.}

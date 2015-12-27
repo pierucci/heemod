@@ -22,6 +22,8 @@ cells. Can refer to parameters defined with
 names.}
 
 \item{.OBJECT}{An object of class \code{uneval_matrix}.}
+
+\item{x}{An \code{uneval_matrix} to plot.}
 }
 \value{
 An object of class \code{uneval_matrix} (actually
@@ -62,7 +64,7 @@ mat_1 <- define_matrix(
 )
 mat_1
 
-plot(mat1)
+plot(mat_1)
 
 # referencing parameters
 # rr must be present in a parameter object
