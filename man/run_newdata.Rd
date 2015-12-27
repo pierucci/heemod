@@ -5,11 +5,10 @@
 \title{Iteratively Run Markov Models Over New Parameter Sets 
 (Heterogeneity or Probabilistic analysis)}
 \usage{
-run_newdata(..., init, cycles, newdata)
+run_newdata(x, init, cycles, newdata)
 }
 \arguments{
-\item{...}{Either one or more unevaluated Markov models, 
-or the result of \code{\link{run_models}}.}
+\item{x}{The result of \code{\link{run_models}}.}
 
 \item{init}{Initial number of individual per state. Not 
 needed when working on \code{\link{run_models}} 
@@ -29,11 +28,10 @@ A list with one data.frame per model.
 }
 \description{
 Given a table of new parameter values with a new 
-parameter set per line, runs iteratively Markov odels 
+parameter set per line, runs iteratively Markov models 
 over these sets.
 }
 \examples{
-# running a single model
 
 mod1 <-
   define_model(
@@ -55,7 +53,6 @@ mod1 <-
     )
   )
 
-# running several models
 mod2 <-
   define_model(
     parameters = define_parameters(
@@ -89,12 +86,5 @@ new_tab <- data.frame(
 # with run_model result
 ndt1 <- run_newdata(res2, newdata = new_tab)
 
-# with uneval models
-ndt2 <- run_newdata(
-  A = mod1, B = mod2,
-  init = 1:0, cycles = 10,
-  newdata = new_tab)
-
-identical(ndt1, ndt2)
 }
 

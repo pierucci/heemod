@@ -80,7 +80,7 @@ eval_model_newdata <- function(model, cycles,
   dplyr::bind_cols(
     dplyr::do(
       dplyr::rowwise(newdata),
-      model = eval_newdata(., model)
+      get_total_state_values(eval_newdata(., model))
     ),
     newdata
   )
@@ -169,7 +169,7 @@ if(getRversion() >= "2.15.1") utils::globalVariables(c("."))
 run_newdata <- function(x, init, cycles, newdata) {
   
   stopifnot(
-    class(args[[1]]) %in% "eval_model_list"
+    class(x) %in% "eval_model_list"
   )
   list_models <- attr(x, "uneval_model_list")
   

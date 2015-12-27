@@ -6,6 +6,7 @@
 #' @importFrom dplyr group_by
 #' @importFrom dplyr as.tbl
 #' @importFrom dplyr data_frame
+#' @importFrom dplyr as_data_frame
 #' 
 #' @importFrom purrr map_rows
 #' 

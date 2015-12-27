@@ -164,12 +164,16 @@ print.eval_model_list <- function(x, ...) {
   cat(names(x), sep = "\n")
 }
 
+get_total_state_values <- function(x) {
+  dplyr::as_data_frame(as.list(colSums((x$values)[- 1])))
+}
+
 #' @export
 summary.eval_model_list <- function(object, ...) {
   res <- unlist(
     lapply(
       object,
-      function(y) colSums((y$values)[- 1])
+      get_total_state_values
     )
   )
   
