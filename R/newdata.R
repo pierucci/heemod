@@ -163,7 +163,7 @@ if(getRversion() >= "2.15.1") utils::globalVariables(c("."))
 #' )
 #' # generating table with new parameter sets
 #' new_tab <- data.frame(
-#'   age = 40:80
+#'   age_init = 40:80
 #' )
 #' 
 #' # with run_model result
@@ -189,17 +189,27 @@ run_newdata <- function(..., init, cycles, newdata) {
     list_models <- args
     if (is.null(names(init)))
       names(init) <- get_state_names(list_models[[1]])
+    
   } else if (
     length(args) == 1 &
     class(args[[1]]) %in% "eval_model_list"
   ) {
+    
     list_models <- attr(args[[1]], "uneval_model_list")
+    
+    stopifnot(
+      missing(init),
+      missing(cycles)
+    )
+    
     init <- attr(args[[1]], "init")
     cycles <- attr(args[[1]], "cycles")
+    
   } else {
     stop("Unknown argument. Input should be unevaluated models or a result from run_models.")
   }
   
   res <- lapply(list_models, eval_model_newdata,
                 init = init, cycles = cycles, newdata = newdata)
+  return(res)
 }

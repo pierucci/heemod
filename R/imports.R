@@ -5,6 +5,7 @@
 #' @importFrom dplyr do
 #' @importFrom dplyr group_by
 #' @importFrom dplyr as.tbl
+#' @importFrom dplyr data_frame
 #' 
 #' @importFrom purrr map_rows
 #' 
@@ -17,4 +18,6 @@
 #' @importFrom utils globalVariables
 #' 
 #' @importFrom diagram plotmat
+#' 
+#' @importFrom mvnfast rmvn
 NULL

@@ -83,7 +83,7 @@ res2 <- run_model(
 )
 # generating table with new parameter sets
 new_tab <- data.frame(
-  age = 40:80
+  age_init = 40:80
 )
 
 # with run_model result
