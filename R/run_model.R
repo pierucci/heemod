@@ -165,7 +165,9 @@ print.eval_model_list <- function(x, ...) {
 }
 
 get_total_state_values <- function(x) {
-  dplyr::as_data_frame(as.list(colSums((x$values)[- 1])))
+  structure(as.list(colSums((x$values)[- 1])),
+            class = "data.frame",
+            row.names = c(NA, -1))
 }
 
 #' @export
