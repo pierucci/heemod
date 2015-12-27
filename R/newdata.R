@@ -93,11 +93,10 @@ if(getRversion() >= "2.15.1") utils::globalVariables(c("."))
 #' (Heterogeneity or Probabilistic analysis)
 #' 
 #' Given a table of new parameter values with a new 
-#' parameter set per line, runs iteratively Markov odels 
+#' parameter set per line, runs iteratively Markov models 
 #' over these sets.
 #' 
-#' @param ... Either one or more unevaluated Markov models, 
-#'   or the result of \code{\link{run_models}}.
+#' @param x The result of \code{\link{run_models}}.
 #' @param init Initial number of individual per state. Not 
 #'   needed when working on \code{\link{run_models}} 
 #'   results.
@@ -113,7 +112,6 @@ if(getRversion() >= "2.15.1") utils::globalVariables(c("."))
 #' @export
 #' 
 #' @examples 
-#' # running a single model
 #' 
 #' mod1 <-
 #'   define_model(
@@ -135,7 +133,6 @@ if(getRversion() >= "2.15.1") utils::globalVariables(c("."))
 #'     )
 #'   )
 #' 
-#' # running several models
 #' mod2 <-
 #'   define_model(
 #'     parameters = define_parameters(
@@ -169,45 +166,20 @@ if(getRversion() >= "2.15.1") utils::globalVariables(c("."))
 #' # with run_model result
 #' ndt1 <- run_newdata(res2, newdata = new_tab)
 #' 
-#' # with uneval models
-#' ndt2 <- run_newdata(
-#'   A = mod1, B = mod2,
-#'   init = 1:0, cycles = 10,
-#'   newdata = new_tab)
-#' 
-#' identical(ndt1, ndt2)
-run_newdata <- function(..., init, cycles, newdata) {
-  args <- list(...)
+run_newdata <- function(x, init, cycles, newdata) {
   
-  if (
-    all(
-      unlist(
-        lapply(
-          args,
-          function(x) class(x) %in% "uneval_model"
-        )))) {
-    list_models <- args
-    if (is.null(names(init)))
-      names(init) <- get_state_names(list_models[[1]])
-    
-  } else if (
-    length(args) == 1 &
+  stopifnot(
     class(args[[1]]) %in% "eval_model_list"
-  ) {
-    
-    list_models <- attr(args[[1]], "uneval_model_list")
-    
-    stopifnot(
-      missing(init),
-      missing(cycles)
-    )
-    
-    init <- attr(args[[1]], "init")
-    cycles <- attr(args[[1]], "cycles")
-    
-  } else {
-    stop("Unknown argument. Input should be unevaluated models or a result from run_models.")
-  }
+  )
+  list_models <- attr(x, "uneval_model_list")
+  
+  stopifnot(
+    missing(init),
+    missing(cycles)
+  )
+  
+  init <- attr(x, "init")
+  cycles <- attr(x, "cycles")
   
   res <- lapply(list_models, eval_model_newdata,
                 init = init, cycles = cycles, newdata = newdata)
