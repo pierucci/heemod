@@ -78,11 +78,11 @@ eval_model_newdata <- function(model, cycles,
   }
   
   dplyr::bind_cols(
+    newdata,
     dplyr::do(
       dplyr::rowwise(newdata),
       get_total_state_values(eval_newdata(., model))
-    ),
-    newdata
+    )
   )
 }
 
