@@ -24,11 +24,25 @@
 #'   
 define_resample <- function(...,
                             correlation = diag(length(list(...)))) {
-  list_qdist <- list(...)
+  .dots <- list(...)
+  
+  list_qdist <- .dots[! is.na(names(.dots))]
+  list_multi <- .dots[is.na(names(.dots))]
+  
+  define_resample_(list_qdist, list_multi, correlation)
+}
+
+define_resample_ <- function(list_qdist, list_multi, correlation) {
   
   stopifnot(
-    length(unique(names(list_qdist))) == length(list_qdist)
+    length(unique(names(list_qdist))) == length(list_qdist),
+    all(unlist(lapply(list_multi,
+                      function(x) "multinomial" %in% class(x))))
   )
+  
+  # additional checks
+  # all parameters in list_multi are r_multi ou r_binom parameters
+  # all r_multi or r_binom are present in 1 and only 1 multi
   
   if ("correlation_matrix" %in% class(correlation)) {
     correlation <- eval_correlation(correlation, names(list_qdist))
@@ -47,9 +61,46 @@ define_resample <- function(...,
       list_qdist = list_qdist,
       correlation = correlation
     ),
-    class = "resamp_definition"
+    class = "resamp_definition",
+    multinomial = list_multi
   )
 }
+
+#' Define That Parameters Belong to the Same Multinomial
+#' Distribution
+#' 
+#' @param ... A list of parameter names.
+#'   
+#' @return An object of class \code{multinomial}.
+#' @export
+#' 
+#' @examples
+#' 
+#' define_multimomial(a, b, c)
+#' 
+define_multinomial <- function(...) {
+  .dots <- lazyeval::lazy_dots(...)
+  define_multinomial_(.dots)
+}
+
+define_multinomial_ <- function(.dots) {
+  char_var <- unlist(lapply(.dots, function(x) deparse(x$expr)))
+  
+  # ugly piece of shit code
+  denom <- paste("(", paste(char_var, collapse = "+"), ")", collapse = "")
+  
+  res <- lapply(char_var, function(x)
+    parse(text = paste(x, denom, sep = "/")))
+  
+  structure(
+    res,
+    names = char_var,
+    class = "multinomial"
+  )
+}
+
+x=define_multinomial(a, b, c)
+
 
 #' Convenience Probability Density Functions for 
 #' Probabilistic Analysis
@@ -190,5 +241,14 @@ eval_resample <- function(resample, N) {
   )
   
   colnames(list_res) <- names(resample$list_qdist)
-  as.data.frame(list_res)
+  res <- as.data.frame(list_res)
+  
+  # ugly ugly baaaaad
+  # creates copies everywhere
+  # replace this with a nice mutate_() or something...
+  
+  for (p in names(resample$list_multi)) {
+    res[[p]] <- eval(resample$list_multi[[p]], res)
+  }
+  res
 }
