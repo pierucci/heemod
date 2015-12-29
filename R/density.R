@@ -17,6 +17,7 @@ r_norm <- function(mean, sd) {
 }
 
 #' @rdname r_norm
+#' @export
 r_multinom <- function(n, total) {
   function(x) qbeta(x, n, total - n)
 }

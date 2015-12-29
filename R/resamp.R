@@ -80,7 +80,7 @@ define_resample_ <- function(list_qdist, list_multi, correlation) {
 #' 
 #' @examples
 #' 
-#' define_multimomial(a, b, c)
+#' define_multinom(a, b, c)
 #' 
 define_multinom <- function(...) {
   .dots <- lazyeval::lazy_dots(...)
