@@ -127,8 +127,9 @@ test_that(
     )
     
     rsp <- define_resample(
-      age_init = r_norm(60, 10),
-      cost_init = r_norm(1000, 100),
+      age_init ~ norm(60, 10),
+      cost_init ~ norm(1000, 100),
+      
       correlation = matrix(c(
         1, .4,
         .4, 1
@@ -138,6 +139,15 @@ test_that(
     set.seed(1)
     # with run_model result
     ndt1 <- run_probabilistic(res2, resample = rsp, N = 10)
+    
+    x=define_resample(
+      rate1 + rate2 + rate3 ~ multinom(10, 50, 40),
+      a + b ~ multinom(15, 30)
+    )
+    
+    set.seed(1)
+    
+    res2 <- heemod:::eval_resample(x, 2)
     
     expect_output(
       str(ndt1),
@@ -153,6 +163,21 @@ test_that(
   ..$ cost_init: num [1:10] 1118 948 1212 1024 1045 ...
   ..$ cost     : num [1:10] 12515 10923 13662 11742 11",
       fixed = TRUE
+    )
+    
+    expect_equal(
+      res2,
+      structure(
+        list(
+          rate1 = c(0.101959623961425, 0.137000448427529),
+          rate2 = c(0.492102780837178, 0.517550777974819),
+          rate3 = c(0.405937595201397, 0.345448773597652),
+          a = c(0.25010006361869, 0.319608420079022),
+          b = c(0.74989993638131, 0.680391579920978)
+          ),
+        .Names = c("rate1", "rate2", "rate3", "a", "b"),
+        row.names = c(NA, -2L),
+        class = "data.frame")
     )
     
   }

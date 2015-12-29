@@ -3,21 +3,28 @@
 #' 
 #' @param mean Distribution mean.
 #' @param sd Distribution standard deviation.
-#' @param n Number of observed case for multinomial 
-#'   distribution.
-#' @param total Population size for multinomial
-#'   distribution.
+#' @param ... Dirichlet distribution parameters.
 #'   
-#' @return A function taking a probability as argument and 
-#'   returning the quantile from the specified ditribution.
 #' @export
 #' 
+norm <- function(mean, sd) {
+  list(r_norm(mean, sd))
+}
 r_norm <- function(mean, sd) {
   function(x) qnorm(p = x, mean = mean, sd = sd)
 }
 
-#' @rdname r_norm
+#' @rdname norm
 #' @export
+multinom <- function(...) {
+  list_param <- list(...)
+  total = sum(unlist(list_param))
+  structure(
+    lapply(list_param, function(x) r_multinom(x, total)),
+    class = c("list", "multinom_param")
+  )
+}
 r_multinom <- function(n, total) {
   function(x) qbeta(x, n, total - n)
 }
+

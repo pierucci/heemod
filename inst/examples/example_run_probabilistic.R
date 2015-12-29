@@ -49,8 +49,8 @@ res2 <- run_model(
 )
 
 rsp <- define_resample(
-    age_init = r_norm(60, 10),
-    cost_init = r_norm(1000, 100),
+    age_init ~ norm(60, 10),
+    cost_init ~ norm(1000, 100),
     correlation = matrix(c(
         1, .4,
         .4, 1

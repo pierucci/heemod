@@ -7,11 +7,10 @@
 #' If no correlation matrix is specified parameters are 
 #' assumed to be independant.
 #' 
-#' The correlation patrix need only be specified for
-#' correlated parameters. 
+#' The correlation patrix need only be specified for 
+#' correlated parameters.
 #' 
-#' @param ... Name-value pairs of expressions defining 
-#'   parameter distributions.
+#' @param ... Formulas defining parameter distributions.
 #' @param correlation A correlation matrix for parameters or
 #'   the output of \code{\link{define_correlation}}.
 #'   
@@ -26,8 +25,27 @@ define_resample <- function(...,
                             correlation) {
   .dots <- list(...)
   
-  list_qdist <- .dots[names(.dots) != ""]
-  list_multi <- .dots[names(.dots) == ""]
+  list_input <- lapply(
+    .dots,
+    function(x) eval(attr(terms(x), "variables")[[3]])
+  )
+  
+  list_qdist <- unlist(
+    list_input,
+    recursive = FALSE
+  )
+  names(list_qdist) <- unlist(
+    lapply(
+      .dots,
+      function(x) all.vars(x)
+    )
+  )
+  
+  list_multi <- lapply(
+    .dots[unlist(lapply(list_input,
+                        function(x) "multinom_param" %in% class(x)))],
+    function(x) define_multinom(force(all.vars(x)))
+  )
   
   if (missing(correlation)){
     correlation <- diag(length(list_qdist))
@@ -73,22 +91,12 @@ define_resample_ <- function(list_qdist, list_multi, correlation) {
 #' Define That Parameters Belong to the Same Multinomial
 #' Distribution
 #' 
-#' @param ... A list of parameter names.
+#' @param x A vector of parameter names.
 #'   
 #' @return An object of class \code{multinomial}.
-#' @export
 #' 
-#' @examples
-#' 
-#' define_multinom(a, b, c)
-#' 
-define_multinom <- function(...) {
-  .dots <- lazyeval::lazy_dots(...)
-  define_multinom_(.dots)
-}
-
-define_multinom_ <- function(.dots) {
-  char_var <- unlist(lapply(.dots, function(x) deparse(x$expr)))
+define_multinom <- function(x) {
+  char_var <- x
   
   # ugly piece of shit code
   expr_denom <- parse(text = paste(char_var, collapse = "+"))
@@ -109,7 +117,7 @@ define_multinom_ <- function(.dots) {
   
   structure(
     res,
-    class = "multinom"
+    class = c("function", "multinom")
   )
 }
 

@@ -5,10 +5,10 @@
 \title{Define That Parameters Belong to the Same Multinomial
 Distribution}
 \usage{
-define_multinom(...)
+define_multinom(x)
 }
 \arguments{
-\item{...}{A list of parameter names.}
+\item{x}{A vector of parameter names.}
 }
 \value{
 An object of class \code{multinomial}.
@@ -16,10 +16,5 @@ An object of class \code{multinomial}.
 \description{
 Define That Parameters Belong to the Same Multinomial
 Distribution
-}
-\examples{
-
-define_multinom(a, b, c)
-
 }
 

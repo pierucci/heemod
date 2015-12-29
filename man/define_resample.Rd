@@ -7,8 +7,7 @@
 define_resample(..., correlation)
 }
 \arguments{
-\item{...}{Name-value pairs of expressions defining 
-parameter distributions.}
+\item{...}{Formulas defining parameter distributions.}
 
 \item{correlation}{A correlation matrix for parameters or
 the output of \code{\link{define_correlation}}.}
@@ -27,7 +26,7 @@ analysis of Markov models.
 If no correlation matrix is specified parameters are 
 assumed to be independant.
 
-The correlation patrix need only be specified for
+The correlation patrix need only be specified for 
 correlated parameters.
 }
 \examples{
@@ -36,23 +35,16 @@ mc <- define_correlation(
 )
 
 define_resample(
-    age_init = r_norm(60, 10),
-    cost_init = r_norm(1000, 100),
+    age_init ~ norm(60, 10),
+    cost_init ~ norm(1000, 100),
     correlation = mc
 )
 
 # example with multinomial parameters
 
 define_resample(
-  rate1 = r_multinom(10, 100),
-  rate2 = r_multinom(50, 100),
-  rate3 = r_multinom(40, 100),
-  
-  a = r_multinom(15, 45),
-  b = r_multinom(30, 45),
-  
-  define_multinom(rate1, rate2, rate3),
-  define_multinom(a, b)
+  rate1 + rate2 + rate3 ~ multinom(10, 50, 40),
+  a + b ~ multinom(15, 30)
 )
 }
 
