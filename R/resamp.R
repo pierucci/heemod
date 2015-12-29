@@ -23,11 +23,15 @@
 #' @example inst/examples/example_define_resample.R
 #'   
 define_resample <- function(...,
-                            correlation = diag(length(list(...)))) {
+                            correlation) {
   .dots <- list(...)
   
-  list_qdist <- .dots[! is.na(names(.dots))]
-  list_multi <- .dots[is.na(names(.dots))]
+  list_qdist <- .dots[names(.dots) != ""]
+  list_multi <- .dots[names(.dots) == ""]
+  
+  if (missing(correlation)){
+    correlation <- diag(length(list_qdist))
+  }
   
   define_resample_(list_qdist, list_multi, correlation)
 }
@@ -37,7 +41,7 @@ define_resample_ <- function(list_qdist, list_multi, correlation) {
   stopifnot(
     length(unique(names(list_qdist))) == length(list_qdist),
     all(unlist(lapply(list_multi,
-                      function(x) "multinomial" %in% class(x))))
+                      function(x) "multinom" %in% class(x))))
   )
   
   # additional checks
@@ -62,7 +66,7 @@ define_resample_ <- function(list_qdist, list_multi, correlation) {
       correlation = correlation
     ),
     class = "resamp_definition",
-    multinomial = list_multi
+    multinom = list_multi
   )
 }
 
@@ -78,42 +82,35 @@ define_resample_ <- function(list_qdist, list_multi, correlation) {
 #' 
 #' define_multimomial(a, b, c)
 #' 
-define_multinomial <- function(...) {
+define_multinom <- function(...) {
   .dots <- lazyeval::lazy_dots(...)
-  define_multinomial_(.dots)
+  define_multinom_(.dots)
 }
 
-define_multinomial_ <- function(.dots) {
+define_multinom_ <- function(.dots) {
   char_var <- unlist(lapply(.dots, function(x) deparse(x$expr)))
   
   # ugly piece of shit code
-  denom <- paste("(", paste(char_var, collapse = "+"), ")", collapse = "")
+  expr_denom <- parse(text = paste(char_var, collapse = "+"))
   
-  res <- lapply(char_var, function(x)
-    parse(text = paste(x, denom, sep = "/")))
+  res <- function(x) {
+    
+    # ugly ugly baaaaad
+    # creates copies everywhere
+    # replace this with a nice mutate_() or something...
+    
+    denom <- eval(expr_denom, x)
+    
+    for (var in char_var) {
+      x[[var]] <- x[[var]] / denom
+    }
+    x
+  }
   
   structure(
     res,
-    names = char_var,
-    class = "multinomial"
+    class = "multinom"
   )
-}
-
-x=define_multinomial(a, b, c)
-
-
-#' Convenience Probability Density Functions for 
-#' Probabilistic Analysis
-#' 
-#' @param mean Distribution mean.
-#' @param sd Distribution standard deviation.
-#'   
-#' @return A function taking a probability as argument and
-#'   returning the quantile from the specified ditribution.
-#' @export
-#' 
-r_norm <- function(mean, sd) {
-  function(x) qnorm(p = x, mean = mean, sd = sd)
 }
 
 #' Define a Correlation Structure for Probabilistic 
@@ -243,12 +240,8 @@ eval_resample <- function(resample, N) {
   colnames(list_res) <- names(resample$list_qdist)
   res <- as.data.frame(list_res)
   
-  # ugly ugly baaaaad
-  # creates copies everywhere
-  # replace this with a nice mutate_() or something...
-  
-  for (p in names(resample$list_multi)) {
-    res[[p]] <- eval(resample$list_multi[[p]], res)
+  for (f in attr(resample, "multinom")) {
+    res <- f(res)
   }
   res
 }
