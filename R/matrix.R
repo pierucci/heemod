@@ -12,6 +12,9 @@
 #' 
 #' Matric cells are listed by row.
 #' 
+#' The completary probability of all other row probabilities
+#' can be conveniently reffered as \code{C}.
+#' 
 #' Only matrix size is checked during this step (the matrix 
 #' must be square). Other conditions (such as rowsums being 
 #' equal to 1) are tested later, during model evaluation.
@@ -55,6 +58,13 @@
 #' 
 #' define_matrix(
 #'   .5 - rr, rr,
+#'   .4, .6
+#' )
+#' 
+#' # can also use C
+#' 
+#' define_matrix(
+#'   C, rr,
 #'   .4, .6
 #' )
 #' 
@@ -147,7 +157,7 @@ check_matrix <- function(x, ...) {
 #'   transition matrix, one per cycle).
 eval_matrix <- function(x, parameters) {
   
-  tab_res <- mutate_(parameters, .dots = x)[names(x)]
+  tab_res <- mutate_(parameters, C = -pi, .dots = x)[names(x)]
   
   n <- get_matrix_order(x)
   
@@ -155,6 +165,15 @@ eval_matrix <- function(x, parameters) {
     res <- matrix(c(...),
                   byrow = TRUE,
                   nrow = n)
+    
+    posC <- res == -pi
+    stopifnot(
+      rowSums(posC) <= 1
+    )
+    res[posC] <- 0
+    valC <- 1 - rowSums(res)[rowSums(posC) == 1]
+    res[posC] <- valC
+    
     check_matrix(res)
     list(res)
   }

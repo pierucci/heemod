@@ -121,11 +121,19 @@ test_that(
       1-a, a,
       1-b, b
     )
+    matC <- define_matrix(
+      state_names = c("X1", "X2"),
+      C, a,
+      C, b
+    )
     e_par1 <- eval_parameters(
       par1, 10
     )
     e_mat <- eval_matrix(
       mat1, e_par1
+    )
+    e_matC <- eval_matrix(
+      matC, e_par1
     )
     expect_output(
       str(e_mat),
@@ -166,5 +174,6 @@ X2
     expect_equal(
       get_matrix_order(e_mat), 2
     )
+    expect_equal(e_mat, e_matC)
   }
 )

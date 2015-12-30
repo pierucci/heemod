@@ -4,6 +4,7 @@
 
   * added ability to plot matrix.
   * added framework for pobabilistic incertitude analysis.
+  * added complement alias for matrix definition.
   
 ## Bug fixes
 
