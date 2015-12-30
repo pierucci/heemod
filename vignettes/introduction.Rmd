@@ -80,16 +80,6 @@ state_B <- define_state(
 state_B
 ```
 
-In order to specify that both states belong to the same model they must be combined together with `define_state_list`:
-
-```{r}
-state_list <- define_state_list(
-  state_A,
-  state_B
-)
-state_list
-```
-
 # Combine information in a model
 
 Now that the transition matrix and the state values are defined, we can combine them to create a Markov model with `define_model`:
@@ -97,7 +87,8 @@ Now that the transition matrix and the state values are defined, we can combine 
 ```{r}
 mod_1 <- define_model(
   transition_matrix = mat_trans,
-  states = state_list
+  state_A,
+  state_B
 )
 mod_1
 ```

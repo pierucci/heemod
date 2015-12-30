@@ -13,14 +13,13 @@ test_that(
           .5, .5,
           .1, .9
         ),
-        states = define_state_list(
-          define_state(
-            cost = 543 + age * 5
-          ),
-          define_state(
-            cost = 432 + age
-          )
+        define_state(
+          cost = 543 + age * 5
+        ),
+        define_state(
+          cost = 432 + age
         )
+        
       )
     
     mod2 <-
@@ -33,13 +32,11 @@ test_that(
           .5, .5,
           .1, .9
         ),
-        states = define_state_list(
-          define_state(
-            cost = 789 * age / 10
-          ),
-          define_state(
-            cost = 456 * age / 10
-          )
+        define_state(
+          cost = 789 * age / 10
+        ),
+        define_state(
+          cost = 456 * age / 10
         )
       )
     
@@ -89,14 +86,13 @@ test_that(
           .5, .5,
           .1, .9
         ),
-        states = define_state_list(
-          define_state(
-            cost = cost_init + age * 5
-          ),
-          define_state(
-            cost = cost_init + age
-          )
+        define_state(
+          cost = cost_init + age * 5
+        ),
+        define_state(
+          cost = cost_init + age
         )
+        
       )
     
     # running several models
@@ -110,14 +106,13 @@ test_that(
           .5, .5,
           .1, .9
         ),
-        states = define_state_list(
-          define_state(
-            cost = 789 * age / 10
-          ),
-          define_state(
-            cost = 456 * age / 10
-          )
+        define_state(
+          cost = 789 * age / 10
+        ),
+        define_state(
+          cost = 456 * age / 10
         )
+        
       )
     
     res2 <- run_model(
@@ -174,7 +169,7 @@ test_that(
           rate3 = c(0.405937595201397, 0.345448773597652),
           a = c(0.25010006361869, 0.319608420079022),
           b = c(0.74989993638131, 0.680391579920978)
-          ),
+        ),
         .Names = c("rate1", "rate2", "rate3", "a", "b"),
         row.names = c(NA, -2L),
         class = "data.frame")

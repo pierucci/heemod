@@ -19,14 +19,12 @@ test_that(
       x = 987,
       y = 1726
     )
-    sl1 <- define_state_list(
-      X1 = s1,
-      X2 = s2
-    )
+
     mod1 <- define_model(
       parameters = par1,
       transition_matrix = mat1,
-      states = sl1
+      X1 = s1,
+      X2 = s2
     )
     s3 <- define_state(
       x = 987,
@@ -36,14 +34,11 @@ test_that(
       x = 456,
       y = 1029
     )
-    sl2 <- define_state_list(
-      X1 = s3,
-      X2 = s4
-    )
     mod2 <- define_model(
       parameters = par1,
       transition_matrix = mat1,
-      states = sl2
+      X1 = s3,
+      X2 = s4
     )
     expect_error(
       run_models(
@@ -102,14 +97,11 @@ test_that(
       x = 987,
       y = 1726
     )
-    sl1 <- define_state_list(
-      X1 = s1,
-      X2 = s2
-    )
     mod1 <- define_model(
       parameters = par1,
       transition_matrix = mat1,
-      states = sl1
+      X1 = s1,
+      X2 = s2
     )
     s3 <- define_state(
       x = 987,
@@ -119,14 +111,11 @@ test_that(
       x = 456,
       y = 1029
     )
-    sl2 <- define_state_list(
-      X1 = s3,
-      X2 = s4
-    )
     mod2 <- define_model(
       parameters = par1,
       transition_matrix = mat1,
-      states = sl2
+      X1 = s3,
+      X2 = s4
     )
     expect_identical(
       run_model(mod1, mod2),

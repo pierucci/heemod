@@ -3,7 +3,8 @@
 ## Enhancements
 
   * added ability to plot matrix.
-  * added framework for pobabilistic incertitude analysis.
+  * added framework for probabilistic incertitude analysis.
+  * removed need to use `define_state_list()`.
   
 ## Bug fixes
 

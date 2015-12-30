@@ -143,7 +143,6 @@ print.state <- function(x, ...) {
 #'   
 #' @return An object of class \code{uneval_state_list} (a
 #'   list of \code{state} objects).
-#' @export
 #' 
 #' @examples
 #' 

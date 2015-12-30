@@ -19,18 +19,11 @@ test_that(
       x = 987,
       y = 1726
     )
-    sl1 <- define_state_list(
-      X1 = s1,
-      X2 = s2
-    )
-    sl2 <- define_state_list(
-      X1 = s1,
-      X3 = s2
-    )
     mod1 <- define_model(
       parameters = par1,
       transition_matrix = mat1,
-      states = sl1
+      X1 = s1,
+      X2 = s2
     )
     expect_output(
       print(mod1),
@@ -53,7 +46,8 @@ test_that(
       define_model(
         parameters = par1,
         transition_matrix = mat1,
-        states = sl2
+        X1 = s1,
+        X3 = s2
       )
     )
   }
@@ -78,18 +72,11 @@ test_that(
       x = 987,
       y = 1726
     )
-    sl1 <- define_state_list(
-      X1 = s1,
-      X2 = s2
-    )
-    sl2 <- define_state_list(
-      X1 = s1,
-      X3 = s2
-    )
     mod1 <- define_model(
       parameters = par1,
       transition_matrix = mat1,
-      states = sl1
+      X1 = s1,
+      X2 = s2
     )
     e_mod <- run_model(
       mod1,
@@ -176,28 +163,17 @@ test_that(
       x = 987,
       y = 1726
     )
-    sl1 <- define_state_list(
-      X1 = s1,
-      X2 = s2
-    )
-    sl2 <- define_state_list(
-      X1 = s1,
-      X3 = s2
-    )
     mod1 <- define_model(
       parameters = par1,
       transition_matrix = mat1,
-      states = sl1
-    )
-    
-    sl3 <- define_state_list(
       X1 = s1,
-      X2 = s1
+      X2 = s2
     )
     mod2 <- define_model(
       parameters = par1,
       transition_matrix = mat1,
-      states = sl3
+      X1 = s1,
+      X2 = s1
     )
     
     e_mod2 <- run_models(

@@ -138,11 +138,11 @@ mat_trans <- define_matrix(
       "SuccessR",
       "Death"
     ),
-    0, 1-omrPTHR,         0,          0,          omrPTHR,
-    0, 1-(standardRR+mr), standardRR, 0,          mr,
-    0, 0,                 0, 1-(omrRTHR+mr), omrRTHR+mr,
-    0, 0,                 rrr,        1-(mr+rrr), mr,
-    0, 0,                 0,          0,          1
+    0, C, 0,          0, omrPTHR,
+    0, C, standardRR, 0, mr,
+    0, 0, 0,          C, omrRTHR+mr,
+    0, 0, rrr,        C, mr,
+    0, 0, 0,          0, 1
 )
 mat_trans
 ```
@@ -154,37 +154,9 @@ plot(mat_trans)
 ```
 
 
-# State definition
+# State & model definition
 
 Utilities and costs are then associated to states. In this model costs are discounted at a rate of 6% and utilities at a rate of 1.5%.
-
-```{r}
-state_list <- define_state_list(
-    PrimaryTHR = define_state(
-      utility = 0,
-      cost = 0
-    ),
-    SuccessP = define_state(
-      utility = discount(.85, .015),
-      cost = 0
-    ),
-    RevisionTHR = define_state(
-      utility = discount(.30, .015),
-      cost = discount(5294, .06)
-    ),
-    SuccessR = define_state(
-      utility = discount(.75, .015),
-      cost = 0
-    ),
-    Death = define_state(
-      utility = 0,
-      cost = 0
-    )
-  )
-state_list
-```
-
-# Model definition
 
 Now that parameters, transition matrix and states are defined we can define the models for the control group and the NP1 treatment:
 
@@ -192,14 +164,52 @@ Now that parameters, transition matrix and states are defined we can define the 
 mod_standard <- define_model(
   parameters = param_standard,
   transition_matrix = mat_trans,
-  states = state_list
+  PrimaryTHR = define_state(
+    utility = 0,
+    cost = 0
+  ),
+  SuccessP = define_state(
+    utility = discount(.85, .015),
+    cost = 0
+  ),
+  RevisionTHR = define_state(
+    utility = discount(.30, .015),
+    cost = discount(5294, .06)
+  ),
+  SuccessR = define_state(
+    utility = discount(.75, .015),
+    cost = 0
+  ),
+  Death = define_state(
+    utility = 0,
+    cost = 0
+  )
 )
 mod_standard
 
 mod_np1 <- define_model(
   parameters = param_np1,
   transition_matrix = mat_trans,
-  states = state_list
+  PrimaryTHR = define_state(
+    utility = 0,
+    cost = 0
+  ),
+  SuccessP = define_state(
+    utility = discount(.85, .015),
+    cost = 0
+  ),
+  RevisionTHR = define_state(
+    utility = discount(.30, .015),
+    cost = discount(5294, .06)
+  ),
+  SuccessR = define_state(
+    utility = discount(.75, .015),
+    cost = 0
+  ),
+  Death = define_state(
+    utility = 0,
+    cost = 0
+  )
 )
 ```
 

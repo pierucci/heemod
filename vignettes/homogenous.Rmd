@@ -146,34 +146,6 @@ D_comb <-
   )
 ```
 
-# State lists
-
-All states from a treatment group must be combined in a state list with `define_state_list`:
-
-```{r}
-states_mono <-
-  define_state_list(
-    A_mono,
-    B_mono,
-    C_mono,
-    D_mono
-  )
-states_mono
-```
-
-Similarly for combined therapy:
-
-```{r}
-
-states_comb <-
-  define_state_list(
-    A_comb,
-    B_comb,
-    C_comb,
-    D_comb
-  )
-```
-
 # Model definition
 
 Models can now be defined by combining a transition matrix and a state list with `define_model`:
@@ -181,7 +153,10 @@ Models can now be defined by combining a transition matrix and a state list with
 ```{r}
 mod_mono <- define_model(
   transition_matrix = mat_mono,
-  states = states_mono
+  A_mono,
+  B_mono,
+  C_mono,
+  D_mono
 )
 mod_mono
 ```
@@ -191,7 +166,10 @@ For the combined therapy model:
 ```{r}
 mod_comb <- define_model(
   transition_matrix = mat_comb,
-  states = states_comb
+  A_comb,
+  B_comb,
+  C_comb,
+  D_comb
 )
 ```
 
