@@ -5,6 +5,7 @@
   * added ability to plot matrix.
   * added framework for probabilistic incertitude analysis.
   * removed need to use `define_state_list()`.
+  * added complement alias for matrix definition.
   
 ## Bug fixes
 

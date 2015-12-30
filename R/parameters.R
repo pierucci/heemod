@@ -113,7 +113,7 @@ define_parameters <- function(...) {
 define_parameters_ <- function(.dots) {
   
   stopifnot(
-    all(names(.dots) != "markov_cycle")
+    all(! names(.dots) %in% c("markov_cycle", "C"))
   )
   
   structure(.dots,

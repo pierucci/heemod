@@ -47,6 +47,9 @@ in the environment where the matrix was defined.
 
 Matric cells are listed by row.
 
+The completary probability of all other row probabilities
+can be conveniently reffered as \code{C}.
+
 Only matrix size is checked during this step (the matrix 
 must be square). Other conditions (such as rowsums being 
 equal to 1) are tested later, during model evaluation.
@@ -76,6 +79,13 @@ plot(mat_1)
 
 define_matrix(
   .5 - rr, rr,
+  .4, .6
+)
+
+# can also use C
+
+define_matrix(
+  C, rr,
   .4, .6
 )
 
