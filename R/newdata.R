@@ -35,16 +35,12 @@
 #'   1-b, b,
 #'   0, 1
 #' )
-#' 
-#' sl1 <- define_state_list(
-#'   define_state(var = a),
-#'   define_state(var = a * markov_cycle)
-#' )
-#' 
+
 #' mod1 <- define_model(
 #'   parameters = par1,
 #'   transition_matrix = mat1,
-#'   states = sl1
+#'   define_state(var = a),
+#'   define_state(var = a * markov_cycle)
 #' )
 #' 
 #' new_tab <- data.frame(
@@ -123,14 +119,13 @@ if(getRversion() >= "2.15.1") utils::globalVariables(c("."))
 #'       .5, .5,
 #'       .1, .9
 #'     ),
-#'     states = define_state_list(
 #'       define_state(
 #'         cost = 543 + age * 5
 #'       ),
 #'       define_state(
 #'         cost = 432 + age
 #'       )
-#'     )
+#'     
 #'   )
 #' 
 #' mod2 <-
@@ -143,14 +138,13 @@ if(getRversion() >= "2.15.1") utils::globalVariables(c("."))
 #'       .5, .5,
 #'       .1, .9
 #'     ),
-#'     states = define_state_list(
 #'       define_state(
 #'         cost = 789 * age / 10
 #'       ),
 #'       define_state(
 #'         cost = 456 * age / 10
 #'       )
-#'     )
+#'     
 #'   )
 #' 
 #' res2 <- run_model(

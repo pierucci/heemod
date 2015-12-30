@@ -46,16 +46,11 @@ mat1 <- define_matrix(
   1-b, b,
   0, 1
 )
-
-sl1 <- define_state_list(
-  define_state(var = a),
-  define_state(var = a * markov_cycle)
-)
-
 mod1 <- define_model(
   parameters = par1,
   transition_matrix = mat1,
-  states = sl1
+  define_state(var = a),
+  define_state(var = a * markov_cycle)
 )
 
 new_tab <- data.frame(

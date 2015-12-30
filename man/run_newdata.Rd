@@ -43,14 +43,13 @@ mod1 <-
       .5, .5,
       .1, .9
     ),
-    states = define_state_list(
       define_state(
         cost = 543 + age * 5
       ),
       define_state(
         cost = 432 + age
       )
-    )
+    
   )
 
 mod2 <-
@@ -63,14 +62,13 @@ mod2 <-
       .5, .5,
       .1, .9
     ),
-    states = define_state_list(
       define_state(
         cost = 789 * age / 10
       ),
       define_state(
         cost = 456 * age / 10
       )
-    )
+    
   )
 
 res2 <- run_model(

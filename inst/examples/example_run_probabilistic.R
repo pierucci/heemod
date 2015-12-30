@@ -11,13 +11,11 @@ mod1 <-
       .5, .5,
       .1, .9
     ),
-    states = define_state_list(
-      define_state(
-        cost = cost_init + age * 5
-      ),
-      define_state(
-        cost = cost_init + age
-      )
+    define_state(
+      cost = cost_init + age * 5
+    ),
+    define_state(
+      cost = cost_init + age
     )
   )
 
@@ -32,14 +30,13 @@ mod2 <-
       .5, .5,
       .1, .9
     ),
-    states = define_state_list(
-      define_state(
-        cost = 789 * age / 10
-      ),
-      define_state(
-        cost = 456 * age / 10
-      )
+    define_state(
+      cost = 789 * age / 10
+    ),
+    define_state(
+      cost = 456 * age / 10
     )
+    
   )
 
 res2 <- run_model(
@@ -49,12 +46,12 @@ res2 <- run_model(
 )
 
 rsp <- define_resample(
-    age_init ~ norm(60, 10),
-    cost_init ~ norm(1000, 100),
-    correlation = matrix(c(
-        1, .4,
-        .4, 1
-    ), byrow = TRUE, ncol = 2)
+  age_init ~ norm(60, 10),
+  cost_init ~ norm(1000, 100),
+  correlation = matrix(c(
+    1, .4,
+    .4, 1
+  ), byrow = TRUE, ncol = 2)
 )
 
 

@@ -145,7 +145,7 @@ print.state <- function(x, ...) {
 #'   list of \code{state} objects).
 #' 
 #' @examples
-#' 
+#' \dontrun{
 #' s1 <- define_state(cost = 1, util = 1)
 #' s2 <- define_state(cost = 3, util = .4)
 #' 
@@ -164,7 +164,7 @@ print.state <- function(x, ...) {
 #'   healthy = s1_bis,
 #'   sicker = s3
 #' )
-#' 
+#' }
 define_state_list <- function(...) {
   .dots <- list(...)
   

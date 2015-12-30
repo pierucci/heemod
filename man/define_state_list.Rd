@@ -33,7 +33,7 @@ The \code{modify} function can modify existing states or
 add new ones.
 }
 \examples{
-
+\dontrun{
 s1 <- define_state(cost = 1, util = 1)
 s2 <- define_state(cost = 3, util = .4)
 
@@ -52,6 +52,6 @@ modify(
   healthy = s1_bis,
   sicker = s3
 )
-
+}
 }
 
