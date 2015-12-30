@@ -14,12 +14,9 @@ You can install:
 install.packages("heemod")
 ```
 
-  * the latest development version from github (warning: package `devtools` needed) with:
+  * the latest development version from github with:
 
 ```r
-if (packageVersion("devtools") < 1.6) {
-  install.packages("devtools")
-}
 devtools::install_github("pierucci/heemod")
 ```
 
@@ -28,6 +25,7 @@ devtools::install_github("pierucci/heemod")
   * Time-varying transition probabilities.
   * Time-varying values attached to states.
   * Heterogeneity analysis.
+  * Probabilistic incertitude analysis.
 
 # Learning heemod
 
@@ -42,7 +40,6 @@ Specific analysis examples (mostly inspired from Decision Modelling for Health E
 
 In version 1.0 :
 
-  * Probabilistic incertitude analysis.
   * Deterministic sensitivity analysis.
   * Graphical analysis of Markov models.
 
