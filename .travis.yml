@@ -3,3 +3,9 @@
 language: r
 warnings_are_errors: true
 sudo: required
+
+env:
+  matrix:
+    - RVERSION=oldrel
+    - RVERSION=release
+    - RVERSION=devel
