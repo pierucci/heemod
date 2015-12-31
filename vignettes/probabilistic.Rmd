@@ -1,0 +1,198 @@
+---
+title: "Probabilistic incertitude analysis"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Probabilistic incertitude analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r, echo=FALSE, include=FALSE}
+library(heemod)
+```
+
+This vignette shows how to transform the deterministic Markov model presented in `vignette("homogenous", "heemod")` in a probabilistic model.
+
+# Model definition
+
+We will start by re-specifying the deterministic model of HIV therapy described previously. But instead of defining parameters in the matrix or state definition (as in the previous vignette), parameters will be defined in a `define_parameters()` step.
+
+We cannot use the complement alias `C` to specify `p_AA` because we will need to resample that value. A parameter not specified cannot be resampled.
+
+This is necessary because only parameters defined with `define_parameters()` can be resampled.
+
+```{r}
+param_mono <- define_parameters(
+  rr = .509,
+  
+  p_AB_mono = .202,
+  p_AC_mono = .067,
+  p_AD_mono = .010,
+  
+  p_BC_mono = .407,
+  p_BD_mono = .012,
+  
+  p_CD_mono = .250,
+  
+  
+  p_AB = p_AB_mono,
+  p_AC = p_AC_mono,
+  p_AD = p_AD_mono,
+  
+  p_BC = p_BC_mono,
+  p_BD = p_BD_mono,
+  
+  p_CD = p_CD_mono,
+  
+  p_AA = 1 - (p_AB + p_AC + p_AD),
+  
+  cost_zido = 2278,
+  cost_lami = 2086,
+  
+  cost_A = 2756,
+  cost_B = 3052,
+  cost_C = 9007
+)
+param_comb <- modify(
+  param_mono,
+  
+  p_AB = p_AB_mono * rr,
+  p_AC = p_AC_mono * rr,
+  p_AD = p_AD_mono * rr,
+  
+  p_BC = p_BC_mono * rr,
+  p_BD = p_BD_mono * rr,
+  
+  p_CD = p_CD_mono * rr
+)
+
+mat_trans <- define_matrix(
+  p_AA, p_AB, p_AC, p_AD,
+  .000, C,    p_BC, p_BD,
+  .000, .000, C,    p_CD,
+  .000, .000, .000, 1.00
+)
+A_mono <- define_state(
+  cost_health = 2756,
+  cost_drugs = cost_zido,
+  cost_total = discount(cost_health + cost_drugs, .06),
+  life_year = 1
+)
+B_mono <- define_state(
+  cost_health = 3052,
+  cost_drugs = cost_zido,
+  cost_total = discount(cost_health + cost_drugs, .06),
+  life_year = 1
+)
+C_mono <- define_state(
+  cost_health = 9007,
+  cost_drugs = cost_zido,
+  cost_total = discount(cost_health + cost_drugs, .06),
+  life_year = 1
+)
+D_mono <- define_state(
+  cost_health = 0,
+  cost_drugs = 0,
+  cost_total = discount(cost_health + cost_drugs, .06),
+  life_year = 0
+)
+
+A_comb <- define_state(
+  cost_health = cost_A,
+  cost_drugs = cost_zido + cost_lami,
+  cost_total = discount(cost_health + cost_drugs, .06),
+  life_year = 1
+)
+B_comb <- define_state(
+  cost_health = cost_B,
+  cost_drugs = cost_zido + cost_lami,
+  cost_total = discount(cost_health + cost_drugs, .06),
+  life_year = 1
+)
+C_comb <- define_state(
+  cost_health = cost_C,
+  cost_drugs = cost_zido + cost_lami,
+  cost_total = discount(cost_health + cost_drugs, .06),
+  life_year = 1
+)
+D_comb <- define_state(
+  cost_health = 0,
+  cost_drugs = 0,
+  cost_total = discount(cost_health + cost_drugs, .06),
+  life_year = 0
+)
+
+mod_mono <- define_model(
+  parameters = param_mono,
+  transition_matrix = mat_trans,
+  A_mono,
+  B_mono,
+  C_mono,
+  D_mono
+)
+
+mod_comb <- define_model(
+  parameters = param_comb,
+  transition_matrix = mat_trans,
+  A_comb,
+  B_comb,
+  C_comb,
+  D_comb
+)
+
+res_mod <- run_model(
+  mono = mod_mono,
+  comb = mod_comb,
+  cycles = 20
+)
+```
+
+# Define resampling distributions
+
+Now we can define the resample definition. The following distributions will be used:
+
+  * A distribution for relative risk.
+  * A distribution for cost such that cost is always positive.
+  * A binomial distribution for the transition from AIDS to death.
+  * A Dirichlet distribution for the transition matrix.
+
+In order to specify the distribution of costs we will use the `special()` distribution function, that will generate a distribution with the given mean and standard deviation with all values superior to `min`.
+
+```{r}
+rsp <- define_resample(
+  rr ~ lognormal(mean = log(.509), sd = .173),
+  
+  cost_A ~ make_gamma(mean = 2756, sd = sqrt(2756)),
+  cost_B ~ make_gamma(mean = 3052, sd = sqrt(3052)),
+  cost_C ~ make_gamma(mean = 9007, sd = sqrt(9007)),
+  
+  p_CD ~ prop(prob = .25, size = 40),
+  
+  p_AA + p_AB + p_AC + p_AD ~ multinom(721, 202, 67, 10)
+)
+```
+
+# Run probabilistic model
+
+Now that the distributions of parameters are set we can run the probabilistic model as follow:
+
+```{r}
+pm <- run_probabilistic(
+  model = res_mod,
+  resample = rsp,
+  N = 1e1
+)
+```
+
+# Explore results
+
+```{r}
+d_cout <- pm$comb$cost_total - pm$mono$cost_total
+d_ly <- pm$comb$life_year - pm$mono$life_year
+
+res <- data.frame(cout = d_cout, ly = d_ly)
+
+ggplot(res, aes(ly, cout)) +
+  geom_point()
+```
