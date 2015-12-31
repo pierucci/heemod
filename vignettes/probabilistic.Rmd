@@ -16,34 +16,36 @@ This vignette shows how to transform the deterministic Markov model presented in
 
 # Model definition
 
-We will start by re-specifying the deterministic model of HIV therapy described previously. But instead of defining parameters in the matrix or state definition (as in the previous vignette), parameters will be defined in a `define_parameters()` step.
+We will start by re-specifying the deterministic models of HIV therapy described previously (a model for monotherapy `mono` and a model for combined therapy `comb`).
 
-We cannot use the complement alias `C` to specify `p_AA` because we will need to resample that value. A parameter not specified cannot be resampled.
+But instead of defining parameters directly in `define_matrix()` or `define_state()` (as in the previous vignette), parameters will be defined first in a `define_parameters()` step.
 
-This is necessary because only parameters defined with `define_parameters()` can be resampled.
+We have to define common parameters in both models because during probabilistic analysis resampled parameters are replaced for both models. So we cannot have `p_AB = 0.202` in model `mono` and `p_AB = 0.202 * rr` in model `comb`, because if we resample the base transition rate to a new value `p_AB'` we will have `p_AB = p_AB'` in both models, instead of what we expected (we expected `p_AB = p_AB' * rr` in model `comb` in case you were wondering).
+
+To avoid that problem we use `p_XX_base` parameters that are the ones that will be resampled.
 
 ```{r}
 param_mono <- define_parameters(
   rr = .509,
   
-  p_AB_mono = .202,
-  p_AC_mono = .067,
-  p_AD_mono = .010,
+  p_AB_base = .202,
+  p_AC_base = .067,
+  p_AD_base = .010,
   
-  p_BC_mono = .407,
-  p_BD_mono = .012,
+  p_BC_base = .407,
+  p_BD_base = .012,
   
-  p_CD_mono = .250,
+  p_CD_base = .250,
   
   
-  p_AB = p_AB_mono,
-  p_AC = p_AC_mono,
-  p_AD = p_AD_mono,
+  p_AB = p_AB_base,
+  p_AC = p_AC_base,
+  p_AD = p_AD_base,
   
-  p_BC = p_BC_mono,
-  p_BD = p_BD_mono,
+  p_BC = p_BC_base,
+  p_BD = p_BD_base,
   
-  p_CD = p_CD_mono,
+  p_CD = p_CD_base,
   
   p_AA = 1 - (p_AB + p_AC + p_AD),
   
@@ -57,22 +59,31 @@ param_mono <- define_parameters(
 param_comb <- modify(
   param_mono,
   
-  p_AB = p_AB_mono * rr,
-  p_AC = p_AC_mono * rr,
-  p_AD = p_AD_mono * rr,
+  p_AB = p_AB_base * rr,
+  p_AC = p_AC_base * rr,
+  p_AD = p_AD_base * rr,
   
-  p_BC = p_BC_mono * rr,
-  p_BD = p_BD_mono * rr,
+  p_BC = p_BC_base * rr,
+  p_BD = p_BD_base * rr,
   
-  p_CD = p_CD_mono * rr
+  p_CD = p_CD_base * rr
 )
+```
 
+We cannot use the complement alias `C` to specify `p_AA` because we will need to resample that value. Only parameters defined with `define_parameters()` can be resampled.
+
+```{r}
 mat_trans <- define_matrix(
   p_AA, p_AB, p_AC, p_AD,
   .000, C,    p_BC, p_BD,
   .000, .000, C,    p_CD,
   .000, .000, .000, 1.00
 )
+```
+
+State definition remains the same. in this example.
+
+```{r}
 A_mono <- define_state(
   cost_health = 2756,
   cost_drugs = cost_zido,
@@ -122,7 +133,11 @@ D_comb <- define_state(
   cost_total = discount(cost_health + cost_drugs, .06),
   life_year = 0
 )
+```
 
+Models are defined and run as in a standard deterministic analysis.
+
+```{r}
 mod_mono <- define_model(
   parameters = param_mono,
   transition_matrix = mat_trans,
@@ -150,14 +165,28 @@ res_mod <- run_model(
 
 # Define resampling distributions
 
-Now we can define the resample definition. The following distributions will be used:
+Now we can define the resampling distributions. The following distributions will be used:
 
   * A distribution for relative risk.
   * A distribution for cost such that cost is always positive.
   * A binomial distribution for the transition from AIDS to death.
   * A Dirichlet distribution for the transition matrix.
 
-In order to specify the distribution of costs we will use the `special()` distribution function, that will generate a distribution with the given mean and standard deviation with all values superior to `min`.
+Since the log of a relative risk follows a lognormal distribution, relative risk follows a lognormal distribution whose mean on the log scale is `log(rr)` and standard deviantion on the log scale can be deduced from the relative risk confidence interval.
+
+  * `rr ~ lognormal(mean = log(.509), sd = .173)`
+
+Usually costs are resampled on a gamma distribution, who has the property of being always positive. Shape and scale parameters of the gamma distribution can be calculated from the mean and standard deviation desired in the distribution.
+
+  * `cost_A ~ make_gamma(mean = 2756, sd = sqrt(2756))`
+
+Proportions follow a binomial distribution that can be estimated by giving the mean proportion and the size of the sample used to estimate that proportion.
+
+  * `p_CD ~ prop(prob = .25, size = 40)`
+
+Finally multinomial distributions are declared with the number of individuals in each group in the sample used to estimate the proportions.
+
+  * `p_AA + p_AB + p_AC + p_AD ~ multinom(721, 202, 67, 10)`
 
 ```{r}
 rsp <- define_resample(
@@ -175,7 +204,7 @@ rsp <- define_resample(
 
 # Run probabilistic model
 
-Now that the distributions of parameters are set we can run the probabilistic model as follow:
+Now that the distributions of parameters are set we can simply run the probabilistic model as follow:
 
 ```{r}
 pm <- run_probabilistic(
