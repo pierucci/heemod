@@ -193,6 +193,8 @@ d_ly <- pm$comb$life_year - pm$mono$life_year
 
 res <- data.frame(cout = d_cout, ly = d_ly)
 
+library(ggplot2)
+
 ggplot(res, aes(ly, cout)) +
   geom_point()
 ```

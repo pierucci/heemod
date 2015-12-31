@@ -24,6 +24,10 @@ multinom(...)
 
 \item{sd}{Distribution standard deviation.}
 
+\item{prob}{Proportion.}
+
+\item{size}{Size of sample used to estimate proportion.}
+
 \item{...}{Dirichlet distribution parameters.}
 }
 \description{

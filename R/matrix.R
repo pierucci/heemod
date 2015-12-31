@@ -137,13 +137,12 @@ define_matrix_ <- function(
 check_matrix <- function(x, ...) {
   info <- list(...)
 
-  if (! isTRUE(
-    all.equal(rowSums(x), rep(1, nrow(x)))
-  )&
-  all(x >= 0 & x <= 1)) {
-    print(x)
-    stop()
-  }
+  stopifnot(
+    isTRUE(
+      all.equal(rowSums(x), rep(1, nrow(x)))
+    ),
+    all(x >= 0 & x <= 1)
+  )
 }
 
 #' Evaluate Markov Model Transition Matrix

@@ -4,6 +4,8 @@
 #' @param mean Distribution mean.
 #' @param sd Distribution standard deviation.
 #' @param ... Dirichlet distribution parameters.
+#' @param prob Proportion.
+#' @param size Size of sample used to estimate proportion.
 #'   
 #' @export
 #' 
