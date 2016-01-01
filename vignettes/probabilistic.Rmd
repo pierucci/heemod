@@ -56,6 +56,11 @@ param_mono <- define_parameters(
   cost_B = 3052,
   cost_C = 9007
 )
+```
+
+We can then define transition probabilities in the `comb` model according to base transition probabilities.
+
+```{r}
 param_comb <- modify(
   param_mono,
   
@@ -85,19 +90,19 @@ State definition remains the same. in this example.
 
 ```{r}
 A_mono <- define_state(
-  cost_health = 2756,
+  cost_health = cost_A,
   cost_drugs = cost_zido,
   cost_total = discount(cost_health + cost_drugs, .06),
   life_year = 1
 )
 B_mono <- define_state(
-  cost_health = 3052,
+  cost_health = cost_B,
   cost_drugs = cost_zido,
   cost_total = discount(cost_health + cost_drugs, .06),
   life_year = 1
 )
 C_mono <- define_state(
-  cost_health = 9007,
+  cost_health = cost_C,
   cost_drugs = cost_zido,
   cost_total = discount(cost_health + cost_drugs, .06),
   life_year = 1
@@ -210,7 +215,7 @@ Now that the distributions of parameters are set we can simply run the probabili
 pm <- run_probabilistic(
   model = res_mod,
   resample = rsp,
-  N = 1e1
+  N = 1e2
 )
 ```
 
@@ -225,5 +230,7 @@ res <- data.frame(cout = d_cout, ly = d_ly)
 library(ggplot2)
 
 ggplot(res, aes(ly, cout)) +
-  geom_point()
+  geom_point() +
+  geom_density2d() +
+  theme_light()
 ```
