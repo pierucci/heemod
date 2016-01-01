@@ -12,3 +12,5 @@ LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
 Suggests: testthat, knitr, ggplot2
+URL: https://github.com/pierucci/heemod
+BugReports: https://github.com/pierucci/heemod/issues

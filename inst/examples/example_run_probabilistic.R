@@ -56,4 +56,5 @@ rsp <- define_resample(
 
 
 # with run_model result
-ndt1 <- run_probabilistic(res2, resample = rsp, N = 100)
+# (only 10 resample for speed)
+ndt1 <- run_probabilistic(res2, resample = rsp, N = 10)

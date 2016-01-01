@@ -4,6 +4,7 @@
 
   * added ability to plot matrix.
   * added framework for probabilistic incertitude analysis.
+  * written vignette for probabilistic incertitude analysis.
   * added complement alias for matrix definition.
   
 ## Bug fixes

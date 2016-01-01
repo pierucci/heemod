@@ -1,5 +1,8 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.git
-^.*\.example$
 ^\.travis\.yml$
+NEWS\.md
+^README\.html$
+^vignettes/.*\.html$
+^vignettes/.*\.md$
