@@ -11,11 +11,28 @@ mat <- define_matrix(
   0, 1
 )
 
-s1 <- define_state(cost = 234)
-s2 <- define_state(cost = 421)
+s1 <- define_state(
+  cost = 234,
+  utility = 1
+  )
+s2 <- define_state(
+  cost = 421,
+  utility = .5
+  )
 
 define_model(
   parameters = param,
   transition_matrix = mat,
-  s1 = s1, s2 = s2
+  s1 = s1,
+  s2 = s2
+)
+
+# with starting values
+
+define_model(
+  parameters = param,
+  transition_matrix = mat,
+  s1 = s1,
+  s2 = s2,
+  starting_values = c(cost = 500)
 )

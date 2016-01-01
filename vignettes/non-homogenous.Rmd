@@ -82,7 +82,7 @@ Revision THR re-revision (`rrr`) probability is set to be constant at 0.04 per y
 
 The key element to specify time-varying elements in `heemod` is through the use of a package-defined variable, `markov_model`. This variable takes increasing values with each cycles, starting from 1. For example the age of individuals at any moment can be defined as `Initial age + markov_cycle`.
 
-In order to build this more complex Markov model, parameters need to be defined through `define_parameters`. The equations decribed in the previous section can be written easily, here for a female population (`sex` = 0) starting at 60 years old (`age_init` = 60):
+In order to build this more complex Markov model, parameters need to be defined through `define_parameters()`. The equations decribed in the previous section can be written easily, here for a female population (`sex` = 0) starting at 60 years old (`age_init` = 60):
 
 ```{r}
 # a function to return mr, given age and sex
@@ -117,7 +117,7 @@ param_standard <- define_parameters(
 param_standard
 ```
 
-The parameters for the NP1 group are almost the same as for the standard group, with the exception of the primary THR revision probability formula. Parameters can by modified through the function `modify`:
+The parameters for the NP1 group are almost the same as for the standard group, with the exception of the primary THR revision probability formula. Parameters can by modified through the function `modify()`:
 
 ```{r}
 param_np1 <- modify(
@@ -185,7 +185,8 @@ mod_standard <- define_model(
   Death = define_state(
     utility = 0,
     cost = 0
-  )
+  ),
+  starting_values = c(cost = 394)
 )
 mod_standard
 
@@ -211,7 +212,8 @@ mod_np1 <- define_model(
   Death = define_state(
     utility = 0,
     cost = 0
-  )
+  ),
+  starting_values = c(cost = 579)
 )
 ```
 
@@ -228,16 +230,16 @@ res_mod <- run_models(
 res_mod
 ```
 
-A comparison of both models can be done with `summary`:
+A comparison of both models can be done with `summary()`:
 
 ```{r}
 summary(res_mod)
 ```
 
-Since standard treatment costs 394 and NP1 costs 579, the ICER for a population of women aged 60 can be calculated with the following formula:
+The ICER for a population of women aged 60 can be calculated with the following formula:
 
 $$
-\frac{(58.90 + 579) - (221.96 + 394)}{14.72 - 14.68} = 548.5
+\frac{637.9 - 616.0}{14.72 - 14.68} = 547.5
 $$
 
-The new treatment costs 548.5 GBP per QALY gained.
+The new treatment costs 547.5 GBP per QALY gained.
