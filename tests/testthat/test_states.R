@@ -40,29 +40,10 @@ y = 123',
   ..$ expr: num 111",
       fixed = TRUE
     )
-    expect_output(
-      str(
-        modify(
-          s1,
-          z = 111,
-          BEFORE = x
-        )
-      ),
-      "List of 3
- $ z:List of 2
-  ..$ expr: num 111",
-      fixed = TRUE
-    )
-    expect_identical(
+    expect_error(
       modify(
         s1,
-        z = 111,
-        BEFORE = x
-      ),
-      modify(
-        s1,
-        z = 111,
-        BEFORE = "x"
+        z = 111
       )
     )
     expect_error(
@@ -123,7 +104,7 @@ State values:
 
 x
 y"
-      )
+    )
     expect_output(
       str(sl2),
       "List of 2

@@ -8,16 +8,13 @@
 #' defined earlier.
 #' 
 #' For the \code{modify} function, existing values are
-#' modified, new values are added at the end by default
-#' if \code{BEFORE} is not specified. Values order
+#' modified, no new values can be added. Values order
 #' matters since only values defined earlier can be
 #' referenced in later expressions.
 #' 
 #' @param ... Name-value pairs of expressions defining state
 #'   values.
 #' @param .OBJECT An object of class \code{state}.
-#' @param BEFORE character, length 1. Name of state values 
-#'   before which new values are to be added.
 #'   
 #' @return An object of class \code{state} (actually a named
 #'   list of \code{lazy} expressions).
@@ -44,46 +41,25 @@ define_state_ <- function(.dots) {
 
 #' @export
 #' @rdname define_state
-modify.state <- function(.OBJECT, ..., BEFORE) {
+modify.state <- function(.OBJECT, ...) {
   .dots <- lazyeval::lazy_dots(...)
   
-  if (! missing(BEFORE) & is.language(substitute(BEFORE))) {
-    BEFORE <- deparse(substitute(BEFORE))
-  }
-  
-  
-  modify_(.OBJECT = .OBJECT, .dots = .dots, BEFORE = BEFORE)
+  modify_(.OBJECT = .OBJECT, .dots = .dots)
 }
 
-modify_.state <- function(.OBJECT, .dots, BEFORE) {
+modify_.state <- function(.OBJECT, .dots) {
   stopifnot(
     all(names(.dots) != "markov_cycle")
   )
   # !mod!
   # message d'erreur informatif quand valeurs pas dans
   # bon ordre
-  #
-  # voire correction automatique ?
   
-  if (! missing(BEFORE)) {
-    
-    stopifnot(
-      length(BEFORE) == 1
-    )
-    
-    new_values <- setdiff(names(.dots), names(.OBJECT))
-    res <- modifyList(.OBJECT, .dots)
-    
-    pos_before <- which(names(res) == BEFORE)
-    
-    c(
-      res[seq_len(pos_before - 1)],
-      res[new_values],
-      res[seq(from = pos_before, to = length(res) - length(new_values))]
-    )
-  } else {
-    modifyList(.OBJECT, .dots)
-  }
+  stopifnot(
+    all(names(.dots) %in% names(.OBJECT))
+  )
+  
+  modifyList(.OBJECT, .dots)
 }
 
 #' @export

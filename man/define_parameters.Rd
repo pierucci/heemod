@@ -7,17 +7,14 @@
 \usage{
 define_parameters(...)
 
-\method{modify}{uneval_parameters}(.OBJECT, ..., BEFORE)
+\method{modify}{uneval_parameters}(.OBJECT, ...)
 }
 \arguments{
 \item{...}{Name-value pairs of expressions definig 
 parameters.}
 
-\item{.OBJECT}{An object of class
+\item{.OBJECT}{An object of class 
 \code{uneval_parameters}.}
-
-\item{BEFORE}{character, length 1. Name of parameters 
-before which new parameters are to be added.}
 }
 \value{
 An object of class \code{uneval_parameters} 
@@ -40,7 +37,7 @@ cycles). Alternatively, \code{dplyr} functions such as
 \code{n()} or \code{row_numbers()} can be used.
 
 This function relies heavily on the \code{dplyr} package.
-Parameter definitions should thus mimic the use of
+Parameter definitions should thus mimic the use of 
 functions such as \code{mutate}.
 
 Variable names are searched first in the parameter 
@@ -49,10 +46,9 @@ then in the environment where \code{define_parameters}
 was called.
 
 For the \code{modify} function, existing parameters are 
-modified, new parameters are added at the end by default 
-if \code{BEFORE} is not specified. Parameter order 
-matters since only parameters defined earlier can be 
-referenced in later expressions.
+modified, but no new parameter can be added. Parameter
+order matters since only parameters defined earlier can
+be referenced in later expressions.
 }
 \examples{
 
@@ -76,13 +72,11 @@ define_parameters(
   rate = 1 - exp(- markov_time * .5)
 )
 
-## Not run: 
 # dont explicitely state lengths
-define_parameters(
-  var = seq(1, 15, 2)
-)
+# define_parameters(
+#   var = seq(1, 15, 2)
+# )
 
-## End(Not run)
 
 # instead rely on markov_cycle or dplyr 
 # functions such as n() or row_number()
@@ -97,14 +91,6 @@ param <- define_parameters(
   age = age_start + markov_cycle
 )
 
-# adding new parameters
-
-modify(
-  param,
-  const = 4.4,
-  age_2 = age ^ 2
-)
-
 # modify existing parameters
 
 modify(
@@ -112,12 +98,13 @@ modify(
   age_start = 40
 )
 
-# specify new parameter position
+# cannot add new parameters
 
-modify(
-  param,
-  var = 3.14,
-  BEFORE = "age"
-)
+# modify(
+#   param,
+#   const = 4.4,
+#   age_2 = age ^ 2
+# )
+
 }
 

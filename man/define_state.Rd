@@ -7,16 +7,13 @@
 \usage{
 define_state(...)
 
-\method{modify}{state}(.OBJECT, ..., BEFORE)
+\method{modify}{state}(.OBJECT, ...)
 }
 \arguments{
 \item{...}{Name-value pairs of expressions defining state
 values.}
 
 \item{.OBJECT}{An object of class \code{state}.}
-
-\item{BEFORE}{character, length 1. Name of state values 
-before which new values are to be added.}
 }
 \value{
 An object of class \code{state} (actually a named
@@ -32,8 +29,7 @@ sequencially. Later state definition can thus only refer to values
 defined earlier.
 
 For the \code{modify} function, existing values are
-modified, new values are added at the end by default
-if \code{BEFORE} is not specified. Values order
+modified, no new values can be added. Values order
 matters since only values defined earlier can be
 referenced in later expressions.
 }
@@ -44,24 +40,5 @@ st <- define_state(
   utility = .876
 )
 st
-
-# this will fail at model evaluation
-st_2 <- define_state(
-  total_cost = cost_1 + cost_2
-)
-modify(
-  st_2,
-  cost_1 = 14,
-  cost_2 = 53
-)
-
-# use BEFORE instead
-
-modify(
-  st_2,
-  cost_1 = 14,
-  cost_2 = 53,
-  BEFORE = "total_cost"
-)
 }
 

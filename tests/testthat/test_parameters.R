@@ -30,52 +30,19 @@ b = a + 543',
       str(
         modify(
           par1,
-          a = 4321,
-          c = 333
+          a = 4321
         )
       ),
-      'List of 3
+      'List of 2
  $ a:List of 2
   ..$ expr: num 4321',
       fixed = TRUE
     )
-    expect_output(
-      str(
-        modify(
-          par1,
-          a = 4321,
-          c = 333,
-          BEFORE = a
-        )
-      ),
-      'List of 3
- $ c:List of 2
-  ..$ expr: num 333',
-      fixed = TRUE
-    )
-    expect_equal(
-      length(
-        modify(
-          par1,
-          a = 4321,
-          c = 333,
-          BEFORE = a
-        )
-      ),
-      3
-    )
-    expect_equal(
+    expect_error(
       modify(
         par1,
         a = 4321,
-        c = 333,
-        BEFORE = a
-      ),
-      modify(
-        par1,
-        a = 4321,
-        c = 333,
-        BEFORE = "a"
+        c = 333
       )
     )
     expect_error(
