@@ -2,9 +2,11 @@
 #' Values
 #' 
 #' Given a data.frame with on set of new parameters values 
-#' per row, iteratively evaluate the model over the set of
+#' per row, iteratively evaluate the model over the set of 
 #' new values.
 #' 
+#' New parameters with a missing value (\code{NA}) do not
+#' replace existing parameters.
 #' 
 #' @param model An \code{uneval_model} object.
 #' @param cycles positive integer. Number of Markov Cycles 
@@ -22,7 +24,7 @@
 #'   \code{newdata} and each Markov Model evaluation in 
 #'   \code{res}.
 #'   
-#' 
+#'   
 #' @examples
 #' 
 #' \dontrun{
@@ -60,10 +62,13 @@ eval_model_newdata <- function(model, cycles,
                                newdata) {
   
   eval_newdata <- function(new_params, model) {
+    eval_new_param <- do.call(lazyeval::lazy_dots, new_params)
+    
+    eval_new_param <- Filter(function(x) !is.na(x), eval_new_param)
     
     model$parameters <- modifyList(
       get_parameters(model),
-      do.call(lazyeval::lazy_dots, new_params)
+      eval_new_param
     )
     eval_model(
       model = model,

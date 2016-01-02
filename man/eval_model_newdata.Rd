@@ -31,8 +31,12 @@ A data.frame containing the values of
 }
 \description{
 Given a data.frame with on set of new parameters values 
-per row, iteratively evaluate the model over the set of
+per row, iteratively evaluate the model over the set of 
 new values.
+}
+\details{
+New parameters with a missing value (\code{NA}) do not
+replace existing parameters.
 }
 \examples{
 
