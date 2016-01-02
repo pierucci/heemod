@@ -168,8 +168,7 @@ get_counts.eval_model <- function(x){
 #' @param init numeric vector, same length as number of 
 #'   model states. Number of individuals in each model state
 #'   at the beginning.
-#' @param count_args Additional arguments passed as a list
-#'   to \code{compute_counts}.
+#' @param method Counting method.
 #'   
 #' @return An \code{eval_model} object (actually a list of 
 #'   evaluated parameters, matrix, states and cycles 
@@ -269,10 +268,7 @@ get_state_values <- function(x) {
 #' @param init numeric vector, same length as number of 
 #'   model states. Number of individuals in each model state
 #'   at the beginning.
-#' @param method character. One of \code{final},
-#'   \code{initial}, \code{exponential} or \code{linear}.
-#'   See details.
-#' @param round logical scalar. Should individual counts be rounded?
+#' @param method Counting method.
 #'   
 #' @return A \code{cycle_counts} object.
 #' 

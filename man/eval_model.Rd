@@ -16,8 +16,7 @@ to compute.}
 model states. Number of individuals in each model state
 at the beginning.}
 
-\item{count_args}{Additional arguments passed as a list
-to \code{compute_counts}.}
+\item{method}{Counting method.}
 }
 \value{
 An \code{eval_model} object (actually a list of 

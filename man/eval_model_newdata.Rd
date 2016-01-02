@@ -17,12 +17,11 @@ to compute.}
 model states. Number of individuals in each model state
 at the beginning.}
 
+\item{method}{Counting method.}
+
 \item{newdata}{a data.frame whose names match parameters 
 names. \code{model} will be evaluated iteratively, 
 taking successivel values from each row.}
-
-\item{count_args}{Additional arguments passed as a list 
-to \code{compute_counts}.}
 }
 \value{
 A data.frame containing the values of 

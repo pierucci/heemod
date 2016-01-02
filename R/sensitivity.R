@@ -43,7 +43,7 @@ define_sensitivity_ <- function(.dots) {
   
   structure(
     Reduce(dplyr::bind_rows, list_df),
-    class = "sensitivity"
+    class = c("sensitivity", class(list_df[[1]]))
   )
 }
 
@@ -61,9 +61,10 @@ run_sensitivity <- function(model, sensitivity) {
   
   init <- attr(model, "init")
   cycles <- attr(model, "cycles")
+  method <- attr(model, "method")
   list_models <- attr(model, "uneval_model_list")
   
-  res <- lapply(list_models, eval_model_newdata,
+  res <- lapply(list_models, eval_model_newdata, method = method,
                 init = init, cycles = cycles, newdata = sensitivity)
   return(res)
 }

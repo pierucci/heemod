@@ -30,9 +30,7 @@
 #'   at the beginning.
 #' @param cycles positive integer. Number of Markov Cycles 
 #'   to compute.
-#' @param count_args Additional arguments passed as a list 
-#'   to \code{compute_counts}.
-#' @param newdata data.frame. New parameter values.
+#' @param method Counting method.
 #'   
 #' @return A list of evaluated models with computed values.
 #' @export

@@ -17,8 +17,7 @@
 #' @param newdata a data.frame whose names match parameters 
 #'   names. \code{model} will be evaluated iteratively, 
 #'   taking successivel values from each row.
-#' @param count_args Additional arguments passed as a list 
-#'   to \code{compute_counts}.
+#' @param method Counting method.
 #'   
 #' @return A data.frame containing the values of 
 #'   \code{newdata} and each Markov Model evaluation in 

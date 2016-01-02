@@ -7,6 +7,7 @@
 #' @importFrom dplyr as.tbl
 #' @importFrom dplyr data_frame
 #' @importFrom dplyr as_data_frame
+#' @importFrom dplyr bind_rows
 #' 
 #' @importFrom purrr map_rows
 #' 

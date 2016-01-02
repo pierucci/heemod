@@ -69,6 +69,7 @@ ds <- define_sensitivity(
   p1 = c(.1, .9),
   p2 = c(.1, .3)
 )
+print(ds)
 
 run_sensitivity(res2, ds)
 }

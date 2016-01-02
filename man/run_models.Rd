@@ -23,10 +23,7 @@ at the beginning.}
 \item{cycles}{positive integer. Number of Markov Cycles 
 to compute.}
 
-\item{count_args}{Additional arguments passed as a list 
-to \code{compute_counts}.}
-
-\item{newdata}{data.frame. New parameter values.}
+\item{method}{Counting method.}
 }
 \value{
 A list of evaluated models with computed values.

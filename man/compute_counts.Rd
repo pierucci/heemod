@@ -13,11 +13,7 @@ compute_counts(transition_matrix, init, method)
 model states. Number of individuals in each model state
 at the beginning.}
 
-\item{method}{character. One of \code{final},
-\code{initial}, \code{exponential} or \code{linear}.
-See details.}
-
-\item{round}{logical scalar. Should individual counts be rounded?}
+\item{method}{Counting method.}
 }
 \value{
 A \code{cycle_counts} object.
