@@ -21,7 +21,7 @@ In more complex Markov models in health economic evaluation transition probabili
 
 However in some special cases non-homogenous Markov models can be used in situation 2, when the state with transition probabilities depending on individual-time is the starting state __and__ it is not possible to go back to that state after having left it. In this situation individual-time is equivalent to model-time. This is the case in the following example.
 
-If you are not familiar with `heemod`, first consult the introduction vignette`vignette("introduction", package = "heemod")`.
+If you are not familiar with `heemod`, first consult the introduction vignette `vignette("introduction", package = "heemod")`.
 
 # Model description
 
@@ -56,7 +56,7 @@ death_prob <- data.frame(
 death_prob
 ```
 
-Primary THR revision probability increases with time with the following formula (a Weibull distribution):
+Primary THR revision probability for the standard THR, called `standardRR` increases with time with the following formula (a Weibull distribution):
 
 $$
 P_{revision} = 1 - \exp(\lambda \times ((t-1)^\gamma-t^\gamma))
@@ -70,7 +70,7 @@ $$
 
 Where `age` and `sex` (female = 0, male = 1) are individual characteristics, `cons` = -5.49094, `ageC` = -0.0367 and `maleC` = 0.768536.
 
-For the NP1 procedure the revision probability is modified by the relative risk `rrNP1` = 0.260677.
+For the NP1 procedure the starndard procedure revision probability `standardRR` is modified by the relative risk `rrNP1` = 0.260677.
 
 $$
 P_{revision} = 1 - \exp(\lambda \times rrNP1 \times ((t-1)^\gamma-t^\gamma))
@@ -80,38 +80,46 @@ Revision THR re-revision (`rrr`) probability is set to be constant at 0.04 per y
 
 # Parameters definition
 
-The key element to specify time-varying elements in `heemod` is through the use of a package-defined variable, `markov_model`. This variable takes increasing values with each cycles, starting from 1. For example the age of individuals at any moment can be defined as `Initial age + markov_cycle`.
+The key element to specify time-varying elements in `heemod` is through the use of a **package-defined variable**, `markov_model`. This variable takes increasing values with each cycles, starting from 1. For example the age of individuals at any moment can be defined as `Initial age + markov_cycle`.
 
 In order to build this more complex Markov model, parameters need to be defined through `define_parameters()`. The equations decribed in the previous section can be written easily, here for a female population (`sex` = 0) starting at 60 years old (`age_init` = 60):
 
 ```{r}
-# a function to return mr, given age and sex
+# a function to return age-related mortality rate
+# given age and sex
 mr_func <- function(age, sex) {
   age  <- floor(age/10-.5)*10+5
   age <- ifelse(age > 85, 85, age)
   merge(data.frame(age = age, sex = sex), death_prob)$mr
 }
+
 param_standard <- define_parameters(
-    t = markov_cycle,
-    
     age_init = 60,
     sex = 0,
-    age = age_init + t,
+    # age increases with cycles
+    age = age_init + markov_cycle,
     
+    # operative mortality rates
     omrPTHR = .02,
     omrRTHR = .02,
+    
+    # re-revision mortality rate
     rrr = .04,
     
+    # parameters for calculating primary revision rate
     cons = -5.49094,
     ageC = -.0367,
     maleC = .768536,
-    lambda = exp(cons+ageC*age_init+maleC*sex),
+    lambda = exp(cons + ageC * age_init + maleC * sex),
     gamma = 1.45367786,
     
     rrNP1 = .260677,
     
-    standardRR = 1 - exp(lambda*((t-1)^gamma-t^gamma)),
+    # revision probability of primary procedure
+    standardRR = 1 - exp(lambda * ((markov_cycle - 1) ^ gamma -
+                                     markov_cycle ^ gamma)),
     
+    # age-related mortality rate
     mr = mr_func(age, sex)
 )
 param_standard
@@ -122,7 +130,8 @@ The parameters for the NP1 group are almost the same as for the standard group, 
 ```{r}
 param_np1 <- modify(
   param_standard,
-  standardRR = 1 - exp(lambda*rrNP1*((t-1)^gamma-t^gamma))
+  standardRR = 1 - exp(lambda * rrNP1 * ((markov_cycle - 1) ^ gamma -
+                                           markov_cycle ^ gamma))
 )
 param_np1
 ```
