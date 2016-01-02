@@ -134,6 +134,7 @@ test_that(
     set.seed(1)
     # with run_model result
     ndt1 <- run_probabilistic(res2, resample = rsp, N = 10)
+    ndt2 <- run_probabilistic(res2, resample = rsp, N = 1)
     
     x=define_resample(
       rate1 + rate2 + rate3 ~ multinom(10, 50, 40),
@@ -173,6 +174,15 @@ test_that(
         .Names = c("rate1", "rate2", "rate3", "a", "b"),
         row.names = c(NA, -2L),
         class = "data.frame")
+    )
+    
+    expect_output(
+      str(ndt2),
+      "and 'data.frame':	1 obs. of  3 variables:
+  ..$ age_init : num 66.6
+  ..$ cost_init: num 930
+  ..$ cost     : num 10653",
+      fixed = TRUE
     )
     
   }

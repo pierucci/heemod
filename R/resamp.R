@@ -245,6 +245,10 @@ eval_resample <- function(resample, N) {
     resample$list_qdist
   )
   
+  if (length(dim(list_res)) < 2) {
+    list_res <- matrix(list_res, ncol = length(list_res))
+  }
+  
   colnames(list_res) <- names(resample$list_qdist)
   res <- as.data.frame(list_res)
   
