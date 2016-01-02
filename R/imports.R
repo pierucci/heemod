@@ -21,4 +21,7 @@
 #' @importFrom diagram plotmat
 #' 
 #' @importFrom mvnfast rmvn
+#' 
+#' @importFrom logitnorm qlogitnorm
+#' 
 NULL

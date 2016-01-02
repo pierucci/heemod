@@ -181,9 +181,9 @@ Now we can define the resampling distributions. The following distributions will
   * A binomial distribution for the transition from AIDS to death.
   * A Dirichlet distribution for the transition matrix.
 
-Since the log of a relative risk follows a lognormal distribution, relative risk follows a lognormal distribution whose mean on the log scale is `log(rr)` and standard deviantion on the log scale can be deduced from the relative risk confidence interval.
+Since the log of a relative risk follows a lognormal distribution, relative risk follows a lognormal distribution whose mean is `rr` and standard deviantion on the log scale can be deduced from the relative risk confidence interval.
 
-  * `rr ~ lognormal(mean = log(.509), sd = .173)`
+  * `rr ~ lognormal(mean = .509, sdlog = .173)`
 
 Usually costs are resampled on a gamma distribution, who has the property of being always positive. Shape and scale parameters of the gamma distribution can be calculated from the mean and standard deviation desired in the distribution.
 
@@ -199,7 +199,7 @@ Finally multinomial distributions are declared with the number of individuals in
 
 ```{r}
 rsp <- define_resample(
-  rr ~ lognormal(mean = log(.509), sd = .173),
+  rr ~ lognormal(mean = .509, sdlog = .173),
   
   cost_A ~ make_gamma(mean = 2756, sd = sqrt(2756)),
   cost_B ~ make_gamma(mean = 3052, sd = sqrt(3052)),

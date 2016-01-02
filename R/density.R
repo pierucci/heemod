@@ -6,6 +6,10 @@
 #' @param ... Dirichlet distribution parameters.
 #' @param prob Proportion.
 #' @param size Size of sample used to estimate proportion.
+#' @param meanlog Mean on the log scale.
+#' @param sdlog SD on the log scale.
+#' @param mu Mean on the lgit scale.
+#' @param sigma SD on the logit scale.
 #'   
 #' @export
 #' 
@@ -18,8 +22,11 @@ r_norm <- function(mean, sd) {
 
 #' @rdname normal
 #' @export
-lognormal <- function(mean, sd) {
-  list(r_lognormal(mean, sd))
+lognormal <- function(mean, sd, meanlog, sdlog) {
+  if (missing(sdlog)) sdlog <- sqrt(log(1 + sd^2/mean^2))
+  if (missing(meanlog)) meanlog <- log(mean) - sdlog^2/2
+  
+  list(r_lognormal(meanlog, sdlog))
 }
 r_lognormal <- function(meanlog, sdlog) {
   function(x) qlnorm(p = x, meanlog = meanlog, sdlog = sdlog)
@@ -57,3 +64,12 @@ r_multinom <- function(n, total) {
   function(x) qbeta(x, n, total - n)
 }
 
+
+#' @rdname normal
+#' @export
+logitnormal <- function(mu, sigma) {
+  list(r_logitnormal(mu, sigma))
+}
+r_logitnormal <- function(mu, sigma) {
+  function(x) logitnorm::qlogitnorm(p = x, mu = mu, sigma = sigma)
+}
