@@ -4,7 +4,7 @@
 \alias{eval_model}
 \title{Evaluate Markov Model}
 \usage{
-eval_model(model, cycles, init, count_args = NULL)
+eval_model(model, cycles, init, method)
 }
 \arguments{
 \item{model}{An \code{uneval_model} object.}

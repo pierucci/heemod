@@ -7,11 +7,11 @@
 \usage{
 run_models(..., init = c(1L, rep(0L,
   get_state_number(get_states(list(...)[[1]])) - 1)), cycles = 1,
-  count_args = NULL, newdata = NULL)
+  method = c("end", "beginning", "cycle-tree", "half-cycle"))
 
 run_model(..., init = c(1L, rep(0L,
   get_state_number(get_states(list(...)[[1]])) - 1)), cycles = 1,
-  count_args = NULL, newdata = NULL)
+  method = c("end", "beginning", "cycle-tree", "half-cycle"))
 }
 \arguments{
 \item{...}{One or more \code{uneval_model} object.}

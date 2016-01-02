@@ -58,7 +58,7 @@
 #' }
 #' 
 eval_model_newdata <- function(model, cycles,
-                               init, count_args = NULL,
+                               init, method,
                                newdata) {
   
   eval_newdata <- function(new_params, model) {
@@ -74,7 +74,7 @@ eval_model_newdata <- function(model, cycles,
       model = model,
       cycles = cycles,
       init = init,
-      count_args = count_args
+      method = method
     )
   }
   
@@ -128,8 +128,9 @@ run_newdata <- function(x, init, cycles, newdata) {
   
   init <- attr(x, "init")
   cycles <- attr(x, "cycles")
+  method <- attr(x, "method")
   
-  res <- lapply(list_models, eval_model_newdata,
+  res <- lapply(list_models, eval_model_newdata, method = method,
                 init = init, cycles = cycles, newdata = newdata)
   return(res)
 }

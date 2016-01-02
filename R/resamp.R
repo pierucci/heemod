@@ -214,6 +214,7 @@ run_probabilistic <- function(model, resample, N) {
   
   init <- attr(model, "init")
   cycles <- attr(model, "cycles")
+  method <- attr(model, "method")
   list_models <- attr(model, "uneval_model_list")
   
   res <- list()
@@ -223,7 +224,7 @@ run_probabilistic <- function(model, resample, N) {
     res <- c(res,
              list(
                eval_model_newdata(
-                 model = list_models[[i]],
+                 model = list_models[[i]], method = method,
                  init = init, cycles = cycles, newdata = newdata
                )
              )

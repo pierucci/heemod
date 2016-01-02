@@ -205,12 +205,8 @@ get_counts.eval_model <- function(x){
 #' )
 #' }
 #' 
-eval_model <- function(
-  model,
-  cycles, 
-  init,
-  count_args = NULL
-) {
+eval_model <- function(model, cycles, 
+                       init, method) {
   
   stopifnot(
     cycles > 0,
@@ -224,12 +220,11 @@ eval_model <- function(
                                    parameters)
   states <- eval_state_list(get_states(model), parameters)
   
-  count_table <- do.call(
-    compute_counts,
-    c(transition_matrix = list(transition_matrix),
-      init = list(init),
-      count_args))
-  
+  count_table <- compute_counts(
+    transition_matrix = transition_matrix,
+    init = init,
+    method = method
+  )
   
   values <- compute_values(states, count_table)
   
@@ -283,16 +278,12 @@ get_state_values <- function(x) {
 #' 
 compute_counts <- function(
   transition_matrix, init,
-  method = c("final", "initial", "exponential", "linear"),
-  round = FALSE
+  method
 ) {
   
   stopifnot(
     length(init) == get_matrix_order(transition_matrix)
   )
-  
-  method <- match.arg(method)
-  
   
   list_counts <- Reduce(
     "%*%",
@@ -318,17 +309,17 @@ compute_counts <- function(
   
   switch(
     method,
-    initial = {
-      out <- if (round) round(n0) else n0
+    "beginning" = {
+      out <- n0
     },
-    final = {
-      out <- if (round) round(n1) else n1
+    "end" = {
+      out <- n1
     },
-    exponential = {
+    "cycle-tree" = {
       stop("Unimplemented")
     },
-    linear = {
-      out <- (n0 + n1) / 2
+    "half-cycle" = {
+      stop("uninplemented")
     },
     {
       stop()

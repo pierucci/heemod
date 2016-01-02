@@ -42,9 +42,10 @@
 run_models <- function(...,
                        init = c(1L, rep(0L, get_state_number(get_states(list(...)[[1]])) - 1)),
                        cycles = 1,
-                       count_args = NULL,
-                       newdata = NULL) {
+                       method = c("end", "beginning", "cycle-tree", "half-cycle")) {
   list_models <- list(...)
+  
+  method <- match.arg(method)
   
   stopifnot(
     all(unlist(lapply(list_models,
@@ -89,13 +90,13 @@ run_models <- function(...,
     lapply(list_models, eval_model, 
            init = init, 
            cycles = cycles,
-           count_args = count_args),
+           method = method),
     uneval_model_list = list_models,
     names = model_names,
     class = "eval_model_list",
     init = init,
     cycles = cycles,
-    count_args = if (is.null(count_args)) NA else count_args
+    method = method
   )
 }
 

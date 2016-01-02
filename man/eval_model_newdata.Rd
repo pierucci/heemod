@@ -5,7 +5,7 @@
 \title{Iteratively Evaluate a Markov Model With New Parameter 
 Values}
 \usage{
-eval_model_newdata(model, cycles, init, count_args = NULL, newdata)
+eval_model_newdata(model, cycles, init, method, newdata)
 }
 \arguments{
 \item{model}{An \code{uneval_model} object.}
@@ -17,12 +17,12 @@ to compute.}
 model states. Number of individuals in each model state
 at the beginning.}
 
-\item{count_args}{Additional arguments passed as a list 
-to \code{compute_counts}.}
-
 \item{newdata}{a data.frame whose names match parameters 
 names. \code{model} will be evaluated iteratively, 
 taking successivel values from each row.}
+
+\item{count_args}{Additional arguments passed as a list 
+to \code{compute_counts}.}
 }
 \value{
 A data.frame containing the values of 

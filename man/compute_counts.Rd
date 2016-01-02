@@ -4,8 +4,7 @@
 \alias{compute_counts}
 \title{Compute Count of Individual in Each State per Cycle}
 \usage{
-compute_counts(transition_matrix, init, method = c("final", "initial",
-  "exponential", "linear"), round = FALSE)
+compute_counts(transition_matrix, init, method)
 }
 \arguments{
 \item{transition_matrix}{An \code{eval_matrix} object.}
