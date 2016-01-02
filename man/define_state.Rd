@@ -63,6 +63,5 @@ modify(
   cost_2 = 53,
   BEFORE = "total_cost"
 )
-
 }
 

@@ -32,7 +32,6 @@ parameter set per line, runs iteratively Markov models
 over these sets.
 }
 \examples{
-
 mod1 <-
   define_model(
     parameters = define_parameters(
@@ -43,12 +42,12 @@ mod1 <-
       .5, .5,
       .1, .9
     ),
-      define_state(
-        cost = 543 + age * 5
-      ),
-      define_state(
-        cost = 432 + age
-      )
+    define_state(
+      cost = 543 + age * 5
+    ),
+    define_state(
+      cost = 432 + age
+    )
     
   )
 
@@ -62,12 +61,12 @@ mod2 <-
       .5, .5,
       .1, .9
     ),
-      define_state(
-        cost = 789 * age / 10
-      ),
-      define_state(
-        cost = 456 * age / 10
-      )
+    define_state(
+      cost = 789 * age / 10
+    ),
+    define_state(
+      cost = 456 * age / 10
+    )
     
   )
 
@@ -83,6 +82,5 @@ new_tab <- data.frame(
 
 # with run_model result
 ndt1 <- run_newdata(res2, newdata = new_tab)
-
 }
 

@@ -66,13 +66,13 @@ mod1 <-
       .1, .9
     ),
     define_state(
-        cost = 543
+      cost = 543
     ),
-      define_state(
-        cost = 432
-      )
+    define_state(
+      cost = 432
     )
-  
+  )
+
 
 res <- run_model(
   mod1,
@@ -87,12 +87,12 @@ mod2 <-
       .5, .5,
       .1, .9
     ),
-      define_state(
-        cost = 789
-      ),
-      define_state(
-        cost = 456
-      )
+    define_state(
+      cost = 789
+    ),
+    define_state(
+      cost = 456
+    )
     
   )
 
@@ -102,6 +102,5 @@ res2 <- run_model(
   init = c(100, 0),
   cycles = 10
 )
-
 }
 

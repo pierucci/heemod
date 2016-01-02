@@ -23,32 +23,7 @@
 #'   list of \code{lazy} expressions).
 #' @export
 #' 
-#' @examples
-#' 
-#' st <- define_state(
-#'   cost = 6453,
-#'   utility = .876
-#' )
-#' st
-#' 
-#' # this will fail at model evaluation
-#' st_2 <- define_state(
-#'   total_cost = cost_1 + cost_2
-#' )
-#' modify(
-#'   st_2,
-#'   cost_1 = 14,
-#'   cost_2 = 53
-#' )
-#' 
-#' # use BEFORE instead
-#' 
-#' modify(
-#'   st_2,
-#'   cost_1 = 14,
-#'   cost_2 = 53,
-#'   BEFORE = "total_cost"
-#' )
+#' @example inst/examples/example_define_state.R
 #' 
 define_state <- function(...) {
   .dots <- lazyeval::lazy_dots(...)
