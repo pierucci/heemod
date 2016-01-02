@@ -9,13 +9,13 @@ run_probabilistic(model, resample, N)
 \arguments{
 \item{model}{The result of \code{\link{run_model}}.}
 
-\item{resample}{Resampling distribution for parameters
+\item{resample}{Resampling distribution for parameters 
 defined by \code{\link{define_resample}}.}
 
 \item{N}{> 0. Number of simulation to run.}
 }
 \value{
-A list with one data.frame per model.
+A list with one \code{data.frame} per model.
 }
 \description{
 Run Probabilistic Incertitude Analysis

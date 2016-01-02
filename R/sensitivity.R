@@ -22,10 +22,10 @@
 #' 
 define_sensitivity <- function(...) {
   .dots <- list(...)
-  define_sensitiviy_(.dots)
+  define_sensitivity_(.dots)
 }
 
-define_sensitivity_<- function(.dots) {
+define_sensitivity_ <- function(.dots) {
   stopifnot(
     all(unlist(lapply(.dots, function(x) length(x))) == 2),
     ! is.null(names(.dots)),
@@ -33,5 +33,37 @@ define_sensitivity_<- function(.dots) {
     ! any(duplicated(names(.dots)))
   )
   
-  list_sens <- lapply(.dots, function(x) sort(x))
+  f <- function(x, y) {
+    x <- dplyr::data_frame(x = x)
+    names(x) <- y
+    x
+  }
+  
+  list_df <- mapply(f , .dots, names(.dots), SIMPLIFY = FALSE)
+  
+  structure(
+    Reduce(dplyr::bind_rows, list_df),
+    class = "sensitivity"
+  )
+}
+
+#' Run Sensitivity Analysis
+#' 
+#' @param model An evaluated Markov model
+#' @param sensitivity An object returned by 
+#'   \code{\link{define_sensitivity}}.
+#'   
+#' @return A list with one \code{data.frame} per model.
+#' @export
+#' 
+#' @example inst/examples/example_run_sensitivity.R
+run_sensitivity <- function(model, sensitivity) {
+  
+  init <- attr(model, "init")
+  cycles <- attr(model, "cycles")
+  list_models <- attr(model, "uneval_model_list")
+  
+  res <- lapply(list_models, eval_model_newdata,
+                init = init, cycles = cycles, newdata = sensitivity)
+  return(res)
 }

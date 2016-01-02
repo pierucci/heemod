@@ -62,13 +62,13 @@ eval_model_newdata <- function(model, cycles,
                                newdata) {
   
   eval_newdata <- function(new_params, model) {
-    eval_new_param <- do.call(lazyeval::lazy_dots, new_params)
+    new_params <- Filter(function(x) !is.na(x), new_params)
     
-    eval_new_param <- Filter(function(x) !is.na(x), eval_new_param)
+    lazy_new_param <- do.call(lazyeval::lazy_dots, new_params)
     
     model$parameters <- modifyList(
       get_parameters(model),
-      eval_new_param
+      lazy_new_param
     )
     eval_model(
       model = model,

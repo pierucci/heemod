@@ -121,8 +121,8 @@ eval_matrix <- function(x, parameters) {
     res <- matrix(c(...),
                   byrow = TRUE,
                   nrow = n)
-    
     posC <- res == -pi
+    
     stopifnot(
       rowSums(posC) <= 1
     )
