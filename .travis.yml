@@ -1,4 +1,6 @@
-Editing heemod_.travis.yml at master · pierucci_heemodlanguage: r
+# Sample .travis.yml for R projects
+
+language: r
 warnings_are_errors: true
 sudo: required
 
