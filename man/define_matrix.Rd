@@ -11,7 +11,7 @@ define_matrix(...,
 
 \method{modify}{uneval_matrix}(.OBJECT, ...)
 
-\method{plot}{uneval_matrix}(x, relsize = 0.8, shadow.size = 0, ...)
+\method{plot}{uneval_matrix}(x, relsize = 0.75, shadow.size = 0, ...)
 }
 \arguments{
 \item{...}{Name-value pairs of expressions definig matrix

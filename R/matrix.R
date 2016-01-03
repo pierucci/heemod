@@ -246,8 +246,10 @@ print.eval_matrix <- function(x, ...) {
 
 #' @export
 #' @rdname define_matrix
-plot.uneval_matrix <- function(x, relsize = .8, shadow.size = 0,  ...) {
+plot.uneval_matrix <- function(x, relsize = .75, shadow.size = 0,  ...) {
+  op <- par(mar = c(0, 0, 0, 0))
   res <- to_char_uneval_matrix(x)
   diagram::plotmat(t(res[rev(seq_len(nrow(res))),rev(seq_len(nrow(res)))]),
   relsize = relsize, shadow.size = shadow.size, ...)
+  par(op)
 }
