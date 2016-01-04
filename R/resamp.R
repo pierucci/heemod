@@ -220,7 +220,7 @@ run_probabilistic <- function(model, resample, N) {
   res <- list()
   
   for (i in seq_along(list_models)) {
-    cat(sprintf("Running model '%s'...\n", names(list_models)[i]))
+    message(sprintf("Running model '%s'...", names(list_models)[i]))
     res <- c(res,
              list(
                eval_model_newdata(
@@ -229,7 +229,6 @@ run_probabilistic <- function(model, resample, N) {
                )
              )
     )
-    cat("\n")
   }
   names(res) <- names(list_models)
   
