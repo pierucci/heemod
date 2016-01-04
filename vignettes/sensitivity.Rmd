@@ -1,0 +1,174 @@
+---
+title: "Deterministic sensitivity analysis"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Deterministic sensitivity analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r, echo=FALSE, include=FALSE}
+library(heemod)
+```
+
+
+```{r}
+param_mono <- define_parameters(
+  rr = .509,
+  
+  p_AB_base = .202,
+  p_AC_base = .067,
+  p_AD_base = .010,
+  
+  p_BC_base = .407,
+  p_BD_base = .012,
+  
+  p_CD_base = .250,
+  
+  
+  p_AB = p_AB_base,
+  p_AC = p_AC_base,
+  p_AD = p_AD_base,
+  
+  p_BC = p_BC_base,
+  p_BD = p_BD_base,
+  
+  p_CD = p_CD_base,
+  
+  p_AA = 1 - (p_AB + p_AC + p_AD),
+  
+  cost_zido = 2278,
+  cost_lami = 2086,
+  
+  cost_A = 2756,
+  cost_B = 3052,
+  cost_C = 9007,
+  
+  dr = .06
+)
+```
+
+```{r}
+param_comb <- modify(
+  param_mono,
+  
+  p_AB = p_AB_base * rr,
+  p_AC = p_AC_base * rr,
+  p_AD = p_AD_base * rr,
+  
+  p_BC = p_BC_base * rr,
+  p_BD = p_BD_base * rr,
+  
+  p_CD = p_CD_base * rr
+)
+```
+
+```{r}
+mat_trans <- define_matrix(
+  p_AA, p_AB, p_AC, p_AD,
+  .000, C,    p_BC, p_BD,
+  .000, .000, C,    p_CD,
+  .000, .000, .000, 1.00
+)
+```
+
+
+```{r}
+A_mono <- define_state(
+  cost_health = cost_A,
+  cost_drugs = cost_zido,
+  cost_total = discount(cost_health + cost_drugs, dr),
+  life_year = 1
+)
+B_mono <- define_state(
+  cost_health = cost_B,
+  cost_drugs = cost_zido,
+  cost_total = discount(cost_health + cost_drugs, dr),
+  life_year = 1
+)
+C_mono <- define_state(
+  cost_health = cost_C,
+  cost_drugs = cost_zido,
+  cost_total = discount(cost_health + cost_drugs, dr),
+  life_year = 1
+)
+D_mono <- define_state(
+  cost_health = 0,
+  cost_drugs = 0,
+  cost_total = discount(cost_health + cost_drugs, dr),
+  life_year = 0
+)
+
+A_comb <- define_state(
+  cost_health = cost_A,
+  cost_drugs = cost_zido + cost_lami,
+  cost_total = discount(cost_health + cost_drugs, dr),
+  life_year = 1
+)
+B_comb <- define_state(
+  cost_health = cost_B,
+  cost_drugs = cost_zido + cost_lami,
+  cost_total = discount(cost_health + cost_drugs, dr),
+  life_year = 1
+)
+C_comb <- define_state(
+  cost_health = cost_C,
+  cost_drugs = cost_zido + cost_lami,
+  cost_total = discount(cost_health + cost_drugs, dr),
+  life_year = 1
+)
+D_comb <- define_state(
+  cost_health = 0,
+  cost_drugs = 0,
+  cost_total = discount(cost_health + cost_drugs, dr),
+  life_year = 0
+)
+```
+
+
+```{r}
+mod_mono <- define_model(
+  parameters = param_mono,
+  transition_matrix = mat_trans,
+  A_mono,
+  B_mono,
+  C_mono,
+  D_mono
+)
+
+mod_comb <- define_model(
+  parameters = param_comb,
+  transition_matrix = mat_trans,
+  A_comb,
+  B_comb,
+  C_comb,
+  D_comb
+)
+
+res_mod <- run_model(
+  mono = mod_mono,
+  comb = mod_comb,
+  cycles = 20
+)
+```
+
+```{r}
+se <- define_sensitivity(
+  rr = c(.4, .6),
+  
+  cost_zido = c(1500, 3000),
+  cost_lami = c(1500, 3000),
+  
+  dr = c(.04, .08)
+)
+```
+
+```{r}
+res <- run_sensitivity(
+  res_mod,
+  se
+)
+```
