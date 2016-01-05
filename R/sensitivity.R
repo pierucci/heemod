@@ -66,5 +66,19 @@ run_sensitivity <- function(model, sensitivity) {
   
   res <- lapply(list_models, eval_model_newdata, method = method,
                 init = init, cycles = cycles, newdata = sensitivity)
-  return(res)
+  structure(res, class = "eval_sensitivity")
+}
+
+#' Plot Sensitivity Analysis
+#' 
+#' Plot the results of a sensitivity analysis as a tornado plot.
+#'
+#' @param x A result of \code{\link{run_sensitivity}}.
+#' @param ... Additional arguments passed to \code{plot}.
+#'
+#' @return A \code{ggplot2} object.
+#' @export
+#'
+plot.eval_sensitivity <- function(x, ...) {
+  
 }
