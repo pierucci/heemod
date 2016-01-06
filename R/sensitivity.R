@@ -43,7 +43,8 @@ define_sensitivity_ <- function(.dots) {
   
   structure(
     Reduce(dplyr::bind_rows, list_df),
-    class = c("sensitivity", class(list_df[[1]]))
+    class = c("sensitivity", class(list_df[[1]])),
+    variables = names(.dots)
   )
 }
 
@@ -66,7 +67,12 @@ run_sensitivity <- function(model, sensitivity) {
   
   res <- lapply(list_models, eval_model_newdata, method = method,
                 init = init, cycles = cycles, newdata = sensitivity)
-  structure(res, class = "eval_sensitivity")
+  structure(
+    res,
+    class = "eval_sensitivity",
+    variables = attr(sensitivity, "variables"),
+    model = model
+  )
 }
 
 #' Plot Sensitivity Analysis
@@ -74,11 +80,43 @@ run_sensitivity <- function(model, sensitivity) {
 #' Plot the results of a sensitivity analysis as a tornado plot.
 #'
 #' @param x A result of \code{\link{run_sensitivity}}.
+#' @param model Name or index of model to plot.
+#' @param value State value to plot.
+#' @param xlab x-axis label.
+#' @param ylab t-axis label.
 #' @param ... Additional arguments passed to \code{plot}.
 #'
 #' @return A \code{ggplot2} object.
 #' @export
 #'
-plot.eval_sensitivity <- function(x, ...) {
+plot.eval_sensitivity <- function(x, model = 1,
+                                  value, xlab = "Parameter",
+                                  ylab = value, ...) {
+  tab <- x[[model]]
+  ref <- get_total_state_values(attr(x, "model")[[model]])
+  
+  tab <- tidyr::gather_(
+    data = tab,
+    key_col = ".variable",
+    value_col = ".value",
+    gather_col = attr(x, "variables"),
+    na.rm = TRUE
+  )
+  tab$.y <- tab[[value]]- ref[[value]]
+  
+  ggplot(tab, aes(
+    x = .variable,
+    y = .y,
+    fill = as.factor(sign(.y)))) + 
+    geom_bar(position = "identity", stat = "identity") +
+    coord_flip() +
+    guides(fill=FALSE) +
+    geom_text(aes(
+      x = as.numeric(as.factor(.variable)),
+      y = .y,
+      label = .value
+    )) +
+    xlab(xlab) +
+    ylab(ylab)
   
 }

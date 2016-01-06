@@ -25,4 +25,12 @@
 #' 
 #' @importFrom logitnorm qlogitnorm
 #' 
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 geom_bar
+#' @importFrom ggplot2 coord_flip
+#' @importFrom ggplot2 guides
+#' @importFrom ggplot2 geom_text
+#' @importFrom ggplot2 xlab
+#' @importFrom ggplot2 ylab
+#' 
 NULL

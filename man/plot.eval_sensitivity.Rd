@@ -4,10 +4,19 @@
 \alias{plot.eval_sensitivity}
 \title{Plot Sensitivity Analysis}
 \usage{
-\method{plot}{eval_sensitivity}(x, ...)
+\method{plot}{eval_sensitivity}(x, model = 1, value, xlab = "Parameter",
+  ylab = value, ...)
 }
 \arguments{
 \item{x}{A result of \code{\link{run_sensitivity}}.}
+
+\item{model}{Name or index of model to plot.}
+
+\item{value}{State value to plot.}
+
+\item{xlab}{x-axis label.}
+
+\item{ylab}{t-axis label.}
 
 \item{...}{Additional arguments passed to \code{plot}.}
 }
