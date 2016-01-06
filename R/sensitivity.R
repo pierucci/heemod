@@ -118,5 +118,4 @@ plot.eval_sensitivity <- function(x, model = 1,
     )) +
     xlab(xlab) +
     ylab(ylab)
-  
 }
