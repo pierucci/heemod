@@ -119,3 +119,6 @@ plot.eval_sensitivity <- function(x, model = 1,
     xlab(xlab) +
     ylab(ylab)
 }
+if(getRversion() >= "2.15.1") utils::globalVariables(
+  c(".variable", ".y", ".value")
+)

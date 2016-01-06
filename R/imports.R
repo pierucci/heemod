@@ -30,5 +30,8 @@
 #' @importFrom ggplot2 geom_text
 #' @importFrom ggplot2 xlab
 #' @importFrom ggplot2 ylab
+#' @importFrom ggplot2 aes
+#' 
+#' @importFrom tidyr gather_
 #' 
 NULL
