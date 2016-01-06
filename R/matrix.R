@@ -137,12 +137,13 @@ eval_matrix <- function(x, parameters) {
   # bottleneck!
   
   res <- unlist(
-    purrr::map_rows(
-      tab_res, f, .labels = FALSE
-    )$.out,
+    dplyr::do(
+      dplyr::rowwise(tab_res),
+      res = f(unlist(.))
+    )$res,
     recursive = FALSE
   )
-  
+
   structure(res,
             class = c("eval_matrix", class(res)),
             state_names = get_state_names(x))

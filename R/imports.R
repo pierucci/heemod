@@ -9,8 +9,6 @@
 #' @importFrom dplyr as_data_frame
 #' @importFrom dplyr bind_rows
 #' 
-#' @importFrom purrr map_rows
-#' 
 #' @importFrom lazyeval lazy
 #' @importFrom lazyeval lazy_dots
 #' @importFrom lazyeval lazy_eval

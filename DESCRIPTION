@@ -6,11 +6,11 @@ Maintainer: Antoine Filipovic-Pierucci <pierucci@gmail.com>
 Description: Health Economic Evaluation MODelling (HEEMOD). Markov models (homogenous and non-homogenous)
   for health economic evaluation. Model comparison, sensitivity and probabilistic analysis.
 Depends: R (>= 3.2.2)
-Imports: lazyeval, dplyr, purrr, diagram, mvnfast, logitnorm
+Imports: lazyeval, dplyr, diagram, mvnfast, logitnorm, ggplot2
 License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
-Suggests: testthat, knitr, ggplot2
+Suggests: testthat, knitr
 URL: https://github.com/pierucci/heemod
 BugReports: https://github.com/pierucci/heemod/issues
