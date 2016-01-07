@@ -368,3 +368,39 @@ get_state_names.uneval_model <- function(x, ...) {
   get_state_names(get_states(x))
 }
 
+#' Plot Results of Markov Model
+#' 
+#' Various plots for Markov models.
+#' 
+#' \code{type = "counts"} represents state memberships (corrected) by cycle.
+#'
+#' @param x Result from \code{\link{run_models}}.
+#' @param type Type of plot, see details.
+#' @param model Name or position of model of interest.
+#' @param ... Additional arguments passed to \code{plot}.
+#'
+#' @return A \code{ggplot2} object.
+#' @export
+#'
+plot.eval_model_list <- function(x, type = c("counts"), model = 1, ...) {
+  type <- match.arg(type)
+  
+  switch(
+    type,
+    counts = {
+      tab_counts <- dplyr::mutate(
+        get_counts(x[[model]]),
+        markov_cycle = row_number()
+      )
+      tab_counts <- tidyr::gather(data = tab_counts, ... = - markov_cycle)
+      pos_cycle <- seq_len(nrow(tab_counts))
+      ggplot2::ggplot(tab_counts, ggplot2::aes(markov_cycle, value, colour = key)) +
+        ggplot2::geom_line() +
+        ggplot2::scale_x_continuous(breaks=pos_cycle) +
+        ggplot2::xlab("Markov cycle") +
+        ggplot2::ylab("Count") +
+        ggplot2::scale_colour_hue(name = "State")
+    },
+    stop(sprintf("Unknown type: '%s'", type))
+  )
+}
