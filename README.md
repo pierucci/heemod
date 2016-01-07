@@ -45,6 +45,7 @@ In version 1.0.0 :
 
   * Deterministic sensitivity analysis.
   * Graphical analysis of Markov models.
+  * Multiple state membership correction methods.
 
 Upcoming vignettes:
 
