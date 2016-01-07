@@ -63,6 +63,19 @@ mat_comb <-
 mat_comb
 ```
 
+We can plot the transition matrix for the monotherapy group:
+
+```{r, fig.width = 6, fig.height=6, fig.align='center'}
+plot(mat_mono)
+```
+
+And the combined therapy group:
+
+```{r, fig.width = 6, fig.height=6, fig.align='center'}
+plot(mat_comb)
+```
+
+
 # State values
 
 The costs of lamivudine and zidovudine are defined:
@@ -202,3 +215,16 @@ $$
 $$
 
 6187GBP per life-year gained.
+
+The counts per state can be plotted for the monotherapy group:
+
+```{r, fig.width = 6, fig.align='center'}
+plot(res_mod, model = "mono", type = "counts")
+```
+
+And the combined therapy group:
+
+```{r, fig.width = 6, fig.align='center'}
+plot(res_mod, model = "comb", type = "counts")
+```
+

@@ -160,7 +160,7 @@ mat_trans
 
 While it is possible to plot the matrix thanks to the `diagram` package, the results may not always be easy to read.
 
-```{r}
+```{r, fig.width = 6, fig.height=6, fig.align='center'}
 plot(mat_trans)
 ```
 
@@ -252,3 +252,16 @@ $$
 $$
 
 The new treatment costs 547.5 GBP per QALY gained.
+
+We can plot the counts per state for the standard model:
+
+```{r, fig.width = 6, fig.align='center'}
+plot(res_mod, model = "standard", type = "counts")
+```
+
+And the np1 model:
+
+```{r, fig.width = 6, fig.align='center'}
+plot(res_mod, model = "np1", type = "counts")
+```
+
