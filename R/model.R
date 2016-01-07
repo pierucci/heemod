@@ -393,16 +393,19 @@ plot.eval_model_list <- function(x, type = c("counts"), model = 1, ...) {
         markov_cycle = row_number()
       )
       tab_counts <- tidyr::gather(data = tab_counts, ... = - markov_cycle)
+      
       pos_cycle <- pretty(seq_len(nrow(get_counts(x[[model]]))), n = 10)
+      y_max <- max(attr(x, "init"), tab_counts$value)
       ggplot2::ggplot(tab_counts, ggplot2::aes(markov_cycle, value, colour = key)) +
         ggplot2::geom_line() +
         ggplot2::geom_point() +
-        ggplot2::scale_x_continuous(breaks=pos_cycle) +
+        ggplot2::scale_x_continuous(breaks = pos_cycle) +
         ggplot2::xlab("Markov cycle") +
         ggplot2::ylab("Count") +
-        ggplot2::scale_colour_hue(name = "State")
+        ggplot2::scale_colour_hue(name = "State") +
+        ggplot2::ylim(0, y_max)
     },
-    stop(sprintf("Unknown type: '%s'", type))
+    stop(sprintf("Unknown type: '%s'.", type))
   )
 }
 if(getRversion() >= "2.15.1")
