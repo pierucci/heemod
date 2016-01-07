@@ -32,8 +32,8 @@
 #'   names.
 #' @param .OBJECT An object of class \code{uneval_matrix}.
 #' @param x An \code{uneval_matrix} to plot.
-#' @param relsize Argument passed to \code{plotmat}.
-#' @param shadow.size Argument passed to \code{plotmat}.
+#' @param relsize Argument passed to \code{\link{plotmat}}.
+#' @param shadow.size Argument passed to \code{\link{plotmat}}.
 #'   
 #' @return An object of class \code{uneval_matrix} (actually
 #'   a named list of \code{lazy} expressions).
