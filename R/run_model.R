@@ -122,8 +122,21 @@ get_total_state_values <- function(x) {
   res
 }
 
+
+#' Summarise Markov Model Results
+#' 
+#' @param object Output from \code{\link{run_models}}.
+#' @param ... Name-value pairs of expressions to calculate new values. Must 
+#'   refer to existing values.
+#'   
+#' @return A \code{summary_eval_model_list} object.
 #' @export
+#' 
 summary.eval_model_list <- function(object, ...) {
+  .dots <- lazyeval::lazy_dots(...)
+  # no summary_() function because 
+  # summary is supposed to be only interactive
+  
   res <- unlist(
     lapply(
       object,
@@ -131,15 +144,20 @@ summary.eval_model_list <- function(object, ...) {
     )
   )
   
-  res <- matrix(
-    res,
-    nrow = length(object),
-    byrow = TRUE,
-    dimnames = list(
-      names(object),
-      get_state_value_names(object[[1]])
+  res <- as.data.frame(
+    matrix(
+      res,
+      nrow = length(object),
+      byrow = TRUE,
+      dimnames = list(
+        names(object),
+        get_state_value_names(object[[1]])
+      )
     )
   )
+  
+  res <- dplyr::mutate_(res, .dots = .dots)
+  rownames(res) <- names(object)
   
   structure(
     list(res = res,

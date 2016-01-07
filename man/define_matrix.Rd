@@ -25,9 +25,9 @@ names.}
 
 \item{x}{An \code{uneval_matrix} to plot.}
 
-\item{relsize}{Argument passed to \code{plotmat}.}
+\item{relsize}{Argument passed to \code{\link{plotmat}}.}
 
-\item{shadow.size}{Argument passed to \code{plotmat}.}
+\item{shadow.size}{Argument passed to \code{\link{plotmat}}.}
 }
 \value{
 An object of class \code{uneval_matrix} (actually

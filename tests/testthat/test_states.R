@@ -141,18 +141,13 @@ y"
       fixed = TRUE
     )
     expect_error(
-      define_state_list(
-        s1, s3
-      )
-    )
-    expect_error(
-      define_state_list(
+      heemod:::define_state_list(
         X1 = s1,
         X1 = s2
       )
     )
     expect_error(
-      define_state_list(
+      heemod:::define_state_list(
         1:2,
         s1
       )

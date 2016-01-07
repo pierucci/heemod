@@ -137,11 +137,11 @@ test_that(
     )
     expect_output(
       str(summary(run_models(mod1, mod2))),
-      'List of 4
- $ res       : num [1:2, 1:2] 309 934 283 891
-  ..- attr(*, "dimnames")=List of 2
-  .. ..$ : chr [1:2] "A" "B"
-  .. ..$ : chr [1:2] "x" "y"',
+      "List of 4
+ $ res       :'data.frame':	2 obs. of  2 variables:
+  ..$ x: num [1:2] 309 934
+  ..$ y: num [1:2] 283 891
+ $ cycles    : num 1",
       fixed = TRUE
     )
   }

@@ -102,8 +102,11 @@ A",
     )
     expect_output(
       str(summary(e_mod)),
-      'List of 4
- $ res       : num [1, 1:2] 1593 1515',
+      "List of 4
+ $ res       :'data.frame':	1 obs. of  2 variables:
+  ..$ x: num 1593
+  ..$ y: num 1515
+ $ cycles    : num 5",
       fixed = TRUE
     )
     expect_output(
@@ -201,8 +204,11 @@ B",
     )
     expect_output(
       str(summary(e_mod2)),
-      'List of 4
- $ res       : num [1:2, 1:2] 1593 1170 1515 615',
+      "List of 4
+ $ res       :'data.frame':	2 obs. of  2 variables:
+  ..$ x: num [1:2] 1593 1170
+  ..$ y: num [1:2] 1515 615
+ $ cycles    : num 5",
       fixed = TRUE
     )
     expect_output(
@@ -217,6 +223,20 @@ X2 0
          x        y
 A 1592.538 1514.507
 B 1170.000  615.000',
+      fixed = TRUE
+    )
+    expect_output(
+      print(summary(e_mod2, z = x / y)),
+      "2 Markov models run for 5 cycles.
+
+Initial states:
+
+   N
+X1 1
+X2 0
+         x        y        z
+A 1592.538 1514.507 1.051522
+B 1170.000  615.000 1.902439",
       fixed = TRUE
     )
     expect_output(
