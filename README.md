@@ -2,7 +2,7 @@
 
 [![Travis-CI Build Status](https://travis-ci.org/pierucci/heemod.svg?branch=master)](https://travis-ci.org/pierucci/heemod)
 
-`heemod` is a toolset for health ecomomic evaluation modelling. It aims to provide a simple and consistent interface for Markov models specification and comparison. Non-homogenous Markov models (with time varying properties) are supported.
+`heemod` is an `R` toolset for health ecomomic evaluation modelling. It aims to provide a simple and consistent interface for Markov models specification and comparison. Non-homogenous Markov models (with time varying properties) are supported.
 
 Most of the analyses presented in [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do) can be performed with `heemod`.
 
@@ -51,3 +51,4 @@ Upcoming vignettes:
 
   * Heterogeneity analysis in `vignette("heterogeneity", package = "heemod")`.
   * Model comparison in `vignette("comparison", package = "heemod")`.
+  * Deterministic sensitivity analysis in `vignette("sensitivity", package = "heemod")`.
