@@ -17,11 +17,11 @@
 #' The initial number of individuals in each state and the 
 #' number of cycle will be the same for all models.
 #' 
-#' Internally this function does 2 operations: first
-#' evaluating parameters, transition matrix, state values
-#' and computing individual counts through
-#' \code{\link{eval_model}}; and then using individual
-#' counts and evaluated state values to compute values at
+#' Internally this function does 2 operations: first 
+#' evaluating parameters, transition matrix, state values 
+#' and computing individual counts through 
+#' \code{\link{eval_model}}; and then using individual 
+#' counts and evaluated state values to compute values at 
 #' each cycle through \code{compute_values}.
 #' 
 #' @param ... One or more \code{uneval_model} object.
@@ -36,7 +36,7 @@
 #' @export
 #' 
 #' @example inst/examples/example_run_models.R
-#' 
+#'   
 run_models <- function(...,
                        init = c(1L, rep(0L, get_state_number(get_states(list(...)[[1]])) - 1)),
                        cycles = 1,
@@ -166,6 +166,63 @@ summary.eval_model_list <- function(object, ...) {
          count_args = attr(object, "count_args")),
     class = "summary_eval_model_list"
   )
+}
+
+#' Compute ICER
+#' 
+#' Compute ICER for Markov models.
+#' 
+#' @param x Result of \code{\link{run_models}}
+#' @param cost character. Variable name corresponding to 
+#'   cost.
+#' @param effect character. Variable name corresponding to
+#'   efficicacy (or utility).
+#'   
+#' @return An object of class \code{mat_icer}.
+#' @export
+#' 
+compute_icer <- function(x, cost, effect) {
+  stopifnot(
+    "eval_model_list" %in% class(x)
+  )
+  
+  tab <- summary(x)$res
+  
+  tab <- data.frame(
+    model = rownames(tab),
+    cost = tab[[cost]],
+    effect = tab[[effect]]
+  )
+  
+  
+  tab <- tab[order(tab$effect, tab$cost), ]
+  
+  res <- matrix(
+    numeric(nrow(tab)^2),
+    nrow = nrow(tab),
+    dimnames = list(tab$model, tab$model)
+  )
+  for (x in tab$model ) {
+    for (y in tab$model) {
+      res[x, y] <- 
+        (tab$cost[tab$model == x] - tab$cost[tab$model == y]) /
+        (tab$effect[tab$model == x] - tab$effect[tab$model == y])
+    }
+  }
+  res[! is.finite(res) | upper.tri(res)] <- NA
+  structure(
+    res,
+    class = c("mat_icer", class(res))
+  )
+}
+
+#' @export
+print.mat_icer <- function(x, ...) {
+  res <- format(x)
+  res[is.na(x)] <- "-"
+  
+  print(matrix(res, nrow = nrow(x),
+         dimnames = dimnames(x)), quote = FALSE)
 }
 
 #' @export

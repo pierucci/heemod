@@ -46,11 +46,11 @@ value names).
 The initial number of individuals in each state and the 
 number of cycle will be the same for all models.
 
-Internally this function does 2 operations: first
-evaluating parameters, transition matrix, state values
-and computing individual counts through
-\code{\link{eval_model}}; and then using individual
-counts and evaluated state values to compute values at
+Internally this function does 2 operations: first 
+evaluating parameters, transition matrix, state values 
+and computing individual counts through 
+\code{\link{eval_model}}; and then using individual 
+counts and evaluated state values to compute values at 
 each cycle through \code{compute_values}.
 }
 \examples{
