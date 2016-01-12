@@ -12,5 +12,5 @@ LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
 Suggests: testthat, knitr, rmarkdown
-URL: https://github.com/pierucci/heemod, https://pierucci.github.io/
+URL: https://github.com/pierucci/heemod, https://pierucci.github.io
 BugReports: https://github.com/pierucci/heemod/issues
