@@ -52,3 +52,7 @@ Upcoming vignettes:
   * Heterogeneity analysis in `vignette("heterogeneity", package = "heemod")`.
   * Model comparison in `vignette("comparison", package = "heemod")`.
   * Deterministic sensitivity analysis in `vignette("sensitivity", package = "heemod")`.
+
+## Devs
+
+[Kevin Zarca](http://www.urc-eco.fr/Kevin-ZARCA,402) and [Antoine Filipović-Pierucci](https://pierucci.github.io/).
