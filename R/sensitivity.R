@@ -54,7 +54,8 @@ define_sensitivity_ <- function(.dots) {
 #' @param sensitivity An object returned by 
 #'   \code{\link{define_sensitivity}}.
 #'   
-#' @return A list with one \code{data.frame} per model.
+#' @return A \code{data.frame} with one row per model and
+#'   parameter value.
 #' @export
 #' 
 #' @example inst/examples/example_run_sensitivity.R
@@ -65,13 +66,19 @@ run_sensitivity <- function(model, sensitivity) {
   method <- attr(model, "method")
   list_models <- attr(model, "uneval_model_list")
   
-  res <- lapply(list_models, eval_model_newdata, method = method,
-                init = init, cycles = cycles, newdata = sensitivity)
+  list_res <- lapply(list_models, eval_model_newdata, method = method,
+                     init = init, cycles = cycles, newdata = sensitivity)
+  for (n in names(list_res)) {
+    list_res[[n]]$.model_name <- n
+  }
+  
+  res <- Reduce(dplyr::bind_rows, list_res)
+  
   structure(
     res,
-    class = "eval_sensitivity",
+    class = c("eval_sensitivity", class(res)),
     variables = attr(sensitivity, "variables"),
-    model = model
+    model_ref = model
   )
 }
 
@@ -92,8 +99,12 @@ run_sensitivity <- function(model, sensitivity) {
 plot.eval_sensitivity <- function(x, model = 1,
                                   value, xlab = "Parameter",
                                   ylab = value, ...) {
-  tab <- x[[model]]
-  ref <- get_total_state_values(attr(x, "model")[[model]])
+  stopifnot(
+    ! missing(value)
+  )
+  
+  tab <- get_model(x, model)
+  ref <- get_model(attr(x, "model_ref"), model)
   
   tab <- tidyr::gather_(
     data = tab,

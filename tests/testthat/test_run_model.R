@@ -131,8 +131,10 @@ test_that(
     )
     expect_output(
       str(run_models(mod1, mod2)),
-      "List of 2
- $ A:List of 5",
+      '2 obs. of  3 variables:
+ $ x          : num  309 934
+ $ y          : num  283 891
+ $ .model_name: chr  "A" "B"',
       fixed = TRUE
     )
     expect_output(
@@ -140,8 +142,7 @@ test_that(
       "List of 4
  $ res       :'data.frame':	2 obs. of  2 variables:
   ..$ x: num [1:2] 309 934
-  ..$ y: num [1:2] 283 891
- $ cycles    : num 1",
+  ..$ y: num [1:2] 283 891",
       fixed = TRUE
     )
   }

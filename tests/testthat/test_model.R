@@ -86,16 +86,17 @@ test_that(
     )
     expect_output(
       str(e_mod),
-      'List of 1
- $ A:List of 5
-  ..$ parameters',
+      '1 obs. of  3 variables:
+ $ x          : num 1593
+ $ y          : num 1515
+ $ .model_name: chr "A"',
       fixed = TRUE
     )
     expect_output(
       print(e_mod),
       "1 Markov model, run for 5 cycles.
 
-Model names:
+Model name:
 
 A",
       fixed = TRUE
@@ -105,8 +106,7 @@ A",
       "List of 4
  $ res       :'data.frame':	1 obs. of  2 variables:
   ..$ x: num 1593
-  ..$ y: num 1515
- $ cycles    : num 5",
+  ..$ y: num 1515",
       fixed = TRUE
     )
     expect_output(
@@ -187,9 +187,10 @@ test_that(
     )
     expect_output(
       str(e_mod2),
-      'List of 2
- $ A:List of 5
-  ..$ parameters       :',
+      '2 obs. of  3 variables:
+ $ x          : num  1593 1170
+ $ y          : num  1515 615
+ $ .model_name: chr  "A" "B"',
       fixed = TRUE
     )
     expect_output(
@@ -207,8 +208,7 @@ B",
       "List of 4
  $ res       :'data.frame':	2 obs. of  2 variables:
   ..$ x: num [1:2] 1593 1170
-  ..$ y: num [1:2] 1515 615
- $ cycles    : num 5",
+  ..$ y: num [1:2] 1515 615",
       fixed = TRUE
     )
     expect_output(

@@ -24,7 +24,7 @@ be prespecified for heterogeneity analysis or randomly
 drawn with resample for probability analysis.}
 }
 \value{
-A list with one data.frame per model.
+A \code{data.frame} with one row per model/value.
 }
 \description{
 Given a table of new parameter values with a new 

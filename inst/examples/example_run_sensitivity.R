@@ -19,7 +19,6 @@ mod1 <-
     )
   )
 
-
 # running several models
 mod2 <-
   define_model(
@@ -50,4 +49,6 @@ ds <- define_sensitivity(
 )
 print(ds)
 
-run_sensitivity(res2, ds)
+x <- run_sensitivity(res2, ds)
+
+plot(x, value = "cost")

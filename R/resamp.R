@@ -217,20 +217,27 @@ run_probabilistic <- function(model, resample, N) {
   method <- attr(model, "method")
   list_models <- attr(model, "uneval_model_list")
   
-  res <- list()
+  list_res <- list()
   
   for (i in seq_along(list_models)) {
     message(sprintf("Running model '%s'...", names(list_models)[i]))
-    res <- c(res,
-             list(
-               eval_model_newdata(
-                 model = list_models[[i]], method = method,
-                 init = init, cycles = cycles, newdata = newdata
-               )
-             )
+    list_res <- c(
+      list_res,
+      list(
+        eval_model_newdata(
+          model = list_models[[i]], method = method,
+          init = init, cycles = cycles, newdata = newdata
+        )
+      )
     )
   }
-  names(res) <- names(list_models)
+  names(list_res) <- names(list_models)
+  
+  for (n in names(list_res)) {
+    list_res[[n]]$.model_name <- n
+  }
+  
+  res <- Reduce(dplyr::bind_rows, list_res)
   
   return(res)
 }

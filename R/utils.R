@@ -48,3 +48,15 @@ list_all_same <- function(x) {
 plur <- function(x) {
   if (x > 1) "s" else ""
 }
+
+#' Get values from a specific model
+#' 
+#' @param x A data.frame with results from several models.
+#' @param m Model name or position.
+#'   
+#' @return A data.frame with results from only one model.
+get_model <- function(x, m) {
+  model_names <- unique(x$.model_name)
+  names(model_names) <- model_names
+  x[x$.model_name == model_names[m], ]
+}

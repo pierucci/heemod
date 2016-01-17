@@ -84,14 +84,24 @@ run_models <- function(...,
     all(sort(names(init)) == sort(get_state_names(list_models[[1]])))
   )
   
+  eval_model_list <- lapply(list_models, eval_model, 
+                            init = init, 
+                            cycles = cycles,
+                            method = method)
+  
+  list_res <- lapply(eval_model_list, get_total_state_values)
+  
+  for (n in model_names){
+    list_res[[n]]$.model_name <- n
+  }
+  
+  res <- Reduce(dplyr::bind_rows, list_res)
+  
   structure(
-    lapply(list_models, eval_model, 
-           init = init, 
-           cycles = cycles,
-           method = method),
+    res,
+    eval_model_list = eval_model_list,
     uneval_model_list = list_models,
-    names = model_names,
-    class = "eval_model_list",
+    class = c("eval_model_list", class(res)),
     init = init,
     cycles = cycles,
     method = method
@@ -106,13 +116,13 @@ run_model <- run_models
 print.eval_model_list <- function(x, ...) {
   cat(sprintf(
     "%i Markov model%s, run for %i cycle%s.\n\n",
-    length(x),
-    plur(length(x)),
+    nrow(x),
+    plur(nrow(x)),
     attr(x, "cycles"),
     plur(attr(x, "cycles"))
   ))
-  cat("Model names:\n\n")
-  cat(names(x), sep = "\n")
+  cat(sprintf("Model name%s:\n\n", plur(length(x$.model_name))))
+  cat(x$.model_name, sep = "\n")
 }
 
 get_total_state_values <- function(x) {
@@ -137,27 +147,12 @@ summary.eval_model_list <- function(object, ...) {
   # no summary_() function because 
   # summary is supposed to be only interactive
   
-  res <- unlist(
-    lapply(
-      object,
-      get_total_state_values
-    )
-  )
+  res <- as.data.frame(object)
   
-  res <- as.data.frame(
-    matrix(
-      res,
-      nrow = length(object),
-      byrow = TRUE,
-      dimnames = list(
-        names(object),
-        get_state_value_names(object[[1]])
-      )
-    )
-  )
+  res <- dplyr::select(res, - .model_name)
   
   res <- dplyr::mutate_(res, .dots = .dots)
-  rownames(res) <- names(object)
+  rownames(res) <- object$.model_name
   
   structure(
     list(res = res,
@@ -167,6 +162,8 @@ summary.eval_model_list <- function(object, ...) {
     class = "summary_eval_model_list"
   )
 }
+if(getRversion() >= "2.15.1")
+  utils::globalVariables(c(".model_name"))
 
 #' Compute ICER
 #' 

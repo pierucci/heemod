@@ -55,16 +55,10 @@ test_that(
     
     expect_output(
       str(ndt1),
-      "List of 2
- $ A:Classes",
-      fixed= TRUE
-    )
-    
-    expect_output(
-      str(ndt1),
-      "and 'data.frame':	11 obs. of  2 variables:
-  ..$ age_init: int [1:11] 40 41 42 43 44 45 46 47 48 49 ...
-  ..$ cost    : num [1:11] 5418 5436 5455 5474 5493 ..",
+      '22 obs. of  3 variables:
+ $ age_init   : int  40 41 42 43 44 45 46 47 48 49 ...
+ $ cost       : num  5418 5436 5455 5474 5493 ...
+ $ .model_name: chr  "A" "A" "A" "A" ...',
       fixed= TRUE
     )
   }
@@ -147,20 +141,14 @@ test_that(
     
     expect_output(
       str(ndt1),
-      "List of 2
- $ A:Classes",
+      '20 obs. of  4 variables:
+ $ age_init   : num  65.5 71.3 76.5 74.4 59.9 ...
+ $ cost_init  : num  1118 948 1212 1024 1045 ...
+ $ cost       : num  12515 10923 13662 11742 11678 ...
+ $ .model_name: chr  "A" "A" "A" "A" ...',
       fixed = TRUE
     )
-    
-    expect_output(
-      str(ndt1),
-      "and 'data.frame':	10 obs. of  3 variables:
-  ..$ age_init : num [1:10] 65.5 71.3 76.5 74.4 59.9 ...
-  ..$ cost_init: num [1:10] 1118 948 1212 1024 1045 ...
-  ..$ cost     : num [1:10] 12515 10923 13662 11742 11",
-      fixed = TRUE
-    )
-    
+
     expect_equal(
       res2,
       structure(
@@ -178,10 +166,11 @@ test_that(
     
     expect_output(
       str(ndt2),
-      "and 'data.frame':	1 obs. of  3 variables:
-  ..$ age_init : num 66.6
-  ..$ cost_init: num 930
-  ..$ cost     : num 10653",
+      '2 obs. of  4 variables:
+ $ age_init   : num  66.6 66.6
+ $ cost_init  : num  930 930
+ $ cost       : num  10653 38163
+ $ .model_name: chr  "A" "B"',
       fixed = TRUE
     )
     

@@ -389,12 +389,12 @@ plot.eval_model_list <- function(x, type = c("counts"), model = 1, ...) {
     type,
     counts = {
       tab_counts <- dplyr::mutate(
-        get_counts(x[[model]]),
+        get_counts(attr(x, "eval_model_list")[[model]]),
         markov_cycle = row_number()
       )
+      pos_cycle <- pretty(seq_len(nrow(tab_counts)), n = 10)
       tab_counts <- tidyr::gather(data = tab_counts, ... = - markov_cycle)
       
-      pos_cycle <- pretty(seq_len(nrow(get_counts(x[[model]]))), n = 10)
       y_max <- max(attr(x, "init"), tab_counts$value)
       ggplot2::ggplot(tab_counts, ggplot2::aes(markov_cycle, value, colour = key)) +
         ggplot2::geom_line() +

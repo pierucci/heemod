@@ -13,7 +13,8 @@ run_sensitivity(model, sensitivity)
 \code{\link{define_sensitivity}}.}
 }
 \value{
-A list with one \code{data.frame} per model.
+A \code{data.frame} with one row per model and
+  parameter value.
 }
 \description{
 Run Sensitivity Analysis
@@ -39,7 +40,6 @@ mod1 <-
       cost = 432
     )
   )
-
 
 # running several models
 mod2 <-
@@ -71,6 +71,8 @@ ds <- define_sensitivity(
 )
 print(ds)
 
-run_sensitivity(res2, ds)
+x <- run_sensitivity(res2, ds)
+
+plot(x, value = "cost")
 }
 

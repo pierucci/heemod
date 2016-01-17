@@ -108,15 +108,15 @@ if(getRversion() >= "2.15.1") utils::globalVariables(c("."))
 #'   be prespecified for heterogeneity analysis or randomly 
 #'   drawn with resample for probability analysis.
 #'   
-#' @return A list with one data.frame per model.
+#' @return A \code{data.frame} with one row per model/value.
 #' @export
 #' 
 #' @example inst/examples/example_run_newdata.R
-#' 
+#'   
 run_newdata <- function(x, init, cycles, newdata) {
   
   stopifnot(
-    class(x) %in% "eval_model_list"
+    any(class(x) %in% "eval_model_list")
   )
   list_models <- attr(x, "uneval_model_list")
   
@@ -129,7 +129,14 @@ run_newdata <- function(x, init, cycles, newdata) {
   cycles <- attr(x, "cycles")
   method <- attr(x, "method")
   
-  res <- lapply(list_models, eval_model_newdata, method = method,
-                init = init, cycles = cycles, newdata = newdata)
-  return(res)
+  list_res <- lapply(list_models, eval_model_newdata, method = method,
+                     init = init, cycles = cycles, newdata = newdata)
+  
+  for (n in names(list_res)) {
+    list_res[[n]]$.model_name <- n
+  }
+  
+  res <- Reduce(dplyr::bind_rows, list_res)
+  
+  structure(res, class = c("eval_newdata", class(res)))
 }
