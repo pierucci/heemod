@@ -6,6 +6,7 @@
   * added framework for probabilistic incertitude analysis.
   * written vignette for probabilistic incertitude analysis.
   * added complement alias for matrix definition.
+  * `run_` functions now output a single table instead of a list of tables.
   
 ## Bug fixes
 

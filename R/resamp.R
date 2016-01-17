@@ -232,9 +232,11 @@ run_probabilistic <- function(model, resample, N) {
     )
   }
   names(list_res) <- names(list_models)
+  index <- seq_len(N)
   
   for (n in names(list_res)) {
     list_res[[n]]$.model_name <- n
+    list_res[[n]]$.index <- index
   }
   
   res <- Reduce(dplyr::bind_rows, list_res)

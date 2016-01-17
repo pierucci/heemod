@@ -141,11 +141,12 @@ test_that(
     
     expect_output(
       str(ndt1),
-      '20 obs. of  4 variables:
+      '20 obs. of  5 variables:
  $ age_init   : num  65.5 71.3 76.5 74.4 59.9 ...
  $ cost_init  : num  1118 948 1212 1024 1045 ...
  $ cost       : num  12515 10923 13662 11742 11678 ...
- $ .model_name: chr  "A" "A" "A" "A" ...',
+ $ .model_name: chr  "A" "A" "A" "A" ...
+ $ .index     : int  1 2 3 4 5 6 7 8 9 10 ...',
       fixed = TRUE
     )
 
@@ -166,11 +167,12 @@ test_that(
     
     expect_output(
       str(ndt2),
-      '2 obs. of  4 variables:
+      '2 obs. of  5 variables:
  $ age_init   : num  66.6 66.6
  $ cost_init  : num  930 930
  $ cost       : num  10653 38163
- $ .model_name: chr  "A" "B"',
+ $ .model_name: chr  "A" "B"
+ $ .index     : int  1 1',
       fixed = TRUE
     )
     
