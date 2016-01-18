@@ -241,7 +241,21 @@ run_probabilistic <- function(model, resample, N) {
   
   res <- Reduce(dplyr::bind_rows, list_res)
   
-  return(res)
+  structure(
+    res, 
+    class = c("probabilistic", class(res)),
+    model = model
+  )
+}
+
+plot.probabilistic <- function(x, cost, effect, ...) {
+  tab <- dplyr::data_frame(
+    .model_name = x$.model_name,
+    cost = x[[cost]],
+    effect = x[[effect]]
+  )
+  ggplot2::ggplot(data = tab, aes(x = effect, y = cost)) +
+    
 }
 
 #' Evaluate Resampling Definition

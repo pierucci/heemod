@@ -132,6 +132,16 @@ get_total_state_values <- function(x) {
   res
 }
 
+get_base_model <- function(x, ...) {
+  UseMethod("get_base_model")
+}
+
+get_base_model.eval_model_list <- function(x, effect, ...) {
+  x$.model_name[which(x[[effect]] == min(x[[effect]]))[1]]
+}
+get_base_model.probabilistic <- function(x, effect, ...) {
+  get_base_model(attr(x, "model"))
+}
 
 #' Summarise Markov Model Results
 #' 
@@ -169,20 +179,20 @@ if(getRversion() >= "2.15.1")
 #' 
 #' Compute ICER for Markov models.
 #' 
-#' @param x Result of \code{\link{run_models}}
+#' @param x Result of \code{\link{run_models}} or
+#'   \code{\link{run_probabilistic}}.
 #' @param cost character. Variable name corresponding to 
 #'   cost.
-#' @param effect character. Variable name corresponding to
+#' @param effect character. Variable name corresponding to 
 #'   efficicacy (or utility).
 #'   
 #' @return An object of class \code{mat_icer}.
 #' @export
 #' 
-compute_icer <- function(x, cost, effect) {
-  stopifnot(
-    "eval_model_list" %in% class(x)
-  )
-  
+compute.icer <- function(x, cost, effect) {
+  UseMethod("compute_icer")
+}
+compute_icer.eval_model_list <- function(x, cost, effect) {
   tab <- summary(x)$res
   
   tab <- data.frame(
@@ -211,6 +221,9 @@ compute_icer <- function(x, cost, effect) {
     res,
     class = c("mat_icer", class(res))
   )
+}
+compute_icer.probabilistic <- function(x, cost, effect) {
+  
 }
 
 #' @export
