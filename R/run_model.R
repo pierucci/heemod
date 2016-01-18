@@ -189,7 +189,7 @@ if(getRversion() >= "2.15.1")
 #' @return An object of class \code{mat_icer}.
 #' @export
 #' 
-compute.icer <- function(x, cost, effect) {
+compute_icer <- function(x, cost, effect) {
   UseMethod("compute_icer")
 }
 compute_icer.eval_model_list <- function(x, cost, effect) {

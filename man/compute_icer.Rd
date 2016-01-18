@@ -7,12 +7,13 @@
 compute_icer(x, cost, effect)
 }
 \arguments{
-\item{x}{Result of \code{\link{run_models}}}
+\item{x}{Result of \code{\link{run_models}} or
+\code{\link{run_probabilistic}}.}
 
 \item{cost}{character. Variable name corresponding to 
 cost.}
 
-\item{effect}{character. Variable name corresponding to
+\item{effect}{character. Variable name corresponding to 
 efficicacy (or utility).}
 }
 \value{

@@ -254,7 +254,7 @@ plot.probabilistic <- function(x, cost, effect, ...) {
     cost = x[[cost]],
     effect = x[[effect]]
   )
-  ggplot2::ggplot(data = tab, aes(x = effect, y = cost)) +
+  ggplot2::ggplot(data = tab, aes(x = effect, y = cost))
     
 }
 
