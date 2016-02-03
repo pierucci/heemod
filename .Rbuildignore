@@ -6,3 +6,4 @@ NEWS\.md
 ^README\.html$
 ^vignettes/.*\.html$
 ^vignettes/.*\.md$
+^.*\.Rproj$
