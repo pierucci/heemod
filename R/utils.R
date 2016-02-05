@@ -60,3 +60,33 @@ get_model <- function(x, m) {
   names(model_names) <- model_names
   x[x$.model_name == model_names[m], ]
 }
+
+#' Check Names
+#' 
+#' Throws an error if any of the names are reserved.
+#'
+#' Reserved names are \code{markov_cycle} and anything starting with \code{.}.
+#'
+#' @param x A character vector of names.
+#'
+#' @return Nothing, just throws an error if a reserved name is encountered.
+check_names <- function(x) {
+  if (is.null(x)) {
+    stop("Names must exist.")
+  }
+  if (anyNA(x)) {
+    stop("Missing names are not allowed.")
+  }
+  if (any("" %in% x)) {
+    stop("Empty string names are not allowed.")
+  }
+  if (any("markov_cycle" %in% x)) {
+    stop("'markov_cycle' is a reserved name.")
+  }
+  if (any("C" %in% x)) {
+    stop("'C' is a reserved name.")
+  }
+  if (any(grepl("^\\.", x))) {
+    stop("Names starting with '.' are reserved.")
+  }
+}

@@ -29,12 +29,7 @@ define_state <- function(...) {
 }
 
 define_state_ <- function(.dots) {
-  stopifnot(
-    ! is.null(names(.dots)),
-    ! any(names(.dots) == ""),
-    all(names(.dots) != "markov_cycle"),
-    ! anyNA(names(.dots))
-  )
+  check_names(names(.dots))
   structure(.dots,
             class = c("state", class(.dots)))
 }
@@ -48,9 +43,7 @@ modify.state <- function(.OBJECT, ...) {
 }
 
 modify_.state <- function(.OBJECT, .dots) {
-  stopifnot(
-    all(names(.dots) != "markov_cycle")
-  )
+  check_names(names(.dots))
   # !mod!
   # message d'erreur informatif quand valeurs pas dans
   # bon ordre

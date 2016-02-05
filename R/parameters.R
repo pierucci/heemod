@@ -46,9 +46,7 @@ define_parameters <- function(...) {
 
 define_parameters_ <- function(.dots) {
   
-  stopifnot(
-    all(! names(.dots) %in% c("markov_cycle", "C"))
-  )
+  check_names(names(.dots))
   
   structure(.dots,
             class = c("uneval_parameters", class(.dots)))
@@ -138,9 +136,7 @@ modify.uneval_parameters <- function(.OBJECT, ...) {
 
 modify_.uneval_parameters <- function(.OBJECT, .dots) {
   
-  stopifnot(
-    all(names(.dots) != "markov_cycle")
-  )
+  check_names(names(.dots))
   # !mod!
   # message d'erreur informatif quand parametres pas dans
   # bon ordre
