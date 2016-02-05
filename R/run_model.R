@@ -163,6 +163,9 @@ get_base_model <- function(x, ...) {
 get_base_model.default <- function(x, ...) {
   x$.model_name[which(x$.effect == min(x$.effect))[1]]
 }
+get_base_model.eval_model_list <- function(x, ...) {
+  attr(x, "base_model")
+}
 get_base_model.probabilistic <- function(x, ...) {
   get_base_model(attr(x, "model"))
 }
