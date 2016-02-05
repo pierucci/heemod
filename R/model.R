@@ -382,7 +382,8 @@ get_state_names.uneval_model <- function(x, ...) {
 #' @return A \code{ggplot2} object.
 #' @export
 #'
-plot.eval_model_list <- function(x, type = c("counts"), model = 1, ...) {
+plot.eval_model_list <- function(x, type = c("counts", "ce"), model = 1,
+                                 cost, effect, ...) {
   type <- match.arg(type)
   
   switch(
@@ -405,8 +406,12 @@ plot.eval_model_list <- function(x, type = c("counts"), model = 1, ...) {
         ggplot2::scale_colour_hue(name = "State") +
         ggplot2::ylim(0, y_max)
     },
+    ce = {
+
+    },
     stop(sprintf("Unknown type: '%s'.", type))
   )
 }
 if(getRversion() >= "2.15.1")
-  utils::globalVariables(c("row_number", "markov_cycle", "value", "key"))
+  utils::globalVariables(c("row_number", "markov_cycle", "value", "key",
+                           ".cost", ".effect", ".model_names"))

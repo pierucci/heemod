@@ -71,7 +71,7 @@ run_models <- function(...,
     list_all_same(lapply(list_models,
                          function(x) sort(get_state_value_names(x))))
   )
-
+  
   stopifnot(
     length(init) == get_state_number(list_models[[1]]),
     all(init >= 0)
@@ -193,46 +193,17 @@ compute_icer <- function(x, cost, effect) {
   UseMethod("compute_icer")
 }
 compute_icer.eval_model_list <- function(x, cost, effect) {
-  tab <- summary(x)$res
+  tab <- x[order(x[[effect]]), ]
   
-  tab <- data.frame(
-    model = rownames(tab),
-    cost = tab[[cost]],
-    effect = tab[[effect]]
-  )
-  
-  
-  tab <- tab[order(tab$effect, tab$cost), ]
-  
-  res <- matrix(
-    numeric(nrow(tab)^2),
-    nrow = nrow(tab),
-    dimnames = list(tab$model, tab$model)
-  )
-  for (x in tab$model ) {
-    for (y in tab$model) {
-      res[x, y] <- 
-        (tab$cost[tab$model == x] - tab$cost[tab$model == y]) /
-        (tab$effect[tab$model == x] - tab$effect[tab$model == y])
+  for (i in seq_len(nrow(tab))) {
+    if ( i == 1) {
+      tab$.icer[i] <- -Inf
+    } else {
+      tab$.icer[i] <- (tab[[cost]][i] - tab[[cost]][i-1]) /
+        (tab[[effect]][i] - tab[[effect]][i-1])
     }
   }
-  res[! is.finite(res) | upper.tri(res)] <- NA
-  structure(
-    res,
-    class = c("mat_icer", class(res))
-  )
-}
-compute_icer.probabilistic <- function(x, cost, effect) {
-  
-}
-
-#' @export
-print.mat_icer <- function(x, ...) {
-  res <- format(x)
-  res[is.na(x)] <- "-"
-  
-  print(matrix(res, nrow = nrow(x),
-         dimnames = dimnames(x)), quote = FALSE)
+  tab
 }
 
 #' @export
