@@ -6,10 +6,8 @@
 #' @param effect 
 #' @param ... 
 #'
-#' @return
-#' @export
+#' @return A vector of model names on the efficiency frontier.
 #'
-#' @examples
 get_frontier <- function(x, cost, effect, ...) {
   base_model <- get_base_model(x, effect = effect)
   
@@ -25,5 +23,3 @@ get_frontier <- function(x, cost, effect, ...) {
   
   tab_icer$.model_names[order(tab_icer[[effect]])]
 }
-
-plot.eval_model_list()

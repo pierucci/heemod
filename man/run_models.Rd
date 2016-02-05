@@ -7,11 +7,11 @@
 \usage{
 run_models(..., init = c(1L, rep(0L,
   get_state_number(get_states(list(...)[[1]])) - 1)), cycles = 1,
-  method = c("end", "beginning", "cycle-tree", "half-cycle"))
+  method = c("end", "beginning", "cycle-tree", "half-cycle"), cost, effect)
 
 run_model(..., init = c(1L, rep(0L,
   get_state_number(get_states(list(...)[[1]])) - 1)), cycles = 1,
-  method = c("end", "beginning", "cycle-tree", "half-cycle"))
+  method = c("end", "beginning", "cycle-tree", "half-cycle"), cost, effect)
 }
 \arguments{
 \item{...}{One or more \code{uneval_model} object.}
@@ -24,6 +24,12 @@ at the beginning.}
 to compute.}
 
 \item{method}{Counting method.}
+
+\item{cost}{Names or expression to compute cost on the cost-effectiveness
+plane.}
+
+\item{effect}{Names or expression to compute effect on the cost-effectiveness
+plane.}
 }
 \value{
 A list of evaluated models with computed values.

@@ -4,13 +4,10 @@
 \alias{summary.eval_model_list}
 \title{Summarise Markov Model Results}
 \usage{
-\method{summary}{eval_model_list}(object, ...)
+\method{summary}{eval_model_list}(object)
 }
 \arguments{
 \item{object}{Output from \code{\link{run_models}}.}
-
-\item{...}{Name-value pairs of expressions to calculate new values. Must 
-refer to existing values.}
 }
 \value{
 A \code{summary_eval_model_list} object.

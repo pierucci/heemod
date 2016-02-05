@@ -4,22 +4,19 @@
 \alias{compute_icer}
 \title{Compute ICER}
 \usage{
-compute_icer(x, cost, effect)
+compute_icer(x)
 }
 \arguments{
 \item{x}{Result of \code{\link{run_models}} or
 \code{\link{run_probabilistic}}.}
-
-\item{cost}{character. Variable name corresponding to 
-cost.}
-
-\item{effect}{character. Variable name corresponding to 
-efficicacy (or utility).}
 }
 \value{
-An object of class \code{mat_icer}.
+A \code{data.frame} with computed ICER.
 }
 \description{
 Compute ICER for Markov models.
+}
+\details{
+Models are ordered by effectiveness and ICER are computed sequencially.
 }
 

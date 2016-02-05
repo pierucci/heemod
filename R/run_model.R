@@ -30,6 +30,10 @@
 #'   at the beginning.
 #' @param cycles positive integer. Number of Markov Cycles 
 #'   to compute.
+#' @param cost Names or expression to compute cost on the cost-effectiveness
+#'   plane.
+#' @param effect Names or expression to compute effect on the cost-effectiveness
+#'   plane.
 #' @param method Counting method.
 #'   
 #' @return A list of evaluated models with computed values.
@@ -40,14 +44,27 @@
 run_models <- function(...,
                        init = c(1L, rep(0L, get_state_number(get_states(list(...)[[1]])) - 1)),
                        cycles = 1,
-                       method = c("end", "beginning", "cycle-tree", "half-cycle")) {
+                       method = c("end", "beginning", "cycle-tree", "half-cycle"),
+                       cost, effect) {
   list_models <- list(...)
   
   method <- match.arg(method)
   
   stopifnot(
     all(unlist(lapply(list_models,
-                      function(x) "uneval_model" %in% class(x))))
+                      function(x) "uneval_model" %in% class(x)))),
+    ! missing(cost),
+    ! missing(effect)
+  )
+  
+  list_ce <- list(
+    lazyeval::lazy(cost, .follow_symbols = FALSE),
+    lazyeval::lazy(effect, .follow_symbols = FALSE)
+  )
+  names(list_ce) <- c(".cost", ".effect")
+  ce <- c(
+    lazyeval::lazy_dots(),
+    list_ce
   )
   
   model_names <- names(list_models)
@@ -96,6 +113,7 @@ run_models <- function(...,
   }
   
   res <- Reduce(dplyr::bind_rows, list_res)
+  res <- dplyr::mutate_(res, .dots = ce)
   
   structure(
     res,
@@ -104,7 +122,8 @@ run_models <- function(...,
     class = c("eval_model_list", class(res)),
     init = init,
     cycles = cycles,
-    method = method
+    method = method,
+    ce = ce
   )
 }
 
@@ -146,29 +165,25 @@ get_base_model.probabilistic <- function(x, effect, ...) {
 #' Summarise Markov Model Results
 #' 
 #' @param object Output from \code{\link{run_models}}.
-#' @param ... Name-value pairs of expressions to calculate new values. Must 
-#'   refer to existing values.
 #'   
 #' @return A \code{summary_eval_model_list} object.
 #' @export
 #' 
-summary.eval_model_list <- function(object, ...) {
-  .dots <- lazyeval::lazy_dots(...)
-  # no summary_() function because 
-  # summary is supposed to be only interactive
+summary.eval_model_list <- function(object) {
   
   res <- as.data.frame(object)
   
   res <- dplyr::select(res, - .model_name)
   
-  res <- dplyr::mutate_(res, .dots = .dots)
   rownames(res) <- object$.model_name
   
   structure(
-    list(res = res,
-         cycles = attr(object, "cycles"),
-         init = attr(object, "init"),
-         count_args = attr(object, "count_args")),
+    list(
+      res = res,
+      cycles = attr(object, "cycles"),
+      init = attr(object, "init"),
+      count_args = attr(object, "count_args")
+    ),
     class = "summary_eval_model_list"
   )
 }
@@ -179,28 +194,26 @@ if(getRversion() >= "2.15.1")
 #' 
 #' Compute ICER for Markov models.
 #' 
+#' Models are ordered by effectiveness and ICER are computed sequencially.
+#' 
 #' @param x Result of \code{\link{run_models}} or
 #'   \code{\link{run_probabilistic}}.
-#' @param cost character. Variable name corresponding to 
-#'   cost.
-#' @param effect character. Variable name corresponding to 
-#'   efficicacy (or utility).
 #'   
-#' @return An object of class \code{mat_icer}.
+#' @return A \code{data.frame} with computed ICER.
 #' @export
 #' 
-compute_icer <- function(x, cost, effect) {
+compute_icer <- function(x) {
   UseMethod("compute_icer")
 }
-compute_icer.eval_model_list <- function(x, cost, effect) {
+compute_icer.eval_model_list <- function(x) {
   tab <- x[order(x[[effect]]), ]
   
   for (i in seq_len(nrow(tab))) {
     if ( i == 1) {
       tab$.icer[i] <- -Inf
     } else {
-      tab$.icer[i] <- (tab[[cost]][i] - tab[[cost]][i-1]) /
-        (tab[[effect]][i] - tab[[effect]][i-1])
+      tab$.icer[i] <- (tab$.cost[i] - tab$.cost[i-1]) /
+        (tab$.effect[i] - tab$.effect[i-1])
     }
   }
   tab
@@ -224,6 +237,7 @@ print.summary_eval_model_list <- function(x, ...) {
     )
   ))
   print(x$res)
+  print(x$ce)
 }
 
 #' @export
