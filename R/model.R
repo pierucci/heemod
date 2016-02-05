@@ -407,7 +407,16 @@ plot.eval_model_list <- function(x, type = c("counts", "ce"), model = 1, ...) {
     },
     ce = {
       tab_ce <- x
-
+      bm <- get_base_model(x)
+      ef <- get_frontier(x)
+      tab_ce$.cost <- tab_ce$.cost - tab_ce$.cost[tab_ce$.model_names == bm]
+      tab_ce$.effect <- tab_ce$.effect - tab_ce$.effect[tab_ce$.model_names == bm]
+      ggplot2::ggplot(tab_ce,
+                      ggplot2::aes(x = .effect, y = .cost, label = .model_names)) +
+        ggplot2::geom_line(data = tab_ce[.model_names %in% ef, ]) +
+        ggplot2::geom_point() +
+        ggplot2::xlab("Effect") +
+        ggplot2::ylab("Cost")
     },
     stop(sprintf("Unknown type: '%s'.", type))
   )

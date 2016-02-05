@@ -235,11 +235,13 @@ run_probabilistic <- function(model, resample, N) {
   index <- seq_len(N)
   
   for (n in names(list_res)) {
-    list_res[[n]]$.model_name <- n
+    list_res[[n]]$.model_names <- n
     list_res[[n]]$.index <- index
   }
   
   res <- Reduce(dplyr::bind_rows, list_res)
+  
+  res <- dplyr::mutate_(res, .dots = attr(model, "ce"))
   
   structure(
     res, 
@@ -248,14 +250,24 @@ run_probabilistic <- function(model, resample, N) {
   )
 }
 
-plot.probabilistic <- function(x, cost, effect, ...) {
-  tab <- dplyr::data_frame(
-    .model_name = x$.model_name,
-    cost = x[[cost]],
-    effect = x[[effect]]
-  )
-  ggplot2::ggplot(data = tab, aes(x = effect, y = cost))
-    
+plot.probabilistic <- function(x, type = c("ce", "ac"), ...) {
+  switch(
+    type,
+    ce = {
+      tab <- x
+      bm <- get_base_model(x)
+      tab <- mutate(
+        group_by(tab, .model_names),
+        .cost = .cost - sum(.cost * .model_names == bm),
+        .effect = .effect - sum(.effect * .model_names == bm))
+      ggplot2::ggplot(data = tab, aes(x = .effect, y = .cost, colour = .model_names)) +
+        ggplot2::geom_point()
+    },
+    ac = {
+      
+    },
+    stop("Unknown plot type."))
+  
 }
 
 #' Evaluate Resampling Definition
