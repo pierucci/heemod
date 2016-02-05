@@ -382,8 +382,7 @@ get_state_names.uneval_model <- function(x, ...) {
 #' @return A \code{ggplot2} object.
 #' @export
 #'
-plot.eval_model_list <- function(x, type = c("counts", "ce"), model = 1,
-                                 cost, effect, ...) {
+plot.eval_model_list <- function(x, type = c("counts", "ce"), model = 1, ...) {
   type <- match.arg(type)
   
   switch(
@@ -407,6 +406,7 @@ plot.eval_model_list <- function(x, type = c("counts", "ce"), model = 1,
         ggplot2::ylim(0, y_max)
     },
     ce = {
+      tab_ce <- x
 
     },
     stop(sprintf("Unknown type: '%s'.", type))
