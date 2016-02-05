@@ -182,7 +182,8 @@ summary.eval_model_list <- function(object) {
       res = res,
       cycles = attr(object, "cycles"),
       init = attr(object, "init"),
-      count_args = attr(object, "count_args")
+      count_args = attr(object, "count_args"),
+      frontier = get_frontier(object)
     ),
     class = "summary_eval_model_list"
   )
