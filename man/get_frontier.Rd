@@ -4,7 +4,7 @@
 \alias{get_frontier}
 \title{Return Efficiency Frontier}
 \usage{
-get_frontier(x, cost, effect, ...)
+get_frontier(x)
 }
 \arguments{
 \item{x}{An \code{eval_model_list} object.}

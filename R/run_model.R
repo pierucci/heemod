@@ -45,7 +45,7 @@ run_models <- function(...,
                        init = c(1L, rep(0L, get_state_number(get_states(list(...)[[1]])) - 1)),
                        cycles = 1,
                        method = c("end", "beginning", "cycle-tree", "half-cycle"),
-                       cost, effect) {
+                       cost, effect, base_model) {
   list_models <- list(...)
   
   method <- match.arg(method)
@@ -115,6 +115,10 @@ run_models <- function(...,
   res <- Reduce(dplyr::bind_rows, list_res)
   res <- dplyr::mutate_(res, .dots = ce)
   
+  if (missing(base_mode)) {
+    base_mode <- get_base_model(res)
+  }
+  
   structure(
     res,
     eval_model_list = eval_model_list,
@@ -123,7 +127,8 @@ run_models <- function(...,
     init = init,
     cycles = cycles,
     method = method,
-    ce = ce
+    ce = ce,
+    base_model = base_model
   )
 }
 
@@ -155,10 +160,10 @@ get_base_model <- function(x, ...) {
   UseMethod("get_base_model")
 }
 
-get_base_model.eval_model_list <- function(x, effect, ...) {
-  x$.model_name[which(x[[effect]] == min(x[[effect]]))[1]]
+get_base_model.default <- function(x, ...) {
+  x$.model_name[which(x$.effect == min(x$.effect))[1]]
 }
-get_base_model.probabilistic <- function(x, effect, ...) {
+get_base_model.probabilistic <- function(x, ...) {
   get_base_model(attr(x, "model"))
 }
 

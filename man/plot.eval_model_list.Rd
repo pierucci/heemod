@@ -4,8 +4,7 @@
 \alias{plot.eval_model_list}
 \title{Plot Results of Markov Model}
 \usage{
-\method{plot}{eval_model_list}(x, type = c("counts", "ce"), model = 1, cost,
-  effect, ...)
+\method{plot}{eval_model_list}(x, type = c("counts", "ce"), model = 1, ...)
 }
 \arguments{
 \item{x}{Result from \code{\link{run_models}}.}
