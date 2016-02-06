@@ -206,14 +206,18 @@ if(getRversion() >= "2.15.1")
 
 #' Normalize Cost and Effect
 #' 
-#' Normalize cost and effect values taking base model as a
+#' Normalize cost and effect values taking base model as a 
 #' reference.
 #' 
-#' @param x Result of \code{run_model}.
+#' @param x Result of \code{run_model} or
+#'   \code{run_probabilistic}.
 #'   
-#' @return Input with normalized \code{.cost} and
+#' @return Input with normalized \code{.cost} and 
 #'   \code{.effect}, ordered by \code{.effect}.
 normalize_ce <- function(x) {
+  UseMethod("normalize_ce")
+}
+normalize_ce.eval_model_list <- function(x) {
   bm <- get_base_model(x)
   x$.cost <- x$.cost - x$.cost[x$.model_names == bm]
   x$.effect <- x$.effect - x$.effect[x$.model_names == bm]

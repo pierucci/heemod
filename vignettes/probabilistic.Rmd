@@ -224,3 +224,16 @@ pm <- run_probabilistic(
   N = 1e1
 )
 ```
+
+The results of the analysis can be plotted on the cost-effectiveness plane:
+
+```{r, fig.width = 6, fig.align='center'}
+plot(pm, type = "ce")
+```
+
+As well as cost-effectiveness acceptability curves:
+
+```{r, fig.width = 6, fig.align='center'}
+plot(pm, type = "ac")
+```
+

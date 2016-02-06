@@ -7,14 +7,15 @@
 normalize_ce(x)
 }
 \arguments{
-\item{x}{Result of \code{run_model}.}
+\item{x}{Result of \code{run_model} or
+\code{run_probabilistic}.}
 }
 \value{
-Input with normalized \code{.cost} and
+Input with normalized \code{.cost} and 
   \code{.effect}, ordered by \code{.effect}.
 }
 \description{
-Normalize cost and effect values taking base model as a
+Normalize cost and effect values taking base model as a 
 reference.
 }
 

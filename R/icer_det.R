@@ -1,4 +1,3 @@
-
 #' Return Efficiency Frontier
 #'
 #' @param x An \code{eval_model_list} object.

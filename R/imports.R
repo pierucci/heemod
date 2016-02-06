@@ -8,6 +8,8 @@
 #' @importFrom dplyr data_frame
 #' @importFrom dplyr as_data_frame
 #' @importFrom dplyr bind_rows
+#' @importFrom dplyr left_join
+#' @importFrom dplyr %>%
 #' 
 #' @importFrom lazyeval lazy
 #' @importFrom lazyeval lazy_dots

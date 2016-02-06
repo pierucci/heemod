@@ -22,6 +22,8 @@ A \code{ggplot2} object.
 Various plots for Markov models.
 }
 \details{
-\code{type = "counts"} represents state memberships (corrected) by cycle.
+\code{type = "counts"} represents state memberships 
+(corrected) by cycle, \code{type = "ce"} plots models on
+the cost-efficiency plane with the efficiency frontier.
 }
 

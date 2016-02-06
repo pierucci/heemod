@@ -17,7 +17,7 @@ mod1 <-
     ),
     define_state(
       cost = cost_init + age,
-      ly = 1
+      ly = 0
     )
   )
 
@@ -25,10 +25,11 @@ mod2 <-
   define_model(
     parameters = define_parameters(
       age_init = 60,
-      age = age_init + markov_cycle
+      age = age_init + markov_cycle,
+      p_trans = .7
     ),
     transition_matrix = define_matrix(
-      .5, .5,
+      p_trans, C,
       .1, .9
     ),
     define_state(
@@ -37,7 +38,7 @@ mod2 <-
     ),
     define_state(
       cost = 456 * age / 10,
-      ly = 1
+      ly = 0
     )
     
   )
@@ -53,10 +54,12 @@ res2 <- run_model(
 rsp <- define_resample(
   age_init ~ normal(60, 10),
   cost_init ~ normal(1000, 100),
+  p_trans ~ prop(.7, 100),
   correlation = matrix(c(
-    1, .4,
-    .4, 1
-  ), byrow = TRUE, ncol = 2)
+    1, .4, 0,
+    .4, 1, 0,
+    0, 0, 1
+  ), byrow = TRUE, ncol = 3)
 )
 
 

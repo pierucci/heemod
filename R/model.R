@@ -372,16 +372,18 @@ get_state_names.uneval_model <- function(x, ...) {
 #' 
 #' Various plots for Markov models.
 #' 
-#' \code{type = "counts"} represents state memberships (corrected) by cycle.
-#'
+#' \code{type = "counts"} represents state memberships 
+#' (corrected) by cycle, \code{type = "ce"} plots models on
+#' the cost-efficiency plane with the efficiency frontier.
+#' 
 #' @param x Result from \code{\link{run_models}}.
 #' @param type Type of plot, see details.
 #' @param model Name or position of model of interest.
 #' @param ... Additional arguments passed to \code{plot}.
-#'
+#'   
 #' @return A \code{ggplot2} object.
 #' @export
-#'
+#' 
 plot.eval_model_list <- function(x, type = c("counts", "ce"), model = 1, ...) {
   type <- match.arg(type)
   
