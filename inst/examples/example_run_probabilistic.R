@@ -12,14 +12,15 @@ mod1 <-
       .1, .9
     ),
     define_state(
-      cost = cost_init + age * 5
+      cost = cost_init + age * 5,
+      ly = 1
     ),
     define_state(
-      cost = cost_init + age
+      cost = cost_init + age,
+      ly = 1
     )
   )
 
-# running several models
 mod2 <-
   define_model(
     parameters = define_parameters(
@@ -31,10 +32,12 @@ mod2 <-
       .1, .9
     ),
     define_state(
-      cost = 789 * age / 10
+      cost = 789 * age / 10,
+      ly = 1
     ),
     define_state(
-      cost = 456 * age / 10
+      cost = 456 * age / 10,
+      ly = 1
     )
     
   )
@@ -42,7 +45,9 @@ mod2 <-
 res2 <- run_model(
   mod1, mod2,
   init = 1:0,
-  cycles = 10
+  cycles = 10,
+  cost = cost,
+  effect = ly
 )
 
 rsp <- define_resample(

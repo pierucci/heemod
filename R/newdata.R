@@ -97,12 +97,6 @@ if(getRversion() >= "2.15.1") utils::globalVariables(c("."))
 #' over these sets.
 #' 
 #' @param x The result of \code{\link{run_models}}.
-#' @param init Initial number of individual per state. Not 
-#'   needed when working on \code{\link{run_models}} 
-#'   results.
-#' @param cycles Number of Markov cycles to compute. Not 
-#'   needed when working on \code{\link{run_models}} 
-#'   results.
 #' @param newdata A data.frame of new parameter sets, one 
 #'   column per parameter and one row per parameter set. Can
 #'   be prespecified for heterogeneity analysis or randomly 
@@ -113,30 +107,27 @@ if(getRversion() >= "2.15.1") utils::globalVariables(c("."))
 #' 
 #' @example inst/examples/example_run_newdata.R
 #'   
-run_newdata <- function(x, init, cycles, newdata) {
+run_newdata <- function(x, newdata) {
   
   stopifnot(
     any(class(x) %in% "eval_model_list")
   )
   list_models <- attr(x, "uneval_model_list")
   
-  stopifnot(
-    missing(init),
-    missing(cycles)
-  )
-  
   init <- attr(x, "init")
   cycles <- attr(x, "cycles")
   method <- attr(x, "method")
+  ce <- attr(x, "ce")
   
   list_res <- lapply(list_models, eval_model_newdata, method = method,
                      init = init, cycles = cycles, newdata = newdata)
   
   for (n in names(list_res)) {
-    list_res[[n]]$.model_name <- n
+    list_res[[n]]$.model_names <- n
   }
   
   res <- Reduce(dplyr::bind_rows, list_res)
+  res <- dplyr::mutate_(res, .dots = ce)
   
   structure(res, class = c("eval_newdata", class(res)))
 }

@@ -118,31 +118,35 @@ test_that(
       X2 = s4
     )
     expect_identical(
-      run_model(mod1, mod2),
-      run_models(mod1, mod2)
+      run_model(mod1, mod2, cost = x, effect = y),
+      run_models(mod1, mod2, cost = x, effect = y)
     )
     expect_identical(
-      run_models(mod1, mod2, init = 1:0),
-      run_models(mod1, mod2)
+      run_models(mod1, mod2, init = 1:0, cost = x, effect = y),
+      run_models(mod1, mod2, cost = x, effect = y)
     )
     expect_identical(
-      run_models(mod1, mod2),
-      run_models(A = mod1, B = mod2)
+      run_models(mod1, mod2, cost = x, effect = y),
+      run_models(A = mod1, B = mod2, cost = x, effect = y)
     )
     expect_output(
-      str(run_models(mod1, mod2)),
-      '2 obs. of  3 variables:
- $ x          : num  309 934
- $ y          : num  283 891
- $ .model_name: chr  "A" "B"',
+      str(run_models(mod1, mod2, cost = x, effect = y)),
+      '2 obs. of  5 variables:
+ $ x           : num  309 934
+ $ y           : num  283 891
+ $ .model_names: chr  "A" "B"
+ $ .cost       : num  309 934
+ $ .effect     : num  283 891',
       fixed = TRUE
     )
     expect_output(
-      str(summary(run_models(mod1, mod2))),
-      "List of 4
- $ res       :'data.frame':	2 obs. of  2 variables:
-  ..$ x: num [1:2] 309 934
-  ..$ y: num [1:2] 283 891",
+      str(summary(run_models(mod1, mod2, cost = x, effect = y))),
+      "2 obs. of  5 variables:
+  ..$ x      : num [1:2] 309 934
+  ..$ y      : num [1:2] 283 891
+  ..$ .cost  : num [1:2] 0 625
+  ..$ .effect: num [1:2] 0 608
+  ..$ .icer  : num [1:2] -Inf 1.03",
       fixed = TRUE
     )
   }

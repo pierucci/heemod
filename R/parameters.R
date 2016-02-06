@@ -46,8 +46,9 @@ define_parameters <- function(...) {
 
 define_parameters_ <- function(.dots) {
   
-  check_names(names(.dots))
-  
+  if (length(.dots)){
+    check_names(names(.dots))
+  }
   structure(.dots,
             class = c("uneval_parameters", class(.dots)))
 }

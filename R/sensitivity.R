@@ -69,7 +69,7 @@ run_sensitivity <- function(model, sensitivity) {
   list_res <- lapply(list_models, eval_model_newdata, method = method,
                      init = init, cycles = cycles, newdata = sensitivity)
   for (n in names(list_res)) {
-    list_res[[n]]$.model_name <- n
+    list_res[[n]]$.model_names <- n
   }
   
   res <- Reduce(dplyr::bind_rows, list_res)

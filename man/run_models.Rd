@@ -27,11 +27,14 @@ to compute.}
 
 \item{method}{Counting method.}
 
-\item{cost}{Names or expression to compute cost on the cost-effectiveness
-plane.}
+\item{cost}{Names or expression to compute cost on the
+cost-effectiveness plane.}
 
-\item{effect}{Names or expression to compute effect on the cost-effectiveness
-plane.}
+\item{effect}{Names or expression to compute effect on
+the cost-effectiveness plane.}
+
+\item{base_model}{Name of base model used as reference.
+By default the model with the lowest effectiveness.}
 }
 \value{
 A list of evaluated models with computed values.
@@ -71,10 +74,12 @@ mod1 <-
       .1, .9
     ),
     define_state(
-      cost = 543
+      cost = 543,
+      ly = 1
     ),
     define_state(
-      cost = 432
+      cost = 432,
+      ly = 1
     )
   )
 
@@ -82,7 +87,9 @@ mod1 <-
 res <- run_model(
   mod1,
   init = c(100, 0),
-  cycles = 2
+  cycles = 2,
+  cost = cost,
+  effect = ly
 )
 
 # running several models
@@ -93,10 +100,12 @@ mod2 <-
       .1, .9
     ),
     define_state(
-      cost = 789
+      cost = 789,
+      ly = 1
     ),
     define_state(
-      cost = 456
+      cost = 456,
+      ly = 1
     )
     
   )
@@ -105,7 +114,9 @@ mod2 <-
 res2 <- run_model(
   mod1, mod2,
   init = c(100, 0),
-  cycles = 10
+  cycles = 10,
+  cost = cost,
+  effect = ly
 )
 }
 

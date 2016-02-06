@@ -30,10 +30,12 @@
 #'   at the beginning.
 #' @param cycles positive integer. Number of Markov Cycles 
 #'   to compute.
-#' @param cost Names or expression to compute cost on the cost-effectiveness
-#'   plane.
-#' @param effect Names or expression to compute effect on the cost-effectiveness
-#'   plane.
+#' @param cost Names or expression to compute cost on the
+#'   cost-effectiveness plane.
+#' @param effect Names or expression to compute effect on
+#'   the cost-effectiveness plane.
+#' @param base_model Name of base model used as reference.
+#'   By default the model with the lowest effectiveness.
 #' @param method Counting method.
 #'   
 #' @return A list of evaluated models with computed values.
@@ -58,8 +60,8 @@ run_models <- function(...,
   )
   
   list_ce <- list(
-    lazyeval::lazy(cost, .follow_symbols = FALSE),
-    lazyeval::lazy(effect, .follow_symbols = FALSE)
+    lazyeval::lazy(cost),
+    lazyeval::lazy(effect)
   )
   names(list_ce) <- c(".cost", ".effect")
   ce <- c(
@@ -109,14 +111,15 @@ run_models <- function(...,
   list_res <- lapply(eval_model_list, get_total_state_values)
   
   for (n in model_names){
-    list_res[[n]]$.model_name <- n
+    list_res[[n]]$.model_names <- n
   }
   
   res <- Reduce(dplyr::bind_rows, list_res)
+  
   res <- dplyr::mutate_(res, .dots = ce)
   
-  if (missing(base_mode)) {
-    base_mode <- get_base_model(res)
+  if (missing(base_model)) {
+    base_model <- get_base_model(res)
   }
   
   structure(
@@ -145,8 +148,8 @@ print.eval_model_list <- function(x, ...) {
     attr(x, "cycles"),
     plur(attr(x, "cycles"))
   ))
-  cat(sprintf("Model name%s:\n\n", plur(length(x$.model_name))))
-  cat(x$.model_name, sep = "\n")
+  cat(sprintf("Model name%s:\n\n", plur(length(x$.model_names))))
+  cat(x$.model_names, sep = "\n")
 }
 
 get_total_state_values <- function(x) {
@@ -161,7 +164,7 @@ get_base_model <- function(x, ...) {
 }
 
 get_base_model.default <- function(x, ...) {
-  x$.model_name[which(x$.effect == min(x$.effect))[1]]
+  x$.model_names[which(x$.effect == min(x$.effect))[1]]
 }
 get_base_model.eval_model_list <- function(x, ...) {
   attr(x, "base_model")
@@ -173,17 +176,19 @@ get_base_model.probabilistic <- function(x, ...) {
 #' Summarise Markov Model Results
 #' 
 #' @param object Output from \code{\link{run_models}}.
+#' @param ... additional arguments affecting the summary
+#'   produced.
 #'   
 #' @return A \code{summary_eval_model_list} object.
 #' @export
 #' 
-summary.eval_model_list <- function(object) {
+summary.eval_model_list <- function(object, ...) {
   
-  res <- as.data.frame(object)
+  res <- as.data.frame(compute_icer(normalize_ce(object)))
   
-  res <- dplyr::select(res, - .model_name)
+  res <- dplyr::select(res, - .model_names)
   
-  rownames(res) <- object$.model_name
+  rownames(res) <- object$.model_names
   
   structure(
     list(
@@ -197,7 +202,23 @@ summary.eval_model_list <- function(object) {
   )
 }
 if(getRversion() >= "2.15.1")
-  utils::globalVariables(c(".model_name"))
+  utils::globalVariables(c(".model_names"))
+
+#' Normalize Cost and Effect
+#' 
+#' Normalize cost and effect values taking base model as a
+#' reference.
+#' 
+#' @param x Result of \code{run_model}.
+#'   
+#' @return Input with normalized \code{.cost} and
+#'   \code{.effect}, ordered by \code{.effect}.
+normalize_ce <- function(x) {
+  bm <- get_base_model(x)
+  x$.cost <- x$.cost - x$.cost[x$.model_names == bm]
+  x$.effect <- x$.effect - x$.effect[x$.model_names == bm]
+  x[order(x$.effect), ]
+}
 
 #' Compute ICER
 #' 
@@ -205,17 +226,13 @@ if(getRversion() >= "2.15.1")
 #' 
 #' Models are ordered by effectiveness and ICER are computed sequencially.
 #' 
-#' @param x Result of \code{\link{run_models}} or
-#'   \code{\link{run_probabilistic}}.
+#' @param x Result of \code{\link{run_models}}.
 #'   
 #' @return A \code{data.frame} with computed ICER.
 #' @export
 #' 
 compute_icer <- function(x) {
-  UseMethod("compute_icer")
-}
-compute_icer.eval_model_list <- function(x) {
-  tab <- x[order(x[[effect]]), ]
+  tab <- x[order(x$.effect), ]
   
   for (i in seq_len(nrow(tab))) {
     if ( i == 1) {
@@ -246,7 +263,9 @@ print.summary_eval_model_list <- function(x, ...) {
     )
   ))
   print(x$res)
-  print(x$ce)
+  
+  cat("\nEfficiency frontier:\n\n")
+  cat(x$frontier)
 }
 
 #' @export

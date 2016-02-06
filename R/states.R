@@ -121,8 +121,6 @@ define_state_list_ <- function(.dots) {
                       function(x) "state" %in% class(x))))
   )
   
-  check_states(.dots)
-  
   state_names <- names(.dots)
   
   if (is.null(state_names)) {
@@ -136,6 +134,7 @@ define_state_list_ <- function(.dots) {
     state_names <- LETTERS[seq_along(.dots)]
     names(.dots) <- state_names
   }
+  check_states(.dots)
   
   structure(
     .dots,

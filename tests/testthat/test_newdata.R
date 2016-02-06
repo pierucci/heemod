@@ -14,10 +14,12 @@ test_that(
           .1, .9
         ),
         define_state(
-          cost = 543 + age * 5
+          cost = 543 + age * 5,
+          ly = 1
         ),
         define_state(
-          cost = 432 + age
+          cost = 432 + age,
+          ly = 1
         )
         
       )
@@ -33,17 +35,21 @@ test_that(
           .1, .9
         ),
         define_state(
-          cost = 789 * age / 10
+          cost = 789 * age / 10,
+          ly = 1
         ),
         define_state(
-          cost = 456 * age / 10
+          cost = 456 * age / 10,
+          ly = 1
         )
       )
     
-    res2 <- run_model(
+    res2 <- run_models(
       mod1, mod2,
       init = 1:0,
-      cycles = 10
+      cycles = 10,
+      cost = cost,
+      effect = ly
     )
     # generating table with new parameter sets
     new_tab <- data.frame(
@@ -55,10 +61,13 @@ test_that(
     
     expect_output(
       str(ndt1),
-      '22 obs. of  3 variables:
- $ age_init   : int  40 41 42 43 44 45 46 47 48 49 ...
- $ cost       : num  5418 5436 5455 5474 5493 ...
- $ .model_name: chr  "A" "A" "A" "A" ...',
+      '22 obs. of  6 variables:
+ $ age_init    : int  40 41 42 43 44 45 46 47 48 49 ...
+ $ cost        : num  5418 5436 5455 5474 5493 ...
+ $ ly          : num  10 10 10 10 10 10 10 10 10 10 ...
+ $ .model_names: chr  "A" "A" "A" "A" ...
+ $ .cost       : num  5418 5436 5455 5474 5493 ...
+ $ .effect     : num  10 10 10 10 10 10 10 10 10 10 ...',
       fixed= TRUE
     )
   }
@@ -81,10 +90,12 @@ test_that(
           .1, .9
         ),
         define_state(
-          cost = cost_init + age * 5
+          cost = cost_init + age * 5,
+          ly = 1
         ),
         define_state(
-          cost = cost_init + age
+          cost = cost_init + age,
+          ly = 1
         )
         
       )
@@ -101,10 +112,12 @@ test_that(
           .1, .9
         ),
         define_state(
-          cost = 789 * age / 10
+          cost = 789 * age / 10,
+          ly = 1
         ),
         define_state(
-          cost = 456 * age / 10
+          cost = 456 * age / 10,
+          ly = 1
         )
         
       )
@@ -112,7 +125,9 @@ test_that(
     res2 <- run_model(
       mod1, mod2,
       init = 1:0,
-      cycles = 10
+      cycles = 10,
+      cost = cost,
+      effect = ly
     )
     
     rsp <- define_resample(
@@ -130,7 +145,7 @@ test_that(
     ndt1 <- run_probabilistic(res2, resample = rsp, N = 10)
     ndt2 <- run_probabilistic(res2, resample = rsp, N = 1)
     
-    x=define_resample(
+    x <- define_resample(
       rate1 + rate2 + rate3 ~ multinom(10, 50, 40),
       a + b ~ multinom(15, 30)
     )
@@ -141,12 +156,15 @@ test_that(
     
     expect_output(
       str(ndt1),
-      '20 obs. of  5 variables:
- $ age_init   : num  65.5 71.3 76.5 74.4 59.9 ...
- $ cost_init  : num  1118 948 1212 1024 1045 ...
- $ cost       : num  12515 10923 13662 11742 11678 ...
- $ .model_name: chr  "A" "A" "A" "A" ...
- $ .index     : int  1 2 3 4 5 6 7 8 9 10 ...',
+      '20 obs. of  8 variables:
+ $ age_init    : num  65.5 71.3 76.5 74.4 59.9 ...
+ $ cost_init   : num  1118 948 1212 1024 1045 ...
+ $ cost        : num  12515 10923 13662 11742 11678 ...
+ $ ly          : num  10 10 10 10 10 10 10 10 10 10 ...
+ $ .model_names: chr  "A" "A" "A" "A" ...
+ $ .index      : int  1 2 3 4 5 6 7 8 9 10 ...
+ $ .cost       : num  12515 10923 13662 11742 11678 ...
+ $ .effect     : num  10 10 10 10 10 10 10 10 10 10 ...',
       fixed = TRUE
     )
 
@@ -167,12 +185,15 @@ test_that(
     
     expect_output(
       str(ndt2),
-      '2 obs. of  5 variables:
- $ age_init   : num  66.6 66.6
- $ cost_init  : num  930 930
- $ cost       : num  10653 38163
- $ .model_name: chr  "A" "B"
- $ .index     : int  1 1',
+      '2 obs. of  8 variables:
+ $ age_init    : num  66.6 66.6
+ $ cost_init   : num  930 930
+ $ cost        : num  10653 38163
+ $ ly          : num  10 10
+ $ .model_names: chr  "A" "B"
+ $ .index      : int  1 1
+ $ .cost       : num  10653 38163
+ $ .effect     : num  10 10',
       fixed = TRUE
     )
     

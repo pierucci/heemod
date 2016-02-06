@@ -56,9 +56,9 @@ plur <- function(x) {
 #'   
 #' @return A data.frame with results from only one model.
 get_model <- function(x, m) {
-  model_names <- unique(x$.model_name)
+  model_names <- unique(x$.model_names)
   names(model_names) <- model_names
-  x[x$.model_name == model_names[m], ]
+  x[x$.model_names == model_names[m], ]
 }
 
 #' Check Names

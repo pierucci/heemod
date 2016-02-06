@@ -234,7 +234,9 @@ Both models can now be run for 60 years, for 1 person starting in `PrimaryTHR`:
 res_mod <- run_models(
   standard = mod_standard,
   np1 = mod_np1,
-  cycles = 60
+  cycles = 60,
+  cost = cost,
+  effect = utility
 )
 res_mod
 ```
@@ -245,13 +247,8 @@ A comparison of both models can be done with `summary()`:
 summary(res_mod)
 ```
 
-The ICER for a population of women aged 60 can be calculated with the following formula:
 
-$$
-\frac{637.9 - 616.0}{14.72 - 14.68} = 547.5
-$$
-
-The new treatment costs 547.5 GBP per QALY gained.
+The new treatment costs £511 per QALY gained.
 
 We can plot the counts per state for the standard model:
 

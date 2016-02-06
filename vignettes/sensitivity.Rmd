@@ -151,7 +151,9 @@ mod_comb <- define_model(
 res_mod <- run_model(
   mono = mod_mono,
   comb = mod_comb,
-  cycles = 20
+  cycles = 20,
+  cost = cost_total,
+  effect = life_year
 )
 ```
 

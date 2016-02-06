@@ -97,12 +97,14 @@ mod_1
 
 # Run a model
 
-The model can then be run with `run_model` for a given number of cycles:
+The model can then be run with `run_model` for a given number of cycles. The variables corresponding to valuation of cost and effect must be given at that point.
 
 ```{r}
 res_mod_1 <- run_model(
   mod_1,
-  cycles = 5
+  cycles = 5,
+  cost = cost,
+  effect = utility
 )
 res_mod_1
 ```

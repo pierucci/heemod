@@ -5,18 +5,10 @@
 \title{Iteratively Run Markov Models Over New Parameter Sets 
 (Heterogeneity or Probabilistic analysis)}
 \usage{
-run_newdata(x, init, cycles, newdata)
+run_newdata(x, newdata)
 }
 \arguments{
 \item{x}{The result of \code{\link{run_models}}.}
-
-\item{init}{Initial number of individual per state. Not 
-needed when working on \code{\link{run_models}} 
-results.}
-
-\item{cycles}{Number of Markov cycles to compute. Not 
-needed when working on \code{\link{run_models}} 
-results.}
 
 \item{newdata}{A data.frame of new parameter sets, one 
 column per parameter and one row per parameter set. Can
@@ -43,10 +35,12 @@ mod1 <-
       .1, .9
     ),
     define_state(
-      cost = 543 + age * 5
+      cost = 543 + age * 5,
+      ly = 1
     ),
     define_state(
-      cost = 432 + age
+      cost = 432 + age,
+      ly = 1
     )
     
   )
@@ -62,10 +56,12 @@ mod2 <-
       .1, .9
     ),
     define_state(
-      cost = 789 * age / 10
+      cost = 789 * age / 10,
+      ly = 1
     ),
     define_state(
-      cost = 456 * age / 10
+      cost = 456 * age / 10,
+      ly = 1
     )
     
   )
@@ -73,7 +69,9 @@ mod2 <-
 res2 <- run_model(
   mod1, mod2,
   init = 1:0,
-  cycles = 10
+  cycles = 10,
+  cost = cost,
+  effect = ly
 )
 # generating table with new parameter sets
 new_tab <- data.frame(

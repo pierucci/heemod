@@ -165,10 +165,12 @@ mod_comb <- define_model(
   D_comb
 )
 
-res_mod <- run_model(
+res_mod <- run_models(
   mono = mod_mono,
   comb = mod_comb,
-  cycles = 20
+  cycles = 20,
+  cost = cost_total,
+  effect = life_year
 )
 ```
 
@@ -222,21 +224,3 @@ pm <- run_probabilistic(
   N = 1e1
 )
 ```
-
-## Explore results
-
-```{r}
-d_cout <- pm$comb$cost_total - pm$mono$cost_total
-d_ly <- pm$comb$life_year - pm$mono$life_year
-
-res <- data.frame(cout = d_cout, ly = d_ly)
-
-library(ggplot2)
-
-ggplot(res, aes(ly, cout)) +
-  geom_point() +
-  geom_density2d() +
-  theme_light()
-```
-
-# Complex resampling: correlated parameters

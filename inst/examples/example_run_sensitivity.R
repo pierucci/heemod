@@ -12,14 +12,15 @@ mod1 <-
       p2, C
     ),
     define_state(
-      cost = 543
+      cost = 543,
+      ly = 1
     ),
     define_state(
-      cost = 432
+      cost = 432,
+      ly = 1
     )
   )
 
-# running several models
 mod2 <-
   define_model(
     parameters = param,
@@ -28,10 +29,12 @@ mod2 <-
       p2, C
     ),
     define_state(
-      cost = 789
+      cost = 789,
+      ly = 1
     ),
     define_state(
-      cost = 456
+      cost = 456,
+      ly = 1
     )
     
   )
@@ -40,7 +43,9 @@ mod2 <-
 res2 <- run_model(
   mod1, mod2,
   init = c(100, 0),
-  cycles = 10
+  cycles = 10,
+  cost = cost,
+  effect = ly
 )
 
 ds <- define_sensitivity(

@@ -196,7 +196,9 @@ Both models can then be run for 20 years with `run_model`. Models are given simp
 res_mod <- run_models(
   mono = mod_mono,
   comb = mod_comb,
-  cycles = 20
+  cycles = 20,
+  cost = cost_total,
+  effect = life_year
 )
 ```
 
@@ -208,13 +210,7 @@ Model values can then be compared with `summary`:
 summary(res_mod)
 ```
 
-The incremental cost-effectiveness ratio of the combiend therapy strategy is thus:
-
-$$
-\frac{81026.56 - 44613.85}{13.864239 - 7.979173} = 6187.307
-$$
-
-6187GBP per life-year gained.
+The incremental cost-effectiveness ratio of the combiend therapy strategy is thus £6187 per life-year gained.
 
 The counts per state can be plotted for the monotherapy group:
 
@@ -226,5 +222,11 @@ And the combined therapy group:
 
 ```{r, fig.width = 6, fig.align='center'}
 plot(res_mod, model = "comb", type = "counts")
+```
+
+We can plot the strategies on the cost-efficiency plane:
+
+```{r, fig.width = 6, fig.align='center'}
+plot(res_mod, type = "ce")
 ```
 

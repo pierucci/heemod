@@ -55,6 +55,11 @@ b = a + 543',
       get_parameter_names(par1),
       c("a", "b")
     )
+    expect_output(
+      print(define_parameters()),
+      "0 unevaluated parameter.",
+      fixed = TRUE
+    )
   }
 )
 

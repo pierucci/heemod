@@ -8,12 +8,6 @@ get_frontier(x)
 }
 \arguments{
 \item{x}{An \code{eval_model_list} object.}
-
-\item{cost}{}
-
-\item{effect}{}
-
-\item{...}{}
 }
 \value{
 A vector of model names on the efficiency frontier.

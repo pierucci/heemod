@@ -9,10 +9,12 @@ mod1 <-
       .1, .9
     ),
     define_state(
-      cost = 543 + age * 5
+      cost = 543 + age * 5,
+      ly = 1
     ),
     define_state(
-      cost = 432 + age
+      cost = 432 + age,
+      ly = 1
     )
     
   )
@@ -28,10 +30,12 @@ mod2 <-
       .1, .9
     ),
     define_state(
-      cost = 789 * age / 10
+      cost = 789 * age / 10,
+      ly = 1
     ),
     define_state(
-      cost = 456 * age / 10
+      cost = 456 * age / 10,
+      ly = 1
     )
     
   )
@@ -39,7 +43,9 @@ mod2 <-
 res2 <- run_model(
   mod1, mod2,
   init = 1:0,
-  cycles = 10
+  cycles = 10,
+  cost = cost,
+  effect = ly
 )
 # generating table with new parameter sets
 new_tab <- data.frame(

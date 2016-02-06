@@ -2,9 +2,6 @@
 #' Return Efficiency Frontier
 #'
 #' @param x An \code{eval_model_list} object.
-#' @param cost 
-#' @param effect 
-#' @param ... 
 #'
 #' @return A vector of model names on the efficiency frontier.
 #'
@@ -12,7 +9,7 @@ get_frontier <- function(x) {
   base_model <- get_base_model(x)
   
   # remove models less effective than base
-  tab_model <- x[x$.effect >= x$.effect[x$.model_name == base_model], ]
+  tab_model <- x[x$.effect >= x$.effect[x$.model_names == base_model], ]
   
   tab_icer <- compute_icer(tab_model)
   

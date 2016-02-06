@@ -7,8 +7,7 @@
 compute_icer(x)
 }
 \arguments{
-\item{x}{Result of \code{\link{run_models}} or
-\code{\link{run_probabilistic}}.}
+\item{x}{Result of \code{\link{run_models}}.}
 }
 \value{
 A \code{data.frame} with computed ICER.
