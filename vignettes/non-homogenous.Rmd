@@ -246,7 +246,7 @@ res_mod <- run_models(
 res_mod
 ```
 
-A comparison of both models can be done with `summary()`:
+A comparison of both models can be done with `summary()`. The incremental cost and effect are displayed in columns `.cost` and `.effect`.
 
 ```{r}
 summary(res_mod)
@@ -268,7 +268,7 @@ plot(res_mod, model = "np1", type = "counts")
 
 Models on the cost-effectiveness plane:
 
-```{r, fig.width = 6, fig.height=6, fig.align='center'}
+```{r, fig.width = 4, fig.height=4, fig.align='center'}
 plot(res_mod, type = "ce")
 ```
 

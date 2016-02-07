@@ -102,7 +102,7 @@ The model can then be run with `run_model` for a given number of cycles. The var
 ```{r}
 res_mod_1 <- run_model(
   mod_1,
-  cycles = 5,
+  cycles = 10,
   cost = cost,
   effect = utility
 )
@@ -121,7 +121,7 @@ summary(res_mod_1)
 
 We can plot the state membership counts over time. Over plot types are available.
 
-```{r, fig.width = 6, fig.height=6, fig.align='center'}
+```{r, fig.width = 6, fig.height=4, fig.align='center'}
 plot(res_mod_1)
 ```
 

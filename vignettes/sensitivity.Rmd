@@ -152,11 +152,11 @@ Sensitivity analysis is distinct from probabilistic incertitude analysis: wherea
 
 Both analyses are complementary. Incertitude analysis is essential to decision making, while sensitivity analysis is useful to better understand model behaviour.
 
-# Defining the analysis
+# Define the analysis
 
-This example uses the HIV drug model defined in `vignette("homogenous", package = "heemod")`. Read this vignette to find an explanation of the model.
+This example uses the HIV drug model defined in `vignette("homogenous", package = "heemod")`. Read this vignette for an explanation of the model.
 
-In this example we will study sensitivity to 4 parameters:
+In this example we will study the sensitivity of cost to 4 parameters:
 
   * `rr`, the relative risk associated with the new treatment.
   * `cost_zido` and `cost_lami`, the drug costs.
@@ -190,19 +190,19 @@ Two distinct plot are available. The basic plot displays cost variations for eac
 
 As expected the `mono` model is not senstive to `cost_lami`, since this drug was not given to this group. Similarly it is not sensitive to `rr`, because this parameters only modifies transition probabilities in the other model.
 
-```{r, fig.width = 6, fig.height=6, fig.align='center'}
+```{r, fig.width = 6, fig.align='center'}
 plot(res, model = "mono")
 ```
 
 On the other hand the `comb` model is sensitive to all 4 parameters.
 
-```{r, fig.width = 6, fig.height=6, fig.align='center'}
+```{r, fig.width = 6, fig.align='center'}
 plot(res, model = "comb")
 ```
 
 The difference plot displays the cost difference between the specified model `comb` and the reference model `mono`.
 
-```{r, fig.width = 6, fig.height=6, fig.align='center'}
+```{r, fig.width = 6, fig.align='center'}
 plot(res, model = "comb", type = "diff")
 ```
 

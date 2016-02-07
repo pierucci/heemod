@@ -4,7 +4,7 @@
 \alias{plot.probabilistic}
 \title{Plot Results of Probabilistic Analysis}
 \usage{
-\method{plot}{probabilistic}(x, type = c("ce", "ac"), y = seq(0, 1e+05,
+\method{plot}{probabilistic}(x, type = c("ce", "ac"), values = seq(0, 1e+05,
   1000), ...)
 }
 \arguments{
@@ -12,7 +12,7 @@
 
 \item{type}{Type of plot, see details.}
 
-\item{y}{values for CEAC.}
+\item{values}{Values for CEAC.}
 
 \item{...}{Additional arguments passed to \code{plot}.}
 }

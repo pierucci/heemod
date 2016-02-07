@@ -272,14 +272,14 @@ if(getRversion() >= "2.15.1")
 #' 
 #' @param x Result from \code{\link{run_models}}.
 #' @param type Type of plot, see details.
-#' @param y values for CEAC.
+#' @param values Values for CEAC.
 #' @param ... Additional arguments passed to \code{plot}.
 #'   
 #' @return A \code{ggplot2} object.
 #' @export
 #' 
 plot.probabilistic <- function(x, type = c("ce", "ac"),
-                               y = seq(0, 1e5, 1e3), ...) {
+                               values = seq(0, 1e5, 1e3), ...) {
   type <- match.arg(type)
   
   switch(
@@ -307,7 +307,7 @@ plot.probabilistic <- function(x, type = c("ce", "ac"),
         # to optimize
         tab <- normalize_ce(x) %>%
           dplyr::mutate(.key = 1) %>%
-          dplyr::left_join(dplyr::data_frame(.ceac = y, .key = 1)) %>%
+          dplyr::left_join(dplyr::data_frame(.ceac = values, .key = 1)) %>%
           dplyr::group_by(.index, .ceac) %>%
           dplyr::summarise(.top = f(.cost, .effect, .ceac, .model_names)) %>%
           dplyr::group_by(.ceac, .top) %>%
@@ -315,7 +315,8 @@ plot.probabilistic <- function(x, type = c("ce", "ac"),
           dplyr::mutate(.p = .n / sum(.n))
       })
       ggplot2::ggplot(tab, aes(x = .ceac, y = .p, colour = .top)) +
-        ggplot2::geom_line()
+        ggplot2::geom_line() +
+        ggplot2::ylim(0, 1)
     },
     stop("Unknown plot type."))
 }

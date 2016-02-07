@@ -394,7 +394,7 @@ plot.eval_model_list <- function(x, type = c("counts", "ce"), model = 1, ...) {
         get_counts(attr(x, "eval_model_list")[[model]]),
         markov_cycle = row_number()
       )
-      pos_cycle <- pretty(seq_len(nrow(tab_counts)), n = 10)
+      pos_cycle <- pretty(seq_len(nrow(tab_counts)), n = min(nrow(tab_counts), 10))
       tab_counts <- tidyr::gather(data = tab_counts, ... = - markov_cycle)
       
       y_max <- max(attr(x, "init"), tab_counts$value)
