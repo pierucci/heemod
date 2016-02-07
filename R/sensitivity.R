@@ -140,7 +140,7 @@ plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
           ),
           size = 5
         ) +
-        ggplot2::guides(fill = FALSE) +
+        ggplot2::guides(colour = FALSE) +
         ggplot2::geom_text(
           ggplot2::aes(
             x = .y,
