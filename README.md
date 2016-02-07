@@ -28,6 +28,7 @@ devtools::install_github("pierucci/heemod")
   * Time-varying values attached to states.
   * Heterogeneity analysis.
   * Probabilistic incertitude analysis.
+  * Deterministic sensitivity analysis.
 
 ## Learning heemod
 
@@ -38,20 +39,17 @@ Specific analysis examples (mostly inspired from Decision Modelling for Health E
   * [Homogenous Markov model](https://cran.r-project.org/web/packages/heemod/vignettes/homogenous.html) (or `vignette("homogenous", package = "heemod")`).
   * [Non-homogenous Markov model](https://cran.r-project.org/web/packages/heemod/vignettes/non-homogenous.html) (or `vignette("non-homogenous", package = "heemod")`).
   * Probabilistic incertitude analysis in `vignette("probabilistic", package = "heemod")`.
+  * Deterministic sensitivity analysis in `vignette("sensitivity", package = "heemod")`.
 
 ## Future developments
 
 In version 1.0.0 :
 
-  * Deterministic sensitivity analysis.
-  * Graphical analysis of Markov models.
   * Multiple state membership correction methods.
 
 Upcoming vignettes:
 
   * Heterogeneity analysis in `vignette("heterogeneity", package = "heemod")`.
-  * Model comparison in `vignette("comparison", package = "heemod")`.
-  * Deterministic sensitivity analysis in `vignette("sensitivity", package = "heemod")`.
 
 ## Devs
 

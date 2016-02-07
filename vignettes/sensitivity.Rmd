@@ -174,3 +174,10 @@ res <- run_sensitivity(
   se
 )
 ```
+
+```{r, fig.width = 6, fig.align='center'}
+plot(res, model = "mono")
+plot(res, model = "comb")
+plot(res, model = "comb", type = "diff")
+```
+

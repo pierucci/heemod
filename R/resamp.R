@@ -304,6 +304,7 @@ plot.probabilistic <- function(x, type = c("ce", "ac"),
         filter(t2, .effect == max(.effect))$.model_names[1]
       }
       suppressMessages({
+        # to optimize
         tab <- normalize_ce(x) %>%
           dplyr::mutate(.key = 1) %>%
           dplyr::left_join(dplyr::data_frame(.ceac = y, .key = 1)) %>%
@@ -317,7 +318,6 @@ plot.probabilistic <- function(x, type = c("ce", "ac"),
         ggplot2::geom_line()
     },
     stop("Unknown plot type."))
-  
 }
 
 if(getRversion() >= "2.15.1")

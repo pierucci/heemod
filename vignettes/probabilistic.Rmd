@@ -231,7 +231,7 @@ The results of the analysis can be plotted on the cost-effectiveness plane:
 plot(pm, type = "ce")
 ```
 
-As well as cost-effectiveness acceptability curves:
+And as cost-effectiveness acceptability curves:
 
 ```{r, fig.width = 6, fig.align='center'}
 plot(pm, type = "ac")

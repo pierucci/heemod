@@ -74,6 +74,8 @@ run_sensitivity <- function(model, sensitivity) {
   
   res <- Reduce(dplyr::bind_rows, list_res)
   
+  res <- dplyr::mutate_(res, .dots = attr(model, "ce"))
+  
   structure(
     res,
     class = c("eval_sensitivity", class(res)),
@@ -84,52 +86,99 @@ run_sensitivity <- function(model, sensitivity) {
 
 #' Plot Sensitivity Analysis
 #' 
-#' Plot the results of a sensitivity analysis as a tornado plot.
-#'
+#' Plot the results of a sensitivity analysis as a tornado 
+#' plot.
+#' 
+#' Plot type \code{simple} plots variations of single model 
+#' costs, while \code{diff} plots cost difference between 
+#' the specified model and the reference model.
+#' 
 #' @param x A result of \code{\link{run_sensitivity}}.
 #' @param model Name or index of model to plot.
-#' @param value State value to plot.
-#' @param xlab x-axis label.
-#' @param ylab t-axis label.
+#' @param type Type of plot (see details).
 #' @param ... Additional arguments passed to \code{plot}.
-#'
+#'   
 #' @return A \code{ggplot2} object.
 #' @export
-#'
-plot.eval_sensitivity <- function(x, model = 1,
-                                  value, xlab = "Parameter",
-                                  ylab = value, ...) {
-  stopifnot(
-    ! missing(value)
+#' 
+plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
+                                  model = 1, ...) {
+  type <- match.arg(type)
+  
+  
+  switch(
+    type,
+    simple = {
+      tab <- get_model(x, model)
+      ref <- get_model(attr(x, "model_ref"), model)
+      
+      tab <- tidyr::gather_(
+        data = tab,
+        key_col = ".variable",
+        value_col = ".value",
+        gather_col = attr(x, "variables"),
+        na.rm = TRUE
+      )
+      
+      tab$.y <- tab$.cost - ref$.cost
+      
+      ggplot(tab, aes(
+        x = .variable,
+        y = .y,
+        fill = as.factor(sign(.y)))) + 
+        geom_bar(position = "identity", stat = "identity") +
+        guides(fill=FALSE) +
+        geom_text(aes(
+          x = as.numeric(as.factor(.variable)),
+          y = .y,
+          label = .value
+        )) +
+        coord_flip()
+    },
+    diff = {
+      bm <- get_base_model(attr(x, "model_ref"))
+      
+      tab0 <- get_model(x, bm)
+      tab1 <- get_model(x, model)
+      ref0 <- get_model(attr(x, "model_ref"), bm)
+      ref1 <- get_model(attr(x, "model_ref"), model)
+      
+      tab0 <- tidyr::gather_(
+        data = tab0,
+        key_col = ".variable",
+        value_col = ".value",
+        gather_col = attr(x, "variables"),
+        na.rm = TRUE
+      )
+      tab1 <- tidyr::gather_(
+        data = tab1,
+        key_col = ".variable",
+        value_col = ".value",
+        gather_col = attr(x, "variables"),
+        na.rm = TRUE
+      )
+      
+      tab1$.y <- tab1$.cost - tab0$.cost
+      tab1$.ref <- ref1$.cost - ref0$.cost
+      
+      ggplot2::ggplot(tab1, aes(x = .variable,
+                                y = .ref)) +
+        ggplot2::geom_segment(aes(xend = .variable, yend = .y,
+                                  colour = as.factor(sign(.y-.ref))),
+                              size = 5) +
+        guides(colour = FALSE) +
+        geom_text(aes(
+          x = as.numeric(as.factor(.variable)),
+          y = .y,
+          label = .value
+        )) +
+        coord_flip()
+      
+      
+    },
+    stop("Unknown type.")
   )
-  
-  tab <- get_model(x, model)
-  ref <- get_model(attr(x, "model_ref"), model)
-  
-  tab <- tidyr::gather_(
-    data = tab,
-    key_col = ".variable",
-    value_col = ".value",
-    gather_col = attr(x, "variables"),
-    na.rm = TRUE
-  )
-  tab$.y <- tab[[value]]- ref[[value]]
-  
-  ggplot(tab, aes(
-    x = .variable,
-    y = .y,
-    fill = as.factor(sign(.y)))) + 
-    geom_bar(position = "identity", stat = "identity") +
-    coord_flip() +
-    guides(fill=FALSE) +
-    geom_text(aes(
-      x = as.numeric(as.factor(.variable)),
-      y = .y,
-      label = .value
-    )) +
-    xlab(xlab) +
-    ylab(ylab)
 }
 if(getRversion() >= "2.15.1") utils::globalVariables(
-  c(".variable", ".y", ".value")
+  c(".variable", ".y", ".ref", ".value")
 )

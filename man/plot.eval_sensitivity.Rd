@@ -4,19 +4,15 @@
 \alias{plot.eval_sensitivity}
 \title{Plot Sensitivity Analysis}
 \usage{
-\method{plot}{eval_sensitivity}(x, model = 1, value, xlab = "Parameter",
-  ylab = value, ...)
+\method{plot}{eval_sensitivity}(x, type = c("simple", "diff"), model = 1,
+  ...)
 }
 \arguments{
 \item{x}{A result of \code{\link{run_sensitivity}}.}
 
+\item{type}{Type of plot (see details).}
+
 \item{model}{Name or index of model to plot.}
-
-\item{value}{State value to plot.}
-
-\item{xlab}{x-axis label.}
-
-\item{ylab}{t-axis label.}
 
 \item{...}{Additional arguments passed to \code{plot}.}
 }
@@ -24,6 +20,12 @@
 A \code{ggplot2} object.
 }
 \description{
-Plot the results of a sensitivity analysis as a tornado plot.
+Plot the results of a sensitivity analysis as a tornado 
+plot.
+}
+\details{
+Plot type \code{simple} plots variations of single model 
+costs, while \code{diff} plots cost difference between 
+the specified model and the reference model.
 }
 
