@@ -227,7 +227,7 @@ pm <- run_probabilistic(
 
 The results of the analysis can be plotted on the cost-effectiveness plane:
 
-```{r, fig.width = 6, fig.align='center'}
+```{r, fig.width = 6, fig.height=6, fig.align='center'}
 plot(pm, type = "ce")
 ```
 

@@ -130,8 +130,13 @@ The parameters for the NP1 group are almost the same as for the standard group, 
 ```{r}
 param_np1 <- modify(
   param_standard,
-  standardRR = 1 - exp(lambda * rrNP1 * ((markov_cycle - 1) ^ gamma -
-                                           markov_cycle ^ gamma))
+  standardRR = 1 - exp(
+    lambda *
+      rrNP1 *
+      (
+        (markov_cycle - 1) ^ gamma - 
+          markov_cycle ^ gamma)
+  )
 )
 param_np1
 ```
@@ -247,7 +252,6 @@ A comparison of both models can be done with `summary()`:
 summary(res_mod)
 ```
 
-
 The new treatment costs £511 per QALY gained.
 
 We can plot the counts per state for the standard model:
@@ -260,5 +264,11 @@ And the np1 model:
 
 ```{r, fig.width = 6, fig.align='center'}
 plot(res_mod, model = "np1", type = "counts")
+```
+
+Models on the cost-effectiveness plane:
+
+```{r, fig.width = 6, fig.height=6, fig.align='center'}
+plot(res_mod, type = "ce")
 ```
 

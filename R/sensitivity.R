@@ -121,19 +121,34 @@ plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
       )
       
       tab$.y <- tab$.cost - ref$.cost
+      tab$.sign <- sign(tab$.y)
+      tab$.sign <- as.factor(replace(tab$.sign, tab$.sign == -1, 0))
+      tab$.x <- 0
       
-      ggplot(tab, aes(
-        x = .variable,
-        y = .y,
-        fill = as.factor(sign(.y)))) + 
-        geom_bar(position = "identity", stat = "identity") +
-        guides(fill=FALSE) +
-        geom_text(aes(
-          x = as.numeric(as.factor(.variable)),
-          y = .y,
-          label = .value
-        )) +
-        coord_flip()
+      ggplot2::ggplot(
+        tab,
+        ggplot2::aes(
+          x = .x,
+          y = .variable
+        )
+      ) + 
+        ggplot2::geom_segment(
+          ggplot2::aes(
+            xend = .y,
+            yend = .variable,
+            colour = .sign
+          ),
+          size = 5
+        ) +
+        ggplot2::guides(fill = FALSE) +
+        ggplot2::geom_text(
+          ggplot2::aes(
+            x = .y,
+            y = .variable,
+            label = .value
+          ),
+          hjust = "outward"
+        )
     },
     diff = {
       bm <- get_base_model(attr(x, "model_ref"))
@@ -160,20 +175,31 @@ plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
       
       tab1$.y <- tab1$.cost - tab0$.cost
       tab1$.ref <- ref1$.cost - ref0$.cost
+      tab1$.sign <- -sign(tab1$.y-tab1$.ref)
+      tab1$.sign <- as.factor(replace(tab1$.sign, tab1$.sign == -1, 0))
       
-      ggplot2::ggplot(tab1, aes(x = .variable,
-                                y = .ref)) +
-        ggplot2::geom_segment(aes(xend = .variable, yend = .y,
-                                  colour = as.factor(sign(.y-.ref))),
-                              size = 5) +
-        guides(colour = FALSE) +
-        geom_text(aes(
-          x = as.numeric(as.factor(.variable)),
-          y = .y,
-          label = .value
-        )) +
-        coord_flip()
-      
+      ggplot2::ggplot(
+        tab1,
+        ggplot2::aes(
+          x = .ref,
+          y = .variable
+        )
+      ) +
+        ggplot2::geom_segment(
+          ggplot2::aes(
+            xend = .y,
+            yend = .variable,
+            colour = .sign
+          ),
+          size = 5) +
+        ggplot2::guides(colour = FALSE) +
+        ggplot2::geom_text(
+          ggplot2::aes(
+            x = .y,
+            y = .variable,
+            label = .value
+          ),
+          hjust = "outward") 
       
     },
     stop("Unknown type.")

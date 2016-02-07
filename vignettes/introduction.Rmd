@@ -109,10 +109,24 @@ res_mod_1 <- run_model(
 res_mod_1
 ```
 
+By default the model is run for one person starting in the first state (here state `A`).
+
+# Analyse results
+
 The result can be explored with `summary`:
 
 ```{r}
 summary(res_mod_1)
 ```
 
-By default the model is run for one person starting in the first state (here state `A`).
+We can plot the state membership counts over time. Over plot types are available.
+
+```{r, fig.width = 6, fig.height=6, fig.align='center'}
+plot(res_mod_1)
+```
+
+# Going futher
+
+In order to compare different strategies it is possible to run several models in parallel, examples are provided in `vignette("homogenous", package = "heemod")` or `vignette("non-homogenous", package = "heemod")`.
+
+Incertitude analysis `vignette("probabilistic", package = "heemod")` and sensitivity analysis `vignette("sensitivity", package = "heemod")` can be performed.

@@ -12,10 +12,7 @@ vignette: >
 
 ```{r, echo=FALSE, include=FALSE}
 library(heemod)
-```
 
-
-```{r}
 param_mono <- define_parameters(
   rr = .509,
   
@@ -49,9 +46,7 @@ param_mono <- define_parameters(
   
   dr = .06
 )
-```
 
-```{r}
 param_comb <- modify(
   param_mono,
   
@@ -64,19 +59,14 @@ param_comb <- modify(
   
   p_CD = p_CD_base * rr
 )
-```
 
-```{r}
 mat_trans <- define_matrix(
   p_AA, p_AB, p_AC, p_AD,
   .000, C,    p_BC, p_BD,
   .000, .000, C,    p_CD,
   .000, .000, .000, 1.00
 )
-```
 
-
-```{r}
 A_mono <- define_state(
   cost_health = cost_A,
   cost_drugs = cost_zido,
@@ -126,10 +116,7 @@ D_comb <- define_state(
   cost_total = discount(cost_health + cost_drugs, dr),
   life_year = 0
 )
-```
 
-
-```{r}
 mod_mono <- define_model(
   parameters = param_mono,
   transition_matrix = mat_trans,
@@ -157,6 +144,26 @@ res_mod <- run_model(
 )
 ```
 
+# Introduction
+
+The objective of deterministic sensitivity analysis is to assess how cost is sensitive to parameter values. Parameter values are changed individually (usually through upper and lower bounds) and the results on cost are reported.
+
+Sensitivity analysis is distinct from probabilistic incertitude analysis: whereas in incertitude analysis the objective is to account for incertitude on parameter values in estimating model results, in sensitivity analysis the objective is to assess the sensitivity of results to variations of individual parameters.
+
+Both analyses are complementary. Incertitude analysis is essential to decision making, while sensitivity analysis is useful to better understand model behaviour.
+
+# Defining the analysis
+
+This example uses the HIV drug model defined in `vignette("homogenous", package = "heemod")`. Read this vignette to find an explanation of the model.
+
+In this example we will study sensitivity to 4 parameters:
+
+  * `rr`, the relative risk associated with the new treatment.
+  * `cost_zido` and `cost_lami`, the drug costs.
+  * `dr`, the discount rate.
+
+Upper and lower values for the paramters are given to `define_sensitivity()`.
+
 ```{r}
 se <- define_sensitivity(
   rr = c(.4, .6),
@@ -168,16 +175,34 @@ se <- define_sensitivity(
 )
 ```
 
+We then run the sensitivity analysis with `run_sensitivity()`, using `res_mod` the result from `run_models()` as input.
+
 ```{r}
 res <- run_sensitivity(
-  res_mod,
-  se
+  model = res_mod,
+  sensitivity = se
 )
 ```
 
-```{r, fig.width = 6, fig.align='center'}
+# Interpretation
+
+Two distinct plot are available. The basic plot displays cost variations for each model, around the base cost.
+
+As expected the `mono` model is not senstive to `cost_lami`, since this drug was not given to this group. Similarly it is not sensitive to `rr`, because this parameters only modifies transition probabilities in the other model.
+
+```{r, fig.width = 6, fig.height=6, fig.align='center'}
 plot(res, model = "mono")
+```
+
+On the other hand the `comb` model is sensitive to all 4 parameters.
+
+```{r, fig.width = 6, fig.height=6, fig.align='center'}
 plot(res, model = "comb")
+```
+
+The difference plot displays the cost difference between the specified model `comb` and the reference model `mono`.
+
+```{r, fig.width = 6, fig.height=6, fig.align='center'}
 plot(res, model = "comb", type = "diff")
 ```
 

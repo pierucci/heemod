@@ -226,7 +226,7 @@ plot(res_mod, model = "comb", type = "counts")
 
 We can plot the strategies on the cost-efficiency plane:
 
-```{r, fig.width = 6, fig.align='center'}
+```{r, fig.width = 6, fig.height=6, fig.align='center'}
 plot(res_mod, type = "ce")
 ```
 
