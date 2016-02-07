@@ -32,12 +32,12 @@ devtools::install_github("pierucci/heemod")
 
 ## Learning heemod
 
-To get started read the [intro vignette](https://cran.r-project.org/web/packages/heemod/vignettes/introduction.html) (or `vignette("introduction", package = "heemod")`).
+To get started read the intro vignette (or `vignette("introduction", package = "heemod")`).
 
 Specific analysis examples (mostly inspired from Decision Modelling for Health Economic Evaluation) can be found in the following vignettes:
 
-  * [Homogenous Markov model](https://cran.r-project.org/web/packages/heemod/vignettes/homogenous.html) (or `vignette("homogenous", package = "heemod")`).
-  * [Non-homogenous Markov model](https://cran.r-project.org/web/packages/heemod/vignettes/non-homogenous.html) (or `vignette("non-homogenous", package = "heemod")`).
+  * Homogenous Markov model (or `vignette("homogenous", package = "heemod")`).
+  * Non-homogenous Markov model (or `vignette("non-homogenous", package = "heemod")`).
   * Probabilistic incertitude analysis in `vignette("probabilistic", package = "heemod")`.
   * Deterministic sensitivity analysis in `vignette("sensitivity", package = "heemod")`.
 
