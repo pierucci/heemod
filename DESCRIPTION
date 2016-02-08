@@ -3,8 +3,10 @@ Title: Models for Health Economic Evaluation
 Version: 0.2.0
 Author: Kevin Zarca [aut], Antoine Filipovic-Pierucci [aut,cre]
 Maintainer: Antoine Filipovic-Pierucci <pierucci@gmail.com>
-Description: Health Economic Evaluation MODelling (HEEMOD). Markov models (homogenous and non-homogenous)
-  for health economic evaluation. Model comparison, sensitivity and probabilistic analysis.
+Description: Health Economic Evaluation Modelling.
+  Markov models (homogeneous and non-homogeneous)
+  for health economic evaluation. Model comparison,
+  sensitivity and probabilistic analysis.
 Depends: R (>= 3.2.2)
 Imports: lazyeval, dplyr, diagram, mvnfast, logitnorm, ggplot2, tidyr
 License: GPL (>= 3)

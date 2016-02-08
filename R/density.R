@@ -17,7 +17,7 @@ normal <- function(mean, sd) {
   list(r_norm(mean, sd))
 }
 r_norm <- function(mean, sd) {
-  function(x) qnorm(p = x, mean = mean, sd = sd)
+  function(x) stats::qnorm(p = x, mean = mean, sd = sd)
 }
 
 #' @rdname normal
@@ -29,7 +29,7 @@ lognormal <- function(mean, sd, meanlog, sdlog) {
   list(r_lognormal(meanlog, sdlog))
 }
 r_lognormal <- function(meanlog, sdlog) {
-  function(x) qlnorm(p = x, meanlog = meanlog, sdlog = sdlog)
+  function(x) stats::qlnorm(p = x, meanlog = meanlog, sdlog = sdlog)
 }
 
 #' @rdname normal
@@ -38,7 +38,7 @@ make_gamma <- function(mean, sd) {
   list(r_gamma(mean^2/sd^2, sd^2/mean))
 }
 r_gamma <- function(shape, scale) {
-  function(x) qgamma(p = x, shape = shape, scale = scale)
+  function(x) stats::qgamma(p = x, shape = shape, scale = scale)
 }
 
 #' @rdname normal
@@ -47,7 +47,7 @@ prop <- function(prob, size) {
   list(r_binom(prob, size))
 }
 r_binom <- function(prob, size) {
-  function(x) qbinom(p = x, size = size, prob = prob) / size
+  function(x) stats::qbinom(p = x, size = size, prob = prob) / size
 }
 
 #' @rdname normal
@@ -61,7 +61,7 @@ multinom <- function(...) {
   )
 }
 r_multinom <- function(n, total) {
-  function(x) qbeta(x, n, total - n)
+  function(x) stats::qbeta(x, n, total - n)
 }
 
 

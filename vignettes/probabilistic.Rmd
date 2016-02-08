@@ -14,7 +14,7 @@ vignette: >
 library(heemod)
 ```
 
-This vignette shows how to transform the deterministic Markov model presented in `vignette("homogenous", "heemod")` in a probabilistic model.
+This vignette shows how to transform the deterministic Markov model presented in `vignette("homogeneous", "heemod")` in a probabilistic model.
 
 # Model definition
 

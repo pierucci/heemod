@@ -19,6 +19,16 @@
 #' @importFrom utils modifyList
 #' @importFrom utils globalVariables
 #' 
+#' @importFrom stats pnorm
+#' @importFrom stats qbeta
+#' @importFrom stats qbinom
+#' @importFrom stats qgamma
+#' @importFrom stats qlnorm
+#' @importFrom stats qnorm
+#' @importFrom stats terms
+#' 
+#' @importFrom graphics par
+#' 
 #' @importFrom diagram plotmat
 #' 
 #' @importFrom mvnfast rmvn

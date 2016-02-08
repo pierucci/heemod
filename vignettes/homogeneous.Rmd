@@ -1,11 +1,11 @@
 ---
-title: "Simple Markov models (homogenous)"
+title: "Simple Markov models (homogeneous)"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{Simple Markov models (homogenous)}
+  %\VignetteIndexEntry{Simple Markov models (homogeneous)}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -14,7 +14,7 @@ vignette: >
 library(heemod)
 ```
 
-The most simple Markov models in health economic evaluation are models were transition probabilities between states do not change with time. Those are called *homogenous* or *time-homogenous* Markov models.
+The most simple Markov models in health economic evaluation are models were transition probabilities between states do not change with time. Those are called *homogeneous* or *time-homogeneous* Markov models.
 
 If you are not familiar with `heemod`, first consult the introduction vignette `vignette("introduction", package = "heemod")`.
 

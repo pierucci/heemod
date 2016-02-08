@@ -27,7 +27,7 @@ define_resample <- function(...,
   
   list_input <- lapply(
     .dots,
-    function(x) eval(attr(terms(x), "variables")[[3]])
+    function(x) eval(attr(stats::terms(x), "variables")[[3]])
   )
   
   list_qdist <- unlist(
@@ -335,7 +335,7 @@ if(getRversion() >= "2.15.1")
 #' 
 #' 
 eval_resample <- function(resample, N) {
-  mat_p <- pnorm(
+  mat_p <- stats::pnorm(
     mvnfast::rmvn(
       n = N,
       mu = rep(0, length(resample$list_qdist)),

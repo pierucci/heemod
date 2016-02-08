@@ -1,11 +1,11 @@
 ---
-title: "Time-varying Markov models (non-homogenous)"
+title: "Time-varying Markov models (non-homogeneous)"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{Time-varying Markov models (non-homogenous)}
+  %\VignetteIndexEntry{Time-varying Markov models (non-homogeneous)}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -14,12 +14,12 @@ vignette: >
 library(heemod)
 ```
 
-In more complex Markov models in health economic evaluation transition probabilities between states can vary with time. These models are called *non-homogenous* or *time-inhomogenous* Markov models. A further distinction can be made depending on whether:
+In more complex Markov models in health economic evaluation transition probabilities between states can vary with time. These models are called *non-homogeneous* or *time-inhomogeneous* Markov models. A further distinction can be made depending on whether:
 
-  1. transition probabilities depend on how long __the entire model__ has been running (model-time variation): this situation can be modelled with a non-homogenous Markov model;
+  1. transition probabilities depend on how long __the entire model__ has been running (model-time variation): this situation can be modelled with a non-homogeneous Markov model;
   2. transition probabilities depend on how long __an individual__ has been in a state (individual-time variation): this situation usually needs to be modelled with a microsimulation.
 
-However in some special cases non-homogenous Markov models can be used in situation 2, when the state with transition probabilities depending on individual-time is the starting state __and__ it is not possible to go back to that state after having left it. In this situation individual-time is equivalent to model-time. This is the case in the following example.
+However in some special cases non-homogeneous Markov models can be used in situation 2, when the state with transition probabilities depending on individual-time is the starting state __and__ it is not possible to go back to that state after having left it. In this situation individual-time is equivalent to model-time. This is the case in the following example.
 
 If you are not familiar with `heemod`, first consult the introduction vignette `vignette("introduction", package = "heemod")`.
 
