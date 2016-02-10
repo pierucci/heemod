@@ -57,9 +57,9 @@ death_prob <- data.frame(
 death_prob
 ```
 
-## Primary THR revision
+## THR revision
 
-Primary THR revision probability for the standard THR, called `standardRR` increases with time with the following formula (a [Weibull distribution](https://en.wikipedia.org/wiki/Weibull_distribution)):
+- Primary THR revision probability for the standard THR, called `standardRR` increases with time with the following formula (a [Weibull distribution](https://en.wikipedia.org/wiki/Weibull_distribution)):
 
 $$
 P_{revision} = 1 - \exp(\lambda \times ((t-1)^\gamma-t^\gamma))
@@ -73,13 +73,13 @@ $$
 
 Where `age` and `sex` (female = 0, male = 1) are individual characteristics, `cons` = -5.49094, `ageC` = -0.0367 and `maleC` = 0.768536.
 
-For the NP1 procedure the starndard procedure revision probability `standardRR` is modified by the relative risk `rrNP1` = 0.260677.
+- For the NP1 procedure the standard procedure revision probability `standardRR` is modified by the relative risk `rrNP1` = 0.260677.
 
 $$
 P_{revision} = 1 - \exp(\lambda \times rrNP1 \times ((t-1)^\gamma-t^\gamma))
 $$
 
-Revision THR re-revision (`rrr`) probability is set to be constant at 0.04 per year.
+- Revision THR re-revision (`rrr`) probability is set to be constant at 0.04 per year.
 
 # Parameters definition
 
