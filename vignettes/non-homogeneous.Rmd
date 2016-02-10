@@ -14,7 +14,7 @@ vignette: >
 library(heemod)
 ```
 
-In more complex Markov models in health economic evaluation transition probabilities between states can vary with time. These models are called *non-homogeneous* or *time-inhomogeneous* Markov models. A further distinction can be made depending on whether:
+In more complex Markov models in health economic evaluation, transition probabilities between states can vary with time. These models are called *non-homogeneous* or *time-inhomogeneous* Markov models. A further distinction can be made depending on whether:
 
   1. transition probabilities depend on how long __the entire model__ has been running (model-time variation): this situation can be modelled with a non-homogeneous Markov model;
   2. transition probabilities depend on how long __an individual__ has been in a state (individual-time variation): this situation usually needs to be modelled with a microsimulation.
@@ -30,16 +30,17 @@ This example is an implementation of the assessment of a new total hip replaceme
 This model has 5 states:
 
   * Primary THR: starting state, individuals receive either the standard or the new THR (called NP1), outcomes are either success of primary THR or death (the operative mortality rate of primary THR will be called `omrPTHR`);
-  * Success of primary THR: state after receiving primary THR if the surgery is successfull, individuals can stay in this state, need a THR revision, or die of other causes;
+  * Success of primary THR: state after receiving primary THR if the surgery is successfull, individuals can stay in that state, need a THR revision, or die of other causes;
   * Revision of primary THR: for individuals whose primary THR needed revision, outcomes are either success of revision THR or death (the operative mortality rate of revision THR will be called `omrRTHR`);
-  * Success of revision THR: state after receiving revision THR if the surgery is successfull, individuals can stay in this state, need a THR re-revision, or die of other causes;
+  * Success of revision THR: state after receiving revision THR if the surgery is successfull, individuals can stay in that state, need a THR re-revision, or die of other causes;
   * Death (either caused by THR or another cause).
   
 Two transition probabilities are time-varying in this model:
 
   * Probability of death by another cause increases with age;
   * Probability of primary THR revision increases with time.
-  
+
+## Other-Cause death
 Other-cause death probabilities (mortality rate `mr`) vary with age and gender with the following values:
 
 ```{r}
@@ -56,7 +57,9 @@ death_prob <- data.frame(
 death_prob
 ```
 
-Primary THR revision probability for the standard THR, called `standardRR` increases with time with the following formula (a Weibull distribution):
+## Primary THR revision
+
+Primary THR revision probability for the standard THR, called `standardRR` increases with time with the following formula (a [Weibull distribution](https://en.wikipedia.org/wiki/Weibull_distribution)):
 
 $$
 P_{revision} = 1 - \exp(\lambda \times ((t-1)^\gamma-t^\gamma))
