@@ -210,7 +210,7 @@ Model values can then be compared with `summary`:
 summary(res_mod)
 ```
 
-The incremental cost-effectiveness ratio of the combiend therapy strategy is thus £6187 per life-year gained.
+The incremental cost-effectiveness ratio of the combiend therapy strategy is thus £6,187 per life-year gained.
 
 The counts per state can be plotted for the monotherapy group:
 
