@@ -49,7 +49,7 @@ In the context of Markov models, this 2-way table is called a *transition matrix
 | **A** | 0.9 | 0.1 |
 | **B** | 0.2 | 0.8 |
 
-This transition matrix can be defined with the following command:
+That transition matrix can be defined with the following command:
 
 ```{r}
 mat_trans <- define_matrix(
