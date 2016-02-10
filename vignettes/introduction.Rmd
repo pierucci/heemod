@@ -38,7 +38,7 @@ Transition probabilities between states can be specified through a 2-way table w
 | **A** | 1 | 2 |
 | **B** | 3 | 4 |
 
-When starting a cycle in state `A` (row `A`), the probability to still be in state `A` at the end of the cycle is found in colunm `A` (row `1`) and the probability to change to state `B` is found in column `B` (cell `2`).
+When starting a cycle in state `A` (row `A`), the probability to still be in state `A` at the end of the cycle is found in colunm `A` (cell `1`) and the probability to change to state `B` is found in column `B` (cell `2`).
 
 Similarly, when starting a cycle from state `B` (row `B`), the probability to be in state `A` or `B` at the end of the cycle are found in cells `3` or `4` respectively.
 
