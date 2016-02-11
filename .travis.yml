@@ -7,3 +7,7 @@ sudo: required
 env:
   matrix:
     - RVERSION=release
+
+branches:
+  only:
+    - master
