@@ -141,15 +141,7 @@ run_model <- run_models
 
 #' @export
 print.eval_model_list <- function(x, ...) {
-  cat(sprintf(
-    "%i Markov model%s, run for %i cycle%s.\n\n",
-    nrow(x),
-    plur(nrow(x)),
-    attr(x, "cycles"),
-    plur(attr(x, "cycles"))
-  ))
-  cat(sprintf("Model name%s:\n\n", plur(length(x$.model_names))))
-  cat(x$.model_names, sep = "\n")
+  summary(x, ...)
 }
 
 get_total_state_values <- function(x) {
