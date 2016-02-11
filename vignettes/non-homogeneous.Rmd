@@ -177,7 +177,9 @@ plot(mat_trans)
 
 Utilities and costs are then associated to states. In this model costs are discounted at a rate of 6% and utilities at a rate of 1.5%.
 
-Now that parameters, transition matrix and states are defined we can define the models for the control group and the NP1 treatment:
+Now that parameters, transition matrix and states are defined we can define the models for the control group and the NP1 treatment.
+
+We also define optional `starting_values`, state values that are added to the total cost of all individuals once. This is especially useful to input the cost of an original intervention, here we use this parameter to specify the cost of the THR technology.
 
 ```{r}
 mod_standard <- define_model(
@@ -268,10 +270,3 @@ And the np1 model:
 ```{r, fig.width = 6, fig.align='center'}
 plot(res_mod, model = "np1", type = "counts")
 ```
-
-Models on the cost-effectiveness plane:
-
-```{r, fig.width = 4, fig.height=4, fig.align='center'}
-plot(res_mod, type = "ce")
-```
-
