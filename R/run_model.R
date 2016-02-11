@@ -269,8 +269,9 @@ print.summary_eval_model_list <- function(x, ...) {
     cat("\nModel difference:\n\n")
     res_comp <- x$res[c(".cost", ".effect", ".icer")]
     res_comp$.icer[! is.finite(res_comp$.icer)] <- "-"
+    res_comp$.cost <- res_comp$.cost / sum(x$init)
+    res_comp$.effect <- res_comp$.effect / sum(x$init)
     names(res_comp) <- c("Cost", "Effect", "ICER")
-    browser()
     print(res_comp[- 1, ])
   }
   
