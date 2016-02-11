@@ -7,8 +7,8 @@
 normalize_ce(x)
 }
 \arguments{
-\item{x}{Result of \code{run_model} or
-\code{run_probabilistic}.}
+\item{x}{Result of \code{\link{run_models}} or
+\code{\link{run_probabilistic}}.}
 }
 \value{
 Input with normalized \code{.cost} and 

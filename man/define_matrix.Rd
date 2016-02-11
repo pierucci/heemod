@@ -29,6 +29,8 @@ names.}
 \item{relsize}{Argument passed to \code{\link{plotmat}}.}
 
 \item{shadow.size}{Argument passed to \code{\link{plotmat}}.}
+
+\item{curve}{Argument passed to \code{\link{plotmat}}.}
 }
 \value{
 An object of class \code{uneval_matrix} (actually

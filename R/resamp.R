@@ -194,7 +194,7 @@ eval_correlation <- function(x, var_names) {
 
 #' Run Probabilistic Incertitude Analysis
 #' 
-#' @param model The result of \code{\link{run_model}}.
+#' @param model The result of \code{\link{run_models}}.
 #' @param resample Resampling distribution for parameters 
 #'   defined by \code{\link{define_resample}}.
 #' @param N > 0. Number of simulation to run.

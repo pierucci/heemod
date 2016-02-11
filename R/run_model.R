@@ -198,8 +198,8 @@ if(getRversion() >= "2.15.1")
 #' Normalize cost and effect values taking base model as a 
 #' reference.
 #' 
-#' @param x Result of \code{run_model} or
-#'   \code{run_probabilistic}.
+#' @param x Result of \code{\link{run_models}} or
+#'   \code{\link{run_probabilistic}}.
 #'   
 #' @return Input with normalized \code{.cost} and 
 #'   \code{.effect}, ordered by \code{.effect}.
@@ -262,9 +262,11 @@ print.summary_eval_model_list <- function(x, ...) {
   if (nrow(res) > 1) {
     cat("\nEfficiency frontier:\n\n")
     cat(x$frontier)
-    cat("\nModel difference:\n\n")
+    cat("\n\nModel difference:\n\n")
     res_comp <- x$res[c(".cost", ".effect", ".icer")]
-    res_comp$.icer[! is.finite(res_comp$.icer)] <- "-"
+    is.na(res_comp$.icer) <- ! is.finite(res_comp$.icer)
+    res_comp$.icer <- format(res_comp$.icer)
+    res_comp$.icer[is.na(res_comp$.icer)] <- "-"
     res_comp$.cost <- res_comp$.cost / sum(x$init)
     res_comp$.effect <- res_comp$.effect / sum(x$init)
     names(res_comp) <- c("Cost", "Effect", "ICER")
