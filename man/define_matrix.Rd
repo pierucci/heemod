@@ -6,8 +6,7 @@
 \alias{plot.uneval_matrix}
 \title{Define Transition Matrix for Markov Model}
 \usage{
-define_matrix(...,
-  state_names = LETTERS[seq_len(sqrt(length(lazyeval::lazy_dots(...))))])
+define_matrix(..., state_names)
 
 \method{modify}{uneval_matrix}(.OBJECT, ...)
 
