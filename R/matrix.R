@@ -205,7 +205,7 @@ modify_.uneval_matrix <- function(.OBJECT, .dots){
 
 to_char_uneval_matrix <- function(x) {
   ex <- unlist(lapply(x, function(y) deparse(y$expr)))
-  
+  ex[ex == "C"] <- ""
   matrix(ex,
          byrow = TRUE,
          ncol = get_matrix_order(x),
