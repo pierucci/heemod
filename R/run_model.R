@@ -141,10 +141,11 @@ run_model <- run_models
 
 #' @export
 print.eval_model_list <- function(x, ...) {
-  summary(x, ...)
+  print(summary(x, ...))
 }
 
 get_total_state_values <- function(x) {
+  # faster than as.data.frame or dplyr::as_data_frame
   res <- as.list(colSums((x$values)[- 1]))
   class(res) <- "data.frame"
   attr(res, "row.names") <- c(NA, -1)
@@ -258,11 +259,24 @@ print.summary_eval_model_list <- function(x, ...) {
       "N"
     )
   ))
-  print(x$res)
   
-  cat("\nEfficiency frontier:\n\n")
-  cat(x$frontier)
+  res <- dplyr::select(x$res, - .cost, - .effect, - .icer)
+  print(res)
+  
+  if (nrow(res) > 1) {
+    cat("\nEfficiency frontier:\n\n")
+    cat(x$frontier)
+    cat("\nModel difference:\n\n")
+    res_comp <- x$res[c(".cost", ".effect", ".icer")]
+    res_comp$.icer[! is.finite(res_comp$.icer)] <- "-"
+    names(res_comp) <- c("Cost", "Effect", "ICER")
+    browser()
+    print(res_comp[- 1, ])
+  }
+  
 }
+if(getRversion() >= "2.15.1")
+  utils::globalVariables(c(".cost", ".effect", ".icer"))
 
 #' @export
 print.eval_model <- function(x, width = Inf, ...) {
