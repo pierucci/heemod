@@ -136,10 +136,6 @@ run_models <- function(...,
 }
 
 #' @export
-#' @rdname run_models
-run_model <- run_models
-
-#' @export
 print.eval_model_list <- function(x, ...) {
   print(summary(x, ...))
 }
