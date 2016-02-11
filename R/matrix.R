@@ -27,7 +27,8 @@
 #' 
 #' @param ... Name-value pairs of expressions definig matrix
 #'   cells. Can refer to parameters defined with 
-#'   \code{\link{define_parameters}}.
+#'   \code{\link{define_parameters}}. For \code{plot},
+#'   additional arguments passed to \code{digram::plotmat}.
 #' @param state_names character vector, optional. State 
 #'   names.
 #' @param .OBJECT An object of class \code{uneval_matrix}.
@@ -252,10 +253,10 @@ print.eval_matrix <- function(x, ...) {
 
 #' @export
 #' @rdname define_matrix
-plot.uneval_matrix <- function(x, relsize = .75, shadow.size = 0,  ...) {
+plot.uneval_matrix <- function(x, relsize = .75, shadow.size = 0, curve = 0,  ...) {
   op <- graphics::par(mar = c(0, 0, 0, 0))
   res <- to_char_uneval_matrix(x)
   diagram::plotmat(t(res[rev(seq_len(nrow(res))),rev(seq_len(nrow(res)))]),
-  relsize = relsize, shadow.size = shadow.size, curve = 0, ...)
+  relsize = relsize, shadow.size = shadow.size, curve = curve, ...)
   graphics::par(op)
 }

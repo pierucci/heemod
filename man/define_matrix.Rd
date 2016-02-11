@@ -10,12 +10,14 @@ define_matrix(..., state_names)
 
 \method{modify}{uneval_matrix}(.OBJECT, ...)
 
-\method{plot}{uneval_matrix}(x, relsize = 0.75, shadow.size = 0, ...)
+\method{plot}{uneval_matrix}(x, relsize = 0.75, shadow.size = 0,
+  curve = 0, ...)
 }
 \arguments{
 \item{...}{Name-value pairs of expressions definig matrix
 cells. Can refer to parameters defined with 
-\code{\link{define_parameters}}.}
+\code{\link{define_parameters}}. For \code{plot},
+additional arguments passed to \code{digram::plotmat}.}
 
 \item{state_names}{character vector, optional. State 
 names.}
