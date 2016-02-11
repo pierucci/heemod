@@ -44,7 +44,7 @@
 #' @example inst/examples/example_run_models.R
 #'   
 run_models <- function(...,
-                       init = c(1L, rep(0L, get_state_number(get_states(list(...)[[1]])) - 1)),
+                       init = c(1000L, rep(0L, get_state_number(get_states(list(...)[[1]])) - 1)),
                        cycles = 1,
                        method = c("end", "beginning", "cycle-tree", "half-cycle"),
                        cost, effect, base_model) {
