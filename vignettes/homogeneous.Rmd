@@ -50,6 +50,8 @@ The combined therapy group has its transition probabilities multiplied by `rr`, 
 
 The probabilities to stay in the same state are equal to $1 - \sum p_{trans}$ where $p_{trans}$ are the probabilities to change to another state (because all transition probabilities from a given state must sum to 1).
 
+We use the alias `C` as a convenient way to specify the probability complement, equal to `1 - sum(row probabilities)`
+
 ```{r}
 rr <- .509
 
@@ -222,11 +224,5 @@ And the combined therapy group:
 
 ```{r, fig.width = 6, fig.align='center'}
 plot(res_mod, model = "comb", type = "counts")
-```
-
-We can plot the strategies on the cost-efficiency plane:
-
-```{r, fig.width = 4, fig.height=4, fig.align='center'}
-plot(res_mod, type = "ce")
 ```
 
