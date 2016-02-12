@@ -36,6 +36,7 @@
 #' @param relsize Argument passed to \code{\link{plotmat}}.
 #' @param shadow.size Argument passed to \code{\link{plotmat}}.
 #' @param curve Argument passed to \code{\link{plotmat}}.
+#' @param latex Argument passed to \code{\link{plotmat}}.
 #'   
 #' @return An object of class \code{uneval_matrix} (actually
 #'   a named list of \code{lazy} expressions).
@@ -98,7 +99,7 @@ define_matrix_ <- function(
 #'   
 check_matrix <- function(x, ...) {
   info <- list(...)
-
+  
   stopifnot(
     isTRUE(
       all.equal(rowSums(x), rep(1, nrow(x)))
@@ -150,7 +151,7 @@ eval_matrix <- function(x, parameters) {
     )$res,
     recursive = FALSE
   )
-
+  
   structure(res,
             class = c("eval_matrix", class(res)),
             state_names = get_state_names(x))
@@ -254,10 +255,15 @@ print.eval_matrix <- function(x, ...) {
 
 #' @export
 #' @rdname define_matrix
-plot.uneval_matrix <- function(x, relsize = .75, shadow.size = 0, curve = 0,  ...) {
+plot.uneval_matrix <- function(x, relsize = .75,
+                               shadow.size = 0, curve = 0,
+                               latex = TRUE, ...) {
   op <- graphics::par(mar = c(0, 0, 0, 0))
   res <- to_char_uneval_matrix(x)
-  diagram::plotmat(t(res[rev(seq_len(nrow(res))),rev(seq_len(nrow(res)))]),
-  relsize = relsize, shadow.size = shadow.size, curve = curve, ...)
+  diagram::plotmat(
+    t(res[rev(seq_len(nrow(res))),rev(seq_len(nrow(res)))]),
+    relsize = relsize, shadow.size = shadow.size, curve = curve,
+    latex = latex, ...
+  )
   graphics::par(op)
 }
