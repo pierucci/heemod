@@ -44,7 +44,7 @@
 #' @example inst/examples/example_run_models.R
 #'   
 run_models <- function(...,
-                       init = c(1L, rep(0L, get_state_number(get_states(list(...)[[1]])) - 1)),
+                       init = c(1000L, rep(0L, get_state_number(get_states(list(...)[[1]])) - 1)),
                        cycles = 1,
                        method = c("end", "beginning", "cycle-tree", "half-cycle"),
                        cost, effect, base_model) {
@@ -136,23 +136,12 @@ run_models <- function(...,
 }
 
 #' @export
-#' @rdname run_models
-run_model <- run_models
-
-#' @export
 print.eval_model_list <- function(x, ...) {
-  cat(sprintf(
-    "%i Markov model%s, run for %i cycle%s.\n\n",
-    nrow(x),
-    plur(nrow(x)),
-    attr(x, "cycles"),
-    plur(attr(x, "cycles"))
-  ))
-  cat(sprintf("Model name%s:\n\n", plur(length(x$.model_names))))
-  cat(x$.model_names, sep = "\n")
+  print(summary(x, ...))
 }
 
 get_total_state_values <- function(x) {
+  # faster than as.data.frame or dplyr::as_data_frame
   res <- as.list(colSums((x$values)[- 1]))
   class(res) <- "data.frame"
   attr(res, "row.names") <- c(NA, -1)
@@ -209,8 +198,8 @@ if(getRversion() >= "2.15.1")
 #' Normalize cost and effect values taking base model as a 
 #' reference.
 #' 
-#' @param x Result of \code{run_model} or
-#'   \code{run_probabilistic}.
+#' @param x Result of \code{\link{run_models}} or
+#'   \code{\link{run_probabilistic}}.
 #'   
 #' @return Input with normalized \code{.cost} and 
 #'   \code{.effect}, ordered by \code{.effect}.
@@ -266,11 +255,27 @@ print.summary_eval_model_list <- function(x, ...) {
       "N"
     )
   ))
-  print(x$res)
   
-  cat("\nEfficiency frontier:\n\n")
-  cat(x$frontier)
+  res <- dplyr::select(x$res, - .cost, - .effect, - .icer)
+  print(res)
+  
+  if (nrow(res) > 1) {
+    cat("\nEfficiency frontier:\n\n")
+    cat(x$frontier)
+    cat("\n\nModel difference:\n\n")
+    res_comp <- x$res[c(".cost", ".effect", ".icer")]
+    is.na(res_comp$.icer) <- ! is.finite(res_comp$.icer)
+    res_comp$.icer <- format(res_comp$.icer)
+    res_comp$.icer[is.na(res_comp$.icer)] <- "-"
+    res_comp$.cost <- res_comp$.cost / sum(x$init)
+    res_comp$.effect <- res_comp$.effect / sum(x$init)
+    names(res_comp) <- c("Cost", "Effect", "ICER")
+    print(res_comp[- 1, ])
+  }
+  
 }
+if(getRversion() >= "2.15.1")
+  utils::globalVariables(c(".cost", ".effect", ".icer"))
 
 #' @export
 print.eval_model <- function(x, width = Inf, ...) {

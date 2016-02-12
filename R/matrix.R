@@ -27,13 +27,15 @@
 #' 
 #' @param ... Name-value pairs of expressions definig matrix
 #'   cells. Can refer to parameters defined with 
-#'   \code{\link{define_parameters}}.
+#'   \code{\link{define_parameters}}. For \code{plot},
+#'   additional arguments passed to \code{digram::plotmat}.
 #' @param state_names character vector, optional. State 
 #'   names.
 #' @param .OBJECT An object of class \code{uneval_matrix}.
 #' @param x An \code{uneval_matrix} to plot.
 #' @param relsize Argument passed to \code{\link{plotmat}}.
 #' @param shadow.size Argument passed to \code{\link{plotmat}}.
+#' @param curve Argument passed to \code{\link{plotmat}}.
 #'   
 #' @return An object of class \code{uneval_matrix} (actually
 #'   a named list of \code{lazy} expressions).
@@ -43,16 +45,21 @@
 #' 
 define_matrix <- function(
   ...,
-  state_names = LETTERS[seq_len(sqrt(length(lazyeval::lazy_dots(...))))]
+  state_names
 ) {
   .dots <- lazyeval::lazy_dots(...)
+  
+  if (missing(state_names)) {
+    message("No named state -> generating names.")
+    state_names <- LETTERS[seq_len(sqrt(length(lazyeval::lazy_dots(...))))]
+  }
   
   define_matrix_(.dots = .dots, state_names = state_names)
 }
 
 define_matrix_ <- function(
   .dots,
-  state_names = LETTERS[seq_len(sqrt(length(.dots)))]
+  state_names
 ) {
   
   n <- sqrt(length(.dots))
@@ -205,7 +212,7 @@ modify_.uneval_matrix <- function(.OBJECT, .dots){
 
 to_char_uneval_matrix <- function(x) {
   ex <- unlist(lapply(x, function(y) deparse(y$expr)))
-  
+  ex[ex == "C"] <- ""
   matrix(ex,
          byrow = TRUE,
          ncol = get_matrix_order(x),
@@ -247,10 +254,10 @@ print.eval_matrix <- function(x, ...) {
 
 #' @export
 #' @rdname define_matrix
-plot.uneval_matrix <- function(x, relsize = .75, shadow.size = 0,  ...) {
+plot.uneval_matrix <- function(x, relsize = .75, shadow.size = 0, curve = 0,  ...) {
   op <- graphics::par(mar = c(0, 0, 0, 0))
   res <- to_char_uneval_matrix(x)
   diagram::plotmat(t(res[rev(seq_len(nrow(res))),rev(seq_len(nrow(res)))]),
-  relsize = relsize, shadow.size = shadow.size, ...)
+  relsize = relsize, shadow.size = shadow.size, curve = curve, ...)
   graphics::par(op)
 }
