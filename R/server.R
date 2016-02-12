@@ -1,46 +1,55 @@
 shinyServer(function(input, output) {
   value <- reactiveValues(nbNamedStates=0) 
+  
   output$nameStates <- renderUI({
-    counterState <- input$add - input$rem
-    if (counterState < 0)
-      counterState = 0
-    if (counterState > 0){    
-      lapply(1:counterState, function(i) {
+    req(input$nbStates)
+    counter <- input$nbStates
+      lapply(1:counter, function(i) {
         isolate({textInput(paste0("stateName", i), paste("State Name", i), value = ifelse(!is.null(input[[paste0("stateName",i)]]), input[[paste0("stateName",i)]], ""))})
       })
-    }
+  })
+  output$nameStateVariables <- renderUI({
+    req(input$nbStateVariables)
+    lapply(1:input$nbStateVariables, function(i) {
+      isolate({textInput(paste0("variableStateName", i), paste("Variable Name", i), value = ifelse(!is.null(input[[paste0("variableStateName",i)]]), input[[paste0("variableStateName",i)]], ""))})
+    })
+  })
+  output$valueStateVariables <- renderUI({
+    req(input$nbStateVariables)
+    lapply(1:input$nbStateVariables, function(i) {
+      isolate({numericInput(paste0("variableStateValue", i), paste("Variable Value", i), value = 0)})
+    })
   })
   
   output$transmatrix <- renderUI({
-    counterState <- input$add - input$rem
-    req(counterState)
+    req(input$nbStates)
     nbNamedStates <- 0
-    for (i in 1:counterState)
+    stateName <- ""
+    for (i in 1:input$nbStates){
       nbNamedStates <- ifelse(input[[paste0("stateName",i)]] != "", nbNamedStates + 1, nbNamedStates)
-    
+      stateName[i] <- input[[paste0("stateName", i)]]
+    }
     req(nbNamedStates)
     if  (nbNamedStates > 0)
     {
-      th <- ""
-      tr <- ""
-      h <- ""
-      tab <- ""
-      if (nbNamedStates > 0){
-        h <- h3("Transition Matrix")
-        tab <- "<table class='transmatrix'><th></th>"
-        for (i in 1:nbNamedStates){
-          th <- paste0(th, "<th style='text-align:center'>", input[[paste0("stateName",i)]], "</th>")
-          tr <- paste0(tr, "<tr><td>",input[[paste0("stateName",i)]],"</td>")
-          for (j in 1:nbNamedStates){
-            tr <- paste0(tr, "<td>", textInput(paste0("transmatrix",i,j), value="", label=NULL, width="100%"), "</td>")
-          }
-          tr <- paste0(tr, "</tr>")
-        }
-        tab <- paste0(tab, th, tr, "</table>")
-      }
-      sortie <- tagList( h,
-        HTML(tab)
-      )
+      withTags({
+        table(class='transmatrix',
+              tagList(
+                th(),
+                lapply(1:nbNamedStates, function(i){
+                  th(style='text-align:center', stateName[i])
+                }),
+                lapply(1:nbNamedStates, function(i){
+                  tr(td(stateName[i]),
+                    lapply (1:nbNamedStates, function (j) {
+                      td(textInput(paste0("transmatrix",i,j), value="", label=NULL, width="100%"))
+                    })
+                  )
+                })
+              )
+        )
+      })
     }
     })
 })
+
