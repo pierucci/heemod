@@ -163,7 +163,7 @@ print.uneval_state_list <- function(x, ...) {
   n_values <- length(get_state_value_names(x))
   
   cat(sprintf(
-    "A list of %i unevaluated state%s with %i value%s each.\n\n",
+    "A list of %i state%s with %i value%s each.\n\n",
     n_state,
     plur(n_state),
     n_values,

@@ -94,7 +94,7 @@ test_that(
       X1 = s1,
       X2 = s2
     )
-    e_mod <- run_model(
+    e_mod <- run_models(
       mod1,
       init = c(1, 0),
       cycles = 5,
@@ -113,11 +113,15 @@ test_that(
     )
     expect_output(
       print(e_mod),
-      "1 Markov model, run for 5 cycles.
+      "1 Markov model run for 5 cycles.
 
-Model name:
+Initial states:
 
-A",
+   N
+X1 1
+X2 0
+         x        y
+A 1592.538 1514.507",
       fixed = TRUE
     )
     expect_output(
@@ -140,30 +144,26 @@ Initial states:
    N
 X1 1
 X2 0
-         x        y .cost .effect .icer
-A 1592.538 1514.507     0       0  -Inf
-
-Efficiency frontier:
-
-A',
+         x        y
+A 1592.538 1514.507',
       fixed = TRUE
     )
     expect_error(
-      run_model(
+      run_models(
         mod1,
         init = c(1, 0, 0),
         cycles = 5
       )
     )
     expect_error(
-      run_model(
+      run_models(
         mod1,
         init = c(-1, 0),
         cycles = 5
       )
     )
     expect_error(
-      run_model(
+      run_models(
         mod1,
         init = c(-1, 0),
         cycles = -5
@@ -225,12 +225,25 @@ test_that(
     )
     expect_output(
       print(e_mod2),
-      "2 Markov models, run for 5 cycles.
+      "2 Markov models run for 5 cycles.
 
-Model names:
+Initial states:
 
-A
-B",
+   N
+X1 1
+X2 0
+         x        y
+A 1170.000  615.000
+B 1592.538 1514.507
+
+Efficiency frontier:
+
+B A
+
+Model difference:
+
+      Cost   Effect      ICER
+B 422.5384 899.5074 0.4697442",
       fixed = TRUE
     )
     expect_output(
@@ -253,13 +266,18 @@ Initial states:
    N
 X1 1
 X2 0
-         x        y    .cost  .effect     .icer
-A 1170.000  615.000   0.0000   0.0000      -Inf
-B 1592.538 1514.507 422.5384 899.5074 0.4697442
+         x        y
+A 1170.000  615.000
+B 1592.538 1514.507
 
 Efficiency frontier:
 
-B A',
+B A
+
+Model difference:
+
+      Cost   Effect      ICER
+B 422.5384 899.5074 0.4697442',
       fixed = TRUE
     )
     expect_output(
@@ -272,12 +290,25 @@ B A',
           effect = y
         )
       ),
-      "2 Markov models, run for 5 cycles.
+      "2 Markov models run for 5 cycles.
 
-Model names:
+Initial states:
 
-mod1
-mod2",
+   N
+X1 1
+X2 0
+            x        y
+mod1 1170.000  615.000
+mod2 1592.538 1514.507
+
+Efficiency frontier:
+
+mod2 mod1
+
+Model difference:
+
+         Cost   Effect      ICER
+mod2 422.5384 899.5074 0.4697442",
       fixed = TRUE
     )
   }

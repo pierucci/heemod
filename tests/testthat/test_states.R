@@ -93,7 +93,7 @@ test_that(
     )
     expect_output(
       print(sl1),
-      "A list of 2 unevaluated states with 2 values each.
+      "A list of 2 states with 2 values each.
 
 State names:
 

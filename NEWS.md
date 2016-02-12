@@ -7,7 +7,7 @@
   * written vignette for probabilistic and sensitivity analysis.
   * added complement alias for matrix definition.
   * `run_*` functions now output a single table instead of a list of tables.
-  * variables corresponding to cost and effect must now be specified in `run_model()`.
+  * variables corresponding to cost and effect must now be specified in `run_models()`.
   * plotting for sensitivity and probabilistic analysis.
   
 ## Bug fixes

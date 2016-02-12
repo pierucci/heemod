@@ -17,7 +17,7 @@ mod1 <-
   )
 
 
-res <- run_model(
+res <- run_models(
   mod1,
   init = c(100, 0),
   cycles = 2,
@@ -44,7 +44,7 @@ mod2 <-
   )
 
 
-res2 <- run_model(
+res2 <- run_models(
   mod1, mod2,
   init = c(100, 0),
   cycles = 10,
