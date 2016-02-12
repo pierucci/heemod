@@ -2,9 +2,29 @@ shinyUI(fluidPage(
   titlePanel("HEEMOD GUI"),
   tabsetPanel(
       tabPanel("States", h3("Define States"),
-               actionButton("add","Add a State"),
-               actionButton("rem","Remove Last State"),
-               uiOutput("nameStates")
+               fluidRow(
+                 column(4, 
+                        wellPanel(numericInput("nbStates", label = "Number of States", value="", min = 1))
+                ),
+                 column(4, 
+                        wellPanel(numericInput("nbStateVariables",  label = "Number of State Variables", value="", min = 1))
+                ),
+                column(4, 
+                       wellPanel(numericInput("nbStrategies",  label = "Number of Strategies", value="", min = 1))
+                )
+              ),
+              fluidRow(
+                column(4, 
+                       uiOutput("nameStates")
+                ),
+                column(4, 
+                       uiOutput("nameStateVariables")
+                ),
+                column(4, 
+                       uiOutput("nameStrategies")
+                )
+              )
+
       ),
       tabPanel("Transition Matrix",    
                fluidRow(
@@ -12,8 +32,7 @@ shinyUI(fluidPage(
                )
       ), 
       tabPanel("States Parameters",
-               numericInput("nbStrategies", label = "Number of Strategies", value="", min = 0),
-               uiOutput("nameStrategies")
+               uiOutput("stateParameters")
       ), 
       tabPanel("Global Parameters",  "rien"
       ), 
@@ -21,3 +40,5 @@ shinyUI(fluidPage(
       )
     )
 ))
+
+
