@@ -44,10 +44,14 @@ Two transition probabilities are time-varying in this model:
 Other-cause death probabilities (mortality rate `mr`) vary with age and gender with the following values:
 
 ```{r}
+cut_age <- function(x) {
+  cut(x, c(35, 45, 55, 65, 75, 85, Inf), right = FALSE)
+}
+
 death_prob <- data.frame(
-  age = rep(seq(35, 85, 10), each = 2),
+  age = cut_age(rep(seq(35, 85, 10), each = 2)),
   sex = rep(0:1, 6),
-  mr = c(
+  rate = c(
     1.51e-3, .99e-3, 3.93e-3,
     2.6e-3, 10.9e-3, 6.7e-3,
     31.6e-3, 19.3e-3, 80.1e-3,
@@ -90,12 +94,6 @@ In order to build this more complex Markov model, parameters need to be defined 
 ```{r}
 # a function to return age-related mortality rate
 # given age and sex
-mr_func <- function(age, sex) {
-  age  <- floor(age/10-.5)*10+5
-  age <- ifelse(age > 85, 85, age)
-  merge(data.frame(age = age, sex = sex), death_prob)$mr
-}
-
 param_standard <- define_parameters(
     age_init = 60,
     sex = 0,
@@ -123,7 +121,7 @@ param_standard <- define_parameters(
                                      markov_cycle ^ gamma)),
     
     # age-related mortality rate
-    mr = mr_func(age, sex)
+    mr = get_mortality_rate(cut_age(age), sex, death_prob)
 )
 param_standard
 ```
