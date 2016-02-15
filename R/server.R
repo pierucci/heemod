@@ -28,6 +28,8 @@ shinyServer(function(input, output) {
     if  (input$nbStates > 0)
     {
       withTags({
+        tagList(
+        h3("Transition Matrix"),
         table(class='transmatrix',
               tagList(
                 th(),
@@ -43,10 +45,10 @@ shinyServer(function(input, output) {
                 })
               )
         )
+        )
       })
     }
     })
-  
   output$stateParameters1 <- renderUI({
     nbStates = input$nbStates
     nbStateVariables = input$nbStateVariables
@@ -118,6 +120,21 @@ shinyServer(function(input, output) {
           )
         })
     }
+  })
+  output$globalParameters <- renderUI({
+      i <- 1
+      a <- tagList()
+      while (!is.null(input[[paste0("globalParamName",i)]]) && input[[paste0("globalParamName",i)]] != "" | !is.null(input[[paste0("globalParamValue",i)]]) && !is.na(input[[paste0("globalParamValue",i)]])){
+        i <- i+1   
+        a <- tagList(a,
+              tags$tr(
+              tags$td(textInput(paste0("globalParamName",i), label = NULL, value = ifelse(!is.null(input[[paste0("globalParamName",i)]]), input[[paste0("globalParamName",i)]], ""), width="100%")),
+              tags$td(numericInput(paste0("globalParamValue",i), label = NULL, value = ifelse(!is.null(input[[paste0("globalParamValue",i)]]), input[[paste0("globalParamValue",i)]], ""), width="100%"))
+              )
+            )
+      }
+      tagList(tags$table(a))
+
   })
 })
 
