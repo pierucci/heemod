@@ -47,7 +47,7 @@ shinyServer(function(input, output) {
     }
     })
   
-  output$stateParameters <- renderUI({
+  output$stateParameters1 <- renderUI({
     nbStates = input$nbStates
     nbStateVariables = input$nbStateVariables
     req(nbStates)
@@ -60,30 +60,63 @@ shinyServer(function(input, output) {
       variableStateName[i] <- input[[paste0("variableStateName", i)]]
     if  (input$nbStates > 0)
     {
-      lapply(1:input$nbStrategies, function(x){
-        tagList(
-        h3(paste("Strategy", x)),
-        withTags({
-          table(class='stateVariables',
-                tagList(
-                  th(),
-                  lapply(1:nbStates, function(i){
-                    th(style='text-align:center', stateName[i])
-                  }),
-                  th(style='text-align:center', "Discounting Rate"),
-                  lapply(1:nbStateVariables, function(i){
-                    tr(td(variableStateName[i]),
-                       lapply (1:nbStates, function (j) {
-                         td(numericInput(paste0("stateVariable",i,j), value=0, label=NULL, width="100%"))
-                       }),
-                       td(numericInput(paste0("discountingRate",i), label=NULL, value=0, width="100%"))
-                    )
-                  })
-                )
+       tagList(
+        h3(paste0("Strategy: \"", input[[paste0("strategyName",1)]], "\"")),
+        tags$table(class='stateVariables',
+                   tagList(
+                     tags$th(),
+                     lapply(1:nbStates, function(i){
+                       tags$th(style='text-align:center', stateName[i])
+                     }),
+                     tags$th(style='text-align:center', "Discounting Rate"),
+                     lapply(1:nbStateVariables, function(i){
+                       tags$tr(tags$td(variableStateName[i]),
+                               lapply (1:nbStates, function (j) {
+                                 isolate({tags$td(numericInput(paste0("stateVariable",1,i,j), value=0, label=NULL, width="100%"))})
+                               }),
+                               tags$td(numericInput(paste0("discountingRate",1,i), label=NULL, value=0, width="100%"))
+                       )
+                     })
+                   )
+        )
+      )        
+    }
+  })
+  output$stateParameters2 <- renderUI({
+    req(input$copyValuesParameters)
+    nbStates = input$nbStates
+    nbStateVariables = input$nbStateVariables
+    req(nbStates)
+    req(nbStateVariables)
+    stateName <- ""
+    variableStateName <- ""
+    for (i in 1:nbStates)
+      stateName[i] <- input[[paste0("stateName", i)]]
+    for (i in 1:nbStateVariables)
+      variableStateName[i] <- input[[paste0("variableStateName", i)]]
+    if  (input$nbStates > 0) {
+        lapply(2:input$nbStrategies, function(x){
+          tagList(
+            h3(paste0("Strategy: \"", input[[paste0("strategyName",x)]], "\"")),
+            tags$table(class='stateVariables',
+                       tagList(
+                         tags$th(),
+                         lapply(1:nbStates, function(i){
+                           tags$th(style='text-align:center', stateName[i])
+                         }),
+                         tags$th(style='text-align:center', "Discounting Rate"),
+                         lapply(1:nbStateVariables, function(i){
+                           tags$tr(tags$td(variableStateName[i]),
+                                   lapply (1:nbStates, function (j) {
+                                     isolate({tags$td(numericInput(paste0("stateVariable",x,i,j), value=ifelse(input[[paste0("stateVariable",1,i,j)]] != 0, input[[paste0("stateVariable",1,i,j)]],0), label=NULL, width="100%"))})
+                                   }),
+                                   isolate({tags$td(numericInput(paste0("discountingRate",x,i), label=NULL, value=ifelse(input[[paste0("discountingRate",1,i)]] != 0, input[[paste0("discountingRate",1,i)]],0), width="100%"))})
+                           )
+                         })
+                       )
+            )
           )
         })
-      )
-      })
     }
   })
 })

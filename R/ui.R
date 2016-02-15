@@ -32,7 +32,9 @@ shinyUI(fluidPage(
                )
       ), 
       tabPanel("States Parameters",
-               uiOutput("stateParameters")
+               uiOutput("stateParameters1"),
+               conditionalPanel(condition = "input.nbStrategies > 1", column(3, offset=3, actionButton("copyValuesParameters", "Copy values for other strategies")), fluidRow(hr())),
+               uiOutput("stateParameters2")
       ), 
       tabPanel("Global Parameters",  "rien"
       ), 
