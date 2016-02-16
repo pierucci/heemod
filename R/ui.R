@@ -28,12 +28,15 @@ shinyUI(fluidPage(
       ),
       tabPanel("Transition Matrix",    
                fluidRow(
-                 column(12, uiOutput("transmatrix"))
+                 column(12, uiOutput("transMatrix1"),
+                        conditionalPanel(condition = "input.nbStrategies > 1", column(3, offset=3, actionButton("copyValuesParametersTM", "Copy values for other strategies")), fluidRow(hr())),
+                        uiOutput("transMatrix2")
+                 )
                )
       ), 
       tabPanel("States Parameters",
                uiOutput("stateParameters1"),
-               conditionalPanel(condition = "input.nbStrategies > 1", column(3, offset=3, actionButton("copyValuesParameters", "Copy values for other strategies")), fluidRow(hr())),
+               conditionalPanel(condition = "input.nbStrategies > 1", column(3, offset=3, actionButton("copyValuesParametersSP", "Copy values for other strategies")), fluidRow(hr())),
                uiOutput("stateParameters2")
       ), 
       tabPanel("Global Parameters", 

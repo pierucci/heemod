@@ -11,9 +11,8 @@ shinyServer(function(input, output) {
     for (i in 1:nbStateVariables)
       variableStateName[i] <- input[[paste0("variableStateName", i)]]
     if  (input$nbStates > 0) {
-      lapply(1:nbStrat, function(x){
-        if(nbStrat>1) 
-          x <- x+1
+      start <- ifelse(nbStrat>1, 2, 1)
+      lapply(start:nbStrat, function(x){
         tagList(
           h3(paste0("Strategy: \"", input[[paste0("strategyName",x)]], "\"")),
           tags$table(class='stateVariables',
@@ -37,6 +36,40 @@ shinyServer(function(input, output) {
       })
     }
   }
+  showTransMatrix <- function(nbStrat){
+    nbStates = input$nbStates
+    req(nbStates)
+    stateName <- ""
+    start <- ifelse(nbStrat>1, 2, 1)
+    for (i in 1:nbStates){
+      stateName[i] <- input[[paste0("stateName", i)]]
+    }
+    if  (input$nbStates > 0)
+    {
+      tagList(
+        lapply(start:nbStrat, function(x){
+          tagList(
+            h3(paste0("Transition Matrix for ", input[[paste0("strategyName",x)]])),
+            tags$table(class='transmatrix',
+                       tagList(
+                         tags$th(),
+                         lapply(1:nbStates, function(i){
+                           tags$th(style='text-align:center', stateName[i])
+                         }),
+                         lapply(1:nbStates, function(i){
+                           tags$tr(tags$td(stateName[i]),
+                                   lapply (1:nbStates, function (j) {
+                                     isolate(tags$td(textInput(paste0("transmatrix",x,i,j), value=ifelse(!is.null(input[[paste0("transmatrix",1,i,j)]]), input[[paste0("transmatrix",1,i,j)]], ""), label=NULL, width="100%")))
+                                   })
+                           )
+                         })
+                       )
+            )
+          )
+        })
+      )
+    }
+  }
   
   output$nameStates <- renderUI({
     req(input$nbStates)
@@ -56,45 +89,21 @@ shinyServer(function(input, output) {
       isolate({textInput(paste0("strategyName", i), paste("Strategy Name", i), value = ifelse(!is.null(input[[paste0("strategyName",i)]]), input[[paste0("strategyName",i)]], paste("Strategy",LETTERS[i])))})
     })
   })
-  
-  output$transmatrix <- renderUI({
-    nbStates = input$nbStates
-    req(nbStates)
-    stateName <- ""
-    for (i in 1:nbStates){
-      stateName[i] <- input[[paste0("stateName", i)]]
-    }
-    if  (input$nbStates > 0)
-    {
-      withTags({
-        tagList(
-        h3("Transition Matrix"),
-        table(class='transmatrix',
-              tagList(
-                th(),
-                lapply(1:nbStates, function(i){
-                  th(style='text-align:center', stateName[i])
-                }),
-                lapply(1:nbStates, function(i){
-                  tr(td(stateName[i]),
-                    lapply (1:nbStates, function (j) {
-                      td(textInput(paste0("transmatrix",i,j), value="", label=NULL, width="100%"))
-                    })
-                  )
-                })
-              )
-        )
-        )
-      })
-    }
+
+  output$transMatrix1 <- renderUI({
+    showTransMatrix(1)
     })
- 
+  output$transMatrix2 <- renderUI({
+    req(input$copyValuesParametersTM)
+    showTransMatrix(input$nbStrategies)
+  })
+  
   output$stateParameters1 <- renderUI({
     showStateParam(1)
   })
   output$stateParameters2 <- renderUI({
-    req(input$copyValuesParameters)
-    showStateParam( input$nbStrategies)
+    req(input$copyValuesParametersSP)
+    showStateParam(input$nbStrategies)
   })
   
   output$globalParameters <- renderUI({
