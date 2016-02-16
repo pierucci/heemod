@@ -1,4 +1,43 @@
 shinyServer(function(input, output) {
+  showStateParam <- function(nbStrat){
+    nbStates = input$nbStates
+    nbStateVariables = input$nbStateVariables
+    req(nbStates)
+    req(nbStateVariables)
+    stateName <- ""
+    variableStateName <- ""
+    for (i in 1:nbStates)
+      stateName[i] <- input[[paste0("stateName", i)]]
+    for (i in 1:nbStateVariables)
+      variableStateName[i] <- input[[paste0("variableStateName", i)]]
+    if  (input$nbStates > 0) {
+      lapply(1:nbStrat, function(x){
+        if(nbStrat>1) 
+          x <- x+1
+        tagList(
+          h3(paste0("Strategy: \"", input[[paste0("strategyName",x)]], "\"")),
+          tags$table(class='stateVariables',
+                     tagList(
+                       tags$th(),
+                       lapply(1:nbStates, function(i){
+                         tags$th(style='text-align:center', stateName[i])
+                       }),
+                       tags$th(style='text-align:center', "Discounting Rate"),
+                       lapply(1:nbStateVariables, function(i){
+                         tags$tr(tags$td(variableStateName[i]),
+                                 lapply (1:nbStates, function (j) {
+                                   isolate({tags$td(numericInput(paste0("stateVariable",x,i,j), value=ifelse(!is.null(input[[paste0("stateVariable",1,i,j)]]), input[[paste0("stateVariable",1,i,j)]],0), label=NULL, width="100%"))})
+                                 }),
+                                 isolate({tags$td(numericInput(paste0("discountingRate",x,i), label=NULL, value=ifelse(!is.null(input[[paste0("discountingRate",1,i)]]), input[[paste0("discountingRate",1,i)]],0), width="100%"))})
+                         )
+                       })
+                     )
+          )
+        )
+      })
+    }
+  }
+  
   output$nameStates <- renderUI({
     req(input$nbStates)
       lapply(1:input$nbStates, function(i) {
@@ -49,78 +88,15 @@ shinyServer(function(input, output) {
       })
     }
     })
+ 
   output$stateParameters1 <- renderUI({
-    nbStates = input$nbStates
-    nbStateVariables = input$nbStateVariables
-    req(nbStates)
-    req(nbStateVariables)
-    stateName <- ""
-    variableStateName <- ""
-    for (i in 1:nbStates)
-      stateName[i] <- input[[paste0("stateName", i)]]
-    for (i in 1:nbStateVariables)
-      variableStateName[i] <- input[[paste0("variableStateName", i)]]
-    if  (input$nbStates > 0)
-    {
-       tagList(
-        h3(paste0("Strategy: \"", input[[paste0("strategyName",1)]], "\"")),
-        tags$table(class='stateVariables',
-                   tagList(
-                     tags$th(),
-                     lapply(1:nbStates, function(i){
-                       tags$th(style='text-align:center', stateName[i])
-                     }),
-                     tags$th(style='text-align:center', "Discounting Rate"),
-                     lapply(1:nbStateVariables, function(i){
-                       tags$tr(tags$td(variableStateName[i]),
-                               lapply (1:nbStates, function (j) {
-                                 isolate({tags$td(numericInput(paste0("stateVariable",1,i,j), value=0, label=NULL, width="100%"))})
-                               }),
-                               tags$td(numericInput(paste0("discountingRate",1,i), label=NULL, value=0, width="100%"))
-                       )
-                     })
-                   )
-        )
-      )        
-    }
+    showStateParam(1)
   })
   output$stateParameters2 <- renderUI({
     req(input$copyValuesParameters)
-    nbStates = input$nbStates
-    nbStateVariables = input$nbStateVariables
-    req(nbStates)
-    req(nbStateVariables)
-    stateName <- ""
-    variableStateName <- ""
-    for (i in 1:nbStates)
-      stateName[i] <- input[[paste0("stateName", i)]]
-    for (i in 1:nbStateVariables)
-      variableStateName[i] <- input[[paste0("variableStateName", i)]]
-    if  (input$nbStates > 0) {
-        lapply(2:input$nbStrategies, function(x){
-          tagList(
-            h3(paste0("Strategy: \"", input[[paste0("strategyName",x)]], "\"")),
-            tags$table(class='stateVariables',
-                       tagList(
-                         tags$th(),
-                         lapply(1:nbStates, function(i){
-                           tags$th(style='text-align:center', stateName[i])
-                         }),
-                         tags$th(style='text-align:center', "Discounting Rate"),
-                         lapply(1:nbStateVariables, function(i){
-                           tags$tr(tags$td(variableStateName[i]),
-                                   lapply (1:nbStates, function (j) {
-                                     isolate({tags$td(numericInput(paste0("stateVariable",x,i,j), value=ifelse(input[[paste0("stateVariable",1,i,j)]] != 0, input[[paste0("stateVariable",1,i,j)]],0), label=NULL, width="100%"))})
-                                   }),
-                                   isolate({tags$td(numericInput(paste0("discountingRate",x,i), label=NULL, value=ifelse(input[[paste0("discountingRate",1,i)]] != 0, input[[paste0("discountingRate",1,i)]],0), width="100%"))})
-                           )
-                         })
-                       )
-            )
-          )
-        })
-    }
+    showStateParam( input$nbStrategies)
   })
+  
   output$globalParameters <- renderUI({
       i <- 1
       a <- tagList()
