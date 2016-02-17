@@ -29,6 +29,7 @@ devtools::install_github("pierucci/heemod")
   * Heterogeneity analysis.
   * Probabilistic incertitude analysis.
   * Deterministic sensitivity analysis.
+  * Multiple state membership correction methods (life-table, half-cycle...).
 
 ## Learning heemod
 
@@ -45,7 +46,7 @@ Specific analysis examples (mostly inspired from Decision Modelling for Health E
 
 In version 1.0.0 :
 
-  * Multiple state membership correction methods.
+  * Shiny GUI.
 
 Upcoming vignettes:
 
