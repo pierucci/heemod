@@ -315,7 +315,12 @@ compute_counts <- function(
       stop("Unimplemented")
     },
     "half-cycle" = {
-      stop("uninplemented")
+      out <- n1
+      out[1, ] <- out[1, ] + init / 2
+      out[nrow(out), ] <- out[nrow(out), ] + out[nrow(out), ] / 2
+    },
+    "life-table" = {
+      out <- (n0 + n1) / 2
     },
     {
       stop()
