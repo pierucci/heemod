@@ -319,6 +319,14 @@ compute_counts <- function(
       out[1, ] <- out[1, ] + init / 2
       out[nrow(out), ] <- out[nrow(out), ] + out[nrow(out), ] / 2
     },
+    "spread-half-cycle" = {
+      to_add <- (init + n1[nrow(n1), ]) / 2
+      weights <- prop.table(as.matrix(n1), 2)
+      out <- n1
+      for (i in seq_len(ncol(n1))) {
+        out[, i] <- n1[, i] + weights[, i] * to_add[, i]
+      }
+    },
     "life-table" = {
       out <- (n0 + n1) / 2
     },
