@@ -1,3 +1,5 @@
+library(shinyjs)
+
 shinyUI(fluidPage(
   titlePanel("HEEMOD GUI"),
   tabsetPanel(
@@ -40,12 +42,12 @@ shinyUI(fluidPage(
                uiOutput("stateParameters2")
       ), 
       tabPanel("Global Parameters", 
-               tags$table(
-                 tags$tr(
-                   tags$td(textInput("globalParamName1", label = "Parameter Name", value = NULL, width="100%")),
-                   tags$td(numericInput("globalParamValue1", label = "Parameter Value", value = NULL, width="100%"))
-                 )
-               ),
+#                tags$table(
+#                  tags$tr(
+#                    tags$td(textInput("globalParamName1", label = "Parameter Name", value = NULL, width="100%")),
+#                    tags$td(numericInput("globalParamValue1", label = "Parameter Value", value = NULL, width="100%"))
+#                  )
+#                ),
                uiOutput("globalParameters")
       ), 
       tabPanel("Output", tableOutput("out")

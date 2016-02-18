@@ -1,4 +1,6 @@
-shinyServer(function(input, output) {
+
+shinyServer(function(input, output, session) {
+  valeurs <- reactiveValues(nbGlobalParameters = 1, addOne=TRUE)
   showStateParam <- function(nbStrat){
     nbStates = input$nbStates
     nbStateVariables = input$nbStateVariables
@@ -14,7 +16,7 @@ shinyServer(function(input, output) {
       start <- ifelse(nbStrat>1, 2, 1)
       lapply(start:nbStrat, function(x){
         tagList(
-          h3(paste0("Strategy: \"", input[[paste0("strategyName",x)]], "\"")),
+          h3(paste0("State Parameters for: \"", input[[paste0("strategyName",x)]], "\"")),
           tags$table(class='stateVariables',
                      tagList(
                        tags$th(),
@@ -49,7 +51,7 @@ shinyServer(function(input, output) {
       tagList(
         lapply(start:nbStrat, function(x){
           tagList(
-            h3(paste0("Transition Matrix for ", input[[paste0("strategyName",x)]])),
+            h3(paste0("Transition Matrix for \"", input[[paste0("strategyName",x)]],"\"")),
             tags$table(class='transmatrix',
                        tagList(
                          tags$th(),
@@ -105,20 +107,45 @@ shinyServer(function(input, output) {
     req(input$copyValuesParametersSP)
     showStateParam(input$nbStrategies)
   })
+
+  observe({
+      n <- valeurs$nbGlobalParameters
+      if (!is.null(input[[paste0("globalParamName",n)]]) & !is.null(input[[paste0("globalParamValue",n)]]))
+        valeurs$addOne <- FALSE
+  })
+  
+  observe({
+    invalidateLater(1000, session)
+    n <- valeurs$nbGlobalParameters
+    if (isolate(valeurs$addOne)){
+      valeurs$paramName <- isolate(input[[paste0("globalParamName",n)]])
+      valeurs$paramValue <- isolate(input[[paste0("globalParamValue",n)]])
+    } else
+      isolate (valeurs$addOne <- TRUE)
+
+  })
+
   
   output$globalParameters <- renderUI({
-      i <- 1
-      a <- tagList()
-      while (!is.null(input[[paste0("globalParamName",i)]]) && input[[paste0("globalParamName",i)]] != "" | !is.null(input[[paste0("globalParamValue",i)]]) && !is.na(input[[paste0("globalParamValue",i)]])){
-        i <- i+1   
-        a <- tagList(a,
-              tags$tr(
-              tags$td(textInput(paste0("globalParamName",i), label = NULL, value = ifelse(!is.null(input[[paste0("globalParamName",i)]]), input[[paste0("globalParamName",i)]], ""), width="100%")),
-              tags$td(numericInput(paste0("globalParamValue",i), label = NULL, value = ifelse(!is.null(input[[paste0("globalParamValue",i)]]), input[[paste0("globalParamValue",i)]], ""), width="100%"))
-              )
+    n <- valeurs$nbGlobalParameters
+    a <- tags$table(
+        lapply(1:n, function(i){
+          tags$tr(
+              isolate(tags$td(textInput(paste0("globalParamName",i), label = NULL, value = input[[paste0("globalParamName",i)]], width="100%"))),
+              isolate(tags$td(numericInput(paste0("globalParamValue",i), label = NULL, value = input[[paste0("globalParamValue",i)]], width="100%")))
             )
-      }
-      tagList(tags$table(a))
+        })
+    )
+    tagAppendChildren(a,
+        if (!is.null(valeurs$paramName) && valeurs$paramName != "" | !is.null(valeurs$paramValue) && !is.na(valeurs$paramValue)){
+          tags$tr(
+            tags$td(textInput(paste0("globalParamName",n+1), label = NULL, value = "", width="100%")),
+            tags$td(numericInput(paste0("globalParamValue",n+1), label = NULL, value = NA, width="100%"))
+          )
+          valeurs$nbGlobalParameters <- n+1
+        }
+        
+    )
 
   })
 })
