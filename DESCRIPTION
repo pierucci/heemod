@@ -8,7 +8,7 @@ Description: Health Economic Evaluation Modelling.
   for health economic evaluation. Model comparison,
   sensitivity and probabilistic analysis.
 Depends: R (>= 3.2.2)
-Imports: lazyeval, dplyr, diagram, mvnfast, logitnorm, ggplot2, tidyr, shiny
+Imports: lazyeval, dplyr, diagram, mvnfast, logitnorm, ggplot2, tidyr, shiny (>= 0.13)
 License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr
