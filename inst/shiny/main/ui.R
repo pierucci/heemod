@@ -1,5 +1,3 @@
-library(shinyjs)
-
 shinyUI(fluidPage(
   titlePanel("HEEMOD GUI"),
   tabsetPanel(
@@ -43,7 +41,7 @@ shinyUI(fluidPage(
       ), 
       tabPanel("Global Parameters", 
                uiOutput("globalParameters"),
-               conditionalPanel(condition = "input.nbStrategies > 1", column(3, offset=3, actionButton("copyValuesParametersGP", "Copy values for other strategies")), fluidRow(hr()))
+              conditionalPanel(condition = "input.nbStrategies > 1", column(3, offset=3, actionButton("copyValuesParametersGP", "Copy values for other strategies")), fluidRow(hr()))
                
       ), 
       tabPanel("Output", tableOutput("out")
