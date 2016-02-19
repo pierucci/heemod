@@ -192,7 +192,7 @@ mod_comb <- define_model(
 
 # Running models
 
-Both models can then be run for 20 years with `run_model`. Models are given simple names (`mono` and `comb`) in order to facilitate result interpretation:
+Both models can then be run for 20 years with `run_model`. Models are given simple names (`mono` and `comb`) in order to facilitate result interpretation. To replicate results from the original study we assume transitions occur at the end of each cycles (`method = "end"`).
 
 ```{r}
 res_mod <- run_models(
@@ -200,7 +200,8 @@ res_mod <- run_models(
   comb = mod_comb,
   cycles = 20,
   cost = cost_total,
-  effect = life_year
+  effect = life_year,
+  method = "end"
 )
 ```
 
