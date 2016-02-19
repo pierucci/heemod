@@ -3,6 +3,7 @@
 ## Enhancements
 
   * added support for different conting options.
+  * new `get_mortality_rate()` convenience function.
 
 # heemod 0.2.0
 
