@@ -72,6 +72,9 @@ shinyServer(function(input, output, session) {
       )
     }
   }
+  showGlobalParam <- function(nbStrat){
+    
+  }
   
   output$nameStates <- renderUI({
     req(input$nbStates)
@@ -110,7 +113,7 @@ shinyServer(function(input, output, session) {
 
   observe({
       n <- valeurs$nbGlobalParameters
-      if (!is.null(input[[paste0("globalParamName",n)]]) & !is.null(input[[paste0("globalParamValue",n)]]))
+      if (!is.null(input[[paste0("globalParamName",n)]]) & !is.null(input[[paste0("globalParamValue1",n)]]))
         valeurs$addOne <- FALSE
   })
   
@@ -119,20 +122,21 @@ shinyServer(function(input, output, session) {
     n <- valeurs$nbGlobalParameters
     if (isolate(valeurs$addOne)){
       valeurs$paramName <- isolate(input[[paste0("globalParamName",n)]])
-      valeurs$paramValue <- isolate(input[[paste0("globalParamValue",n)]])
+      valeurs$paramValue <- isolate(input[[paste0("globalParamValue1",n)]])
     } else
       isolate (valeurs$addOne <- TRUE)
 
   })
 
-  
   output$globalParameters <- renderUI({
     n <- valeurs$nbGlobalParameters
     a <- tags$table(
+        tags$th("Variable name"),
+        tags$th("Value"),
         lapply(1:n, function(i){
-          tags$tr(
+           tags$tr(
               isolate(tags$td(textInput(paste0("globalParamName",i), label = NULL, value = input[[paste0("globalParamName",i)]], width="100%"))),
-              isolate(tags$td(numericInput(paste0("globalParamValue",i), label = NULL, value = input[[paste0("globalParamValue",i)]], width="100%")))
+              isolate(tags$td(numericInput(paste0("globalParamValue",1,i), label = NULL, value = input[[paste0("globalParamValue",1,i)]], width="100%")))
             )
         })
     )
@@ -140,13 +144,13 @@ shinyServer(function(input, output, session) {
         if (!is.null(valeurs$paramName) && valeurs$paramName != "" | !is.null(valeurs$paramValue) && !is.na(valeurs$paramValue)){
           tags$tr(
             tags$td(textInput(paste0("globalParamName",n+1), label = NULL, value = "", width="100%")),
-            tags$td(numericInput(paste0("globalParamValue",n+1), label = NULL, value = NA, width="100%"))
+            tags$td(numericInput(paste0("globalParamValue",1,n+1), label = NULL, value = NA, width="100%"))
           )
           valeurs$nbGlobalParameters <- n+1
         }
         
     )
-
+    
   })
 })
 
