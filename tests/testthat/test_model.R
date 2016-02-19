@@ -41,13 +41,12 @@ test_that(
 
     2 parameters,
     2 states,
-    2 state values,
-    No starting values defined.",
+    2 state values",
       fixed = TRUE
     )
     expect_output(
       str(mod1),
-      "List of 4
+      "List of 3
  $ parameters       :List of 2
   ..$ a:List of 2
   .. ..$ expr: num 0.1",

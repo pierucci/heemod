@@ -177,15 +177,13 @@ Utilities and costs are then associated to states. In this model costs are disco
 
 Now that parameters, transition matrix and states are defined we can define the models for the control group and the NP1 treatment.
 
-We also define optional `starting_values`, state values that are added to the total cost of all individuals once. This is especially useful to input the cost of an original intervention, here we use this parameter to specify the cost of the THR technology.
-
 ```{r}
 mod_standard <- define_model(
   parameters = param_standard,
   transition_matrix = mat_trans,
   PrimaryTHR = define_state(
     utility = 0,
-    cost = 0
+    cost = 394
   ),
   SuccessP = define_state(
     utility = discount(.85, .015),
@@ -202,8 +200,7 @@ mod_standard <- define_model(
   Death = define_state(
     utility = 0,
     cost = 0
-  ),
-  starting_values = c(cost = 394)
+  )
 )
 mod_standard
 
@@ -212,7 +209,7 @@ mod_np1 <- define_model(
   transition_matrix = mat_trans,
   PrimaryTHR = define_state(
     utility = 0,
-    cost = 0
+    cost = 579
   ),
   SuccessP = define_state(
     utility = discount(.85, .015),
@@ -229,14 +226,13 @@ mod_np1 <- define_model(
   Death = define_state(
     utility = 0,
     cost = 0
-  ),
-  starting_values = c(cost = 579)
+  )
 )
 ```
 
 # Analyse models
 
-Both models can now be run for 60 years, for 1 person starting in `PrimaryTHR`:
+Both models can now be run for 60 years. By default models are computed for 1000 person starting in `PrimaryTHR`. To replicate results from the original study we assume transitions occur at the end of each cycles. This is necessary because THR cost defined in state `PrimaryTHR` need to be accounted for all 1000 individuals.
 
 ```{r}
 res_mod <- run_models(
@@ -244,9 +240,9 @@ res_mod <- run_models(
   np1 = mod_np1,
   cycles = 60,
   cost = cost,
-  effect = utility
+  effect = utility,
+  method = "end"
 )
-res_mod
 ```
 
 A comparison of both models can be done with `summary()`. The incremental cost and effect are displayed in columns `.cost` and `.effect`.
