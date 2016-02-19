@@ -118,35 +118,28 @@ shinyServer(function(input, output, session) {
 
   output$globalParameters <- renderUI({
     n <- valeurs$nbGlobalParameters
-    if (input$copyValuesParametersGP[[1]] == 0){
-      a <- tags$table(
-          tags$th("Variable name"),
-          tags$th("Value"),
-          lapply(1:n, function(i){
-             tags$tr(
-                isolate(tags$td(textInput(paste0("globalParamName",i), label = NULL, value = input[[paste0("globalParamName",i)]], width="100%"))),
-                isolate(tags$td(numericInput(paste0("globalParamValue",1,i), label = NULL, value = input[[paste0("globalParamValue",1,i)]], width="100%")))
-              )
-          })
-      )
-    } else {
+      req(input$nbStrategies)
+      if (input$copyValuesParametersGP[[1]] == 0) 
+        nbStrategies <- 1
+      else 
+        nbStrategies <- input$nbStrategies
       a <- tags$table(
         tags$tr(
           tags$th("Variable name"),
-          lapply(1:input$nbStrategies, function(x){
-            tags$th(paste("Value for strategy", input[[paste0("strategyName",x)]]))
+          lapply(1:nbStrategies, function(x){
+            tags$th(paste("Value for strategy:"), p(input[[paste0("strategyName",x)]]))
           })
         ),
         lapply(1:n, function(i){
           tags$tr(
-            tags$td(textInput(paste0("globalParamName",i), label = NULL, value = input[[paste0("globalParamName",i)]], width="100%")),
-            lapply(1:input$nbStrategies, function(x){
+            isolate(tags$td(textInput(paste0("globalParamName",i), label = NULL, value = input[[paste0("globalParamName",i)]], width="100%"))),
+            lapply(1:nbStrategies, function(x){
               isolate(tags$td(numericInput(paste0("globalParamValue",x,i), label = NULL, value = input[[paste0("globalParamValue",1,i)]], width="100%")))
             }))
     
         })
       )
-    }
+    #}
     tagList(a,actionButton("addParametersGP", "Add a new variable"))
 })
 })
