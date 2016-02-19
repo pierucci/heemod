@@ -26,13 +26,3 @@ define_model(
   s1 = s1,
   s2 = s2
 )
-
-# with starting values
-
-define_model(
-  parameters = param,
-  transition_matrix = mat,
-  s1 = s1,
-  s2 = s2,
-  starting_values = c(cost = 500)
-)
