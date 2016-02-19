@@ -1,5 +1,3 @@
-library(shinyjs)
-
 shinyUI(fluidPage(
   titlePanel("HEEMOD GUI"),
   tabsetPanel(
