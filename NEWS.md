@@ -1,3 +1,9 @@
+# heemod 0.2.1
+
+## Enhancements
+
+  * added support for different conting options.
+
 # heemod 0.2.0
 
 ## Enhancements

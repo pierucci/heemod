@@ -35,9 +35,9 @@ discount <- function(x, r, first = TRUE) {
 #' 
 list_all_same <- function(x) {
   length(x) == 0 |
-  all(unlist(
-    Map(function(y) identical(y, x[[1]]), x)
-  ))
+    all(unlist(
+      Map(function(y) identical(y, x[[1]]), x)
+    ))
 }
 
 #' Returns "s" if x > 1
@@ -89,4 +89,54 @@ check_names <- function(x) {
   if (any(grepl("^\\.", x))) {
     stop("Names starting with '.' are reserved.")
   }
+}
+
+#' Get Mortality Rate
+#' 
+#' Convenience function for non-homogeneous models. Given 
+#' age, sex and a reference table, returns mortality rate.
+#' 
+#' The \code{ref} table must contain 3 columns named 
+#' \code{age}, \code{sex} and \code{rate}.
+#' 
+#' @param age Age.
+#' @param sex Sex.
+#' @param ref Reference mortality rate table, see details
+#'   for structure.
+#'   
+#' @return A vector of mortality rates.
+#' @export
+#' 
+#' @examples
+#' 
+#' age_seq <- 31:38
+#' sex_seq <- rep(1:2, 4)
+#' 
+#' tab_ref <- data.frame(
+#'   age = c("[30,35)", "[30,35)", "[35,40)", "[35,40)"),
+#'   sex = c(1, 2, 1, 2),
+#'   rate = c(.02, .01, .05, .04)
+#' )
+#' 
+#' get_mortality_rate(
+#'   age = cut(age_seq, c(30, 35, 40), right = FALSE),
+#'   sex = sex_seq,
+#'   ref = tab_ref
+#' )
+#' 
+get_mortality_rate <- function(age, sex, ref) {
+  tab <- data.frame(age = age, sex = sex)
+  res <- merge(tab, ref)$rate
+  switch(
+    as.character(sign(nrow(tab) - length(res))),
+    "0" = {
+      res
+    },
+    "-1" = {
+      stop("Multiple matches for a single age/sex case in 'get_mortality_rate'.")
+    },
+    "1" = {
+      stop("No matches for at least one age/sex case in 'get_mortality_rate'.")
+    }
+  )
 }

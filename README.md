@@ -1,6 +1,6 @@
 # heemod - Health Ecomomic Evaluation MODelling
 
-[![Travis-CI Build Status](https://travis-ci.org/pierucci/heemod.svg?branch=master)](https://travis-ci.org/pierucci/heemod)
+[![Travis-CI Build Status](https://travis-ci.org/pierucci/heemod.svg?branch=master)](https://travis-ci.org/pierucci/heemod) [![](http://www.r-pkg.org/badges/version/heemod)](http://www.r-pkg.org/pkg/heemod)
 
 `heemod` is an `R` toolset for health ecomomic evaluation modelling. It aims to provide a simple and consistent interface for Markov models specification and comparison. Non-homogeneous Markov models (with time varying properties) are supported.
 
@@ -29,6 +29,7 @@ devtools::install_github("pierucci/heemod")
   * Heterogeneity analysis.
   * Probabilistic incertitude analysis.
   * Deterministic sensitivity analysis.
+  * Multiple state membership correction methods (life-table, half-cycle...).
 
 ## Learning heemod
 
@@ -45,7 +46,7 @@ Specific analysis examples (mostly inspired from Decision Modelling for Health E
 
 In version 1.0.0 :
 
-  * Multiple state membership correction methods.
+  * Shiny GUI.
 
 Upcoming vignettes:
 
