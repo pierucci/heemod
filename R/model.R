@@ -23,13 +23,19 @@
 #' @export
 #' 
 #' @example inst/examples/example_define_model.R
-define_model <- function(
-  ...,
-  parameters = define_parameters(),
-  transition_matrix = define_matrix()
-) {
+define_model <- function(...,
+                         parameters = define_parameters(),
+                         transition_matrix = define_matrix()) {
   
   states <- define_state_list_(list(...))
+  
+  define_model_(
+    parameters = parameters,
+    transition_matrix = transition_matrix,
+    states = states
+  )
+}
+define_model_ <- function(parameters, transition_matrix, states) {
   
   stopifnot(
     get_state_number(states) == 0 |
@@ -394,7 +400,7 @@ plot.eval_model_list <- function(x, type = c("counts", "ce"), model = 1, ...) {
     ce = {
       tab_ce <- normalize_ce(x)
       ef <- get_frontier(x)
-
+      
       ggplot2::ggplot(tab_ce,
                       ggplot2::aes(x = .effect, y = .cost, label = .model_names)) +
         ggplot2::geom_line(data = tab_ce[tab_ce$.model_names %in% ef, ]) +
