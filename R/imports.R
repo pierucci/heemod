@@ -13,6 +13,7 @@
 #' 
 #' @importFrom lazyeval lazy
 #' @importFrom lazyeval lazy_dots
+#' @importFrom lazyeval as.lazy_dots
 #' @importFrom lazyeval lazy_eval
 #' 
 #' @importFrom utils head
