@@ -48,7 +48,7 @@ run_models <- function(...,
                        cycles = 1,
                        method = c("beginning", "end", "cycle-tree",
                                   "half-cycle", "life-table", "spread-half-cycle"),
-                       cost, effect, base_model) {
+                       cost, effect, base_model = NULL) {
   list_models <- list(...)
   
   method <- match.arg(method)
@@ -119,7 +119,7 @@ run_models <- function(...,
   
   res <- dplyr::mutate_(res, .dots = ce)
   
-  if (missing(base_model)) {
+  if (is.null(base_model)) {
     base_model <- get_base_model(res)
   }
   
