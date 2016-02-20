@@ -24,14 +24,15 @@
 #' was called.
 #' 
 #' For the \code{modify} function, existing parameters are 
-#' modified, but no new parameter can be added. Parameter
-#' order matters since only parameters defined earlier can
+#' modified, but no new parameter can be added. Parameter 
+#' order matters since only parameters defined earlier can 
 #' be referenced in later expressions.
 #' 
 #' @param ... Name-value pairs of expressions definig 
 #'   parameters.
 #' @param .OBJECT An object of class 
 #'   \code{uneval_parameters}.
+#' @param .dots Used to work around non-standard evaluation.
 #'   
 #' @return An object of class \code{uneval_parameters} 
 #'   (actually a named list of \code{lazy} expressions).
@@ -44,6 +45,8 @@ define_parameters <- function(...) {
   define_parameters_(.dots)
 }
 
+#' @export
+#' @rdname define_parameters
 define_parameters_ <- function(.dots) {
   
   if (length(.dots)){

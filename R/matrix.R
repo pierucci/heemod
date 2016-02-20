@@ -37,6 +37,7 @@
 #' @param shadow.size Argument passed to \code{\link{plotmat}}.
 #' @param curve Argument passed to \code{\link{plotmat}}.
 #' @param latex Argument passed to \code{\link{plotmat}}.
+#' @param .dots Used to work around non-standard evaluation.
 #'   
 #' @return An object of class \code{uneval_matrix} (actually
 #'   a named list of \code{lazy} expressions).
@@ -58,6 +59,8 @@ define_matrix <- function(
   define_matrix_(.dots = .dots, state_names = state_names)
 }
 
+#' @export
+#' @rdname define_matrix
 define_matrix_ <- function(
   .dots,
   state_names

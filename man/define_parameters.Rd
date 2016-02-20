@@ -2,16 +2,21 @@
 % Please edit documentation in R/parameters.R
 \name{define_parameters}
 \alias{define_parameters}
+\alias{define_parameters_}
 \alias{modify.uneval_parameters}
 \title{Define Markov Model Parameters}
 \usage{
 define_parameters(...)
+
+define_parameters_(.dots)
 
 \method{modify}{uneval_parameters}(.OBJECT, ...)
 }
 \arguments{
 \item{...}{Name-value pairs of expressions definig 
 parameters.}
+
+\item{.dots}{Used to work around non-standard evaluation.}
 
 \item{.OBJECT}{An object of class 
 \code{uneval_parameters}.}
@@ -46,8 +51,8 @@ then in the environment where \code{define_parameters}
 was called.
 
 For the \code{modify} function, existing parameters are 
-modified, but no new parameter can be added. Parameter
-order matters since only parameters defined earlier can
+modified, but no new parameter can be added. Parameter 
+order matters since only parameters defined earlier can 
 be referenced in later expressions.
 }
 \examples{

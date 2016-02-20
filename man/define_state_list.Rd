@@ -2,16 +2,21 @@
 % Please edit documentation in R/states.R
 \name{define_state_list}
 \alias{define_state_list}
+\alias{define_state_list_}
 \alias{modify.uneval_state_list}
 \title{Define Markov Model State List}
 \usage{
 define_state_list(...)
+
+define_state_list_(.dots)
 
 \method{modify}{uneval_state_list}(.OBJECT, ...)
 }
 \arguments{
 \item{...}{Name-value pairs of expressions defining model
 states.}
+
+\item{.dots}{Used to work around non-standard evaluation.}
 
 \item{.OBJECT}{An \code{uneval_states} object.}
 }

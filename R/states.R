@@ -15,6 +15,7 @@
 #' @param ... Name-value pairs of expressions defining state
 #'   values.
 #' @param .OBJECT An object of class \code{state}.
+#' @param .dots Used to work around non-standard evaluation.
 #'   
 #' @return An object of class \code{state} (actually a named
 #'   list of \code{lazy} expressions).
@@ -28,6 +29,8 @@ define_state <- function(...) {
   define_state_(.dots)
 }
 
+#' @export
+#' @rdname define_state
 define_state_ <- function(.dots) {
   check_names(names(.dots))
   structure(.dots,
@@ -84,6 +87,7 @@ print.state <- function(x, ...) {
 #' @param ... Name-value pairs of expressions defining model
 #'   states.
 #' @param .OBJECT An \code{uneval_states} object.
+#' @param .dots Used to work around non-standard evaluation.
 #'   
 #' @return An object of class \code{uneval_state_list} (a
 #'   list of \code{state} objects).
@@ -114,6 +118,9 @@ define_state_list <- function(...) {
   
   define_state_list_(.dots)
 }
+
+#' @export
+#' @rdname define_state_list
 define_state_list_ <- function(.dots) {
   stopifnot(
     ! any(duplicated(names(.dots))),
