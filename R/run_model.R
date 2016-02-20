@@ -37,6 +37,8 @@
 #' @param base_model Name of base model used as reference.
 #'   By default the model with the lowest effectiveness.
 #' @param method Counting method.
+#' @param list_models List of models, only used by 
+#'   \code{run_models_} to avoid using \code{...}.
 #'   
 #' @return A list of evaluated models with computed values.
 #' @export
@@ -52,6 +54,25 @@ run_models <- function(...,
   list_models <- list(...)
   
   method <- match.arg(method)
+  
+  run_models_(
+    list_models = list_models,
+    init = init,
+    cycles = cycles,
+    method = method,
+    cost = cost,
+    effect = effect,
+    base_model = base_model
+  )
+}
+
+#' @export
+#' @rdname run_models
+run_models_ <- function(list_models,
+                        init,
+                        cycles,
+                        method,
+                        cost, effect, base_model) {
   
   stopifnot(
     all(unlist(lapply(list_models,

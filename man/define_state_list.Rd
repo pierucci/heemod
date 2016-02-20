@@ -16,7 +16,8 @@ define_state_list_(.dots)
 \item{...}{Name-value pairs of expressions defining model
 states.}
 
-\item{.dots}{Used to work around non-standard evaluation.}
+\item{.dots}{List of states, only used by 
+\code{define_state_list_} to avoid using \code{...}.}
 
 \item{.OBJECT}{An \code{uneval_states} object.}
 }

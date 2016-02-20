@@ -87,7 +87,8 @@ print.state <- function(x, ...) {
 #' @param ... Name-value pairs of expressions defining model
 #'   states.
 #' @param .OBJECT An \code{uneval_states} object.
-#' @param .dots Used to work around non-standard evaluation.
+#' @param .dots List of states, only used by 
+#'   \code{define_state_list_} to avoid using \code{...}.
 #'   
 #' @return An object of class \code{uneval_state_list} (a
 #'   list of \code{state} objects).
