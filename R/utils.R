@@ -23,7 +23,7 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
 #' discount(rep(10, 5), .02)
 #' discount(rep(10, 5), .02, first = FALSE)
 #' 
-discount <- function(x, r, first = TRUE) {
+discount <- function(x, r, first = FALSE) {
   x / (1 + r) ^ (seq_along(x) - (1 - isTRUE(first)))
 }
 
