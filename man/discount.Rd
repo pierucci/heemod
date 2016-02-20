@@ -4,7 +4,7 @@
 \alias{discount}
 \title{Discount a Quantity Over Time}
 \usage{
-discount(x, r, first = TRUE)
+discount(x, r, first = FALSE)
 }
 \arguments{
 \item{x}{numeric. A quantity to discount.}
