@@ -125,6 +125,22 @@ We can plot the state membership counts over time. Other plot types are availabl
 plot(res_mod_1)
 ```
 
+Plots can be modified using `ggplot2` syntax.
+
+```{r, fig.align='center', fig.height=4, fig.width=6, message=FALSE}
+library(ggplot2)
+
+plot(res_mod_1) +
+  xlab("Time") +
+  ylab("N") +
+  theme_minimal() +
+  scale_color_brewer(
+    name = "State",
+    palette = "Set1"
+  )
+```
+
+
 # Going futher
 
 In order to compare different strategies it is possible to run several models in parallel, examples are provided in `vignette("homogeneous", package = "heemod")` or `vignette("non-homogeneous", package = "heemod")`.

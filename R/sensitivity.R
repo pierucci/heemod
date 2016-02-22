@@ -105,6 +105,7 @@ plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
                                   model = 1, ...) {
   type <- match.arg(type)
   
+  n_ind <- sum(attr(attr(x, "model_ref"), "init"))
   
   switch(
     type,
@@ -120,10 +121,17 @@ plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
         na.rm = TRUE
       )
       
-      tab$.y <- tab$.cost - ref$.cost
+      tab$.y <- (tab$.cost - ref$.cost) / n_ind
       tab$.sign <- sign(tab$.y)
       tab$.sign <- as.factor(replace(tab$.sign, tab$.sign == -1, 0))
       tab$.x <- 0
+      tab <- tab %>%
+        dplyr::arrange(.variable, dplyr::desc(.sign), dplyr::desc(.value)) %>%
+        dplyr::group_by(.variable) %>%
+        dplyr::mutate(.hjust = row_number() - 1)
+      
+      l <- diff(range(tab$.y)) * .1
+      
       
       ggplot2::ggplot(
         tab,
@@ -145,10 +153,13 @@ plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
           ggplot2::aes(
             x = .y,
             y = .variable,
-            label = .value
-          ),
-          hjust = "outward"
-        )
+            label = .value,
+            hjust = .hjust
+          )
+        ) +
+        ggplot2::xlab("Cost") +
+        ggplot2::ylab("Variable") +
+        ggplot2::xlim(min(tab$.y) - l, max(tab$.y) + l)
     },
     diff = {
       bm <- get_base_model(attr(x, "model_ref"))
@@ -173,10 +184,17 @@ plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
         na.rm = TRUE
       )
       
-      tab1$.y <- tab1$.cost - tab0$.cost
-      tab1$.ref <- ref1$.cost - ref0$.cost
+      tab1$.y <- (tab1$.cost - tab0$.cost) / n_ind
+      tab1$.ref <- (ref1$.cost - ref0$.cost) / n_ind
       tab1$.sign <- -sign(tab1$.y-tab1$.ref)
       tab1$.sign <- as.factor(replace(tab1$.sign, tab1$.sign == -1, 0))
+      
+      tab1 <- tab1 %>%
+        dplyr::arrange(.variable, dplyr::desc(.sign), dplyr::desc(.value)) %>%
+        dplyr::group_by(.variable) %>%
+        dplyr::mutate(.hjust = 1 - (row_number() - 1))
+      
+      l <- diff(range(tab1$.y)) * .1
       
       ggplot2::ggplot(
         tab1,
@@ -197,14 +215,18 @@ plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
           ggplot2::aes(
             x = .y,
             y = .variable,
-            label = .value
-          ),
-          hjust = "outward") 
+            label = .value,
+            hjust = .hjust
+          )
+        ) +
+        ggplot2::xlab("Cost") +
+        ggplot2::ylab("Variable") +
+        ggplot2::xlim(min(tab1$.y) - l, max(tab1$.y) + l)
       
     },
     stop("Unknown type.")
   )
 }
 if(getRversion() >= "2.15.1") utils::globalVariables(
-  c(".variable", ".x", ".y", ".ref", ".value", ".sign")
+  c(".variable", ".x", ".y", ".ref", ".value", ".sign", ".hjust")
 )
