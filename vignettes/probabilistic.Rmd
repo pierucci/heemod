@@ -235,3 +235,18 @@ And as cost-effectiveness acceptability curves:
 plot(pm, type = "ac", values = seq(0, 25e3, 1e3))
 ```
 
+As usual plots can be modified with the standard `ggplot2` syntax.
+
+```{r, fig.align='center', fig.height=4, fig.width=6, message=FALSE}
+library(ggplot2)
+
+plot(pm, type = "ce") +
+  xlab("Life-years gained") +
+  ylab("Additional cost") +
+  scale_color_brewer(
+    name = "Strategy",
+    palette = "Set1"
+  ) +
+  theme_minimal()
+```
+

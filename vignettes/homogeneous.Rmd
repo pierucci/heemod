@@ -12,6 +12,7 @@ vignette: >
 
 ```{r, echo=FALSE, include=FALSE}
 library(heemod)
+library(ggplot2)
 ```
 
 The most simple Markov models in health economic evaluation are models were transition probabilities between states do not change with time. Those are called *homogeneous* or *time-homogeneous* Markov models.
@@ -217,13 +218,26 @@ The incremental cost-effectiveness ratio of the combiend therapy strategy is thu
 
 The counts per state can be plotted for the monotherapy group:
 
-```{r, fig.width = 6, fig.align='center'}
-plot(res_mod, model = "mono", type = "counts")
+```{r, fig.align='center', fig.width=6, message=FALSE}
+plot(res_mod, model = "mono", type = "counts") +
+  xlab("Time") +
+  theme_minimal() +
+  scale_color_brewer(
+    name = "State",
+    palette = "Set1"
+  )
 ```
 
 And the combined therapy group:
 
-```{r, fig.width = 6, fig.align='center'}
-plot(res_mod, model = "comb", type = "counts")
+```{r, fig.align='center', fig.width=6, message=FALSE}
+plot(res_mod, model = "comb", type = "counts") +
+  xlab("Time") +
+  theme_minimal() +
+  scale_color_brewer(
+    name = "State",
+    palette = "Set1"
+  )
 ```
 
+Note that classic `ggplot2` syntax can be used to modifiy plot appearance.
