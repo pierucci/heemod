@@ -1,6 +1,6 @@
 
 shinyServer(function(input, output, session) {
-  valeurs <- reactiveValues(nbGlobalParameters = 1)
+  values <- reactiveValues(nbGlobalParameters = 1)
   showStateParam <- function(nbStrat){
     nbStates = input$nbStates
     nbStateVariables = input$nbStateVariables
@@ -113,13 +113,13 @@ shinyServer(function(input, output, session) {
 
   observe({
     req(input$addParametersGP)
-    isolate(valeurs$nbGlobalParameters <- valeurs$nbGlobalParameters + 1)
+    isolate(values$nbGlobalParameters <- values$nbGlobalParameters + 1)
   })
 
   output$globalParameters <- renderUI({
-    n <- valeurs$nbGlobalParameters
+    n <- values$nbGlobalParameters
       req(input$nbStrategies)
-      if (input$copyValuesParametersGP[[1]] == 0) 
+      if (input$copyValuesParametersGP[[1]] == 0) #not sure whether it's a good shiny way of doing it, but I can't figure out how to do better
         nbStrategies <- 1
       else 
         nbStrategies <- input$nbStrategies
@@ -134,7 +134,7 @@ shinyServer(function(input, output, session) {
           tags$tr(
             isolate(tags$td(textInput(paste0("globalParamName",i), label = NULL, value = input[[paste0("globalParamName",i)]], width="100%"))),
             lapply(1:nbStrategies, function(x){
-              isolate(tags$td(numericInput(paste0("globalParamValue",x,i), label = NULL, value = input[[paste0("globalParamValue",1,i)]], width="100%")))
+              isolate(tags$td(textInput(paste0("globalParamValue",x,i), label = NULL, value = input[[paste0("globalParamValue",1,i)]], width="100%")))
             }))
     
         })
