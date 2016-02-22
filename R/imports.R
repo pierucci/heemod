@@ -10,6 +10,7 @@
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr left_join
 #' @importFrom dplyr %>%
+#' @importFrom dplyr desc
 #' 
 #' @importFrom lazyeval lazy
 #' @importFrom lazyeval lazy_dots
@@ -44,6 +45,7 @@
 #' @importFrom ggplot2 xlab
 #' @importFrom ggplot2 ylab
 #' @importFrom ggplot2 aes
+#' @importFrom ggplot2 xlim
 #' 
 #' @importFrom tidyr gather_
 #' 
