@@ -8,8 +8,8 @@ ux_model_names <- function(input) {
   )
 }
 
-ux_nb_parameters <- function(valeurs) {
-  valeurs$nbGlobalParameters
+ux_nb_parameters <- function(values) {
+  values$nbGlobalParameters
 }
 
 ux_nb_states <- function(input) {
@@ -30,8 +30,8 @@ ux_state_names <- function(input) {
   )
 }
 
-ux_parameters <- function(input, valeurs, model_number) {
-  seq_param <- seq_len(ux_nb_parameters(valeurs))
+ux_parameters <- function(input, values, model_number) {
+  seq_param <- seq_len(ux_nb_parameters(values))
   
   names_parameters <- unlist(
     input[paste0("globalParamName", seq_param)]
@@ -105,10 +105,11 @@ ux_state_list <- function(input, model_number) {
   define_state_list_(list_states)
 }
 
-ux_model <- function(input, model_number) {
+ux_model <- function(input, values, model_number) {
   define_model_(
     parameters = ux_parameters(
       input = input,
+      values = values,
       model_number = model_number
     ),
     transition_matrix = ux_matrix(
@@ -146,12 +147,13 @@ ux_base_model <- function(input) {
   
 }
 
-ux_run_models <- function(input) {
+ux_run_models <- function(input, values) {
   list_models <- lapply(
     seq_len(ux_nb_models),
     function(x)
       ux_model(
         input = input,
+        values = values,
         model_number = x
       )
   )
