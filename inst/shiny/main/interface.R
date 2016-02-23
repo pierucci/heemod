@@ -1,10 +1,22 @@
+shiny_subset <- function(x, elem_names) {
+  res <- list()
+  for (n in elem_names) {
+    res <- c(res, list(x[[n]]))
+  }
+  names(res) <- elem_names
+  res
+}
+
 ux_nb_models <- function(input) {
   input$nbStrategies
 }
 
 ux_model_names <- function(input) {
   unlist(
-    input[paste0("strategyName", seq_len(ux_nb_models(input)))]
+    shiny_subset(
+      input,
+      paste0("strategyName", seq_len(ux_nb_models(input)))
+    )
   )
 }
 
@@ -17,16 +29,24 @@ ux_nb_states <- function(input) {
 }
 
 ux_nb_state_values <- function(input) {
-  
+  input$nbStateVariables
 }
 
 ux_state_value_names <- function(input) {
-  
+  unlist(
+    shiny_subset(
+      input,
+      paste0("variableStateName", seq_len(ux_nb_state_values(input)))
+    )
+  )
 }
 
 ux_state_names <- function(input) {
   unlist(
-    input[paste0("stateName", seq_len(ux_nb_states(input)))]
+    shiny_subset(
+      input,
+      paste0("stateName", seq_len(ux_nb_states(input)))
+    )
   )
 }
 
@@ -34,10 +54,16 @@ ux_parameters <- function(input, values, model_number) {
   seq_param <- seq_len(ux_nb_parameters(values))
   
   names_parameters <- unlist(
-    input[paste0("globalParamName", seq_param)]
+    shiny_subset(
+      input,
+      paste0("globalParamName", seq_param)
+    )
   )
   values_parameters <- unlist(
-    input[paste0(globalParamValue, model_number, seq_param)]
+    shiny_subset(
+      input,
+      paste0("globalParamValue", model_number, seq_param)
+    )
   )
   names(values_parameters) <- names_parameters
   
@@ -49,12 +75,15 @@ ux_parameters <- function(input, values, model_number) {
 ux_matrix <- function(input, model_number) {
   nb_states <- ux_nb_states(input)
   
-  mat_values <- input[paste0(
-    "transmatrix",
-    model_number,
-    rep(nb_states, each = nb_states),
-    rep(nb_states, nb_states)
-  )]
+  mat_values <- shiny_subset(
+    input,
+    paste0(
+      "transmatrix",
+      model_number,
+      rep(seq_len(nb_states), each = nb_states),
+      rep(seq_len(nb_states), nb_states)
+    )
+  )
   
   define_matrix_(
     .dots = lazyeval::as.lazy_dots(mat_values),
@@ -66,22 +95,28 @@ ux_state <- function(input, model_number, state_number) {
   state_value_names <- ux_state_value_names(input)
   
   state_values <- sprintf(
-    "discount(%s, %e)",
+    "heemod::discount(%s, %e)",
     unlist(
-      input[paste0(
-        "stateVariable",
-        model_number,
-        seq_len(ux_nb_state_values(input)),
-        state_number
-      )]
+      shiny_subset(
+        input,
+        paste0(
+          "stateVariable",
+          model_number,
+          seq_len(ux_nb_state_values(input)),
+          state_number
+        )
+      )
     ),
     unlist(
-      input[paste0(
-        "discountingRate",
-        model_number,
-        seq_len(ux_nb_state_values(input))
-      )]
-    )
+      shiny_subset(
+        input,
+        paste0(
+          "discountingRate",
+          model_number,
+          seq_len(ux_nb_state_values(input))
+        )
+      )
+    ) / 100
   )
   
   names(state_values) <- state_value_names
@@ -92,14 +127,16 @@ ux_state <- function(input, model_number, state_number) {
 }
 
 ux_state_list <- function(input, model_number) {
-  nb_states <- ux_number_states(input)
+  nb_states <- ux_nb_states(input)
   
   list_states <- lapply(
     seq_len(nb_states),
     function(x)
-      ux_state(input = input,
-               model_number = model_number,
-               state_number = x)
+      ux_state(
+        input = input,
+        model_number = model_number,
+        state_number = x
+      )
   )
   names(list_states) <- ux_state_names(input)
   define_state_list_(list_states)
@@ -124,32 +161,33 @@ ux_model <- function(input, values, model_number) {
 }
 
 ux_init <- function(input) {
-  
+  c(1, 0)
 }
 
 ux_cycles <- function(input) {
-  
+  10
 }
 
 ux_method <- function(input) {
-  
+  "end"
 }
 
 ux_cost <- function(input) {
-  
+  lazyeval::as.lazy("cost")
 }
 
 ux_effect <- function(input) {
-  
+  lazyeval::as.lazy("effect")
 }
 
 ux_base_model <- function(input) {
-  
+  "Strategy A"
 }
 
 ux_run_models <- function(input, values) {
+  
   list_models <- lapply(
-    seq_len(ux_nb_models),
+    seq_len(ux_nb_models(input)),
     function(x)
       ux_model(
         input = input,

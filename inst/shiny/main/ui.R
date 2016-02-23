@@ -44,7 +44,10 @@ shinyUI(fluidPage(
               conditionalPanel(condition = "input.nbStrategies > 1", column(3, offset=3, actionButton("copyValuesParametersGP", "Copy values for other strategies")), fluidRow(hr()))
                
       ), 
-      tabPanel("Output", tableOutput("out")
+      tabPanel("Output",
+               verbatimTextOutput("outModel")
+               
+               #downloadButton("downloadData", "Télécharger le tableau")
       )
     )
 ))

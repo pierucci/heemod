@@ -1,3 +1,5 @@
+source("interface.R")
+library(heemod)
 
 shinyServer(function(input, output, session) {
   values <- reactiveValues(nbGlobalParameters = 1)
@@ -110,6 +112,17 @@ shinyServer(function(input, output, session) {
     req(input$copyValuesParametersSP)
     showStateParam(input$nbStrategies)
   })
+  
+  output$outModel <- renderPrint({
+    ux_run_models(input = input, values = values)
+  })
+  # output$downloadData <- downloadHandler(
+  #   filename = function() {
+  #     paste0('data-', Sys.Date(), '.RData')
+  #   },
+  #   content = function(file) {
+  #     save(input, file=file)
+  #   })
 
   observe({
     req(input$addParametersGP)

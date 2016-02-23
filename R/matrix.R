@@ -80,7 +80,7 @@ define_matrix_ <- function(
   
   structure(.dots,
             class = c("uneval_matrix", class(.dots)),
-            state_names = state_names)
+            state_names = as.vector(state_names))
 }
 
 #' Check Markov Model Transition Matrix

@@ -60,8 +60,8 @@ run_models <- function(...,
     init = init,
     cycles = cycles,
     method = method,
-    cost = cost,
-    effect = effect,
+    cost = lazyeval::lazy(cost),
+    effect = lazyeval::lazy(effect),
     base_model = base_model
   )
 }
@@ -82,8 +82,8 @@ run_models_ <- function(list_models,
   )
   
   list_ce <- list(
-    lazyeval::lazy(cost),
-    lazyeval::lazy(effect)
+    cost,
+    effect
   )
   names(list_ce) <- c(".cost", ".effect")
   ce <- c(
@@ -196,11 +196,11 @@ get_base_model.probabilistic <- function(x, ...) {
 summary.eval_model_list <- function(object, ...) {
   
   res <- as.data.frame(compute_icer(normalize_ce(object)))
-  
+
   res <- dplyr::select(res, - .model_names)
-  
+
   rownames(res) <- object$.model_names
-  
+
   structure(
     list(
       res = res,
