@@ -87,7 +87,7 @@ shinyServer(function(input, output, session) {
   output$nameStateVariables <- renderUI({
     req(input$nbStateVariables)
     lapply(1:input$nbStateVariables, function(i) {
-      isolate({textInput(paste0("variableStateName", i), paste("Variable Name", i), value = ifelse(!is.null(input[[paste0("variableStateName",i)]]), input[[paste0("variableStateName",i)]], paste("Variable",i)))})
+      isolate({textInput(paste0("variableStateName", i), paste("Variable Name", i), value = ifelse(!is.null(input[[paste0("variableStateName",i)]]), input[[paste0("variableStateName",i)]], paste0("variable_",i)))})
     })
   })
   output$nameStrategies <- renderUI({
@@ -116,13 +116,6 @@ shinyServer(function(input, output, session) {
   output$outModel <- renderPrint({
     ux_run_models(input = input, values = values)
   })
-  # output$downloadData <- downloadHandler(
-  #   filename = function() {
-  #     paste0('data-', Sys.Date(), '.RData')
-  #   },
-  #   content = function(file) {
-  #     save(input, file=file)
-  #   })
 
   observe({
     req(input$addParametersGP)

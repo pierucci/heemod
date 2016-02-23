@@ -161,7 +161,7 @@ ux_model <- function(input, values, model_number) {
 }
 
 ux_init <- function(input) {
-  c(1, 0)
+  c(1000, rep(0, ux_nb_states(input) - 1))
 }
 
 ux_cycles <- function(input) {
@@ -173,15 +173,15 @@ ux_method <- function(input) {
 }
 
 ux_cost <- function(input) {
-  lazyeval::as.lazy("cost")
+  lazyeval::as.lazy(ux_state_value_names(input)[1])
 }
 
 ux_effect <- function(input) {
-  lazyeval::as.lazy("effect")
+  lazyeval::as.lazy(ux_state_value_names(input)[2])
 }
 
 ux_base_model <- function(input) {
-  "Strategy A"
+  ux_model_names(input)[1]
 }
 
 ux_run_models <- function(input, values) {
