@@ -121,18 +121,22 @@ shinyUI(
         fluidRow(
           column(
             6,
-            textInput(
-              "costVariable",
-              label = "Cost Variable",
-              placeholder = "Can be a variable name or an expression."
+            conditionalPanel("input.nbStateVariables > 1 & input.nbStates>1",
+              textInput(
+                "costVariable",
+                label = "Cost Variable",
+                placeholder = "Can be a variable name or an expression."
+              )
             )
           ),
           column(
             6,
-            textInput(
-              "effectVariable",
-              label = "Effect Variable",
-              placeholder = "Can be a variable name or an expression."
+            conditionalPanel("input.nbStateVariables > 1 & input.nbStates>1",
+              textInput(
+                "effectVariable",
+                label = "Effect Variable",
+                placeholder = "Can be a variable name or an expression."
+              )
             )
           )
         )
