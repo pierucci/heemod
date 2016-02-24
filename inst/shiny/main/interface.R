@@ -199,6 +199,7 @@ ux_base_model <- function(input) {
 }
 
 ux_run_models <- function(input, values) {
+  res <- try({
     list_models <- lapply(
       seq_len(ux_nb_models(input)),
       function(x)
@@ -219,4 +220,13 @@ ux_run_models <- function(input, values) {
       effect = ux_effect(input),
       base_model = ux_base_model(input)
     )
+  }, 
+  silent = TRUE)
+  
+  if ("try-error" %in% class(res)) {
+    cat("Model specification incomplete.")
+  } else {
+    res
+  }
+  
 }
