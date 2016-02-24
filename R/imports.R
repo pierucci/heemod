@@ -20,6 +20,7 @@
 #' @importFrom utils head
 #' @importFrom utils modifyList
 #' @importFrom utils globalVariables
+#' @importFrom utils as.roman
 #' 
 #' @importFrom stats pnorm
 #' @importFrom stats qbeta

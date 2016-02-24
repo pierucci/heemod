@@ -123,14 +123,14 @@ test_that(
     )
     expect_identical(
       run_models(mod1, mod2, cost = x, effect = y),
-      run_models(A = mod1, B = mod2, cost = x, effect = y)
+      run_models(I = mod1, II = mod2, cost = x, effect = y)
     )
     expect_output(
       str(run_models(mod1, mod2, cost = x, effect = y)),
       '2 obs. of  5 variables:
  $ x           : num  309300 933900
  $ y           : num  283300 891300
- $ .model_names: chr  "A" "B"
+ $ .model_names: chr  "I" "II"
  $ .cost       : num  309300 933900
  $ .effect     : num  283300 891300',
       fixed = TRUE

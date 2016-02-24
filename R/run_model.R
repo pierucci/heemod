@@ -95,13 +95,13 @@ run_models_ <- function(list_models,
   
   if (is.null(model_names)) {
     message("No named model -> generating names.")
-    model_names <- LETTERS[seq_along(list_models)]
+    model_names <- as.character(utils::as.roman(seq_along(list_models)))
     names(list_models) <- model_names
   }
   
   if (any(model_names == "")) {
     warning("Not all models are named -> generating names.")
-    model_names <- LETTERS[seq_along(list_models)]
+    model_names <- as.character(utils::as.roman(seq_along(list_models)))
     names(list_models) <- model_names
   }
   

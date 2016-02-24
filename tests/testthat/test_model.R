@@ -105,7 +105,7 @@ test_that(
       '1 obs. of  5 variables:
  $ x           : num 1593
  $ y           : num 1515
- $ .model_names: chr "A"
+ $ .model_names: chr "I"
  $ .cost       : num 1593
  $ .effect     : num 1515',
       fixed = TRUE
@@ -120,7 +120,7 @@ Initial states:
 X1 1
 X2 0
          x        y
-A 1592.538 1514.507",
+I 1592.538 1514.507",
       fixed = TRUE
     )
     expect_output(
@@ -144,7 +144,7 @@ Initial states:
 X1 1
 X2 0
          x        y
-A 1592.538 1514.507',
+I 1592.538 1514.507',
       fixed = TRUE
     )
     expect_error(
@@ -217,7 +217,7 @@ test_that(
       '2 obs. of  5 variables:
  $ x           : num  1593 1170
  $ y           : num  1515 615
- $ .model_names: chr  "A" "B"
+ $ .model_names: chr  "I" "II"
  $ .cost       : num  1593 1170
  $ .effect     : num  1515 615',
       fixed = TRUE
@@ -231,18 +231,18 @@ Initial states:
    N
 X1 1
 X2 0
-         x        y
-A 1170.000  615.000
-B 1592.538 1514.507
+          x        y
+I  1170.000  615.000
+II 1592.538 1514.507
 
 Efficiency frontier:
 
-B A
+II I
 
 Model difference:
 
-      Cost   Effect      ICER
-B 422.5384 899.5074 0.4697442",
+       Cost   Effect      ICER
+II 422.5384 899.5074 0.4697442",
       fixed = TRUE
     )
     expect_output(
@@ -265,18 +265,18 @@ Initial states:
    N
 X1 1
 X2 0
-         x        y
-A 1170.000  615.000
-B 1592.538 1514.507
+          x        y
+I  1170.000  615.000
+II 1592.538 1514.507
 
 Efficiency frontier:
 
-B A
+II I
 
 Model difference:
 
-      Cost   Effect      ICER
-B 422.5384 899.5074 0.4697442',
+       Cost   Effect      ICER
+II 422.5384 899.5074 0.4697442',
       fixed = TRUE
     )
     expect_output(
