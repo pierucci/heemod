@@ -125,13 +125,10 @@ I 1592.538 1514.507",
     )
     expect_output(
       str(summary(e_mod)),
-      "List of 5
- $ res       :'data.frame':	1 obs. of  5 variables:
-  ..$ x      : num 1593
-  ..$ y      : num 1515
-  ..$ .cost  : num 0
-  ..$ .effect: num 0
-  ..$ .icer  : num -Inf",
+      "List of 6
+ $ res       :'data.frame':	1 obs. of  2 variables:
+  ..$ x: num 1593
+  ..$ y: num 1515",
       fixed = TRUE
     )
     expect_output(
@@ -247,13 +244,10 @@ II 422.5384 899.5074 0.4697442",
     )
     expect_output(
       str(summary(e_mod2)),
-      "List of 5
- $ res       :'data.frame':	2 obs. of  5 variables:
-  ..$ x      : num [1:2] 1170 1593
-  ..$ y      : num [1:2] 615 1515
-  ..$ .cost  : num [1:2] 0 423
-  ..$ .effect: num [1:2] 0 900
-  ..$ .icer  : num [1:2] -Inf 0.47",
+      "List of 6
+ $ res       :'data.frame':	2 obs. of  2 variables:
+  ..$ x: num [1:2] 1170 1593
+  ..$ y: num [1:2] 615 1515",
       fixed = TRUE
     )
     expect_output(
