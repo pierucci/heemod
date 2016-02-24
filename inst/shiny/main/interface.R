@@ -65,11 +65,25 @@ ux_parameters <- function(input, values, model_number) {
       paste0("globalParamValue", model_number, seq_param)
     )
   )
-  names(values_parameters) <- names_parameters
   
-  define_parameters_(
-    lazyeval::as.lazy_dots(values_parameters)
-  )
+  test <- function(x) {
+    if (is.null(x)) {
+      FALSE
+    } else if (x == "") {
+      FALSE
+    } else {
+      TRUE
+    }
+  }
+  
+  if (test(values_parameters)) {
+    names(values_parameters) <- names_parameters
+    define_parameters_(
+      lazyeval::as.lazy_dots(values_parameters)
+    )
+  } else {
+    define_parameters()
+  }
 }
 
 ux_matrix <- function(input, model_number) {
@@ -169,15 +183,15 @@ ux_cycles <- function(input) {
 }
 
 ux_method <- function(input) {
-  "end"
+  "beginning"
 }
 
 ux_cost <- function(input) {
-  lazyeval::as.lazy(ux_state_value_names(input)[1])
+  lazyeval::as.lazy(input$costVariable)
 }
 
 ux_effect <- function(input) {
-  lazyeval::as.lazy(ux_state_value_names(input)[2])
+  lazyeval::as.lazy(input$effectVariable)
 }
 
 ux_base_model <- function(input) {
@@ -185,25 +199,24 @@ ux_base_model <- function(input) {
 }
 
 ux_run_models <- function(input, values) {
-  
-  list_models <- lapply(
-    seq_len(ux_nb_models(input)),
-    function(x)
-      ux_model(
-        input = input,
-        values = values,
-        model_number = x
-      )
-  )
-  names(list_models) <- ux_model_names(input)
-  
-  run_models_(
-    list_models = list_models,
-    init = ux_init(input),
-    cycles = ux_cycles(input),
-    method = ux_method(input),
-    cost = ux_cost(input),
-    effect = ux_effect(input),
-    base_model = ux_base_model(input)
-  )
+    list_models <- lapply(
+      seq_len(ux_nb_models(input)),
+      function(x)
+        ux_model(
+          input = input,
+          values = values,
+          model_number = x
+        )
+    )
+    names(list_models) <- ux_model_names(input)
+    
+    run_models_(
+      list_models = list_models,
+      init = ux_init(input),
+      cycles = ux_cycles(input),
+      method = ux_method(input),
+      cost = ux_cost(input),
+      effect = ux_effect(input),
+      base_model = ux_base_model(input)
+    )
 }
