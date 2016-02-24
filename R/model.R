@@ -313,7 +313,7 @@ compute_counts <- function(
       out <- (n0 + n1) / 2
     },
     {
-      stop()
+      stop(sprintf("Unknown counting method, '%s'.", method))
     }
   )
   
