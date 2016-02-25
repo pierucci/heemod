@@ -224,9 +224,8 @@ ux_run_models <- function(input, values) {
   silent = TRUE)
   
   if ("try-error" %in% class(res)) {
-    cat("Model specification incomplete.")
+    NULL
   } else {
     res
   }
-  
 }
