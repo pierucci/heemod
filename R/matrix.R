@@ -35,7 +35,6 @@
 #' @param x An \code{uneval_matrix} to plot.
 #' @param relsize Argument passed to \code{\link{plotmat}}.
 #' @param shadow.size Argument passed to \code{\link{plotmat}}.
-#' @param curve Argument passed to \code{\link{plotmat}}.
 #' @param latex Argument passed to \code{\link{plotmat}}.
 #' @param .dots Used to work around non-standard evaluation.
 #'   
@@ -259,13 +258,13 @@ print.eval_matrix <- function(x, ...) {
 #' @export
 #' @rdname define_matrix
 plot.uneval_matrix <- function(x, relsize = .75,
-                               shadow.size = 0, curve = 0,
+                               shadow.size = 0,
                                latex = TRUE, ...) {
   op <- graphics::par(mar = c(0, 0, 0, 0))
   res <- to_char_uneval_matrix(x)
   diagram::plotmat(
     t(res[rev(seq_len(nrow(res))),rev(seq_len(nrow(res)))]),
-    relsize = relsize, shadow.size = shadow.size, curve = curve,
+    relsize = relsize, shadow.size = shadow.size,
     latex = latex, ...
   )
   graphics::par(op)

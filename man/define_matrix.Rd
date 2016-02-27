@@ -14,7 +14,7 @@ define_matrix_(.dots, state_names)
 \method{modify}{uneval_matrix}(.OBJECT, ...)
 
 \method{plot}{uneval_matrix}(x, relsize = 0.75, shadow.size = 0,
-  curve = 0, latex = TRUE, ...)
+  latex = TRUE, ...)
 }
 \arguments{
 \item{...}{Name-value pairs of expressions definig matrix
@@ -34,8 +34,6 @@ names.}
 \item{relsize}{Argument passed to \code{\link{plotmat}}.}
 
 \item{shadow.size}{Argument passed to \code{\link{plotmat}}.}
-
-\item{curve}{Argument passed to \code{\link{plotmat}}.}
 
 \item{latex}{Argument passed to \code{\link{plotmat}}.}
 }
