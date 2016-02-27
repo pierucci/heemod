@@ -121,7 +121,7 @@ shinyServer(function(input, output, session) {
                                 value = ifelse(
                                   !is.null(input[[paste0("transmatrix",1,i,j)]]),
                                   input[[paste0("transmatrix",1,i,j)]],
-                                  ""),
+                                  "0"),
                                 label=NULL,
                                 width="100%")))
                           })
