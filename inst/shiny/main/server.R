@@ -87,7 +87,7 @@ shinyServer(function(input, output, session) {
     stateName <- ""
     start <- ifelse(nbStrat > 1, 2, 1)
     
-    for (i in 1:nbStates) {
+    for (i in seq_len(nbStates)) {
       stateName[i] <- input[[paste0("stateName", i)]]
     }
     
@@ -98,6 +98,18 @@ shinyServer(function(input, output, session) {
           function(x) {
             tagList(
               h3(paste("Transition Matrix for", input[[paste0("strategyName",x)]])),
+              renderPlot({
+                tm <- ux_matrix(input, x)
+                if (is.null(tm)) {
+                  plot.new()
+                  text(.5, .5, "Incorrect\ninput")
+                } else {
+                  plot(tm)
+                }
+              },
+              width = 200,
+              height = 200
+              ),
               tags$table(
                 class='transmatrix',
                 tagList(
@@ -114,7 +126,7 @@ shinyServer(function(input, output, session) {
                         tags$td(stateName[i]),
                         lapply(
                           seq_len(nbStates),
-                          function (j) {
+                          function(j) {
                             isolate(
                               tags$td(textInput(
                                 paste0("transmatrix",x,i,j),
