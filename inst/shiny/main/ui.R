@@ -229,7 +229,9 @@ shinyUI(
         DT::dataTableOutput("tableICER")
       ),
       tabPanel(
-        "Plots"
+        "Plots",
+        uiOutput("outCounts"),
+        plotOutput("plotCounts")
       )
     )
   )

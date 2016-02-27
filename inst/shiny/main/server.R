@@ -344,4 +344,33 @@ shinyServer(function(input, output, session) {
       )
     )
   })
+  
+  output$outCounts <- renderUI({
+    req(values$model)
+    
+    tagList(
+      tags$h3("Plot state membership count"),
+      selectInput(
+        inputId = "modelPlotCounts",
+        label = "Model",
+        choices = as.vector(ux_model_names(input))
+      )
+    )
+  })
+  
+  output$plotCounts <- renderPlot({
+    req(values$model)
+    model <- input$modelPlotCounts
+    req(model)
+    plot(
+      values$model,
+      type = "counts",
+      model = model
+    ) +
+      ggplot2::theme_minimal() +
+      ggplot2::scale_colour_brewer(
+        name = "State",
+        palette = "Set1"
+      )
+  })
 })
