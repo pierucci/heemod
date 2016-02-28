@@ -140,7 +140,8 @@ shinyServer(function(input, output, session) {
                       )
                     })
                 )
-              )
+              ),
+              hr()
             )
           })
       )
