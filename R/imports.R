@@ -14,11 +14,13 @@
 #' 
 #' @importFrom lazyeval lazy
 #' @importFrom lazyeval lazy_dots
+#' @importFrom lazyeval as.lazy_dots
 #' @importFrom lazyeval lazy_eval
 #' 
 #' @importFrom utils head
 #' @importFrom utils modifyList
 #' @importFrom utils globalVariables
+#' @importFrom utils as.roman
 #' 
 #' @importFrom stats pnorm
 #' @importFrom stats qbeta
@@ -47,5 +49,9 @@
 #' @importFrom ggplot2 xlim
 #' 
 #' @importFrom tidyr gather_
+#' 
+#' @importFrom DT dataTableOutput
+#' @importFrom DT renderDataTable
+#' @importFrom DT datatable
 #' 
 NULL

@@ -2,16 +2,21 @@
 % Please edit documentation in R/states.R
 \name{define_state}
 \alias{define_state}
+\alias{define_state_}
 \alias{modify.state}
 \title{Define a Markov Model State}
 \usage{
 define_state(...)
+
+define_state_(.dots)
 
 \method{modify}{state}(.OBJECT, ...)
 }
 \arguments{
 \item{...}{Name-value pairs of expressions defining state
 values.}
+
+\item{.dots}{Used to work around non-standard evaluation.}
 
 \item{.OBJECT}{An object of class \code{state}.}
 }

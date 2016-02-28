@@ -2,12 +2,15 @@
 % Please edit documentation in R/run_model.R
 \name{run_models}
 \alias{run_models}
+\alias{run_models_}
 \title{Run one or more Markov Model}
 \usage{
 run_models(..., init = c(1000L, rep(0L,
   get_state_number(get_states(list(...)[[1]])) - 1)), cycles = 1,
   method = c("beginning", "end", "cycle-tree", "half-cycle", "life-table",
-  "spread-half-cycle"), cost, effect, base_model)
+  "spread-half-cycle"), cost, effect, base_model = NULL)
+
+run_models_(list_models, init, cycles, method, cost, effect, base_model)
 }
 \arguments{
 \item{...}{One or more \code{uneval_model} object.}
@@ -29,6 +32,9 @@ the cost-effectiveness plane.}
 
 \item{base_model}{Name of base model used as reference.
 By default the model with the lowest effectiveness.}
+
+\item{list_models}{List of models, only used by 
+\code{run_models_} to avoid using \code{...}.}
 }
 \value{
 A list of evaluated models with computed values.

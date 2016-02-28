@@ -1,0 +1,1 @@
+#### Lorsque counterState != NbNamedStates

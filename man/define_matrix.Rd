@@ -2,16 +2,19 @@
 % Please edit documentation in R/matrix.R
 \name{define_matrix}
 \alias{define_matrix}
+\alias{define_matrix_}
 \alias{modify.uneval_matrix}
 \alias{plot.uneval_matrix}
 \title{Define Transition Matrix for Markov Model}
 \usage{
 define_matrix(..., state_names)
 
+define_matrix_(.dots, state_names)
+
 \method{modify}{uneval_matrix}(.OBJECT, ...)
 
 \method{plot}{uneval_matrix}(x, relsize = 0.75, shadow.size = 0,
-  curve = 0, latex = TRUE, ...)
+  latex = TRUE, ...)
 }
 \arguments{
 \item{...}{Name-value pairs of expressions definig matrix
@@ -22,6 +25,8 @@ additional arguments passed to \code{digram::plotmat}.}
 \item{state_names}{character vector, optional. State 
 names.}
 
+\item{.dots}{Used to work around non-standard evaluation.}
+
 \item{.OBJECT}{An object of class \code{uneval_matrix}.}
 
 \item{x}{An \code{uneval_matrix} to plot.}
@@ -29,8 +34,6 @@ names.}
 \item{relsize}{Argument passed to \code{\link{plotmat}}.}
 
 \item{shadow.size}{Argument passed to \code{\link{plotmat}}.}
-
-\item{curve}{Argument passed to \code{\link{plotmat}}.}
 
 \item{latex}{Argument passed to \code{\link{plotmat}}.}
 }

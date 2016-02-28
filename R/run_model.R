@@ -37,6 +37,8 @@
 #' @param base_model Name of base model used as reference.
 #'   By default the model with the lowest effectiveness.
 #' @param method Counting method.
+#' @param list_models List of models, only used by 
+#'   \code{run_models_} to avoid using \code{...}.
 #'   
 #' @return A list of evaluated models with computed values.
 #' @export
@@ -48,10 +50,29 @@ run_models <- function(...,
                        cycles = 1,
                        method = c("beginning", "end", "cycle-tree",
                                   "half-cycle", "life-table", "spread-half-cycle"),
-                       cost, effect, base_model) {
+                       cost, effect, base_model = NULL) {
   list_models <- list(...)
   
   method <- match.arg(method)
+  
+  run_models_(
+    list_models = list_models,
+    init = init,
+    cycles = cycles,
+    method = method,
+    cost = lazyeval::lazy(cost),
+    effect = lazyeval::lazy(effect),
+    base_model = base_model
+  )
+}
+
+#' @export
+#' @rdname run_models
+run_models_ <- function(list_models,
+                        init,
+                        cycles,
+                        method,
+                        cost, effect, base_model) {
   
   stopifnot(
     all(unlist(lapply(list_models,
@@ -61,8 +82,8 @@ run_models <- function(...,
   )
   
   list_ce <- list(
-    lazyeval::lazy(cost),
-    lazyeval::lazy(effect)
+    cost,
+    effect
   )
   names(list_ce) <- c(".cost", ".effect")
   ce <- c(
@@ -74,13 +95,13 @@ run_models <- function(...,
   
   if (is.null(model_names)) {
     message("No named model -> generating names.")
-    model_names <- LETTERS[seq_along(list_models)]
+    model_names <- as.character(utils::as.roman(seq_along(list_models)))
     names(list_models) <- model_names
   }
   
   if (any(model_names == "")) {
     warning("Not all models are named -> generating names.")
-    model_names <- LETTERS[seq_along(list_models)]
+    model_names <- as.character(utils::as.roman(seq_along(list_models)))
     names(list_models) <- model_names
   }
   
@@ -119,7 +140,7 @@ run_models <- function(...,
   
   res <- dplyr::mutate_(res, .dots = ce)
   
-  if (missing(base_model)) {
+  if (is.null(base_model)) {
     base_model <- get_base_model(res)
   }
   
@@ -173,16 +194,24 @@ get_base_model.probabilistic <- function(x, ...) {
 #' @export
 #' 
 summary.eval_model_list <- function(object, ...) {
-  
   res <- as.data.frame(compute_icer(normalize_ce(object)))
   
   res <- dplyr::select(res, - .model_names)
-  
+
   rownames(res) <- object$.model_names
   
+  res_comp <- res[c(".cost", ".effect", ".icer")]
+  is.na(res_comp$.icer) <- ! is.finite(res_comp$.icer)
+  res_comp$.icer <- format(res_comp$.icer)
+  res_comp$.icer[res_comp$.icer == "NA"] <- "-"
+  res_comp$.cost <- res_comp$.cost / sum(attr(object, "init"))
+  res_comp$.effect <- res_comp$.effect / sum(attr(object, "init"))
+  names(res_comp) <- c("Cost", "Effect", "ICER")
+
   structure(
     list(
-      res = res,
+      res = dplyr::select(res, - .cost, - .effect, - .icer),
+      res_comp = res_comp[-1, ],
       cycles = attr(object, "cycles"),
       init = attr(object, "init"),
       count_args = attr(object, "count_args"),
@@ -192,7 +221,7 @@ summary.eval_model_list <- function(object, ...) {
   )
 }
 if(getRversion() >= "2.15.1")
-  utils::globalVariables(c(".model_names"))
+  utils::globalVariables(c(".model_names", ".cost", ".effect", ".icer"))
 
 #' Normalize Cost and Effect
 #' 
@@ -256,27 +285,15 @@ print.summary_eval_model_list <- function(x, ...) {
       "N"
     )
   ))
+  print(x$res)
   
-  res <- dplyr::select(x$res, - .cost, - .effect, - .icer)
-  print(res)
-  
-  if (nrow(res) > 1) {
+  if (nrow(x$res) > 1) {
     cat("\nEfficiency frontier:\n\n")
     cat(x$frontier)
     cat("\n\nModel difference:\n\n")
-    res_comp <- x$res[c(".cost", ".effect", ".icer")]
-    is.na(res_comp$.icer) <- ! is.finite(res_comp$.icer)
-    res_comp$.icer <- format(res_comp$.icer)
-    res_comp$.icer[is.na(res_comp$.icer)] <- "-"
-    res_comp$.cost <- res_comp$.cost / sum(x$init)
-    res_comp$.effect <- res_comp$.effect / sum(x$init)
-    names(res_comp) <- c("Cost", "Effect", "ICER")
-    print(res_comp[- 1, ])
+    print(x$res_comp)
   }
-  
 }
-if(getRversion() >= "2.15.1")
-  utils::globalVariables(c(".cost", ".effect", ".icer"))
 
 #' @export
 print.eval_model <- function(x, width = Inf, ...) {
