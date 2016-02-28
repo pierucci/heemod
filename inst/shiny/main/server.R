@@ -252,11 +252,11 @@ shinyServer(function(input, output, session) {
     
     a <- tags$table(
       tags$tr(
-        tags$th("Variable name"),
+        tags$th(style='text-align:center', "Variable name"),
         lapply(
           seq_len(nbStrategies),
           function(x) {
-            tags$th(paste("Value for", input[[paste0("strategyName",x)]]))
+            tags$th(style='text-align:center', paste("Value for", input[[paste0("strategyName",x)]]))
           })
       ),
       lapply(
