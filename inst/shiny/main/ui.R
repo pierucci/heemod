@@ -223,6 +223,14 @@ shinyUI(
       ),
       tabPanel(
         "Results",
+        h3("Model parameters"),
+        selectInput(
+          "countMethod",
+          "Counting method",
+          c("beginning", "end", "cycle-tree",
+            "half-cycle", "life-table", "spread-half-cycle")
+        ),
+        uiOutput("outInit"),
         uiOutput("outModel"),
         DT::dataTableOutput("tableResults"),
         uiOutput("titleICER"),

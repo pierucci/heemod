@@ -183,7 +183,14 @@ ux_model <- function(input, values, model_number) {
 }
 
 ux_init <- function(input) {
-  c(1000, rep(0, ux_nb_states(input) - 1))
+  as.vector(
+    unlist(
+      shiny_subset(
+        input,
+        paste0("init", seq_len(ux_nb_states(input)))
+      )
+    )
+  )
 }
 
 ux_cycles <- function(input) {
@@ -191,7 +198,7 @@ ux_cycles <- function(input) {
 }
 
 ux_method <- function(input) {
-  "beginning"
+  input$countMethod
 }
 
 ux_cost <- function(input) {

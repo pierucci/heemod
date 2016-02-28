@@ -288,6 +288,50 @@ shinyServer(function(input, output, session) {
     )
   })
   
+  output$outInit <- renderUI({
+    req(
+      nbState <- ux_nb_states(input),
+      stateNames <- ux_state_names(input)
+    )
+    tagList(
+      tags$h3("Initial counts per state"),
+      tags$table(
+        tagList(
+          lapply(
+            stateNames,
+            function(n) {
+              tags$th(style='text-align:center', n)
+            }
+          ),
+          tags$tr(
+            lapply(
+              seq_len(nbState),
+              function(i) {
+                tags$td(
+                  if (i == 1) {
+                    numericInput(
+                      paste0("init", i),
+                      label = NULL,
+                      value = 1000,
+                      width="100%"
+                    )
+                  } else {
+                    numericInput(
+                      paste0("init", i),
+                      label = NULL,
+                      value = 0,
+                      width="100%"
+                    )
+                  }
+                )
+              }
+            )
+          )
+        )
+      )
+    )
+  })
+  
   output$outModel <- renderUI({
     
     values$model <- ux_run_models(input = input, values = values)
@@ -351,7 +395,6 @@ shinyServer(function(input, output, session) {
       tagList(
         tags$h3("Run model in 'Results' tab")
       )
-      
     } else {
       tagList(
         tags$h3("Plot state membership count"),
