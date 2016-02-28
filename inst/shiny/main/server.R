@@ -393,12 +393,8 @@ shinyServer(function(input, output, session) {
   })
   
   output$outCounts <- renderUI({
+    req(values$model)
     
-    if (is.null(values$model)) {
-      tagList(
-        tags$h3("Run model in 'Results' tab")
-      )
-    } else {
       tagList(
         tags$h3("Plot state membership count"),
         selectInput(
@@ -407,7 +403,6 @@ shinyServer(function(input, output, session) {
           choices = as.vector(ux_model_names(input))
         )
       )
-    }
   })
   
   output$plotCounts <- renderPlot({
