@@ -50,4 +50,8 @@
 #' 
 #' @importFrom tidyr gather_
 #' 
+#' @importFrom DT dataTableOutput
+#' @importFrom DT renderDataTable
+#' @importFrom DT datatable
+#' 
 NULL
