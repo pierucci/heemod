@@ -24,6 +24,7 @@ devtools::install_github("pierucci/heemod")
 
 ## Main features
 
+  * Graphical user interface with `shiny`.
   * Time-varying transition probabilities.
   * Time-varying values attached to states.
   * Heterogeneity analysis.
@@ -41,12 +42,16 @@ Specific analysis examples (mostly inspired from Decision Modelling for Health E
   * Non-homogeneous Markov model (or `vignette("non-homogeneous", package = "heemod")`).
   * Probabilistic incertitude analysis in `vignette("probabilistic", package = "heemod")`.
   * Deterministic sensitivity analysis in `vignette("sensitivity", package = "heemod")`.
+  
+## Graphical user interface
+
+Run the graphical user interface with:
+
+```r
+run_shiny()
+```
 
 ## Future developments
-
-In version 1.0.0 :
-
-  * Shiny GUI.
 
 Upcoming vignettes:
 

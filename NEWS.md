@@ -1,3 +1,9 @@
+# heemod 0.3.0
+
+## Enhancements
+
+  * `shiny` interface.
+
 # heemod 0.2.1
 
 ## Enhancements
