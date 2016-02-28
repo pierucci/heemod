@@ -298,35 +298,37 @@ shinyServer(function(input, output, session) {
       tags$h3("Initial counts per state"),
       tags$table(
         tagList(
-          lapply(
-            stateNames,
-            function(n) {
-              tags$th(style='text-align:center', n)
-            }
+          list(
+            tags$th(""),
+            tags$th(style='text-align:center', "Count")
           ),
-          tags$tr(
-            lapply(
-              seq_len(nbState),
-              function(i) {
-                tags$td(
-                  if (i == 1) {
-                    numericInput(
-                      paste0("init", i),
-                      label = NULL,
-                      value = 1000,
-                      width="100%"
-                    )
-                  } else {
-                    numericInput(
-                      paste0("init", i),
-                      label = NULL,
-                      value = 0,
-                      width="100%"
-                    )
-                  }
+          lapply(
+            seq_len(nbState),
+            function(i) {
+              tags$tr(
+                list(
+                  tags$td(
+                    strong(stateNames[i])),
+                  tags$td(
+                    if (i == 1) {
+                      numericInput(
+                        paste0("init", i),
+                        label = NULL,
+                        value = 1000,
+                        width="100%"
+                      )
+                    } else {
+                      numericInput(
+                        paste0("init", i),
+                        label = NULL,
+                        value = 0,
+                        width="100%"
+                      )
+                    }
+                  )
                 )
-              }
-            )
+              )
+            }
           )
         )
       )
