@@ -289,10 +289,7 @@ shinyUI(
       uiOutput("outModel"),
       DT::dataTableOutput("tableResults"),
       uiOutput("titleICER"),
-      DT::dataTableOutput("tableICER")
-    ),
-    tabPanel(
-      "Plots",
+      DT::dataTableOutput("tableICER"),
       uiOutput("outCounts"),
       plotOutput("plotCounts")
     ),
