@@ -421,5 +421,6 @@ shinyServer(function(input, output, session) {
         name = "State",
         palette = "Set1"
       )
-  })
+  },
+  width = 600)
 })

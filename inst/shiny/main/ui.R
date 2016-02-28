@@ -183,8 +183,8 @@ shinyUI(
             column(
               4,
               em("Values associated with each state for each strategy.")
-              )
             )
+          )
         ),
         conditionalPanel(
           condition = "input.nbStates > 0 & input.nbStateVariables > 1",
@@ -217,7 +217,7 @@ shinyUI(
               em("State variable name representing "),
               strong("effect"),
               em(" in the model (or mathematical expression using variable names, such as (var1+var2)/2).")
-              )
+            )
           )
         )
       ),
@@ -230,7 +230,37 @@ shinyUI(
           c("beginning", "end", "cycle-tree",
             "half-cycle", "life-table", "spread-half-cycle")
         ),
+        conditionalPanel(
+          condition = "input.checkShowHelp == 1",
+          fluidRow(
+            column(
+              4,
+              em("Counting method for state membership."),
+              strong("beginning"),
+              em(" assume transitions occur at the beginning of each cycle, "),
+              strong("end"),
+              em(" at the end of each cycle, "),
+              strong("half-cycle"),
+              em(" tries to corrects counts (but actually fails...) by adding 
+                 half of the initial count and "),
+              strong("life-table"),
+              em(" assume transitions occur at the middle of each cycle. "),
+              strong("life-table"),
+              em(" is probably the less incorrect method in most situations.")
+            )
+          )
+        ),
         uiOutput("outInit"),
+        conditionalPanel(
+          condition = "input.checkShowHelp == 1 & input.nbStates > 0",
+          fluidRow(
+            column(
+              4,
+              em("Initial counts per state applied to all models. 
+                 Should be a positive number.")
+            )
+          )
+        ),
         uiOutput("outModel"),
         DT::dataTableOutput("tableResults"),
         uiOutput("titleICER"),
