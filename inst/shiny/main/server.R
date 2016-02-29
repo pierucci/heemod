@@ -192,7 +192,11 @@ shinyServer(function(input, output, session) {
   })
   
   output$nameStateVariables <- renderUI({
+<<<<<<< HEAD
     observe(load_all())
+=======
+    load_all()
+>>>>>>> da7584a777d0e24a4d7c3202318b6d3f44bcb684
     req(input$nbStateVariables)
     lapply(
       seq_len(input$nbStateVariables),
@@ -275,7 +279,6 @@ shinyServer(function(input, output, session) {
   output$globalParameters <- renderUI({
     observe(load_all())
     n <- values$nbGlobalParameters
-    
     req(input$nbStrategies)
     
     if (input$copyValuesParametersGP[[1]] == 0) {
@@ -431,7 +434,7 @@ shinyServer(function(input, output, session) {
   
   output$outCounts <- renderUI({
     observe(load_all())
-    
+
     req(values$model)
     
       tagList(
