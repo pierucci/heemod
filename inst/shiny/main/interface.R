@@ -194,7 +194,7 @@ ux_init <- function(input) {
 }
 
 ux_cycles <- function(input) {
-  10
+  input$cycles
 }
 
 ux_method <- function(input) {

@@ -250,6 +250,7 @@ shinyUI(
               c("beginning", "end", "cycle-tree",
                 "half-cycle", "life-table", "spread-half-cycle")
             ),
+            numericInput("cycles", value = 10, label = "Number of cycle"),
             conditionalPanel(
               condition = "input.checkShowHelp == 1",
               wellPanel(
