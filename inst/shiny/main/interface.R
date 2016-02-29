@@ -87,22 +87,30 @@ ux_parameters <- function(input, values, model_number) {
 }
 
 ux_matrix <- function(input, model_number) {
-  nb_states <- ux_nb_states(input)
-  
-  mat_values <- shiny_subset(
-    input,
-    paste0(
-      "transmatrix",
-      model_number,
-      rep(seq_len(nb_states), each = nb_states),
-      rep(seq_len(nb_states), nb_states)
+  res <- try({
+    nb_states <- ux_nb_states(input)
+    
+    mat_values <- shiny_subset(
+      input,
+      paste0(
+        "transmatrix",
+        model_number,
+        rep(seq_len(nb_states), each = nb_states),
+        rep(seq_len(nb_states), nb_states)
+      )
     )
-  )
+    
+    define_matrix_(
+      .dots = lazyeval::as.lazy_dots(mat_values),
+      state_names = ux_state_names(input)
+    )
+  })
   
-  define_matrix_(
-    .dots = lazyeval::as.lazy_dots(mat_values),
-    state_names = ux_state_names(input)
-  )
+  if ("try-error" %in% class(res)) {
+    NULL
+  } else {
+    res
+  }
 }
 
 ux_state <- function(input, model_number, state_number) {
@@ -175,7 +183,14 @@ ux_model <- function(input, values, model_number) {
 }
 
 ux_init <- function(input) {
-  c(1000, rep(0, ux_nb_states(input) - 1))
+  as.vector(
+    unlist(
+      shiny_subset(
+        input,
+        paste0("init", seq_len(ux_nb_states(input)))
+      )
+    )
+  )
 }
 
 ux_cycles <- function(input) {
@@ -183,7 +198,7 @@ ux_cycles <- function(input) {
 }
 
 ux_method <- function(input) {
-  "beginning"
+  input$countMethod
 }
 
 ux_cost <- function(input) {
@@ -199,6 +214,7 @@ ux_base_model <- function(input) {
 }
 
 ux_run_models <- function(input, values) {
+  res <- try({
     list_models <- lapply(
       seq_len(ux_nb_models(input)),
       function(x)
@@ -219,4 +235,12 @@ ux_run_models <- function(input, values) {
       effect = ux_effect(input),
       base_model = ux_base_model(input)
     )
+  }, 
+  silent = TRUE)
+  
+  if ("try-error" %in% class(res)) {
+    NULL
+  } else {
+    res
+  }
 }
