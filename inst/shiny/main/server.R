@@ -98,7 +98,8 @@ shinyServer(function(input, output, session) {
           function(x) {
             tagList(
               h3(paste("Transition Matrix for", input[[paste0("strategyName",x)]])),
-              renderPlot({
+              tags$div(
+                renderPlot({
                 tm <- ux_matrix(input, x)
                 if (is.null(tm)) {
                   plot.new()
@@ -109,8 +110,10 @@ shinyServer(function(input, output, session) {
               },
               width = 200,
               height = 200
+              ), style="text-align: center"
               ),
               tags$table(
+                style="margin:0 auto;",
                 class='transmatrix',
                 tagList(
                   tags$th(),
@@ -192,11 +195,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$nameStateVariables <- renderUI({
-<<<<<<< HEAD
     observe(load_all())
-=======
-    load_all()
->>>>>>> da7584a777d0e24a4d7c3202318b6d3f44bcb684
     req(input$nbStateVariables)
     lapply(
       seq_len(input$nbStateVariables),
