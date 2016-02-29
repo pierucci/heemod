@@ -5,6 +5,12 @@ shinyUI(
       
       tabPanel(
         "States",
+        wellPanel(fluidRow(
+          column(
+            3,
+            fileInput("loadButton", "Load model")
+          )
+        )),
         fluidRow(
           column(
             4, 
@@ -248,7 +254,8 @@ shinyUI(
               "countMethod",
               "Counting method",
               c("beginning", "end", "cycle-tree",
-                "half-cycle", "life-table", "spread-half-cycle")
+                "half-cycle", "life-table", "spread-half-cycle"),
+              selected = "life-table"
             ),
             numericInput("cycles", value = 10, label = "Number of cycle"),
             conditionalPanel(
@@ -310,12 +317,9 @@ shinyUI(
             )
           ),
           column(
-            3,
-            actionButton("saveButton", "Save model")
-          ),
-          column(
-            3,
-            actionButton("loadButton", "Load model")
+            3, 
+            offset = 3,
+            downloadButton("saveButton", "Save model")
           )
         )
       )

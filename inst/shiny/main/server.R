@@ -148,7 +148,33 @@ shinyServer(function(input, output, session) {
     }
   }
   
+  observe({
+    inFile <- input$loadButton
+    if (is.null(inFile))
+      return(NULL)
+    else {
+      load(inFile$datapath)
+      updateNumericInput(session, "nbStates", value = input$nbStates)
+      updateNumericInput(session, "nbStateVariables", value = input$nbStateVariables)
+      updateNumericInput(session, "nbStrategies", value = input$nbStrategies)
+    }
+    values[["input"]] <- input
+  })
+  
+  output$saveButton <- downloadHandler(
+    filename = function() {
+      paste0('data-', Sys.Date(), '.RData')
+    },
+    content = function(file) {
+      save(input, file=file)
+    }
+  )
+  
+  load_all <- eventReactive(input$loadButton, {
+                input <- values[["input"]]})
+  
   output$nameStates <- renderUI({
+    observe(load_all())
     req(input$nbStates)
     lapply(
       seq_len(input$nbStates),
@@ -166,6 +192,11 @@ shinyServer(function(input, output, session) {
   })
   
   output$nameStateVariables <- renderUI({
+<<<<<<< HEAD
+    observe(load_all())
+=======
+    load_all()
+>>>>>>> da7584a777d0e24a4d7c3202318b6d3f44bcb684
     req(input$nbStateVariables)
     lapply(
       seq_len(input$nbStateVariables),
@@ -183,6 +214,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$nameStrategies <- renderUI({
+    observe(load_all())
     req(input$nbStrategies)
     lapply(
       seq_len(input$nbStrategies),
@@ -200,24 +232,29 @@ shinyServer(function(input, output, session) {
   })
   
   output$transMatrix1 <- renderUI({
+    observe(load_all())
     showTransMatrix(1)
   })
   
   output$transMatrix2 <- renderUI({
+    observe(load_all())
     req(input$copyValuesParametersTM)
     showTransMatrix(input$nbStrategies)
   })
   
   output$stateParameters1 <- renderUI({
+    observe(load_all())
     showStateParam(1)
   })
   
   output$stateParameters2 <- renderUI({
+    observe(load_all())
     req(input$copyValuesParametersSP)
     showStateParam(input$nbStrategies)
   })
   
   output$costVariable <- renderUI({
+    observe(load_all())
     textInput(
       "costVariable",
       label = "Cost Variable",
@@ -225,6 +262,7 @@ shinyServer(function(input, output, session) {
     )
   })
   output$effectVariable <- renderUI({
+    observe(load_all())
     textInput(
       "effectVariable",
       label = "Effect Variable",
@@ -233,13 +271,14 @@ shinyServer(function(input, output, session) {
   })
   
   observe({
+    observe(load_all())
     req(input$addParametersGP)
     isolate(values$nbGlobalParameters <- values$nbGlobalParameters + 1)
   })
   
   output$globalParameters <- renderUI({
+    observe(load_all())
     n <- values$nbGlobalParameters
-    
     req(input$nbStrategies)
     
     if (input$copyValuesParametersGP[[1]] == 0) {
@@ -290,6 +329,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$outInit <- renderUI({
+    observe(load_all())
     req(
       nbState <- ux_nb_states(input),
       stateNames <- ux_state_names(input)
@@ -336,7 +376,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$outModel <- renderUI({
-    
+    observe(load_all())
     values$model <- ux_run_models(input = input, values = values)
     values$summary_model <- summary(values$model)
     
@@ -351,7 +391,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$tableResults <- DT::renderDataTable({
-    
+    observe(load_all())
     req(values$model)
     req(values$summary_model$res)
     
@@ -366,7 +406,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$titleICER <- renderUI({
-    
+    observe(load_all())
     req(values$model)
     req(values$summary_model$res_comp)
     
@@ -378,7 +418,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$tableICER <- DT::renderDataTable({
-    
+    observe(load_all())
     req(values$model)
     req(values$summary_model$res_comp)
     
@@ -393,6 +433,8 @@ shinyServer(function(input, output, session) {
   })
   
   output$outCounts <- renderUI({
+    observe(load_all())
+
     req(values$model)
     
       tagList(
@@ -406,6 +448,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$plotCounts <- renderPlot({
+    observe(load_all())
     req(values$model)
     model <- input$modelPlotCounts
     req(model)
