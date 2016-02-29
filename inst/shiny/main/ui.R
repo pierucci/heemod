@@ -5,6 +5,12 @@ shinyUI(
       
       tabPanel(
         "States",
+        wellPanel(fluidRow(
+          column(
+            3,
+            fileInput("loadButton", "Load model")
+          )
+        )),
         fluidRow(
           column(
             4, 
@@ -309,12 +315,9 @@ shinyUI(
             )
           ),
           column(
-            3,
-            actionButton("saveButton", "Save model")
-          ),
-          column(
-            3,
-            actionButton("loadButton", "Load model")
+            3, 
+            offset = 3,
+            downloadButton("saveButton", "Save model")
           )
         )
       )
