@@ -22,7 +22,7 @@ We will start by re-specifying the deterministic models of HIV therapy described
 
 But instead of defining transition probabilities and state values directly in `define_matrix()` or `define_state()` (as in the previous vignette), parameters will be defined first in a `define_parameters()` step. This is because only parameters defined this way can be resampled in a probabilistic analysis.
 
-We have to define common parameters in both models because during probabilistic analysis resampled parameters are replaced for both models. So we cannot have `p_AB = 0.202` in model `mono` and `p_AB = 0.202 * rr` in model `comb`, because if we resample the base transition rate to a new value `p_AB'` we will have `p_AB = p_AB'` in both models, instead of what we expected (we expected `p_AB = p_AB' * rr` in model `comb` in case you were wondering).
+We have to define common parameters in both models because during probabilistic analysis resampled parameters are replaced for both models. So we cannot have `p_AB = 0.202` in model `mono` and `p_AB = 0.202 * rr` in model `comb`, because if we resample the base transition rate to a new value `p_AB'` we will have `p_AB = p_AB'` in both models, instead of what we expect (`p_AB = p_AB' * rr` in model `comb`).
 
 To avoid that problem we use `p_XX_base` parameters that are the ones that will be resampled.
 
@@ -181,11 +181,11 @@ Now we can define the resampling distributions. The following parameters will be
   * Transition probability from AIDS to death.
   * The transition probabilities from state A.
 
-Since the log of a relative risk follows a lognormal distribution, relative risk follows a lognormal distribution whose mean is `rr` and standard deviantion on the log scale can be deduced from the relative risk confidence interval.
+Since the log of a relative risk follows a lognormal distribution, relative risk follows a lognormal distribution whose mean is `rr` and standard deviation on the log scale can be deduced from the relative risk confidence interval.
 
   * `rr ~ lognormal(mean = .509, sdlog = .173)`
 
-Usually costs are resampled on a gamma distribution, who has the property of being always positive. Shape and scale parameters of the gamma distribution can be calculated from the mean and standard deviation desired in the distribution. Here we assume that mean = variance.
+Usually costs are resampled on a gamma distribution, which has the property of being always positive. Shape and scale parameters of the gamma distribution can be calculated from the mean and standard deviation desired in the distribution. Here we assume that mean = variance.
 
   * `cost_A ~ make_gamma(mean = 2756, sd = sqrt(2756))`
 
