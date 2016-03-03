@@ -2,6 +2,7 @@ shinyUI(
   fluidPage(
     navbarPage(
       "heemod",
+      id = "main",
       
       tabPanel(
         "States",
