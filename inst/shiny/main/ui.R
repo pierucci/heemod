@@ -1,5 +1,5 @@
 shinyUI(
-  fluidPage(
+  fluidPage(lang="en-US",
     navbarPage(
       "heemod",
       id = "main",
