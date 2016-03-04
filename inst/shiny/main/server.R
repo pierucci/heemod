@@ -1,5 +1,7 @@
 source("interface.R")
+library(dplyr)
 library(heemod)
+library(rgho)
 
 shinyServer(function(input, output, session) {
   values <- reactiveValues(nbGlobalParameters = 1)
@@ -581,6 +583,14 @@ shinyServer(function(input, output, session) {
           choices = as.vector(ux_model_names(input))
         )
       )
+  })
+  
+  output$lifeTables <- renderUI({
+    countryCodes <- get_gho_codes(dimension = "COUNTRY")
+    countryNames <- countryCodes %>%
+      attr("labels") 
+    
+    selectizeInput("countryChoice", label = "Country", choices = countries, value = countryNames)
   })
   
   output$plotCounts <- renderPlot({

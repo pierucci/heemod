@@ -94,6 +94,7 @@ shinyUI(
       tabPanel(
         "Global Parameters", 
         uiOutput("globalParameters"),
+        uiOutput("lifeTables"),
         conditionalPanel(
           condition = "input.nbStrategies > 1",
           fluidRow(
