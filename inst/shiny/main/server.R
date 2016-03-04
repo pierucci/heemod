@@ -156,9 +156,8 @@ shinyServer(function(input, output, session) {
     }
   }
   
-  showGlobalParameters <- function(nbStrat, input, values) {
+  showGlobalParameters <- function(nbStrat, input, values, click) {
     n <- values$nbGlobalParameters
-    print(n)
     a <- tags$table(
       tags$tr(
         tags$th(style='text-align:center', "Variable name"),
@@ -185,7 +184,11 @@ shinyServer(function(input, output, session) {
                   textInput(
                     paste0("globalParamValue",x,i),
                     label = NULL,
-                    value = input[[paste0("globalParamValue",1,i)]],
+                    value = ifelse(click == TRUE, 
+                                   ifelse(!is.null(input[[paste0("globalParamValue",1,i)]]), input[[paste0("globalParamValue",1,i)]], ""),
+                                   ifelse(!is.null(input[[paste0("globalParamValue",x,i)]]), input[[paste0("globalParamValue",x,i)]],
+                                          ifelse(!is.null(input[[paste0("globalParamValue",1,i)]]), input[[paste0("globalParamValue",1,i)]], "")
+                            )),
                     width="100%")))
               }))
         })
@@ -209,8 +212,7 @@ shinyServer(function(input, output, session) {
     }
     loadedValues[["input"]] <- input
     loadedValues[["values"]] <- values
-    loadedValues$SP1 <- 0
-    
+    #print(values$nbGlobalParameters)
   })
   
   output$saveButton <- downloadHandler(
@@ -218,7 +220,7 @@ shinyServer(function(input, output, session) {
       paste0('data-', Sys.Date(), '.RData')
     },
     content = function(file) {
-      save(input, file=file)
+      save(input, values, file=file)
     }
   )
   
@@ -327,6 +329,8 @@ shinyServer(function(input, output, session) {
     } 
     else if (input[[trigger]]){
       copyValues(trigger, input = input, values = values, FUN)
+    } else {
+      FUN(input$nbStrategies, input, values, click = FALSE)
     }
   }
 
@@ -426,32 +430,38 @@ shinyServer(function(input, output, session) {
     )
   })
   
-  observeEvent(input$addParametersGP, 
-               values$nbGlobalParameters <- values$nbGlobalParameters + 1)
+  observeEvent(input$addParametersGP, {
+    if (loadedValues$loaded > 0){
+      isolate(values$nbGlobalParameters <- loadedValues$values$nbGlobalParameters)
+    }
+      isolate(values$nbGlobalParameters <- values$nbGlobalParameters + 1)
+    })
 
   output$globalParameters <- renderUI({
     req(input$nbStrategies)
-   if (input$copyValuesParametersGP){
-    copyValues("copyValuesParametersGP", input = input, values = values, showGlobalParameters)
-  }
-  else if(loadedValues$loaded > 0 & isolate(loadedValues$GP < loadedValues$loaded)){
+    values$nbGlobalParameters
+    if(loadedValues$loaded > 0 & isolate(loadedValues$GP < loadedValues$loaded)){
       input <- loadedValues$input
       values <- loadedValues$values
       loadedValues$GP <- loadedValues$loaded
-  }
+      print(values$nbGlobalParameters)
+      showGlobalParameters(input$nbStrategies, input, values, click = FALSE)
+    }
+    else if (input$copyValuesParametersGP){
+      copyValues("copyValuesParametersGP", input = input, values = values, showGlobalParameters)
+    }
+    else {
     
-
-#     
-  if (input$copyValuesParametersGP[[1]] == 0) {
+ 
+  if (loadedValues$loaded == 0 & input$copyValuesParametersGP[[1]] == 0) {
     #not sure whether it's a good shiny way of doing it,
     # but I can't figure out how to do better
     nbStrategies <- 1
   } else {
     nbStrategies <- input$nbStrategies
   }
-    #show_next(val = "GP", trigger = "copyValuesParametersGP", input, values, showGlobalParameters, c(input$nbStrategies, input$nbStates, input$nbStateVariables), loadedValues)
-    showGlobalParameters(nbStrategies, input, values)
-    
+    showGlobalParameters(nbStrategies, input, values, click = FALSE)
+    }
   })
   
   output$outInit <- renderUI({
