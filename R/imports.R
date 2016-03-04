@@ -9,7 +9,7 @@
 #' @importFrom dplyr as_data_frame
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr left_join
-#' @importFrom dplyr %>%
+#' @importFrom dplyr "%>%"
 #' @importFrom dplyr desc
 #' 
 #' @importFrom lazyeval lazy
@@ -49,6 +49,8 @@
 #' @importFrom ggplot2 xlim
 #' 
 #' @importFrom tidyr gather_
+#' 
+#' @importFrom memoise memoise
 #' 
 #' @importFrom DT dataTableOutput
 #' @importFrom DT renderDataTable
