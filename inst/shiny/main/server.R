@@ -3,6 +3,9 @@ library(dplyr)
 library(heemod)
 library(rgho)
 
+REGION <- get_gho_codes(dimension = "REGION")
+COUNTRY = get_gho_codes(dimension="COUNTRY")
+
 shinyServer(function(input, output, session) {
   values <- reactiveValues(nbGlobalParameters = 1)
   loadedValues <- reactiveValues(loaded = 0, SP1 = 0, SP2 = 0, TM1 = 0, TM2 = 0, GP = 0)
@@ -465,7 +468,7 @@ shinyServer(function(input, output, session) {
     showGlobalParameters(nbStrategies, input, values, click = FALSE)
     }
   })
-  
+
   output$outInit <- renderUI({
     #####
     req(
@@ -585,18 +588,29 @@ shinyServer(function(input, output, session) {
       )
   })
   
-  output$lifeTables <- renderUI({
-    regionCodes <- get_gho_codes(dimension = "REGION")
-    regionNames <- regionCodes %>%
+  output$searchRegion <- renderUI({
+    req(input$useLifeTable)
+    regionNames <- REGION %>%
       attr("labels")
-    ifelse(regionNames == "NA" | grepl("^Not ", regionNames), "------", regionNames)
-    vRegionCodes <- as.vector(regionCodes)
-    
-    gsub(regionNames, NA, "000")
+    regionNames <- ifelse(regionNames == "NA" | grepl("^Not ", regionNames), "------", regionNames)
+    vRegionCodes <- as.vector(REGION)
     names(vRegionCodes) <- regionNames
     selectizeInput("regionChoice", label = "Region", choices = vRegionCodes)
   })
   
+  output$searchCountry <- renderUI({
+    req(input$regionChoice)
+    countryCodes <- filter_attrs(
+      COUNTRY,
+      WHO_REGION_CODE == input$regionChoice
+    )
+    countryNames <- countryCodes %>%
+      attr("labels")
+    vCountryCodes <- as.vector(c("Global", countryCodes))
+    names(vCountryCodes) <- c("Global", countryNames)
+    selectizeInput("countryChoice", label = "Country", choices = vCountryCodes)
+  })
+
   output$plotCounts <- renderPlot({
     #####
     req(values$model)

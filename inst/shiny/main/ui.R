@@ -8,7 +8,7 @@ shinyUI(
         "States",
         wellPanel(fluidRow(
           column(
-            3,
+            4,
             fileInput("loadButton", "Load model")
           )
         )),
@@ -93,8 +93,17 @@ shinyUI(
       
       tabPanel(
         "Global Parameters", 
+        wellPanel(
+          fluidRow(
+            column(2, radioButtons("gender", "Sex", choices = c("Male", "Female", "Both"))),
+            column(3, numericInput("startAge", "Age at beginning", "", width = "100%")),
+            column(3, numericInput("cycleLength", "Duration of a cycle (years)", "", width = "100%")),
+            column(4, checkboxInput("useLifeTable", "Use WHO lifetables for\ntransition probabilities",FALSE),
+                   conditionalPanel(condition="input.useLifeTable", uiOutput("searchRegion"), uiOutput("searchCountry")))
+          )
+        ),
+  
         uiOutput("globalParameters"),
-        uiOutput("lifeTables"),
         conditionalPanel(
           condition = "input.nbStrategies > 1",
           fluidRow(
