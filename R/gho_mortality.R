@@ -23,8 +23,8 @@ get_who_mr_ <- function(age, sex, country, year = "latest") {
   
   dplyr::left_join(
     dplyr::data_frame(
-      AGEGROUP = age_gho,
-      SEX = sex_gho
+      AGEGROUP = as.character(age_gho),
+      SEX = as.character(sex_gho)
     ),
     mr_data
   )$Numeric
@@ -47,7 +47,7 @@ get_gho_mr <- function(country, year) {
     stop(sprintf("No GHO mortality data for COUNTRY '%s'.", country))
   }
   
-  years <- unique(gho_data$YEARS)
+  years <- unique(gho_data$YEAR)
   
   if (year == "latest") {
     study_year <- max(years)
