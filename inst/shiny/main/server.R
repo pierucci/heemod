@@ -1,13 +1,18 @@
 source("interface.R")
+library(dplyr)
 library(heemod)
+library(rgho)
+
+REGION <- get_gho_codes(dimension = "REGION")
+COUNTRY = get_gho_codes(dimension="COUNTRY")
 
 shinyServer(function(input, output, session) {
-  
   values <- reactiveValues(nbGlobalParameters = 1)
+  loadedValues <- reactiveValues(loaded = 0, SP1 = 0, SP2 = 0, TM1 = 0, TM2 = 0, GP = 0)
+  tmp <- reactiveValues(showStateParam = NULL)
   
-  showStateParam <- function(nbStrat) {
+  showStateParam <- function(nbStrat, input, values, click) {
     nbStates <- input$nbStates
-    
     nbStateVariables <- input$nbStateVariables
     
     req(nbStates)
@@ -53,10 +58,11 @@ shinyServer(function(input, output, session) {
                           isolate({
                             tags$td(textInput(
                               paste0("stateVariable",x,i,j),
-                              value = ifelse(
-                                !is.null(input[[paste0("stateVariable",1,i,j)]]),
-                                input[[paste0("stateVariable",1,i,j)]],
-                                0),
+                              value = ifelse(click == TRUE, 
+                                             ifelse(!is.null(input[[paste0("stateVariable",1,i,j)]]), input[[paste0("stateVariable",1,i,j)]], 0),
+                                             ifelse (!is.null(input[[paste0("stateVariable",x,i,j)]]), input[[paste0("stateVariable",x,i,j)]], 
+                                                     ifelse(!is.null(input[[paste0("stateVariable",1,i,j)]]),input[[paste0("stateVariable",1,i,j)]],0)
+                                )),
                               label = NULL,
                               width="100%"))
                           })
@@ -65,11 +71,14 @@ shinyServer(function(input, output, session) {
                         tags$td(numericInput(
                           paste0("discountingRate",x,i),
                           label = NULL,
-                          value = ifelse(
-                            !is.null(input[[paste0("discountingRate",1,i)]]),
-                            input[[paste0("discountingRate",1,i)]],
-                            0),
-                          width="100%"))})
+                          step=0.01,
+                          value = ifelse(click == TRUE, 
+                            ifelse(!is.null(input[[paste0("discountingRate",1,i)]]), input[[paste0("discountingRate",1,i)]], 0),
+                            ifelse(!is.null(input[[paste0("discountingRate",x,i)]]), input[[paste0("discountingRate",x,i)]], 
+                              ifelse(!is.null(input[[paste0("discountingRate",1,i)]]), input[[paste0("discountingRate",1,i)]],0)
+                          )),
+                          width="100%"))
+                        })
                     )
                   })
               )
@@ -79,7 +88,7 @@ shinyServer(function(input, output, session) {
     }
   }
   
-  showTransMatrix <- function(nbStrat) {
+  showTransMatrix <- function(nbStrat, input, values, click) {
     nbStates <- input$nbStates
     
     req(nbStates)
@@ -98,7 +107,8 @@ shinyServer(function(input, output, session) {
           function(x) {
             tagList(
               h3(paste("Transition Matrix for", input[[paste0("strategyName",x)]])),
-              renderPlot({
+              tags$div(
+                renderPlot({
                 tm <- ux_matrix(input, x)
                 if (is.null(tm)) {
                   plot.new()
@@ -109,8 +119,10 @@ shinyServer(function(input, output, session) {
               },
               width = 200,
               height = 200
+              ), style="text-align: center"
               ),
               tags$table(
+                style="margin:0 auto;",
                 class='transmatrix',
                 tagList(
                   tags$th(),
@@ -130,10 +142,11 @@ shinyServer(function(input, output, session) {
                             isolate(
                               tags$td(textInput(
                                 paste0("transmatrix",x,i,j),
-                                value = ifelse(
-                                  !is.null(input[[paste0("transmatrix",1,i,j)]]),
-                                  input[[paste0("transmatrix",1,i,j)]],
-                                  "0"),
+                                value = ifelse(click == TRUE, 
+                                  ifelse(!is.null(input[[paste0("transmatrix",1,i,j)]]), input[[paste0("transmatrix",1,i,j)]], "0"),
+                                  ifelse(!is.null(input[[paste0("transmatrix",x,i,j)]]),input[[paste0("transmatrix",x,i,j)]],
+                                         ifelse(!is.null(input[[paste0("transmatrix",1,i,j)]]), input[[paste0("transmatrix",1,i,j)]], "0")
+                                         )),
                                 label=NULL,
                                 width="100%")))
                           })
@@ -148,6 +161,50 @@ shinyServer(function(input, output, session) {
     }
   }
   
+  showGlobalParameters <- function(nbStrat, input, values, click) {
+    n <- values$nbGlobalParameters
+    a <- tags$table(
+      tags$tr(
+        tags$th(style='text-align:center', "Variable name"),
+        lapply(
+          seq_len(nbStrat),
+          function(x) {
+            tags$th(style='text-align:center', paste("Value for", input[[paste0("strategyName",x)]]))
+          })
+      ),
+      lapply(
+        seq_len(n),
+        function(i) {
+          tags$tr(
+            isolate(tags$td(
+              textInput(
+                paste0("globalParamName",i),
+                label = NULL,
+                value = input[[paste0("globalParamName",i)]],
+                width="100%"))),
+            lapply(
+              seq_len(nbStrat),
+              function(x) {
+                isolate(tags$td(
+                  textInput(
+                    paste0("globalParamValue",x,i),
+                    label = NULL,
+                    value = ifelse(click == TRUE, 
+                                   ifelse(!is.null(input[[paste0("globalParamValue",1,i)]]), input[[paste0("globalParamValue",1,i)]], ""),
+                                   ifelse(!is.null(input[[paste0("globalParamValue",x,i)]]), input[[paste0("globalParamValue",x,i)]],
+                                          ifelse(!is.null(input[[paste0("globalParamValue",1,i)]]), input[[paste0("globalParamValue",1,i)]], "")
+                            )),
+                    width="100%")))
+              }))
+        })
+    )
+    
+    tagList(
+      a,
+      actionButton("addParametersGP", "Add a new variable")
+    )
+  }
+  
   observe({
     inFile <- input$loadButton
     if (is.null(inFile))
@@ -158,7 +215,9 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "nbStateVariables", value = input$nbStateVariables)
       updateNumericInput(session, "nbStrategies", value = input$nbStrategies)
     }
-    values[["input"]] <- input
+    loadedValues[["input"]] <- input
+    loadedValues[["values"]] <- values
+    #print(values$nbGlobalParameters)
   })
   
   output$saveButton <- downloadHandler(
@@ -166,16 +225,23 @@ shinyServer(function(input, output, session) {
       paste0('data-', Sys.Date(), '.RData')
     },
     content = function(file) {
-      save(input, file=file)
+      save(input, values, file=file)
     }
   )
   
-  load_all <- eventReactive(input$loadButton, {
-                input <- values[["input"]]})
-  
+  observeEvent(input$loadButton, {
+    loadedValues$loaded <- loadedValues$loaded + 1
+  })
+
   output$nameStates <- renderUI({
-    observe(load_all())
     req(input$nbStates)
+    
+    observeEvent(
+      loadedValues$loaded, {
+      input <- loadedValues$input
+      values <- loadedValues$values
+    })
+
     lapply(
       seq_len(input$nbStates),
       function(i) {
@@ -192,12 +258,13 @@ shinyServer(function(input, output, session) {
   })
   
   output$nameStateVariables <- renderUI({
-<<<<<<< HEAD
-    observe(load_all())
-=======
-    load_all()
->>>>>>> da7584a777d0e24a4d7c3202318b6d3f44bcb684
     req(input$nbStateVariables)
+    observeEvent(
+      loadedValues$loaded, {
+        input <- loadedValues$input
+        values <- loadedValues$values
+      })
+
     lapply(
       seq_len(input$nbStateVariables),
       function(i) {
@@ -214,8 +281,14 @@ shinyServer(function(input, output, session) {
   })
   
   output$nameStrategies <- renderUI({
-    observe(load_all())
     req(input$nbStrategies)
+    
+    observeEvent(
+      loadedValues$loaded, {
+        input <- loadedValues$input
+        values <- loadedValues$values
+      })
+    
     lapply(
       seq_len(input$nbStrategies),
       function(i) {
@@ -231,30 +304,118 @@ shinyServer(function(input, output, session) {
       })
   })
   
+  
+  show_first <- function(val, FUN, required, loadedValues){
+    req(required)
+    if(loadedValues$loaded > 0 & isolate(loadedValues[[val]] < loadedValues$loaded)){
+      input <- loadedValues$input
+      values <- loadedValues$values
+      loadedValues[[val]] <- loadedValues$loaded
+    }
+    FUN(1, input, values, click = FALSE)
+  }
+  
+  copyValues <- function(trigger, input, values, FUN) {
+    a <- eventReactive(input[[trigger]],{
+      FUN(input$nbStrategies, input, values, TRUE)
+    })
+    
+    return(a())
+  }
+  
+  show_next <- function(val, trigger, input, values, FUN, required, loadedValues){
+    req(required)
+    input[[trigger]]
+    if(loadedValues$loaded > 0 & isolate(loadedValues[[val]] < loadedValues$loaded)){
+      input <- loadedValues$input
+      values <- loadedValues$values
+      loadedValues[[val]] <- loadedValues$loaded
+      FUN(input$nbStrategies, input, values, click = FALSE)
+    } 
+    else if (input[[trigger]]){
+      copyValues(trigger, input = input, values = values, FUN)
+    } else {
+      FUN(input$nbStrategies, input, values, click = FALSE)
+    }
+  }
+
+    
   output$transMatrix1 <- renderUI({
-    observe(load_all())
-    showTransMatrix(1)
+    show_first(val = "TM1", FUN = showTransMatrix, required=input$nbStates, loadedValues)    
+#     req(input$nbStates)
+#     if(loadedValues$loaded > 0 & isolate(loadedValues$TM1 < loadedValues$loaded)){
+#       input <- loadedValues$input
+#       values <- loadedValues$values
+#       loadedValues$TM1 <- loadedValues$loaded
+#     }
+#     showTransMatrix(1, input, values)
+
   })
+
+#   copyTM <- eventReactive(input$copyValuesParametersTM,{
+#     showTransMatrix <- showTransMatrix(input$nbStrategies, input, values)
+#   })
   
   output$transMatrix2 <- renderUI({
-    observe(load_all())
-    req(input$copyValuesParametersTM)
-    showTransMatrix(input$nbStrategies)
+    show_next(val = "TM2", trigger = "copyValuesParametersTM", input, values, showTransMatrix, c(input$nbStrategies, input$nbStates), loadedValues)
+    
+#     req(input$nbStrategies)
+#     req(input$nbStates)
+# 
+#     if (input$copyValuesParametersTM)
+#       copyValues("copyValuesParametersTM", input, values, showTransMatrix)
+#       #copyTM()
+#     else if(loadedValues$loaded > 0 & isolate(loadedValues$TM2 < loadedValues$loaded)){
+#       input <- loadedValues$input
+#       values <- loadedValues$values
+#       loadedValues$TM2 <- loadedValues$loaded
+#       showTransMatrix(input$nbStrategies, input, values)
+#     }
+#     else if (input$nbStates | input$nbStrategies)
+#       showTransMatrix(input$nbStrategies, input, values)
+  })  
+
+  output$stateParameters1 <- renderUI({
+    show_first(val = "SP1", FUN = showStateParam, required = c(input$nbStates, input$nbStateVariables), loadedValues = loadedValues)
+#    req(input$nbStates)
+#    req(input$nbStateVariables)
+# 
+#     if(loadedValues$loaded > 0 & isolate(loadedValues$SP1 < loadedValues$loaded)){
+#       input <- loadedValues$input
+#       values <- loadedValues$values
+#       loadedValues$SP1 <- loadedValues$loaded
+#     }
+#     
+#     showStateParam(1, input, values)
   })
   
-  output$stateParameters1 <- renderUI({
-    observe(load_all())
-    showStateParam(1)
+  copySP <- eventReactive(input$copyValuesParametersSP,{
+      showStateParam <- showStateParam(input$nbStrategies, input, values)
   })
+  
+
   
   output$stateParameters2 <- renderUI({
-    observe(load_all())
-    req(input$copyValuesParametersSP)
-    showStateParam(input$nbStrategies)
+     show_next(val = "SP2", trigger = "copyValuesParametersSP", input, values, showStateParam, c(input$nbStrategies, input$nbStates, input$nbStateVariables), loadedValues)
+#     req(input$nbStrategies)
+#     req(input$nbStateVariables)
+#     req(input$nbStates)
+#     
+#     if (input$copyValuesParametersSP)
+#       copyValues("copyValuesParametersSP", input, values, showStateParam)
+#     else if(loadedValues$loaded > 0 & isolate(loadedValues$SP2 < loadedValues$loaded)){
+#       input <- loadedValues$input
+#       values <- loadedValues$values
+#       loadedValues$SP2 <- loadedValues$loaded
+#       showStateParam(input$nbStrategies, input, values)
+#     } 
+    
   })
   
+    
+    
   output$costVariable <- renderUI({
-    observe(load_all())
+    #####
     textInput(
       "costVariable",
       label = "Cost Variable",
@@ -262,7 +423,11 @@ shinyServer(function(input, output, session) {
     )
   })
   output$effectVariable <- renderUI({
-    observe(load_all())
+    isolate(if (loadedValues$loaded == TRUE){
+      input <- loadedValues$input
+      values <- loadedValues$values
+    })
+    
     textInput(
       "effectVariable",
       label = "Effect Variable",
@@ -270,66 +435,42 @@ shinyServer(function(input, output, session) {
     )
   })
   
-  observe({
-    observe(load_all())
-    req(input$addParametersGP)
-    isolate(values$nbGlobalParameters <- values$nbGlobalParameters + 1)
-  })
-  
-  output$globalParameters <- renderUI({
-    observe(load_all())
-    n <- values$nbGlobalParameters
-    req(input$nbStrategies)
-    
-    if (input$copyValuesParametersGP[[1]] == 0) {
-      #not sure whether it's a good shiny way of doing it,
-      # but I can't figure out how to do better
-      
-      nbStrategies <- 1
-    } else {
-      nbStrategies <- input$nbStrategies
+  observeEvent(input$addParametersGP, {
+    if (loadedValues$loaded > 0){
+      isolate(values$nbGlobalParameters <- loadedValues$values$nbGlobalParameters)
     }
+      isolate(values$nbGlobalParameters <- values$nbGlobalParameters + 1)
+    })
+
+  output$globalParameters <- renderUI({
+    req(input$nbStrategies)
+    values$nbGlobalParameters
+    if(loadedValues$loaded > 0 & isolate(loadedValues$GP < loadedValues$loaded)){
+      input <- loadedValues$input
+      values <- loadedValues$values
+      loadedValues$GP <- loadedValues$loaded
+      print(values$nbGlobalParameters)
+      showGlobalParameters(input$nbStrategies, input, values, click = FALSE)
+    }
+    else if (input$copyValuesParametersGP){
+      copyValues("copyValuesParametersGP", input = input, values = values, showGlobalParameters)
+    }
+    else {
     
-    a <- tags$table(
-      tags$tr(
-        tags$th(style='text-align:center', "Variable name"),
-        lapply(
-          seq_len(nbStrategies),
-          function(x) {
-            tags$th(style='text-align:center', paste("Value for", input[[paste0("strategyName",x)]]))
-          })
-      ),
-      lapply(
-        seq_len(n),
-        function(i) {
-          tags$tr(
-            isolate(tags$td(
-              textInput(
-                paste0("globalParamName",i),
-                label = NULL,
-                value = input[[paste0("globalParamName",i)]],
-                width="100%"))),
-            lapply(
-              seq_len(nbStrategies),
-              function(x) {
-                isolate(tags$td(
-                  textInput(
-                    paste0("globalParamValue",x,i),
-                    label = NULL,
-                    value = input[[paste0("globalParamValue",1,i)]],
-                    width="100%")))
-              }))
-        })
-    )
-    
-    tagList(
-      a,
-      actionButton("addParametersGP", "Add a new variable")
-    )
+ 
+  if (loadedValues$loaded == 0 & input$copyValuesParametersGP[[1]] == 0) {
+    #not sure whether it's a good shiny way of doing it,
+    # but I can't figure out how to do better
+    nbStrategies <- 1
+  } else {
+    nbStrategies <- input$nbStrategies
+  }
+    showGlobalParameters(nbStrategies, input, values, click = FALSE)
+    }
   })
-  
+
   output$outInit <- renderUI({
-    observe(load_all())
+    #####
     req(
       nbState <- ux_nb_states(input),
       stateNames <- ux_state_names(input)
@@ -376,7 +517,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$outModel <- renderUI({
-    observe(load_all())
+    #####
     values$model <- ux_run_models(input = input, values = values)
     values$summary_model <- summary(values$model)
     
@@ -391,7 +532,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$tableResults <- DT::renderDataTable({
-    observe(load_all())
+    #####
     req(values$model)
     req(values$summary_model$res)
     
@@ -406,7 +547,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$titleICER <- renderUI({
-    observe(load_all())
+    #####
     req(values$model)
     req(values$summary_model$res_comp)
     
@@ -418,7 +559,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$tableICER <- DT::renderDataTable({
-    observe(load_all())
+    #####
     req(values$model)
     req(values$summary_model$res_comp)
     
@@ -433,7 +574,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$outCounts <- renderUI({
-    observe(load_all())
+    #####
 
     req(values$model)
     
@@ -447,8 +588,31 @@ shinyServer(function(input, output, session) {
       )
   })
   
+  output$searchRegion <- renderUI({
+    req(input$useLifeTable)
+    regionNames <- REGION %>%
+      attr("labels")
+    regionNames <- ifelse(regionNames == "NA" | grepl("^Not ", regionNames), "------", regionNames)
+    vRegionCodes <- as.vector(REGION)
+    names(vRegionCodes) <- regionNames
+    selectizeInput("regionChoice", label = "Region", choices = vRegionCodes)
+  })
+  
+  output$searchCountry <- renderUI({
+    req(input$regionChoice)
+    countryCodes <- filter_attrs(
+      COUNTRY,
+      WHO_REGION_CODE == input$regionChoice
+    )
+    countryNames <- countryCodes %>%
+      attr("labels")
+    vCountryCodes <- as.vector(c("Global", countryCodes))
+    names(vCountryCodes) <- c("Global", countryNames)
+    selectizeInput("countryChoice", label = "Country", choices = vCountryCodes)
+  })
+
   output$plotCounts <- renderPlot({
-    observe(load_all())
+    #####
     req(values$model)
     model <- input$modelPlotCounts
     req(model)
