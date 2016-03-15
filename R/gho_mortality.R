@@ -1,4 +1,20 @@
-
+#' Use WHO Mortality Rate
+#'
+#' @param age age as a continuous variable.
+#' @param sex sex as \code{"FMLE"} or \code{"MLE"}.
+#' @param country Country code (see details).
+#' @param year Use data from that year. Defaults to \code{"latest"}.
+#'
+#' @return This function should be used within
+#'  \code{\link{define_matrix}} or \code{\link{define_parameters}}.
+#'  
+#' @examples 
+#' 
+#' define_matrix(
+#'   C, get_who_mr(age = 50 + markov_cycle, sex = "FMLE", country = "FRA"),
+#'   0, 1
+#' )
+#' 
 get_who_mr_ <- function(age, sex, country, year = "latest") {
   mr_data <- get_gho_mr(country = country, year = year)
   
@@ -13,6 +29,8 @@ get_who_mr_ <- function(age, sex, country, year = "latest") {
     mr_data
   )$Numeric
 }
+#' @export
+#' @rdname get_who_mr_
 get_who_mr <- memoise::memoise(get_who_mr_)
 
 
@@ -69,5 +87,12 @@ trans_age_gho <- function(age) {
   )
   
   cut(age, c(0, 1, seq(5, 100, 5), +Inf), right = FALSE, labels = labs)
+}
+
+trans_sex_gho <- function(sex) {
+  stopifnot(
+    sex %in% c("FMLE", "MLE")
+  )
+  sex
 }
 
