@@ -76,14 +76,68 @@ ux_parameters <- function(input, values, model_number) {
     }
   }
   
-  if (test(values_parameters)) {
+  res <- if (test(values_parameters) & ux_use_morta(input)) {
     names(values_parameters) <- names_parameters
-    define_parameters_(
-      lazyeval::as.lazy_dots(values_parameters)
+    
+    param_dots <- lazyeval::as.lazy_dots(values_parameters)
+    
+    param_dots <- c(
+      param_dots,
+      lazyeval::lazy_dots(
+        mortality_rate = get_who_mr(
+          age = ux_morta_age(input) + markov_cycle,
+          sex = ux_morta_sex(input),
+          country = ux_morta_country(input)
+        )
+      )
     )
+    
+    define_parameters_(
+      param_dots
+    )
+  } else if (! test(values_parameters) & ux_use_morta(input)) {
+    param_dots <- lazyeval::lazy_dots(
+      mortality_rate = get_who_mr(
+        age = ux_morta_age(input) + markov_cycle,
+        sex = ux_morta_sex(input),
+        country = ux_morta_country(input)
+      )
+    )
+    
+    
+    define_parameters_(
+      param_dots
+    )
+    
+  } else if (test(values_parameters)) {
+    names(values_parameters) <- names_parameters
+    
+    param_dots <- lazyeval::as.lazy_dots(values_parameters)
+    define_parameters_(
+      param_dots
+    )
+    
   } else {
     define_parameters()
   }
+  
+  res
+}
+
+ux_use_morta <- function(input) {
+  input$use_morta
+}
+
+ux_morta_age <- function(input) {
+  input$startAge
+}
+
+ux_morta_sex <- function(input) {
+  input$gender
+}
+
+ux_morta_country <- function(input) {
+  input$countryChoice
 }
 
 ux_matrix <- function(input, model_number) {

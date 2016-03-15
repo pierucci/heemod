@@ -1,5 +1,6 @@
 shinyUI(
-  fluidPage(lang="en-US",
+  fluidPage(
+    lang = "en-US",
     navbarPage(
       "heemod",
       id = "main",
@@ -92,17 +93,76 @@ shinyUI(
       ),
       
       tabPanel(
-        "Global Parameters", 
+        "Parameters", 
+        h3("Mortality rate"),
         wellPanel(
           fluidRow(
-            column(2, radioButtons("gender", "Sex", choices = c("Male", "Female", "Both"))),
-            column(3, numericInput("startAge", "Age at beginning", "", width = "100%")),
-            column(3, numericInput("cycleLength", "Duration of a cycle (years)", "", width = "100%")),
-            column(4, checkboxInput("useLifeTable", "Use WHO lifetables for\ntransition probabilities",FALSE),
-                   conditionalPanel(condition="input.useLifeTable", uiOutput("searchRegion"), uiOutput("searchCountry")))
+            column(
+              2,
+              h4("mortality_rate")
+            ),
+            column(
+              3,
+              numericInput(
+                "startAge",
+                "Age at beginning",
+                0,
+                width = "100%"
+              )
+            ),
+            column(
+              3,
+              numericInput(
+                "cycleLength",
+                "Duration of a cycle (years)",
+                1,
+                width = "100%"
+              )
+            ),
+            column(
+              2,
+              radioButtons(
+                "gender",
+                "Sex",
+                choices = c(Female = "FMLE", Male = "MLE")
+              )
+            )
+          ),
+          fluidRow(
+            column(
+              2,
+              checkboxInput(
+                "use_morta",
+                "Use in model?",
+                width = "100%"
+              )
+            ),
+            column(
+              3,
+              uiOutput("searchRegion")
+            ),
+            column(
+              3,
+              uiOutput("searchCountry")
+            )
           )
         ),
-  
+        conditionalPanel(
+          condition = "input.checkShowHelp == 1",
+          fluidRow(
+            column(
+              4,
+              wellPanel(
+                style = "background-color: #ffffff;",
+                em("Input age-specific mortality rate from WHO databases."),
+                em("The rate can then be called in transitions matrixes by its name ("),
+                strong("mortality_rate"),
+                em(").")
+              )
+            )
+          )
+        ),
+        h3("Custom parameters"),
         uiOutput("globalParameters"),
         conditionalPanel(
           condition = "input.nbStrategies > 1",

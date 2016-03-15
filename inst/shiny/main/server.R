@@ -62,7 +62,7 @@ shinyServer(function(input, output, session) {
                                              ifelse(!is.null(input[[paste0("stateVariable",1,i,j)]]), input[[paste0("stateVariable",1,i,j)]], 0),
                                              ifelse (!is.null(input[[paste0("stateVariable",x,i,j)]]), input[[paste0("stateVariable",x,i,j)]], 
                                                      ifelse(!is.null(input[[paste0("stateVariable",1,i,j)]]),input[[paste0("stateVariable",1,i,j)]],0)
-                                )),
+                                             )),
                               label = NULL,
                               width="100%"))
                           })
@@ -73,12 +73,12 @@ shinyServer(function(input, output, session) {
                           label = NULL,
                           step=0.01,
                           value = ifelse(click == TRUE, 
-                            ifelse(!is.null(input[[paste0("discountingRate",1,i)]]), input[[paste0("discountingRate",1,i)]], 0),
-                            ifelse(!is.null(input[[paste0("discountingRate",x,i)]]), input[[paste0("discountingRate",x,i)]], 
-                              ifelse(!is.null(input[[paste0("discountingRate",1,i)]]), input[[paste0("discountingRate",1,i)]],0)
-                          )),
+                                         ifelse(!is.null(input[[paste0("discountingRate",1,i)]]), input[[paste0("discountingRate",1,i)]], 0),
+                                         ifelse(!is.null(input[[paste0("discountingRate",x,i)]]), input[[paste0("discountingRate",x,i)]], 
+                                                ifelse(!is.null(input[[paste0("discountingRate",1,i)]]), input[[paste0("discountingRate",1,i)]],0)
+                                         )),
                           width="100%"))
-                        })
+                      })
                     )
                   })
               )
@@ -109,17 +109,17 @@ shinyServer(function(input, output, session) {
               h3(paste("Transition Matrix for", input[[paste0("strategyName",x)]])),
               tags$div(
                 renderPlot({
-                tm <- ux_matrix(input, x)
-                if (is.null(tm)) {
-                  plot.new()
-                  text(.5, .5, "Incorrect\ninput")
-                } else {
-                  plot(tm)
-                }
-              },
-              width = 200,
-              height = 200
-              ), style="text-align: center"
+                  tm <- ux_matrix(input, x)
+                  if (is.null(tm)) {
+                    plot.new()
+                    text(.5, .5, "Incorrect\ninput")
+                  } else {
+                    plot(tm)
+                  }
+                },
+                width = 200,
+                height = 200
+                ), style="text-align: center"
               ),
               tags$table(
                 style="margin:0 auto;",
@@ -143,10 +143,10 @@ shinyServer(function(input, output, session) {
                               tags$td(textInput(
                                 paste0("transmatrix",x,i,j),
                                 value = ifelse(click == TRUE, 
-                                  ifelse(!is.null(input[[paste0("transmatrix",1,i,j)]]), input[[paste0("transmatrix",1,i,j)]], "0"),
-                                  ifelse(!is.null(input[[paste0("transmatrix",x,i,j)]]),input[[paste0("transmatrix",x,i,j)]],
-                                         ifelse(!is.null(input[[paste0("transmatrix",1,i,j)]]), input[[paste0("transmatrix",1,i,j)]], "0")
-                                         )),
+                                               ifelse(!is.null(input[[paste0("transmatrix",1,i,j)]]), input[[paste0("transmatrix",1,i,j)]], "0"),
+                                               ifelse(!is.null(input[[paste0("transmatrix",x,i,j)]]),input[[paste0("transmatrix",x,i,j)]],
+                                                      ifelse(!is.null(input[[paste0("transmatrix",1,i,j)]]), input[[paste0("transmatrix",1,i,j)]], "0")
+                                               )),
                                 label=NULL,
                                 width="100%")))
                           })
@@ -193,7 +193,7 @@ shinyServer(function(input, output, session) {
                                    ifelse(!is.null(input[[paste0("globalParamValue",1,i)]]), input[[paste0("globalParamValue",1,i)]], ""),
                                    ifelse(!is.null(input[[paste0("globalParamValue",x,i)]]), input[[paste0("globalParamValue",x,i)]],
                                           ifelse(!is.null(input[[paste0("globalParamValue",1,i)]]), input[[paste0("globalParamValue",1,i)]], "")
-                            )),
+                                   )),
                     width="100%")))
               }))
         })
@@ -232,16 +232,16 @@ shinyServer(function(input, output, session) {
   observeEvent(input$loadButton, {
     loadedValues$loaded <- loadedValues$loaded + 1
   })
-
+  
   output$nameStates <- renderUI({
     req(input$nbStates)
     
     observeEvent(
       loadedValues$loaded, {
-      input <- loadedValues$input
-      values <- loadedValues$values
-    })
-
+        input <- loadedValues$input
+        values <- loadedValues$values
+      })
+    
     lapply(
       seq_len(input$nbStates),
       function(i) {
@@ -264,7 +264,7 @@ shinyServer(function(input, output, session) {
         input <- loadedValues$input
         values <- loadedValues$values
       })
-
+    
     lapply(
       seq_len(input$nbStateVariables),
       function(i) {
@@ -338,82 +338,82 @@ shinyServer(function(input, output, session) {
       FUN(input$nbStrategies, input, values, click = FALSE)
     }
   }
-
-    
+  
+  
   output$transMatrix1 <- renderUI({
     show_first(val = "TM1", FUN = showTransMatrix, required=input$nbStates, loadedValues)    
-#     req(input$nbStates)
-#     if(loadedValues$loaded > 0 & isolate(loadedValues$TM1 < loadedValues$loaded)){
-#       input <- loadedValues$input
-#       values <- loadedValues$values
-#       loadedValues$TM1 <- loadedValues$loaded
-#     }
-#     showTransMatrix(1, input, values)
-
+    #     req(input$nbStates)
+    #     if(loadedValues$loaded > 0 & isolate(loadedValues$TM1 < loadedValues$loaded)){
+    #       input <- loadedValues$input
+    #       values <- loadedValues$values
+    #       loadedValues$TM1 <- loadedValues$loaded
+    #     }
+    #     showTransMatrix(1, input, values)
+    
   })
-
-#   copyTM <- eventReactive(input$copyValuesParametersTM,{
-#     showTransMatrix <- showTransMatrix(input$nbStrategies, input, values)
-#   })
+  
+  #   copyTM <- eventReactive(input$copyValuesParametersTM,{
+  #     showTransMatrix <- showTransMatrix(input$nbStrategies, input, values)
+  #   })
   
   output$transMatrix2 <- renderUI({
     show_next(val = "TM2", trigger = "copyValuesParametersTM", input, values, showTransMatrix, c(input$nbStrategies, input$nbStates), loadedValues)
     
-#     req(input$nbStrategies)
-#     req(input$nbStates)
-# 
-#     if (input$copyValuesParametersTM)
-#       copyValues("copyValuesParametersTM", input, values, showTransMatrix)
-#       #copyTM()
-#     else if(loadedValues$loaded > 0 & isolate(loadedValues$TM2 < loadedValues$loaded)){
-#       input <- loadedValues$input
-#       values <- loadedValues$values
-#       loadedValues$TM2 <- loadedValues$loaded
-#       showTransMatrix(input$nbStrategies, input, values)
-#     }
-#     else if (input$nbStates | input$nbStrategies)
-#       showTransMatrix(input$nbStrategies, input, values)
+    #     req(input$nbStrategies)
+    #     req(input$nbStates)
+    # 
+    #     if (input$copyValuesParametersTM)
+    #       copyValues("copyValuesParametersTM", input, values, showTransMatrix)
+    #       #copyTM()
+    #     else if(loadedValues$loaded > 0 & isolate(loadedValues$TM2 < loadedValues$loaded)){
+    #       input <- loadedValues$input
+    #       values <- loadedValues$values
+    #       loadedValues$TM2 <- loadedValues$loaded
+    #       showTransMatrix(input$nbStrategies, input, values)
+    #     }
+    #     else if (input$nbStates | input$nbStrategies)
+    #       showTransMatrix(input$nbStrategies, input, values)
   })  
-
+  
   output$stateParameters1 <- renderUI({
     show_first(val = "SP1", FUN = showStateParam, required = c(input$nbStates, input$nbStateVariables), loadedValues = loadedValues)
-#    req(input$nbStates)
-#    req(input$nbStateVariables)
-# 
-#     if(loadedValues$loaded > 0 & isolate(loadedValues$SP1 < loadedValues$loaded)){
-#       input <- loadedValues$input
-#       values <- loadedValues$values
-#       loadedValues$SP1 <- loadedValues$loaded
-#     }
-#     
-#     showStateParam(1, input, values)
+    #    req(input$nbStates)
+    #    req(input$nbStateVariables)
+    # 
+    #     if(loadedValues$loaded > 0 & isolate(loadedValues$SP1 < loadedValues$loaded)){
+    #       input <- loadedValues$input
+    #       values <- loadedValues$values
+    #       loadedValues$SP1 <- loadedValues$loaded
+    #     }
+    #     
+    #     showStateParam(1, input, values)
   })
   
   copySP <- eventReactive(input$copyValuesParametersSP,{
-      showStateParam <- showStateParam(input$nbStrategies, input, values)
+    showStateParam <- showStateParam(input$nbStrategies, input, values)
   })
   
-
+  
   
   output$stateParameters2 <- renderUI({
-     show_next(val = "SP2", trigger = "copyValuesParametersSP", input, values, showStateParam, c(input$nbStrategies, input$nbStates, input$nbStateVariables), loadedValues)
-#     req(input$nbStrategies)
-#     req(input$nbStateVariables)
-#     req(input$nbStates)
-#     
-#     if (input$copyValuesParametersSP)
-#       copyValues("copyValuesParametersSP", input, values, showStateParam)
-#     else if(loadedValues$loaded > 0 & isolate(loadedValues$SP2 < loadedValues$loaded)){
-#       input <- loadedValues$input
-#       values <- loadedValues$values
-#       loadedValues$SP2 <- loadedValues$loaded
-#       showStateParam(input$nbStrategies, input, values)
-#     } 
+    show_next(val = "SP2", trigger = "copyValuesParametersSP", input, values, showStateParam, c(input$nbStrategies, input$nbStates, input$nbStateVariables), loadedValues)
+    #     req(input$nbStrategies)
+    #     req(input$nbStateVariables)
+    #     req(input$nbStates)
+    #     
+    #     if (input$copyValuesParametersSP)
+    #       copyValues("copyValuesParametersSP", input, values, showStateParam)
+    #     else if(loadedValues$loaded > 0 & isolate(loadedValues$SP2 < loadedValues$loaded)){
+    #       input <- loadedValues$input
+    #       values <- loadedValues$values
+    #       loadedValues$SP2 <- loadedValues$loaded
+    #       showStateParam(input$nbStrategies, input, values)
+    #     } 
     
   })
   
-    
-    
+  
+  
   output$costVariable <- renderUI({
     #####
     textInput(
@@ -439,9 +439,9 @@ shinyServer(function(input, output, session) {
     if (loadedValues$loaded > 0){
       isolate(values$nbGlobalParameters <- loadedValues$values$nbGlobalParameters)
     }
-      isolate(values$nbGlobalParameters <- values$nbGlobalParameters + 1)
-    })
-
+    isolate(values$nbGlobalParameters <- values$nbGlobalParameters + 1)
+  })
+  
   output$globalParameters <- renderUI({
     req(input$nbStrategies)
     values$nbGlobalParameters
@@ -456,19 +456,19 @@ shinyServer(function(input, output, session) {
       copyValues("copyValuesParametersGP", input = input, values = values, showGlobalParameters)
     }
     else {
-    
- 
-  if (loadedValues$loaded == 0 & input$copyValuesParametersGP[[1]] == 0) {
-    #not sure whether it's a good shiny way of doing it,
-    # but I can't figure out how to do better
-    nbStrategies <- 1
-  } else {
-    nbStrategies <- input$nbStrategies
-  }
-    showGlobalParameters(nbStrategies, input, values, click = FALSE)
+      
+      
+      if (loadedValues$loaded == 0 & input$copyValuesParametersGP[[1]] == 0) {
+        #not sure whether it's a good shiny way of doing it,
+        # but I can't figure out how to do better
+        nbStrategies <- 1
+      } else {
+        nbStrategies <- input$nbStrategies
+      }
+      showGlobalParameters(nbStrategies, input, values, click = FALSE)
     }
   })
-
+  
   output$outInit <- renderUI({
     #####
     req(
@@ -575,42 +575,62 @@ shinyServer(function(input, output, session) {
   
   output$outCounts <- renderUI({
     #####
-
+    
     req(values$model)
     
-      tagList(
-        tags$h3("Plot state membership count"),
-        selectInput(
-          inputId = "modelPlotCounts",
-          label = "Model",
-          choices = as.vector(ux_model_names(input))
-        )
+    tagList(
+      tags$h3("Plot state membership count"),
+      selectInput(
+        inputId = "modelPlotCounts",
+        label = "Model",
+        choices = as.vector(ux_model_names(input))
       )
+    )
   })
   
   output$searchRegion <- renderUI({
-    req(input$useLifeTable)
     regionNames <- REGION %>%
       attr("labels")
-    regionNames <- ifelse(regionNames == "NA" | grepl("^Not ", regionNames), "------", regionNames)
+    
+    regionNames <- ifelse(
+      regionNames == "NA" | grepl("^Not ", regionNames),
+      "------",
+      regionNames
+    )
+    
     vRegionCodes <- as.vector(REGION)
     names(vRegionCodes) <- regionNames
-    selectizeInput("regionChoice", label = "Region", choices = vRegionCodes)
+    
+    selectizeInput(
+      "regionChoice",
+      label = "Region",
+      selected = "GLOBAL",
+      choices = vRegionCodes
+    )
   })
   
   output$searchCountry <- renderUI({
+    
     req(input$regionChoice)
+    
     countryCodes <- filter_attrs(
       COUNTRY,
       WHO_REGION_CODE == input$regionChoice
     )
+    
     countryNames <- countryCodes %>%
       attr("labels")
+    
     vCountryCodes <- as.vector(c("Global", countryCodes))
     names(vCountryCodes) <- c("Global", countryNames)
-    selectizeInput("countryChoice", label = "Country", choices = vCountryCodes)
+    
+    selectizeInput(
+      "countryChoice",
+      label = "Country",
+      choices = vCountryCodes
+    )
   })
-
+  
   output$plotCounts <- renderPlot({
     #####
     req(values$model)
