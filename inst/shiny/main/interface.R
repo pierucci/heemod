@@ -114,7 +114,6 @@ ux_parameters <- function(input, values, model_number) {
       )
     )
     
-    
     define_parameters_(
       param_dots
     )
@@ -123,6 +122,7 @@ ux_parameters <- function(input, values, model_number) {
     names(values_parameters) <- names_parameters
     
     param_dots <- lazyeval::as.lazy_dots(values_parameters)
+    
     define_parameters_(
       param_dots
     )

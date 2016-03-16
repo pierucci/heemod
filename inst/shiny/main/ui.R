@@ -7,151 +7,99 @@ shinyUI(
       
       tabPanel(
         "States",
-        wellPanel(fluidRow(
-          column(
-            4,
+        sidebarLayout(
+          sidebarPanel(
             fileInput("loadButton", "Load model")
-          )
-        )),
-        fluidRow(
-          column(
-            4, 
-            wellPanel(
-              numericInput(
-                "nbStates",
-                label = "Number of States",
-                value = "",
-                min = 1
-              )
-            )
           ),
-          column(
-            4, 
-            wellPanel(
-              numericInput(
-                "nbStateVariables",
-                label = "Number of State Variables",
-                value = "",
-                min = 1
-              )
-            )
-          ),
-          column(
-            4, 
-            wellPanel(
-              numericInput(
-                "nbStrategies",
-                label = "Number of Strategies",
-                value="",
-                min = 1
-              )
-            )
-          )
-        ),
-        fluidRow(
-          column(
-            4, 
-            uiOutput("nameStates")
-          ),
-          column(
-            4, 
-            uiOutput("nameStateVariables")
-          ),
-          column(
-            4, 
-            uiOutput("nameStrategies")
-          )
-        ),
-        conditionalPanel(
-          condition = "input.checkShowHelp == 1",
-          fluidRow(
-            column(
-              4,
-              wellPanel(
-                style = "background-color: #ffffff;",
-                em("Number of distinct states in the model, and their names.")
+          mainPanel(
+            fluidRow(
+              column(
+                6, 
+                wellPanel(
+                  numericInput(
+                    "nbStates",
+                    label = "Number of States",
+                    value = "",
+                    min = 1
+                  )
+                )
+              ),
+              column(
+                6, 
+                wellPanel(
+                  numericInput(
+                    "nbStrategies",
+                    label = "Number of Strategies",
+                    value="",
+                    min = 1
+                  )
+                )
               )
             ),
-            column(
-              4,
-              wellPanel(
-                style = "background-color: #ffffff;",
-                em("Number of values attached to states (such as cost, utility...), and their names.
-               Names should not contain spaces, start with '.', or special characters.")
+            fluidRow(
+              column(
+                6, 
+                uiOutput("nameStates")
+              ),
+              column(
+                6, 
+                uiOutput("nameStrategies")
               )
             ),
-            column(
-              4,
-              wellPanel(
-                style = "background-color: #ffffff;",
-                em("Number of strategies to compare.")
+            conditionalPanel(
+              condition = "input.checkShowHelp == 1",
+              fluidRow(
+                column(
+                  6,
+                  wellPanel(
+                    style = "background-color: #ffffff;",
+                    em("Number of distinct states in the model, and their names.")
+                  )
+                ),
+                column(
+                  6,
+                  wellPanel(
+                    style = "background-color: #ffffff;",
+                    em("Number of strategies to compare.")
+                  )
+                )
               )
             )
           )
         )
-        
       ),
       
       tabPanel(
         "Parameters", 
-        h3("Mortality rate"),
-        wellPanel(
-          fluidRow(
-            column(
-              2,
-              h4("mortality_rate")
+        sidebarLayout(
+          sidebarPanel(
+            h3("Mortality rate"),
+            checkboxInput(
+              "use_morta",
+              "Use in model? (as mortality_rate)",
+              width = "100%"
             ),
-            column(
-              3,
-              numericInput(
-                "startAge",
-                "Age at beginning",
-                0,
-                width = "100%"
-              )
+            numericInput(
+              "startAge",
+              "Age at beginning",
+              0,
+              width = "100%"
             ),
-            column(
-              3,
-              numericInput(
-                "cycleLength",
-                "Duration of a cycle (years)",
-                1,
-                width = "100%"
-              )
+            numericInput(
+              "cycleLength",
+              "Duration of a cycle (years)",
+              1,
+              width = "100%"
             ),
-            column(
-              2,
-              radioButtons(
-                "gender",
-                "Sex",
-                choices = c(Female = "FMLE", Male = "MLE")
-              )
-            )
-          ),
-          fluidRow(
-            column(
-              2,
-              checkboxInput(
-                "use_morta",
-                "Use in model?",
-                width = "100%"
-              )
+            radioButtons(
+              "gender",
+              "Sex",
+              choices = c(Female = "FMLE", Male = "MLE")
             ),
-            column(
-              3,
-              uiOutput("searchRegion")
-            ),
-            column(
-              3,
-              uiOutput("searchCountry")
-            )
-          )
-        ),
-        conditionalPanel(
-          condition = "input.checkShowHelp == 1",
-          fluidRow(
-            column(
-              4,
+            uiOutput("searchRegion"),
+            uiOutput("searchCountry"),
+            conditionalPanel(
+              condition = "input.checkShowHelp == 1",
               wellPanel(
                 style = "background-color: #ffffff;",
                 em("Input age-specific mortality rate from WHO databases."),
@@ -160,35 +108,37 @@ shinyUI(
                 em(").")
               )
             )
-          )
-        ),
-        h3("Custom parameters"),
-        uiOutput("globalParameters"),
-        conditionalPanel(
-          condition = "input.nbStrategies > 1",
-          fluidRow(
-            column(
-              3,
-              offset=3,
-              actionButton(
-                "copyValuesParametersGP",
-                "Copy values for other strategies"
+          ),
+          mainPanel(
+            h3("Custom parameters"),
+            uiOutput("globalParameters"),
+            conditionalPanel(
+              condition = "input.nbStrategies > 1",
+              fluidRow(
+                column(
+                  3,
+                  offset=3,
+                  actionButton(
+                    "copyValuesParametersGP",
+                    "Copy values for other strategies"
+                  )
+                )
               )
-            )
-          )
-        ),
-        conditionalPanel(
-          condition = "input.checkShowHelp == 1",
-          fluidRow(
-            column(
-              4,
-              wellPanel(
-                style = "background-color: #ffffff;",
-                em("Optional parameters to be called in transition matrix or state values. 
+            ),
+            conditionalPanel(
+              condition = "input.checkShowHelp == 1",
+              fluidRow(
+                column(
+                  4,
+                  wellPanel(
+                    style = "background-color: #ffffff;",
+                    em("Optional parameters to be called in transition matrix or state values. 
                The variable "),
-                strong("markov_cycle"),
-                em(" is defined inside the model and takes values 0, 1, 2... n at each cycle.
+                    strong("markov_cycle"),
+                    em(" is defined inside the model and takes values 0, 1, 2... n at each cycle.
                It can thus be used to define time-varying properties (such as age = 50 + markov_cycle).")
+                  )
+                )
               )
             )
           )
@@ -240,77 +190,95 @@ shinyUI(
       
       tabPanel(
         "States Parameters",
-        fluidRow(
-          column(
-            12,
-            uiOutput("stateParameters1"),
-            conditionalPanel(
-              condition = "input.nbStrategies > 1",
+        sidebarLayout(
+          sidebarPanel(
+            numericInput(
+              "nbStateVariables",
+              label = "Number of State Variables",
+              value = "",
+              min = 1
+            ),
+            uiOutput("nameStateVariables"),
+            wellPanel(
+              style = "background-color: #ffffff;",
+              em("Number of values attached to states (such as cost, utility...), and their names.
+               Names should not contain spaces, start with '.', or special characters.")
+            )
+          ),
+          mainPanel(
+            fluidRow(
               column(
-                3,
-                offset=3,
-                actionButton(
-                  "copyValuesParametersSP",
-                  "Copy values for other strategies"
+                12,
+                uiOutput("stateParameters1"),
+                conditionalPanel(
+                  condition = "input.nbStrategies > 1",
+                  column(
+                    3,
+                    offset=3,
+                    actionButton(
+                      "copyValuesParametersSP",
+                      "Copy values for other strategies"
+                    )
+                  )
                 )
               )
-            )
-          )
-        ),
-        fluidRow(
-          column(
-            12,
-            uiOutput("stateParameters2")
-          )
-        ),
-        conditionalPanel(
-          condition = "input.checkShowHelp == 1",
-          fluidRow(
-            column(
-              4,
-              wellPanel(
-                style = "background-color: #ffffff;",
-                em("Values associated with each state for each strategy.")
-              )
-            )
-          )
-        ),
-        conditionalPanel(
-          condition = "input.nbStates > 0 & input.nbStateVariables > 1",
-          fluidRow(
-            column(
-              6,
-              uiOutput(
-                "costVariable"
+            ),
+            fluidRow(
+              column(
+                12,
+                uiOutput("stateParameters2")
               )
             ),
-            column(
-              6,
-              uiOutput(
-                "effectVariable"
-              )
-            )
-          )
-        ),
-        conditionalPanel(
-          condition = "input.checkShowHelp == 1 & input.nbStates > 0 & input.nbStateVariables > 1",
-          fluidRow(
-            column(
-              6,
-              wellPanel(
-                style = "background-color: #ffffff;",
-                em("State variable name representing "),
-                strong("cost"),
-                em(" in the model (or mathematical expression using variable names, such as (var1+var2)/2).")
+            conditionalPanel(
+              condition = "input.checkShowHelp == 1",
+              fluidRow(
+                column(
+                  4,
+                  wellPanel(
+                    style = "background-color: #ffffff;",
+                    em("Values associated with each state for each strategy.")
+                  )
+                )
               )
             ),
-            column(
-              6,
-              wellPanel(
-                style = "background-color: #ffffff;",
-                em("State variable name representing "),
-                strong("effect"),
-                em(" in the model (or mathematical expression using variable names, such as (var1+var2)/2).")
+            conditionalPanel(
+              condition = "input.nbStates > 0 & input.nbStateVariables > 1",
+              fluidRow(
+                column(
+                  6,
+                  uiOutput(
+                    "costVariable"
+                  )
+                ),
+                column(
+                  6,
+                  uiOutput(
+                    "effectVariable"
+                  )
+                )
+              )
+            ),
+            conditionalPanel(
+              condition = "input.checkShowHelp == 1 & input.nbStates > 0 & input.nbStateVariables > 1",
+              fluidRow(
+                column(
+                  6,
+                  wellPanel(
+                    style = "background-color: #ffffff;",
+                    em("State variable name representing "),
+                    strong("cost"),
+                    em(" in the model (or mathematical expression using variable names, such as (var1+var2)/2).")
+                  )
+                ),
+                column(
+                  6,
+                  wellPanel(
+                    style = "background-color: #ffffff;",
+                    em("State variable name representing "),
+                    strong("effect"),
+                    em(" in the model (or mathematical expression using variable names, such as (var1+var2)/2).")
+                  )
+                )
               )
             )
           )

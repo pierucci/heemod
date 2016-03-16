@@ -376,6 +376,7 @@ shinyServer(function(input, output, session) {
   })  
   
   output$stateParameters1 <- renderUI({
+    req(input[[paste0("variableStateName", input$nbStateVariables)]])
     show_first(val = "SP1", FUN = showStateParam, required = c(input$nbStates, input$nbStateVariables), loadedValues = loadedValues)
     #    req(input$nbStates)
     #    req(input$nbStateVariables)
@@ -396,6 +397,7 @@ shinyServer(function(input, output, session) {
   
   
   output$stateParameters2 <- renderUI({
+    req(input[[paste0("variableStateName", input$nbStateVariables)]])
     show_next(val = "SP2", trigger = "copyValuesParametersSP", input, values, showStateParam, c(input$nbStrategies, input$nbStates, input$nbStateVariables), loadedValues)
     #     req(input$nbStrategies)
     #     req(input$nbStateVariables)
