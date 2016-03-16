@@ -53,25 +53,28 @@ ux_state_names <- function(input) {
 ux_parameters <- function(input, values, model_number) {
   seq_param <- seq_len(ux_nb_parameters(values))
   
+  trim <- function (x) gsub("^\\s+|\\s+$", "", x)
+  
   names_parameters <- unlist(
     shiny_subset(
       input,
       paste0("globalParamName", seq_param)
     )
-  )
+  ) %>%
+    trim
+  
   values_parameters <- unlist(
     shiny_subset(
       input,
       paste0("globalParamValue", model_number, seq_param)
     )
-  ) %>% 
-    subset(names_parameters != "")
+  )
   
-  trim <- function (x) gsub("^\\s+|\\s+$", "", x)
+  param_ok <- names_parameters != "" &
+    values_parameters != ""
   
-  names_parameters <- names_parameters %>%
-    subset(names_parameters != "") %>%
-    trim
+  names_parameters <- names_parameters[param_ok]
+  values_parameters <- values_parameters[param_ok]
   
   test <- function(x) {
     if (is.null(x)) {
