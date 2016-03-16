@@ -69,7 +69,7 @@ ux_parameters <- function(input, values, model_number) {
   test <- function(x) {
     if (is.null(x)) {
       FALSE
-    } else if (x == "") {
+    } else if (all(x == "")) {
       FALSE
     } else {
       TRUE
@@ -82,14 +82,14 @@ ux_parameters <- function(input, values, model_number) {
     param_dots <- lazyeval::as.lazy_dots(values_parameters)
     
     param_dots <- c(
-      param_dots,
       lazyeval::lazy_dots(
         mortality_rate = get_who_mr(
           age = ux_morta_age(input) + markov_cycle,
           sex = ux_morta_sex(input),
           country = ux_morta_country(input)
         )
-      )
+      ),
+      param_dots
     )
     
     define_parameters_(
@@ -267,28 +267,32 @@ ux_base_model <- function(input) {
   ux_model_names(input)[1]
 }
 
+ux_run_models_raw <- function(input, values) {
+  list_models <- lapply(
+    seq_len(ux_nb_models(input)),
+    function(x)
+      ux_model(
+        input = input,
+        values = values,
+        model_number = x
+      )
+  )
+  names(list_models) <- ux_model_names(input)
+  
+  run_models_(
+    list_models = list_models,
+    init = ux_init(input),
+    cycles = ux_cycles(input),
+    method = ux_method(input),
+    cost = ux_cost(input),
+    effect = ux_effect(input),
+    base_model = ux_base_model(input)
+  )
+}
+
 ux_run_models <- function(input, values) {
   res <- try({
-    list_models <- lapply(
-      seq_len(ux_nb_models(input)),
-      function(x)
-        ux_model(
-          input = input,
-          values = values,
-          model_number = x
-        )
-    )
-    names(list_models) <- ux_model_names(input)
-    
-    run_models_(
-      list_models = list_models,
-      init = ux_init(input),
-      cycles = ux_cycles(input),
-      method = ux_method(input),
-      cost = ux_cost(input),
-      effect = ux_effect(input),
-      base_model = ux_base_model(input)
-    )
+    ux_run_models_raw(input, values)
   }, 
   silent = TRUE)
   
