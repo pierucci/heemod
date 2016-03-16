@@ -64,7 +64,11 @@ ux_parameters <- function(input, values, model_number) {
       input,
       paste0("globalParamValue", model_number, seq_param)
     )
-  )
+  ) %>% 
+    subset(names_parameters != "")
+  
+  names_parameters <- names_parameters %>%
+    subset(names_parameters != "")
   
   test <- function(x) {
     if (is.null(x)) {
