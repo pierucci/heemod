@@ -648,4 +648,35 @@ shinyServer(function(input, output, session) {
       )
   },
   width = 600)
+  
+  output$debugParams <- renderUI({
+    req(ux_nb_models(input))
+    tagList(
+      lapply(
+        seq_len(ux_nb_models(input)),
+        function(x) {
+          renderPrint(ux_parameters(input, values, x))
+        }
+      )
+    )
+  })
+  
+  output$debugModels <- renderUI({
+    req(ux_nb_models(input))
+    tagList(
+      lapply(
+        seq_len(ux_nb_models(input)),
+        function(x) {
+          renderPrint(ux_model(
+            input = input,
+            values = values,
+            model_number = x
+          ))
+      })
+    )
+  })
+  
+  output$debugRunModels <- renderPrint({
+    ux_run_models_raw(input, values)
+  })
 })

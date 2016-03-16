@@ -393,6 +393,15 @@ shinyUI(
             downloadButton("saveButton", "Save model")
           )
         )
+      ),
+      tabPanel(
+        "Debug",
+        h3("Parameters"),
+        uiOutput("debugParams"),
+        h3("Models"),
+        uiOutput("debugModels"),
+        h3("Run Models"),
+        verbatimTextOutput("debugRunModels")
       )
     )
   )
