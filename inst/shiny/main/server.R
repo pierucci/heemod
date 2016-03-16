@@ -71,7 +71,7 @@ shinyServer(function(input, output, session) {
                         tags$td(numericInput(
                           paste0("discountingRate",x,i),
                           label = NULL,
-                          step=0.01,
+                          step=1,
                           value = ifelse(click == TRUE, 
                                          ifelse(!is.null(input[[paste0("discountingRate",1,i)]]), input[[paste0("discountingRate",1,i)]], 0),
                                          ifelse(!is.null(input[[paste0("discountingRate",x,i)]]), input[[paste0("discountingRate",x,i)]], 
