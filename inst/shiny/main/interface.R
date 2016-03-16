@@ -67,8 +67,11 @@ ux_parameters <- function(input, values, model_number) {
   ) %>% 
     subset(names_parameters != "")
   
+  trim <- function (x) gsub("^\\s+|\\s+$", "", x)
+  
   names_parameters <- names_parameters %>%
-    subset(names_parameters != "")
+    subset(names_parameters != "") %>%
+    trim
   
   test <- function(x) {
     if (is.null(x)) {
