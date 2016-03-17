@@ -214,6 +214,10 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "nbStates", value = input$nbStates)
       updateNumericInput(session, "nbStateVariables", value = input$nbStateVariables)
       updateNumericInput(session, "nbStrategies", value = input$nbStrategies)
+      updateCheckboxInput(session, "use_morta", value = input$use_morta)
+      updateNumericInput(session, "startAge", value = input$startAge)
+      updateNumericInput(session, "cycleLength", value = input$cycleLength)
+      updateRadioButtons(session, "gender", selected = input$gender)
     }
     loadedValues[["input"]] <- input
     loadedValues[["values"]] <- values
@@ -334,9 +338,10 @@ shinyServer(function(input, output, session) {
     } 
     else if (input[[trigger]]){
       copyValues(trigger, input = input, values = values, FUN)
-    } else {
-      FUN(input$nbStrategies, input, values, click = FALSE)
-    }
+    } 
+#     else {
+#       FUN(input$nbStrategies, input, values, click = FALSE)
+#     }
   }
   
   
@@ -389,10 +394,10 @@ shinyServer(function(input, output, session) {
     #     
     #     showStateParam(1, input, values)
   })
-  
-  copySP <- eventReactive(input$copyValuesParametersSP,{
-    showStateParam <- showStateParam(input$nbStrategies, input, values)
-  })
+#   
+#   copySP <- eventReactive(input$copyValuesParametersSP,{
+#     showStateParam <- showStateParam(input$nbStrategies, input, values)
+#   })
   
   
   
@@ -606,13 +611,12 @@ shinyServer(function(input, output, session) {
     selectizeInput(
       "regionChoice",
       label = "Region",
-      selected = "GLOBAL",
+      selected <- ifelse(loadedValues$loaded == 0, "GLOBAL", loadedValues$input$regionChoice),
       choices = vRegionCodes
     )
   })
   
   output$searchCountry <- renderUI({
-    
     req(input$regionChoice)
     
     countryCodes <- filter_attrs(
@@ -629,7 +633,8 @@ shinyServer(function(input, output, session) {
     selectizeInput(
       "countryChoice",
       label = "Country",
-      choices = vCountryCodes
+      choices = vCountryCodes,
+      selected <-  ifelse(loadedValues$loaded == 0, NULL, loadedValues$input$countryChoice)
     )
   })
   
