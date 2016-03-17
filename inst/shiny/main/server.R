@@ -8,7 +8,7 @@ COUNTRY = get_gho_codes(dimension="COUNTRY")
 
 shinyServer(function(input, output, session) {
   values <- reactiveValues(nbGlobalParameters = 1)
-  loadedValues <- reactiveValues(loaded = 0, SP1 = 0, SP2 = 0, TM1 = 0, TM2 = 0, GP = 0, nameStateVariables=0)
+  loadedValues <- reactiveValues(loaded = 0, SP1 = 0, SP2 = 0, TM1 = 0, TM2 = 0, GP = 0, nameStates = 0, nameStateVariables=0, nameStrategies = 0)
   tmp <- reactiveValues(showStateParam = NULL)
   
   showStateParam <- function(nbStrat, input, values, click) {
@@ -218,6 +218,8 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "startAge", value = input$startAge)
       updateNumericInput(session, "cycleLength", value = input$cycleLength)
       updateRadioButtons(session, "gender", selected = input$gender)
+      updateSelectInput(session,"countMethod", selected = input$countMethod)
+      updateNumericInput(session, "cycles", value = input$cycles)
     }
     loadedValues[["input"]] <- input
     loadedValues[["values"]] <- values
@@ -240,11 +242,11 @@ shinyServer(function(input, output, session) {
   output$nameStates <- renderUI({
     req(input$nbStates)
     
-    observeEvent(
-      loadedValues$loaded, {
-        input <- loadedValues$input
-        values <- loadedValues$values
-      })
+    if(loadedValues$loaded > 0 & isolate(loadedValues$nameStates < loadedValues$loaded)){
+      input <- loadedValues$input
+      values <- loadedValues$values
+      loadedValues$nameStates <- loadedValues$loaded
+    }
     
     lapply(
       seq_len(input$nbStates),
@@ -288,11 +290,11 @@ shinyServer(function(input, output, session) {
   output$nameStrategies <- renderUI({
     req(input$nbStrategies)
     
-    observeEvent(
-      loadedValues$loaded, {
-        input <- loadedValues$input
-        values <- loadedValues$values
-      })
+    if(loadedValues$loaded > 0 & isolate(loadedValues$nameStrategies < loadedValues$loaded)){
+      input <- loadedValues$input
+      values <- loadedValues$values
+      loadedValues$nameStrategies <- loadedValues$loaded
+    }
     
     lapply(
       seq_len(input$nbStrategies),
@@ -498,14 +500,14 @@ shinyServer(function(input, output, session) {
                       numericInput(
                         paste0("init", i),
                         label = NULL,
-                        value = 1000,
+                        value = ifelse (loadedValues$loaded == 0, 1000, ifelse(!is.null(loadedValues$input[[paste0("init",i)]]), loadedValues$input[[paste0("init",i)]], 1000)),
                         width="100%"
                       )
                     } else {
                       numericInput(
                         paste0("init", i),
                         label = NULL,
-                        value = 0,
+                        value = ifelse (loadedValues$loaded == 0, 0, ifelse(!is.null(loadedValues$input[[paste0("init",i)]]), loadedValues$input[[paste0("init",i)]], 0)),
                         width="100%"
                       )
                     }
