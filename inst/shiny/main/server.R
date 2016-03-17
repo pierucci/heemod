@@ -324,7 +324,7 @@ shinyServer(function(input, output, session) {
   }
   
   show_next <- function(val, trigger, input, values, FUN, required, loadedValues){
-    req(required)
+    req(required, input$nbStrategies>1)
     input[[trigger]]
     if(loadedValues$loaded > 0 & isolate(loadedValues[[val]] < loadedValues$loaded)){
       input <- loadedValues$input
