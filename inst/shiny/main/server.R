@@ -8,7 +8,7 @@ COUNTRY = get_gho_codes(dimension="COUNTRY")
 
 shinyServer(function(input, output, session) {
   values <- reactiveValues(nbGlobalParameters = 1)
-  loadedValues <- reactiveValues(loaded = 0, SP1 = 0, SP2 = 0, TM1 = 0, TM2 = 0, GP = 0)
+  loadedValues <- reactiveValues(loaded = 0, SP1 = 0, SP2 = 0, TM1 = 0, TM2 = 0, GP = 0, nameStateVariables=0)
   tmp <- reactiveValues(showStateParam = NULL)
   
   showStateParam <- function(nbStrat, input, values, click) {
@@ -263,11 +263,12 @@ shinyServer(function(input, output, session) {
   
   output$nameStateVariables <- renderUI({
     req(input$nbStateVariables)
-    observeEvent(
-      loadedValues$loaded, {
-        input <- loadedValues$input
-        values <- loadedValues$values
-      })
+    
+    if(loadedValues$loaded > 0 & isolate(loadedValues$nameStateVariables < loadedValues$loaded)){
+      input <- loadedValues$input
+      values <- loadedValues$values
+      loadedValues$nameStateVariables <- loadedValues$loaded
+    }
     
     lapply(
       seq_len(input$nbStateVariables),
@@ -422,30 +423,27 @@ shinyServer(function(input, output, session) {
   
   
   output$costVariable <- renderUI({
-    #####
     textInput(
       "costVariable",
       label = "Cost Variable",
-      value = input$variableStateName1
+      value = ifelse(loadedValues$loaded == 0, input$variableStateName1, loadedValues$input$costVariable)
     )
   })
   output$effectVariable <- renderUI({
-    isolate(if (loadedValues$loaded == TRUE){
-      input <- loadedValues$input
-      values <- loadedValues$values
-    })
-    
     textInput(
       "effectVariable",
       label = "Effect Variable",
-      value = input$variableStateName2
+      value = ifelse(loadedValues$loaded == 0, input$variableStateName2, loadedValues$input$effectVariable)
     )
   })
   
-  observeEvent(input$addParametersGP, {
+  observe({
     if (loadedValues$loaded > 0){
-      isolate(values$nbGlobalParameters <- loadedValues$values$nbGlobalParameters)
+      values$nbGlobalParameters <- loadedValues$values$nbGlobalParameters
     }
+  })
+  
+  observeEvent(input$addParametersGP, {
     isolate(values$nbGlobalParameters <- values$nbGlobalParameters + 1)
   })
   
@@ -463,8 +461,6 @@ shinyServer(function(input, output, session) {
       copyValues("copyValuesParametersGP", input = input, values = values, showGlobalParameters)
     }
     else {
-      
-      
       if (loadedValues$loaded == 0 & input$copyValuesParametersGP[[1]] == 0) {
         #not sure whether it's a good shiny way of doing it,
         # but I can't figure out how to do better
