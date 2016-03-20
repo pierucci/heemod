@@ -3,13 +3,8 @@
 ## Enhancements
 
   * `shiny` interface.
-
-# heemod 0.2.1
-
-## Enhancements
-
-  * added support for different conting options.
-  * new `get_mortality_rate()` convenience function.
+  * added support for different counting options.
+  * `get_who_mr()` to extract mortality rates from WHO data.
 
 # heemod 0.2.0
 
