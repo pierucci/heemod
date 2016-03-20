@@ -10,6 +10,6 @@ run_shiny()
 \code{NULL}
 }
 \description{
-Run in browser the Shiny graphical interface to \code{heemod}.
+Run the Shiny graphical interface to \code{heemod}.
 }
 
