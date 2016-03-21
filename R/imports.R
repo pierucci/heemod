@@ -56,4 +56,6 @@
 #' @importFrom DT renderDataTable
 #' @importFrom DT datatable
 #' 
+#' @importFrom rgho get_gho_data
+#' 
 NULL

@@ -1,6 +1,6 @@
 #' Run Shiny Graphical Interface
 #' 
-#' Run in browser the Shiny graphical interface to \code{heemod}.
+#' Run the Shiny graphical interface to \code{heemod}.
 #'
 #' @return \code{NULL}
 #' @export
