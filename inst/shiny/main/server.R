@@ -632,7 +632,7 @@ shinyServer(function(input, output, session) {
       "countryChoice",
       label = "Country",
       choices = vCountryCodes,
-      selected <-  ifelse(loadedValues$loaded == 0, "", loadedValues$input$countryChoice)
+      selected <-  ifelse(loadedValues$loaded == 0, "Global", loadedValues$input$countryChoice)
     )
   })
   
