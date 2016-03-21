@@ -314,6 +314,10 @@ shinyServer(function(input, output, session) {
   
   show_first <- function(val, FUN, required, loadedValues){
     req(required)
+    for (i in 1:input$nbStates){
+      req(input[[paste0("stateName", i)]])
+    }
+    req(input$strategyName1)
     if(loadedValues$loaded > 0 & isolate(loadedValues[[val]] < loadedValues$loaded)){
       input <- loadedValues$input
       values <- loadedValues$values
@@ -331,7 +335,13 @@ shinyServer(function(input, output, session) {
   }
   
   show_next <- function(val, trigger, input, values, FUN, required, loadedValues){
-    req(required, input$nbStrategies>1)
+    req(required, input$nbStrategies > 1)
+    for (i in 1:input$nbStates){
+      req(input[[paste0("stateName", i)]])
+    }
+    for (i in 1:input$nbStrategies){
+      req(input[[paste0("strategyName", i)]])
+    }
     input[[trigger]]
     if(loadedValues$loaded > 0 & isolate(loadedValues[[val]] < loadedValues$loaded)){
       input <- loadedValues$input
@@ -341,85 +351,30 @@ shinyServer(function(input, output, session) {
     } 
     else if (input[[trigger]]){
       copyValues(trigger, input = input, values = values, FUN)
-    } 
-#     else {
-#       FUN(input$nbStrategies, input, values, click = FALSE)
-#     }
+    } else {
+      FUN(input$nbStrategies, input, values, click = FALSE)
+    }
   }
-  
   
   output$transMatrix1 <- renderUI({
     show_first(val = "TM1", FUN = showTransMatrix, required=input$nbStates, loadedValues)    
-    #     req(input$nbStates)
-    #     if(loadedValues$loaded > 0 & isolate(loadedValues$TM1 < loadedValues$loaded)){
-    #       input <- loadedValues$input
-    #       values <- loadedValues$values
-    #       loadedValues$TM1 <- loadedValues$loaded
-    #     }
-    #     showTransMatrix(1, input, values)
-    
   })
-  
-  #   copyTM <- eventReactive(input$copyValuesParametersTM,{
-  #     showTransMatrix <- showTransMatrix(input$nbStrategies, input, values)
-  #   })
   
   output$transMatrix2 <- renderUI({
     show_next(val = "TM2", trigger = "copyValuesParametersTM", input, values, showTransMatrix, c(input$nbStrategies, input$nbStates), loadedValues)
-    
-    #     req(input$nbStrategies)
-    #     req(input$nbStates)
-    # 
-    #     if (input$copyValuesParametersTM)
-    #       copyValues("copyValuesParametersTM", input, values, showTransMatrix)
-    #       #copyTM()
-    #     else if(loadedValues$loaded > 0 & isolate(loadedValues$TM2 < loadedValues$loaded)){
-    #       input <- loadedValues$input
-    #       values <- loadedValues$values
-    #       loadedValues$TM2 <- loadedValues$loaded
-    #       showTransMatrix(input$nbStrategies, input, values)
-    #     }
-    #     else if (input$nbStates | input$nbStrategies)
-    #       showTransMatrix(input$nbStrategies, input, values)
+
   })  
   
   output$stateParameters1 <- renderUI({
     req(input[[paste0("variableStateName", input$nbStateVariables)]])
     show_first(val = "SP1", FUN = showStateParam, required = c(input$nbStates, input$nbStateVariables), loadedValues = loadedValues)
-    #    req(input$nbStates)
-    #    req(input$nbStateVariables)
-    # 
-    #     if(loadedValues$loaded > 0 & isolate(loadedValues$SP1 < loadedValues$loaded)){
-    #       input <- loadedValues$input
-    #       values <- loadedValues$values
-    #       loadedValues$SP1 <- loadedValues$loaded
-    #     }
-    #     
-    #     showStateParam(1, input, values)
   })
-#   
-#   copySP <- eventReactive(input$copyValuesParametersSP,{
-#     showStateParam <- showStateParam(input$nbStrategies, input, values)
-#   })
-  
+
   
   
   output$stateParameters2 <- renderUI({
     req(input[[paste0("variableStateName", input$nbStateVariables)]])
     show_next(val = "SP2", trigger = "copyValuesParametersSP", input, values, showStateParam, c(input$nbStrategies, input$nbStates, input$nbStateVariables), loadedValues)
-    #     req(input$nbStrategies)
-    #     req(input$nbStateVariables)
-    #     req(input$nbStates)
-    #     
-    #     if (input$copyValuesParametersSP)
-    #       copyValues("copyValuesParametersSP", input, values, showStateParam)
-    #     else if(loadedValues$loaded > 0 & isolate(loadedValues$SP2 < loadedValues$loaded)){
-    #       input <- loadedValues$input
-    #       values <- loadedValues$values
-    #       loadedValues$SP2 <- loadedValues$loaded
-    #       showStateParam(input$nbStrategies, input, values)
-    #     } 
-    
   })
   
   
@@ -456,7 +411,6 @@ shinyServer(function(input, output, session) {
       input <- loadedValues$input
       values <- loadedValues$values
       loadedValues$GP <- loadedValues$loaded
-      print(values$nbGlobalParameters)
       showGlobalParameters(input$nbStrategies, input, values, click = FALSE)
     }
     else if (input$copyValuesParametersGP){
