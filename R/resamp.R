@@ -226,6 +226,7 @@ run_probabilistic <- function(model, resample, N) {
       list(
         eval_model_newdata(
           model = list_models[[i]], method = method,
+          old_parameters = get_parameters(model),
           init = init, cycles = cycles, newdata = newdata
         )
       )

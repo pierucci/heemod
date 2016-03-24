@@ -21,7 +21,6 @@ test_that(
     )
 
     mod1 <- define_model(
-      parameters = par1,
       transition_matrix = mat1,
       X1 = s1,
       X2 = s2
@@ -35,7 +34,6 @@ test_that(
       y = 1029
     )
     mod2 <- define_model(
-      parameters = par1,
       transition_matrix = mat1,
       X1 = s3,
       X2 = s4
@@ -43,36 +41,42 @@ test_that(
     expect_error(
       run_models(
         mod1, mod2,
+        parameters = par1,
         init = c(1, 2, 3)
       )
     )
     expect_error(
       run_models(
         mod1, mod2,
+        parameters = par1,
         init = c(X3 = 1, X4 = 2)
       )
     )
     expect_error(
       run_models(
         mod1, mod2,
+        parameters = par1,
         init = c(-1, 0)
       )
     )
     expect_error(
       run_models(
         mod1, mod2,
+        parameters = par1,
         init = c(NA, 1)
       )
     )
     expect_error(
       run_models(
         mod1, mod2,
+        parameters = par1,
         cycles = 0
       )
     )
     expect_error(
       run_models(
-        mod1, list()
+        mod1,
+        parameters = par1, list()
       )
     )
   }
@@ -98,7 +102,6 @@ test_that(
       y = 1726
     )
     mod1 <- define_model(
-      parameters = par1,
       transition_matrix = mat1,
       X1 = s1,
       X2 = s2
@@ -112,21 +115,25 @@ test_that(
       y = 1029
     )
     mod2 <- define_model(
-      parameters = par1,
       transition_matrix = mat1,
       X1 = s3,
       X2 = s4
     )
     expect_identical(
-      run_models(mod1, mod2, init = c(1000L, 0L), cost = x, effect = y),
-      run_models(mod1, mod2, cost = x, effect = y)
+      run_models(mod1, mod2,
+                 parameters = par1, init = c(1000L, 0L), cost = x, effect = y),
+      run_models(mod1, mod2,
+                 parameters = par1, cost = x, effect = y)
     )
     expect_identical(
-      run_models(mod1, mod2, cost = x, effect = y),
-      run_models(I = mod1, II = mod2, cost = x, effect = y)
+      run_models(mod1, mod2,
+                 parameters = par1, cost = x, effect = y),
+      run_models(I = mod1, II = mod2,
+                 parameters = par1, cost = x, effect = y)
     )
     expect_output(
-      str(run_models(mod1, mod2, cost = x, effect = y)),
+      str(run_models(mod1, mod2,
+                     parameters = par1, cost = x, effect = y)),
       '2 obs. of  5 variables:
  $ x           : num  309300 933900
  $ y           : num  283300 891300
@@ -136,7 +143,8 @@ test_that(
       fixed = TRUE
     )
     expect_output(
-      str(summary(run_models(mod1, mod2, cost = x, effect = y))),
+      str(summary(run_models(mod1, mod2,
+                             parameters = par1, cost = x, effect = y))),
       "List of 6
  $ res       :'data.frame':	2 obs. of  2 variables:
   ..$ x: num [1:2] 309300 933900

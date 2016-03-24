@@ -2,10 +2,6 @@ context("Test model")
 
 test_that(
   "Model definition", {
-    par1 <- define_parameters(
-      a = .1,
-      b = 1 / (markov_cycle + 1)
-    )
     mat1 <- define_matrix(
       state_names = c("X1", "X2"),
       1-a, a,
@@ -30,7 +26,6 @@ test_that(
       1-b, b
     )
     mod2 <- define_model(
-      parameters = par1,
       transition_matrix = mat2,
       s1,
       s2
@@ -39,17 +34,14 @@ test_that(
       print(mod1),
       "An unevaluated Markov model:
 
-    2 parameters,
     2 states,
     2 state values",
       fixed = TRUE
     )
     expect_output(
       str(mod1),
-      "List of 3
- $ parameters       :List of 2
-  ..$ a:List of 2
-  .. ..$ expr: num 0.1",
+      "List of 2
+ $ transition_matrix:List of 4",
       fixed = TRUE
     )
     expect_output(
@@ -59,7 +51,6 @@ test_that(
     )
     expect_error(
       define_model(
-        parameters = par1,
         transition_matrix = mat1,
         X1 = s1,
         X3 = s2
@@ -88,13 +79,13 @@ test_that(
       y = 1726
     )
     mod1 <- define_model(
-      parameters = par1,
       transition_matrix = mat1,
       X1 = s1,
       X2 = s2
     )
     e_mod <- run_models(
       mod1,
+      parameters = par1,
       init = c(1, 0),
       cycles = 5,
       cost = x,
@@ -190,13 +181,11 @@ test_that(
       y = 1726
     )
     mod1 <- define_model(
-      parameters = par1,
       transition_matrix = mat1,
       X1 = s1,
       X2 = s2
     )
     mod2 <- define_model(
-      parameters = par1,
       transition_matrix = mat1,
       X1 = s1,
       X2 = s1
@@ -204,6 +193,7 @@ test_that(
     
     e_mod2 <- run_models(
       mod1, mod2,
+      parameters = par1,
       init = c(1, 0),
       cycles = 5,
       cost = x,
@@ -277,6 +267,7 @@ II 422.5384 899.5074 0.4697442',
       print(
         run_models(
           mod1 = mod1, mod2 = mod2,
+          parameters = par1,
           init = c(1, 0),
           cycles = 5,
           cost = x,
