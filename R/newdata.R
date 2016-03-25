@@ -56,21 +56,25 @@
 #' )
 #' }
 #' 
-eval_model_newdata <- function(model, cycles,
-                               init, method,
-                               newdata) {
-  
-  eval_newdata <- function(new_params, model) {
-    new_params <- Filter(function(x) !is.na(x), new_params)
+eval_model_newdata <- function(model,
+                               old_parameters,
+                               newdata,
+                               cycles,
+                               init, method) {
+
+  eval_newdata <- function(new_parameters, model, old_parameters) {
+    new_parameters <- Filter(function(x) !is.na(x), new_parameters)
     
-    lazy_new_param <- do.call(lazyeval::lazy_dots, new_params)
+    lazy_new_param <- do.call(lazyeval::lazy_dots, new_parameters)
     
-    model$parameters <- modifyList(
-      get_parameters(model),
+    parameters <- modifyList(
+      old_parameters,
       lazy_new_param
     )
+    
     eval_model(
       model = model,
+      parameters = parameters,
       cycles = cycles,
       init = init,
       method = method
@@ -81,7 +85,8 @@ eval_model_newdata <- function(model, cycles,
     newdata,
     dplyr::do(
       dplyr::rowwise(newdata),
-      get_total_state_values(eval_newdata(., model))
+      get_total_state_values(eval_newdata(., model = model,
+                                          old_parameters = old_parameters))
     )
   )
 }
@@ -120,7 +125,8 @@ run_newdata <- function(x, newdata) {
   ce <- attr(x, "ce")
   
   list_res <- lapply(list_models, eval_model_newdata, method = method,
-                     init = init, cycles = cycles, newdata = newdata)
+                     old_parameters = get_parameters(x), newdata = newdata,
+                     init = init, cycles = cycles)
   
   for (n in names(list_res)) {
     list_res[[n]]$.model_names <- n
