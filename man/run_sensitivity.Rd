@@ -28,7 +28,6 @@ param <- define_parameters(
 )
 mod1 <-
   define_model(
-    parameters = param,
     transition_matrix = define_matrix(
       C, p1,
       p2, C
@@ -45,7 +44,6 @@ mod1 <-
 
 mod2 <-
   define_model(
-    parameters = param,
     transition_matrix = define_matrix(
       C, p1,
       p2, C
@@ -58,12 +56,11 @@ mod2 <-
       cost = 456,
       ly = 1
     )
-    
   )
-
 
 res2 <- run_models(
   mod1, mod2,
+  parameters = param,
   init = c(100, 0),
   cycles = 10,
   cost = cost,
