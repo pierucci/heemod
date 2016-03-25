@@ -2,11 +2,6 @@
 
 mod1 <-
   define_model(
-    parameters = define_parameters(
-      age_init = 60,
-      cost_init = 1000,
-      age = age_init + markov_cycle
-    ),
     transition_matrix = define_matrix(
       .5, .5,
       .1, .9
@@ -23,11 +18,6 @@ mod1 <-
 
 mod2 <-
   define_model(
-    parameters = define_parameters(
-      age_init = 60,
-      age = age_init + markov_cycle,
-      p_trans = .7
-    ),
     transition_matrix = define_matrix(
       p_trans, C,
       .1, .9
@@ -45,6 +35,12 @@ mod2 <-
 
 res2 <- run_models(
   mod1, mod2,
+  parameters = define_parameters(
+    age_init = 60,
+    cost_init = 1000,
+    age = age_init + markov_cycle,
+    p_trans = .7
+  ),
   init = 1:0,
   cycles = 10,
   cost = cost,

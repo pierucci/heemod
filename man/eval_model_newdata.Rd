@@ -5,10 +5,17 @@
 \title{Iteratively Evaluate a Markov Model With New Parameter 
 Values}
 \usage{
-eval_model_newdata(model, cycles, init, method, newdata)
+eval_model_newdata(model, old_parameters, newdata, cycles, init, method)
 }
 \arguments{
 \item{model}{An \code{uneval_model} object.}
+
+\item{old_parameters}{Current parameters used to compute
+model.}
+
+\item{newdata}{a data.frame whose names match parameters 
+names. \code{model} will be evaluated iteratively, 
+taking successivel values from each row.}
 
 \item{cycles}{positive integer. Number of Markov Cycles 
 to compute.}
@@ -18,10 +25,6 @@ model states. Number of individuals in each model state
 at the beginning.}
 
 \item{method}{Counting method.}
-
-\item{newdata}{a data.frame whose names match parameters 
-names. \code{model} will be evaluated iteratively, 
-taking successivel values from each row.}
 }
 \value{
 A data.frame containing the values of 
@@ -34,7 +37,7 @@ per row, iteratively evaluate the model over the set of
 new values.
 }
 \details{
-New parameters with a missing value (\code{NA}) do not
+New parameters with a missing value (\code{NA}) do not 
 replace existing parameters.
 }
 \examples{

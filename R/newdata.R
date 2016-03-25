@@ -5,7 +5,7 @@
 #' per row, iteratively evaluate the model over the set of 
 #' new values.
 #' 
-#' New parameters with a missing value (\code{NA}) do not
+#' New parameters with a missing value (\code{NA}) do not 
 #' replace existing parameters.
 #' 
 #' @param model An \code{uneval_model} object.
@@ -14,6 +14,8 @@
 #' @param init numeric vector, same length as number of 
 #'   model states. Number of individuals in each model state
 #'   at the beginning.
+#' @param old_parameters Current parameters used to compute
+#'   model.
 #' @param newdata a data.frame whose names match parameters 
 #'   names. \code{model} will be evaluated iteratively, 
 #'   taking successivel values from each row.

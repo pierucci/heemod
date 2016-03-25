@@ -1,3 +1,10 @@
+# heemod 0.3.1
+
+# Bug fixes
+
+  * correct error in probabilistic analysis vignette.
+  * a single set of parameters is now used for a set of models.
+
 # heemod 0.3.0
 
 ## Enhancements

@@ -16,7 +16,6 @@ test_that(
       y = 1726
     )
     mod1 <- define_model(
-      parameters = par1,
       transition_matrix = mat1,
       X1 = s1,
       X2 = s2

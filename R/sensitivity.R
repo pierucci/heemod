@@ -66,7 +66,8 @@ run_sensitivity <- function(model, sensitivity) {
   method <- attr(model, "method")
   list_models <- attr(model, "uneval_model_list")
   
-  list_res <- lapply(list_models, eval_model_newdata, method = method,
+  list_res <- lapply(list_models, eval_model_newdata,
+                     method = method, old_parameters = get_parameters(model),
                      init = init, cycles = cycles, newdata = sensitivity)
   for (n in names(list_res)) {
     list_res[[n]]$.model_names <- n

@@ -39,7 +39,6 @@ matters since only values defined earlier can be
 referenced in later expressions.
 }
 \examples{
-
 st <- define_state(
   cost = 6453,
   utility = .876

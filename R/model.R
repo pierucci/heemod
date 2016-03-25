@@ -24,7 +24,6 @@
 #' 
 #' @example inst/examples/example_define_model.R
 define_model <- function(...,
-                         parameters = define_parameters(),
                          transition_matrix = define_matrix()) {
   
   states <- define_state_list_(list(...))
