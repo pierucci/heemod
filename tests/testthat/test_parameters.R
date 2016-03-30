@@ -90,3 +90,29 @@ test_that(
     )
   }
 )
+
+test_that(
+  "Reserved names", {
+    expect_error(
+      heemod:::check_names(NULL)
+    )
+    expect_error(
+      heemod:::check_names(NA)
+    )
+    expect_error(
+      heemod:::check_names(c("a", NA))
+    )
+    expect_error(
+      heemod:::check_names(c("a", ""))
+    )
+    expect_error(
+      heemod:::check_names(c("a", "markov_cycle"))
+    )
+    expect_error(
+      heemod:::check_names(c("a", "C"))
+    )
+    expect_error(
+      heemod:::check_names(c("a", ".b"))
+    )
+  }
+)

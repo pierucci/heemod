@@ -75,6 +75,7 @@ test_that(
       .3, .7,
       .6, .4
     )
+    plot(mat1)
     expect_error(
       check_matrix(
         matrix(
