@@ -69,20 +69,15 @@ test_that(
       a = 2,
       b = a * markov_cycle
     )
-    e_par1 <- eval_parameters(
+    e_par1 <- heemod:::eval_parameters(
       par1, 10
     )
     expect_output(
-      print(e_par1),
-      "2 evaluated parameters, 10 Markov cycles.
-
-Source: local data frame [10 x 3]
-
-   markov_cycle     a     b
-          (int) (dbl) (dbl)
-1             1     2     2
-2             2     2     4
-3             3     2     6",
+      str(e_par1),
+      "10 obs. of  3 variables:
+ $ markov_cycle: int  1 2 3 4 5 6 7 8 9 10
+ $ a           : num  2 2 2 2 2 2 2 2 2 2
+ $ b           : num  2 4 6 8 10 12 14 16 18 20",
       fixed = TRUE
     )
     expect_output(
