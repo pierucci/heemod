@@ -56,43 +56,6 @@ define_parameters_ <- function(.dots) {
             class = c("uneval_parameters", class(.dots)))
 }
 
-#' Evaluate Markov model parameters
-#' 
-#' Evaluate parameters specified through 
-#' \code{define_parameters}, for a given number of cycles.
-#' 
-#' @param x an \code{uneval_parameters} object.
-#' @param cycles integer. Number of cycles to simulate.
-#'   
-#' @return An object of class \code{eval_parameters}
-#'   (actually a data.frame with one column per parameter
-#'   and one row per cycle).
-#' 
-#' @examples
-#' 
-#' \dontrun{
-#' param <- define_parameters(
-#'   age_start = 60,
-#'   age = age_start + markov_cycle
-#' )
-#' 
-#' eval_parameters(param, cycles = 15)
-#' }
-#' 
-eval_parameters <- function(x, cycles = 1) {
-  # other datastructure?
-  res <- dplyr::mutate_(
-    data.frame(
-      markov_cycle = seq_len(cycles)
-    ),
-    .dots = x
-  )
-  
-  structure(
-    res,
-    class = c("eval_parameters", class(res))
-  )
-}
 
 #' Return parameters names
 #' 
@@ -151,29 +114,4 @@ modify_.uneval_parameters <- function(.OBJECT, .dots) {
   )
   
   modifyList(.OBJECT, .dots)
-}
-
-#' @export
-print.uneval_parameters <- function(x, ...) {
-  cat(sprintf("%i unevaluated parameter%s.\n\n",
-              length(x), plur(length(x))))
-  n <- names(x)
-  ex <- unlist(lapply(x, function(y) deparse(y$expr, width.cutoff = 500L)))
-  stopifnot(
-    length(n) == length(ex)
-  )
-  cat(paste(n, ex, sep = " = "), sep = "\n")
-}
-
-#' @export
-print.eval_parameters <- function(x, width = Inf, ...) {
-  cat(sprintf(
-    "%i evaluated parameter%s, %i Markov cycle%s.\n\n",
-    ncol(x) - 1,
-    plur(ncol(x) - 1),
-    nrow(x),
-    plur(nrow(x))
-  ))
-  
-  print(dplyr::as.tbl(x), width = width, ...)
 }

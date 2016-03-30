@@ -24,39 +24,8 @@
 #' @return A data.frame containing the values of 
 #'   \code{newdata} and each Markov Model evaluation in 
 #'   \code{res}.
-#'   
-#'   
-#' @examples
 #' 
-#' \dontrun{
-#' par1 <- define_parameters(
-#'   a = 1,
-#'   b = 1 / (markov_cycle + a)
-#' )
-#' 
-#' mat1 <- define_matrix(
-#'   1-b, b,
-#'   0, 1
-#' )
-
-#' mod1 <- define_model(
-#'   parameters = par1,
-#'   transition_matrix = mat1,
-#'   define_state(var = a),
-#'   define_state(var = a * markov_cycle)
-#' )
-#' 
-#' new_tab <- data.frame(
-#'   a = 1:10
-#' )
-#' 
-#' eval_model_newdata(
-#'   mod1,
-#'   cycles = 5,
-#'   init = 1:0,
-#'   newdata = new_tab
-#' )
-#' }
+#' @example inst/examples/example_eval_model_newdata.R
 #' 
 eval_model_newdata <- function(model,
                                old_parameters,
