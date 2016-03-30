@@ -19,7 +19,7 @@ define_parameters(
   rate = 1 - exp(- markov_time * .5)
 )
 
-# dont explicitely state lengths
+# dont explicitly state lengths
 # define_parameters(
 #   var = seq(1, 15, 2)
 # )

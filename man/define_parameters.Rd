@@ -35,7 +35,7 @@ parameter.
 Parameters are defined sequencially, parameters defined 
 earlier can be called in later expressions.
 
-Vector length should not be explicitely set, but should 
+Vector length should not be explicitly set, but should 
 instead be stated relatively to \code{markov_cycle} 
 (whose length depends on the number of simulation 
 cycles). Alternatively, \code{dplyr} functions such as 
@@ -77,7 +77,7 @@ define_parameters(
   rate = 1 - exp(- markov_time * .5)
 )
 
-# dont explicitely state lengths
+# dont explicitly state lengths
 # define_parameters(
 #   var = seq(1, 15, 2)
 # )

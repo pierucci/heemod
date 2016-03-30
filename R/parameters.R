@@ -8,7 +8,7 @@
 #' Parameters are defined sequencially, parameters defined 
 #' earlier can be called in later expressions.
 #' 
-#' Vector length should not be explicitely set, but should 
+#' Vector length should not be explicitly set, but should 
 #' instead be stated relatively to \code{markov_cycle} 
 #' (whose length depends on the number of simulation 
 #' cycles). Alternatively, \code{dplyr} functions such as 
