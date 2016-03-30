@@ -1,9 +1,13 @@
 # heemod 0.3.1
 
+## Changes
+
+  * a single set of parameters is now used for a set of models.
+
 # Bug fixes
 
   * correct error in probabilistic analysis vignette.
-  * a single set of parameters is now used for a set of models.
+  * fix incompatibility with upcoming dplyr update.
 
 # heemod 0.3.0
 
