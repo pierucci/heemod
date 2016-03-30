@@ -57,6 +57,10 @@ run_probabilistic <- function(model, resample, N) {
   )
 }
 
+get_base_model.probabilistic <- function(x, ...) {
+  get_base_model(attr(x, "model"))
+}
+
 eval_correlation <- function(x, var_names) {
   res <- diag(length(var_names))
   colnames(res) <- var_names

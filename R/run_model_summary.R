@@ -112,24 +112,3 @@ print.summary_eval_model_list <- function(x, ...) {
     print(x$res_comp)
   }
 }
-
-#' @export
-print.eval_model <- function(x, width = Inf, ...) {
-  cat(sprintf("A Markov model, run for %i cycle%s.\n\n",
-              attr(x, "cycles"),
-              plur(attr(x, "cycles"))
-  ))
-  
-  cat("Initial individual counts:\n\n")
-  print(data.frame(
-    "State names" = names(get_counts(x)),
-    "Initial counts" = attr(x, "init"),
-    check.names = FALSE
-  ))
-  
-  cat("Individual counts per cycle:\n\n")
-  print(get_counts(x), width = width, ...)
-  
-  cat("State values per cycle:\n\n")
-  print(get_state_values(x), width = width, ...)
-}

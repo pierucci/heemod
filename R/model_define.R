@@ -81,10 +81,6 @@ get_states.default <- function(x){
   x$states
 }
 
-get_state_values <- function(x) {
-  x$values
-}
-
 get_state_value_names.uneval_model <- function(x) {
   get_state_value_names(get_states(x))
 }
