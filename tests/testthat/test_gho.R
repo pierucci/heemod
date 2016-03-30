@@ -2,12 +2,12 @@ context("GHO data")
 
 test_that(
   "GHO API", {
-    res_latest <- get_who_mr(
+    res_latest <- heemod:::get_who_mr_(
       age = 0:99,
       sex = rep(c("MLE", "FMLE"), 50),
       country = "FRA"
     )
-    res_2013 <- get_who_mr(
+    res_2013 <- heemod:::get_who_mr_(
       age = 0:99,
       sex = rep(c("MLE", "FMLE"), 50),
       country = "FRA",
@@ -26,4 +26,6 @@ test_that(
     expect_error(get_who_mr(age = 0:99, sex = rep(c("ML1E", "FMLE"), 50), country = "FRA"))
     expect_error(get_who_mr(age = "[00-15[", sex = rep(c("MLE", "FMLE"), 50), country = "FRA"))
     expect_error(get_who_mr(age = c(1, NA), sex = rep(c("MLE", "FMLE"), 50), country = "FRA"))
+    expect_error(get_who_mr(age = 0:99, sex = rep(c("MLE", "FMLE"), 50), country = "XXXX"))
+    expect_error(get_who_mr(age = 0:99, sex = rep(c("MLE", "FMLE"), 50), country = "FRA", year = 2050))
   })

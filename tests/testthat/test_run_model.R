@@ -188,6 +188,11 @@ test_that(
       print(res_l),
       "II 688.8  680.5 1.012197"
     )
+    expect_error(
+      run_models(mod1, mod2,
+                 parameters = par1, cost = x, effect = y,
+                 method = "testtest")
+    )
   }
 )
 

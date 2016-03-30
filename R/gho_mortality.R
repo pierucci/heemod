@@ -46,10 +46,6 @@ get_gho_mr <- function(country, year) {
     )
   )
   
-  if (nrow(gho_data) == 0) {
-    stop(sprintf("No GHO mortality data for COUNTRY '%s'.", country))
-  }
-  
   years <- unique(gho_data$YEAR)
   
   if (year == "latest") {
