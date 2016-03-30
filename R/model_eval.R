@@ -70,10 +70,6 @@ get_counts.eval_model <- function(x){
   x$counts
 }
 
-get_state_value_names.eval_model <- function(x){
-  dplyr::setdiff(names(x$values), "markov_cycle")
-}
-
 #' Compute Count of Individual in Each State per Cycle
 #' 
 #' Given an initial number of individual and an evaluated 
@@ -132,21 +128,10 @@ compute_counts <- function(
     "end" = {
       out <- n0
     },
-    "cycle-tree" = {
-      stop("Unimplemented")
-    },
     "half-cycle" = {
       out <- n1
       out[1, ] <- out[1, ] + init / 2
       out[nrow(out), ] <- out[nrow(out), ] + out[nrow(out), ] / 2
-    },
-    "spread-half-cycle" = {
-      to_add <- (init + n1[nrow(n1), ]) / 2
-      weights <- prop.table(as.matrix(n1), 2)
-      out <- n1
-      for (i in seq_len(ncol(n1))) {
-        out[, i] <- n1[, i] + weights[, i] * to_add[, i]
-      }
     },
     "life-table" = {
       out <- (n0 + n1) / 2

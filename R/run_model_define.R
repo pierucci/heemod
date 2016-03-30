@@ -51,8 +51,8 @@ run_models <- function(...,
                        parameters = define_parameters(),
                        init = c(1000L, rep(0L, get_state_number(get_states(list(...)[[1]])) - 1)),
                        cycles = 1,
-                       method = c("beginning", "end", "cycle-tree",
-                                  "half-cycle", "life-table", "spread-half-cycle"),
+                       method = c("beginning", "end",
+                                  "half-cycle", "life-table"),
                        cost, effect, base_model = NULL) {
   list_models <- list(...)
   
@@ -197,9 +197,7 @@ get_base_model <- function(x, ...) {
 get_base_model.default <- function(x, ...) {
   x$.model_names[which(x$.effect == min(x$.effect))[1]]
 }
+
 get_base_model.eval_model_list <- function(x, ...) {
   attr(x, "base_model")
-}
-get_base_model.probabilistic <- function(x, ...) {
-  get_base_model(attr(x, "model"))
 }
