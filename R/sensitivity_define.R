@@ -25,10 +25,9 @@ define_sensitivity <- function(...) {
 }
 
 define_sensitivity_ <- function(.dots) {
+  check_names(names(.dots))
   stopifnot(
     all(unlist(lapply(.dots, function(x) length(x))) == 2),
-    ! is.null(names(.dots)),
-    ! any(names(.dots) == ""),
     ! any(duplicated(names(.dots)))
   )
   
