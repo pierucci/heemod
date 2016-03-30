@@ -16,7 +16,7 @@
 #' )
 #' 
 get_who_mr_ <- function(age, sex, country, year = "latest") {
-  mr_data <- get_gho_mr(country = country, year = year)
+  mr_data <- get_gho_mr(country = country, year = as.character(year))
   
   age_gho <- trans_age_gho(age)
   sex_gho <- trans_sex_gho(sex)
