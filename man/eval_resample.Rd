@@ -7,7 +7,7 @@
 eval_resample(resample, N)
 }
 \arguments{
-\item{resample}{A \code{\link{define_resample}} object.}
+\item{resample}{A \code{\link{define_distrib}} object.}
 
 \item{N}{> 0. Number of simulation to run.}
 }

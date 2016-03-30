@@ -21,7 +21,7 @@
 #' 
 #' @example inst/examples/example_define_resample.R
 #'   
-define_resample <- function(...,
+define_distrib <- function(...,
                             correlation) {
   .dots <- list(...)
   
@@ -51,10 +51,10 @@ define_resample <- function(...,
     correlation <- diag(length(list_qdist))
   }
   
-  define_resample_(list_qdist, list_multi, correlation)
+  define_distrib_(list_qdist, list_multi, correlation)
 }
 
-define_resample_ <- function(list_qdist, list_multi, correlation) {
+define_distrib_ <- function(list_qdist, list_multi, correlation) {
   
   stopifnot(
     length(unique(names(list_qdist))) == length(list_qdist),
@@ -196,7 +196,7 @@ eval_correlation <- function(x, var_names) {
 #' 
 #' @param model The result of \code{\link{run_models}}.
 #' @param resample Resampling distribution for parameters 
-#'   defined by \code{\link{define_resample}}.
+#'   defined by \code{\link{define_distrib}}.
 #' @param N > 0. Number of simulation to run.
 #'   
 #' @return A list with one \code{data.frame} per model.
@@ -334,7 +334,7 @@ if(getRversion() >= "2.15.1")
 
 #' Evaluate Resampling Definition
 #' 
-#' @param resample A \code{\link{define_resample}} object.
+#' @param resample A \code{\link{define_distrib}} object.
 #' @param N > 0. Number of simulation to run.
 #'   
 #' @return A \code{data.frame} of resampled values with on

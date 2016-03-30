@@ -120,7 +120,7 @@ test_that(
       effect = ly
     )
     
-    rsp <- define_resample(
+    rsp <- define_distrib(
       age_init ~ normal(60, 10),
       cost_init ~ normal(1000, 100),
       
@@ -135,7 +135,7 @@ test_that(
     ndt1 <- run_probabilistic(res2, resample = rsp, N = 10)
     ndt2 <- run_probabilistic(res2, resample = rsp, N = 1)
     
-    x <- define_resample(
+    x <- define_distrib(
       rate1 + rate2 + rate3 ~ multinom(10, 50, 40),
       a + b ~ multinom(15, 30)
     )
