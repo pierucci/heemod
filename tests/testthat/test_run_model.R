@@ -270,9 +270,15 @@ test_that("Discounting", {
                     parameters = par1, cost = x, effect = y)
   res2 <- run_models(mod3, mod2,
                     parameters = par1, cost = x, effect = y)
-  expect_identical(
-    summary(res1),
-    summary(res2)
+  expect_output(
+    print(res1),
+    "I  309300 283300.0
+II 933900 853757.1"
+  )
+  expect_output(
+    print(res2),
+    "I  309300 283300.0
+II 933900 853757.1"
   )
   
   expect_error(
