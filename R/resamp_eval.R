@@ -1,4 +1,4 @@
-#' Run Probabilistic Incertitude Analysis
+#' Run Probabilistic Uncertainty Analysis
 #' 
 #' @param model The result of \code{\link{run_models}}.
 #' @param resample Resampling distribution for parameters 

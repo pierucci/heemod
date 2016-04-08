@@ -1,7 +1,7 @@
-#' Define Parameters Distribution for Probabilistc Analysis
+#' Define Parameters Distribution for Probabilistic Analysis
 #' 
 #' Define the properties of parameter distributions and 
-#' their correlation structure for probabilistic incertitude
+#' their correlation structure for probabilistic uncertainty
 #' analysis of Markov models.
 #' 
 #' If no correlation matrix is specified parameters are 
@@ -122,7 +122,7 @@ define_multinom <- function(x) {
 }
 
 #' Define a Correlation Structure for Probabilistic 
-#' Incertitude Analysis
+#' Uncertainty Analysis
 #' 
 #' Not all correlation need to be specified for all variable
 #' combinations, unspecified correlations are assumed to be

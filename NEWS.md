@@ -22,7 +22,7 @@
 ## Enhancements
 
   * added ability to plot matrix.
-  * added framework for probabilistic incertitude analysis.
+  * added framework for probabilistic uncertainty analysis.
   * written vignette for probabilistic and sensitivity analysis.
   * added complement alias for matrix definition.
   * `run_*` functions now output a single table instead of a list of tables.

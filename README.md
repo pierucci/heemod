@@ -28,7 +28,7 @@ devtools::install_github("pierucci/heemod")
   * Time-varying transition probabilities.
   * Time-varying values attached to states.
   * Heterogeneity analysis.
-  * Probabilistic incertitude analysis.
+  * Probabilistic uncertainty analysis.
   * Deterministic sensitivity analysis.
   * Multiple state membership correction methods (life-table, half-cycle...).
 
@@ -40,7 +40,7 @@ Specific analysis examples (mostly inspired from Decision Modelling for Health E
 
   * Homogeneous Markov model (or `vignette("homogeneous", package = "heemod")`).
   * Non-homogeneous Markov model (or `vignette("non-homogeneous", package = "heemod")`).
-  * Probabilistic incertitude analysis in `vignette("probabilistic", package = "heemod")`.
+  * Probabilistic uncertainty analysis in `vignette("probabilistic", package = "heemod")`.
   * Deterministic sensitivity analysis in `vignette("sensitivity", package = "heemod")`.
   
 ## Graphical user interface

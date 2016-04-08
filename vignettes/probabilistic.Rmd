@@ -1,11 +1,11 @@
 ---
-title: "Probabilistic incertitude analysis"
+title: "Probabilistic uncertainty analysis"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{Probabilistic incertitude analysis}
+  %\VignetteIndexEntry{Probabilistic uncertainty analysis}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---

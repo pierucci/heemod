@@ -3,7 +3,7 @@
 \name{define_correlation}
 \alias{define_correlation}
 \title{Define a Correlation Structure for Probabilistic 
-Incertitude Analysis}
+Uncertainty Analysis}
 \usage{
 define_correlation(...)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/resamp_define.R
 \name{define_distrib}
 \alias{define_distrib}
-\title{Define Parameters Distribution for Probabilistc Analysis}
+\title{Define Parameters Distribution for Probabilistic Analysis}
 \usage{
 define_distrib(..., correlation)
 }
@@ -19,7 +19,7 @@ An object of class \code{resamp_definition}.
 }
 \description{
 Define the properties of parameter distributions and 
-their correlation structure for probabilistic incertitude
+their correlation structure for probabilistic uncertainty
 analysis of Markov models.
 }
 \details{

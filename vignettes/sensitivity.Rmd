@@ -140,9 +140,9 @@ res_mod <- run_models(
 
 The objective of deterministic sensitivity analysis is to assess how cost is sensitive to parameter values. Parameter values are changed individually (usually through upper and lower bounds) and the results on cost are reported.
 
-Sensitivity analysis is distinct from probabilistic incertitude analysis: whereas in incertitude analysis the objective is to account for incertitude on parameter values in estimating model results, in sensitivity analysis the objective is to assess the sensitivity of results to variations of individual parameters.
+Sensitivity analysis is distinct from probabilistic uncertainty analysis: whereas in uncertainty analysis the objective is to account for uncertainty on parameter values in estimating model results, in sensitivity analysis the objective is to assess the sensitivity of results to variations of individual parameters.
 
-Both analyses are complementary. Incertitude analysis is essential to decision making, while sensitivity analysis is useful to better understand model behaviour.
+Both analyses are complementary. Uncertainty analysis is essential to decision making, while sensitivity analysis is useful to better understand model behaviour.
 
 # Define the analysis
 

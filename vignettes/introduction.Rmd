@@ -144,6 +144,6 @@ plot(res_mod_1) +
 
 In order to compare different strategies it is possible to run several models in parallel, examples are provided in `vignette("homogeneous", package = "heemod")` or `vignette("non-homogeneous", package = "heemod")`.
 
-Incertitude analysis `vignette("probabilistic", package = "heemod")` and sensitivity analysis `vignette("sensitivity", package = "heemod")` can be performed.
+Uncertainty analysis `vignette("probabilistic", package = "heemod")` and sensitivity analysis `vignette("sensitivity", package = "heemod")` can be performed.
 
 Population-level country-specific mortality rates by age and sex (often used as transition probabilities in Markov models) can be downloaded from WHO databases with the `get_who_mr()` function.

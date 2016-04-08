@@ -2,7 +2,7 @@
 % Please edit documentation in R/resamp_eval.R
 \name{run_probabilistic}
 \alias{run_probabilistic}
-\title{Run Probabilistic Incertitude Analysis}
+\title{Run Probabilistic Uncertainty Analysis}
 \usage{
 run_probabilistic(model, resample, N)
 }
@@ -18,7 +18,7 @@ defined by \code{\link{define_distrib}}.}
 A list with one \code{data.frame} per model.
 }
 \description{
-Run Probabilistic Incertitude Analysis
+Run Probabilistic Uncertainty Analysis
 }
 \examples{
 # example for run_probabilistic
