@@ -1,3 +1,9 @@
+# heemod 0.3.2
+
+## Bug fixes
+
+  * fix mishandling of matrix index with `C` in `eval_matrix()` (thanks to @MattWiener).
+
 # heemod 0.3.1
 
 ## Changes
