@@ -53,7 +53,7 @@ eval_matrix <- function(x, parameters) {
       rowSums(posC) <= 1
     )
     res[posC] <- 0
-    valC <- 1 - rowSums(res)[rowSums(posC) == 1]
+    valC <- 1 - rowSums(res)[which(posC, arr.ind = TRUE)[, 1]]
     res[posC] <- valC
     
     check_matrix(res)

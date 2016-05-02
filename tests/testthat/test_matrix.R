@@ -178,3 +178,31 @@ X2
     expect_equal(e_mat, e_matC)
   }
 )
+
+
+test_that(
+  "C bug #82 doesnt come back", {
+    sampleTM <- define_matrix(0.1, 0.1, C, C, 0.3, 0.25, C, 0, 0.5)
+    A <- define_state(cost = 1, utility = 2)
+    B <- define_state(cost = 5, utility = 7)
+    C <- define_state(cost = 4, utility = 4)
+    sample_mod <- define_model(transition_matrix = sampleTM, A = A, B = B, C = C)
+    res <- run_models(sample_mod, cost = cost, effect = utility)
+    
+    
+    expect_output(
+      print(res),
+      '1 Markov model run for 1 cycle.
+
+Initial states:
+
+     N
+A 1000
+B    0
+C    0
+  cost utility
+I 3800    4100',
+      fixed = TRUE
+    )
+  }
+)
