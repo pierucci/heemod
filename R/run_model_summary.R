@@ -75,8 +75,9 @@ normalize_ce.eval_model_list <- function(x) {
 compute_icer <- function(x) {
   tab <- x[order(x$.effect), ]
   
+  tab$.icer <- NA
   for (i in seq_len(nrow(tab))) {
-    if ( i == 1) {
+    if (i == 1) {
       tab$.icer[i] <- -Inf
     } else {
       tab$.icer[i] <- (tab$.cost[i] - tab$.cost[i-1]) /

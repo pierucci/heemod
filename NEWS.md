@@ -3,6 +3,7 @@
 ## Bug fixes
 
   * fix mishandling of matrix index with `C` in `eval_matrix()` (thanks to @MattWiener).
+  * fix problem with upcoming version of `tidyr`.
 
 # heemod 0.3.1
 
