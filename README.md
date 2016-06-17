@@ -1,4 +1,4 @@
-# heemod - Health Ecomomic Evaluation MODelling
+# heemod - Health Economic Evaluation MODelling
 
 [![Travis-CI Build Status](https://travis-ci.org/pierucci/heemod.svg?branch=master)](https://travis-ci.org/pierucci/heemod) [![](http://www.r-pkg.org/badges/version/heemod)](http://www.r-pkg.org/pkg/heemod) [![Coverage Status](https://img.shields.io/codecov/c/github/pierucci/heemod/master.svg)](https://codecov.io/github/pierucci/heemod?branch=master)
 
