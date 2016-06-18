@@ -146,4 +146,6 @@ In order to compare different strategies it is possible to run several models in
 
 Uncertainty analysis `vignette("probabilistic", package = "heemod")` and sensitivity analysis `vignette("sensitivity", package = "heemod")` can be performed.
 
+See vignette `vignette("reproduction", package = "heemod")` for an exact reproduction of the analyses from Decision Modelling for Health Economic Evaluation.
+
 Population-level country-specific mortality rates by age and sex (often used as transition probabilities in Markov models) can be downloaded from WHO databases with the `get_who_mr()` function.

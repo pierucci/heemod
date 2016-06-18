@@ -42,6 +42,7 @@ Specific analysis examples (mostly inspired from Decision Modelling for Health E
   * Non-homogeneous Markov model (or `vignette("non-homogeneous", package = "heemod")`).
   * Probabilistic uncertainty analysis in `vignette("probabilistic", package = "heemod")`.
   * Deterministic sensitivity analysis in `vignette("sensitivity", package = "heemod")`.
+  * See vignette `vignette("reproduction", package = "heemod")` for an exact reproduction of the analyses from the book.
 
 ## Future developments
 

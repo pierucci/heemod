@@ -21,7 +21,7 @@ If you are not familiar with `heemod`, first consult the introduction vignette `
 
 # Model description
 
-In this example we will model the cost effectiveness of lamivudine/zidovudine combination therapy in HIV infection ([Chancellor, 1997](https://www.ncbi.nlm.nih.gov/pubmed/10169387)) further described in [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do), page 32.
+In this example we will model the cost effectiveness of lamivudine/zidovudine combination therapy in HIV infection ([Chancellor, 1997](https://www.ncbi.nlm.nih.gov/pubmed/10169387)) further described in [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do), page 32. For the sake of simplicity we will not reproduce exactly the analysis from the book. See vignette `vignette("reproduction", package = "heemod")` for an exact reproduction of the analysis.
 
 This model aims to compare costs and utilities of two treatment strategies, *monotherapy* and *combined therapy*.
 
@@ -77,7 +77,6 @@ And the combined therapy group:
 ```{r, fig.width = 6, fig.height=6, fig.align='center'}
 plot(mat_comb)
 ```
-
 
 # State values
 
@@ -136,7 +135,7 @@ Similarly, for the the combined therapy treatment group, only `cost_drug` differ
 ```{r}
 A_comb <-
   define_state(
-    cost_health = 3052,
+    cost_health = 2756,
     cost_drugs = cost_zido + cost_lami,
     cost_total = discount(cost_health + cost_drugs, .06),
     life_year = 1
@@ -193,7 +192,7 @@ mod_comb <- define_model(
 
 # Running models
 
-Both models can then be run for 20 years with `run_model`. Models are given simple names (`mono` and `comb`) in order to facilitate result interpretation. To replicate results from the original study we assume transitions occur at the end of each cycles (`method = "end"`).
+Both models can then be run for 20 years with `run_model`. Models are given simple names (`mono` and `comb`) in order to facilitate result interpretation.
 
 ```{r}
 res_mod <- run_models(
@@ -201,8 +200,7 @@ res_mod <- run_models(
   comb = mod_comb,
   cycles = 20,
   cost = cost_total,
-  effect = life_year,
-  method = "end"
+  effect = life_year
 )
 ```
 
@@ -214,7 +212,7 @@ Model values can then be compared with `summary`:
 summary(res_mod)
 ```
 
-The incremental cost-effectiveness ratio of the combiend therapy strategy is thus £6,187 per life-year gained.
+The incremental cost-effectiveness ratio of the combiend therapy strategy is thus £6335 per life-year gained.
 
 The counts per state can be plotted for the monotherapy group:
 
