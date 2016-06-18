@@ -200,7 +200,10 @@ test_that("Discounting", {
   
   par1 <- define_parameters(
     a = .1,
-    b = 1 / (markov_cycle + 1)
+    b = 1 / (markov_cycle + 1),
+    c1 = 987,
+    c2 = 876,
+    c3 = 1726
   )
   mat1 <- define_matrix(
     state_names = c("X1", "X2"),
@@ -223,8 +226,8 @@ test_that("Discounting", {
   )
   
   s3 <- define_state(
-    x = discount(987, .1),
-    y = discount(876, .05, TRUE)
+    x = discount(c1, .1),
+    y = discount(c2, .05, TRUE)
   )
   s4 <- define_state(
     x = 456,
@@ -237,8 +240,8 @@ test_that("Discounting", {
   )
   
   s5 <- define_state(
-    x = discount(987, 0),
-    y = discount(1726, 0)
+    x = discount(c1, 0),
+    y = discount(c3, 0)
   )
   mod3 <- define_model(
     transition_matrix = mat1,
@@ -247,8 +250,8 @@ test_that("Discounting", {
   )
   
   s6 <- define_state(
-    x = discount(987, 1.5),
-    y = discount(876, .05, TRUE)
+    x = discount(c1, 1.5),
+    y = discount(c3, .05, TRUE)
   )
   s4 <- define_state(
     x = 456,
@@ -259,30 +262,43 @@ test_that("Discounting", {
     X1 = s6,
     X2 = s4
   )
+  s7 <- define_state(
+    x = discount(100, .1),
+    y = discount(200, .05, TRUE)
+  )
+  mod5 <- define_model(
+    transition_matrix = mat1,
+    X1 = s7,
+    X2 = s4
+  )
   
-  res <- run_models(mod1, mod2,
+  res <- run_models(mod1, mod2, cycles = 10,
                     parameters = par1, cost = x, effect = y)
   expect_output(
     print(res),
-    "II 624.6 570.4571 1.094911"
+    "II 3292.352 4193.422 0.7851231"
   )
-  res1 <- run_models(mod1, mod2,
+  res1 <- run_models(mod1, mod2, cycles = 10,
                     parameters = par1, cost = x, effect = y)
-  res2 <- run_models(mod3, mod2,
+  res2 <- run_models(mod3, mod2, cycles = 10,
                     parameters = par1, cost = x, effect = y)
   expect_output(
     print(res1),
-    "I  309300 283300.0
-II 933900 853757.1"
+    "I  3144649 2942952
+II 6437001 7136374"
   )
   expect_output(
     print(res2),
-    "I  309300 283300.0
-II 933900 853757.1"
+    "I  3144649 2942952
+II 6437001 7136374"
   )
   
   expect_error(
-    run_models(mod1, mod4,
+    run_models(mod1, mod4, cycles = 10,
+               parameters = par1, cost = x, effect = y)
+  )
+  expect_warning(
+    run_models(mod1, mod5, cycles = 10,
                parameters = par1, cost = x, effect = y)
   )
 })

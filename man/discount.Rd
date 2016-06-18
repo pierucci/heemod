@@ -17,7 +17,11 @@ discount(x, r, first = FALSE)
 A numeric vector of the same length as \code{x}.
 }
 \description{
-Discount a Quantity Over Time
+This function should only take as an \code{x} argument
+the names of variables already defined in
+\code{\link{define_parameters}} or
+\code{\link{define_state}},
+and not numeric constants.
 }
 \examples{
 
