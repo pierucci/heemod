@@ -79,6 +79,13 @@ test_that(
         parameters = par1, list()
       )
     )
+    expect_error(
+      run_models(
+        mod1, mod2,
+        parameters = par1,
+        method = "zzz"
+      )
+    )
   }
 )
 
