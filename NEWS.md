@@ -1,3 +1,14 @@
+# heemod 0.3.3
+
+## New features
+
+  * added a vignette to exactly reproduce results from Decision Modelling for Health Economic Evaluation.
+
+## Bug fixes
+
+  * fixed problem when argument to `discount()` was not defined as a parameter.
+  * corrected several errors in the vignettes.
+
 # heemod 0.3.2
 
 ## Bug fixes
