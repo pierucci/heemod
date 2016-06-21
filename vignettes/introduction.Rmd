@@ -113,12 +113,6 @@ By default the model is run for one person starting in the first state (here sta
 
 # Analyse results
 
-The result can be explored with `summary`:
-
-```{r}
-summary(res_mod_1)
-```
-
 We can plot the state membership counts over time. Other plot types are available.
 
 ```{r, fig.width = 6, fig.height=4, fig.align='center'}
