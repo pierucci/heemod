@@ -31,7 +31,14 @@ devtools::install_github("pierucci/heemod")
   * Probabilistic uncertainty analysis.
   * Deterministic sensitivity analysis.
   * Multiple state membership correction methods (life-table, half-cycle...).
+  
+## Graphical user interface
 
+Run the graphical user interface with:
+
+```r
+run_shiny()
+```
 ## Learning heemod
 
 To get started read the intro vignette (or `vignette("introduction", package = "heemod")`).
