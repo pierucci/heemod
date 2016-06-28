@@ -22,6 +22,9 @@
 #' @importFrom utils globalVariables
 #' @importFrom utils as.roman
 #' 
+#' @importFrom tools file_ext
+#' @importFrom tools file_path_sans_ext
+#' 
 #' @importFrom stats pnorm
 #' @importFrom stats qbeta
 #' @importFrom stats qbinom

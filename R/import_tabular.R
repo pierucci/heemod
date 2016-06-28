@@ -12,15 +12,7 @@
 #' @export
 #'
 import <- function(path) {
-  # read file names in folder
-  # parse file names to extract
-  #   model names
   parsed_folder <- parse_import_folder(path)
-  # check coherence
-  #   message if recycling needed
-  #   message if optional file missing
-  #   warning if file not following naming scheme
-  #   stop if crucial file missing
   check_import_folder(parsed_folder)
   # import files for model definition
   list_import_models
@@ -34,6 +26,40 @@ import <- function(path) {
   # run models from files
   build_run_models
 }
+
+parse_import_folder <- function(path) {
+  file_names <- list.files(path, full.names = FALSE)
+  file_paths <- list.files(path, full.names = TRUE)
+  
+  list(
+    ext = tools::file_ext(file_names),
+    file_names = file_names,
+    parsed_names = strsplit(
+      x = tools::file_path_sans_ext(file_names),
+      split = "_"
+    ),
+    file_paths = file_paths
+  )
+}
+
+check_import_folder <- function(x) {
+  # check coherence
+  #   message if recycling needed
+  #   message if optional file missing
+  #   warning if file not following naming scheme
+  #   stop if crucial file missing
+  message("Looking for reference file.")
+  if (! any(x$file_names == "reference.csv"))
+    stop("No reference file found in folder.")
+  message("Reading reference file")
+  ref <- read.csv(
+    file = x$file_path[x$file_names == "reference.csv"],
+    stringsAsFactors = FALSE
+  )
+  model
+}
+# one reference file
+# contains model names and state names
 
 #' Create a Tabular Data Template
 #'
@@ -49,5 +75,5 @@ import <- function(path) {
 create_import_template <- function(path, model_names,
                                    state_names,
                                    state_value_names) {
-
+  
 }
