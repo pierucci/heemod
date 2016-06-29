@@ -12,54 +12,60 @@
 #' @export
 #'
 import <- function(path) {
-  parsed_folder <- parse_import_folder(path)
-  check_import_folder(parsed_folder)
-  # import files for model definition
-  list_import_models
-  # build models from files
-  list_models <- lapply(
-    list_import_models,
-    create_model
-  )
-  # import options for running models
-  list_import_option
-  # run models from files
-  build_run_models
-}
+  description <- import_description(path)
 
-parse_import_folder <- function(path) {
-  file_names <- list.files(path, full.names = FALSE)
-  file_paths <- list.files(path, full.names = TRUE)
   
-  list(
-    ext = tools::file_ext(file_names),
-    file_names = file_names,
-    parsed_names = strsplit(
-      x = tools::file_path_sans_ext(file_names),
-      split = "_"
-    ),
-    file_paths = file_paths
-  )
+  # read all the other files
+  # check if the structure is as expected
+  # check if state and model naming is consistent
+  # convert the files to R objects
+  # run the analysis
 }
 
-check_import_folder <- function(x) {
-  # check coherence
-  #   message if recycling needed
-  #   message if optional file missing
-  #   warning if file not following naming scheme
-  #   stop if crucial file missing
-  message("Looking for reference file.")
-  if (! any(x$file_names == "reference.csv"))
-    stop("No reference file found in folder.")
-  message("Reading reference file")
-  ref <- read.csv(
-    file = x$file_path[x$file_names == "reference.csv"],
-    stringsAsFactors = FALSE
+import_description <- function(path) {
+  tab_ref <- import_table(path, "description")
+  stopifnot(
+    all(names(tab_ref) == c("data", "file", "run")),
+    all(tab_ref$data %in% c("matrix", "state_values", "parameters", "run")),
+    all(tab_ref$file[tab_ref$data != "run"] %in% list.files(path)),
+    all(tab_ref$run[tab_ref$data == "run"] %in% list.files(path))
   )
-  model
+  for (r in unique(tab_ref$run[tab_ref$data == "run"])) {
+    stopifnot(
+      all(tab_ref$file[tab_ref$run == r] %in% list.files(file.path(path, r)))
+    )
+  }
+  tab_ref
 }
-# one reference file
-# contains model names and state names
+
+import_table <- function(folder, file) {
+  list_files <- list.files(path)
+  pos_match <- file %in% tools::file_path_sans_ext(list_files)
+  file_match <- list_files[pos_match]
+  ext <- tolower(tools::file_ext(file_match))
+  
+  if (! pos_match)
+    stop(sprintf("File '%s' not found in folder '%s'.",
+                 file, folder))
+  
+  if (sum(pos_match) > 1)
+    stop(sprintf("More than one file matches '%s' in folder '%s'.",
+                 file, folder))
+  
+  if (! ext %in% c("xls", "xlsx", "csv"))
+    stop(sprintf("File extension '%s' of file '%s' is not supported.",
+                 ext, file))
+  
+  if (ext %in% c("xls", "xlsx")) {
+    readxl::read_excel(file.path(folder, file_match))
+  } else if (ext %in% c("csv")) {
+    read.csv(
+      file.path(folder, file_match),
+      stringsAsFactors = FALSE)
+  } else {
+    stop("You're not supposed to be there...")
+  }
+}
 
 #' Create a Tabular Data Template
 #'
