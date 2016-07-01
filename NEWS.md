@@ -7,7 +7,8 @@
 ## Bug fixes
 
   * fixed problem when argument to `discount()` was not defined as a parameter.
-  * corrected several errors in the vignettes.
+  * corrected several errors in the vignettes (thanks to Michael Schenkenberg from SBU, Stockholm, Sweden).
+  * updated mortality rate tests to reflect GHO database update.
 
 # heemod 0.3.2
 
