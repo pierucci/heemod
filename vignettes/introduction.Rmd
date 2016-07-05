@@ -109,7 +109,7 @@ res_mod_1 <- run_models(
 res_mod_1
 ```
 
-By default the model is run for one person starting in the first state (here state `A`).
+By default the model is run for 1000 persons starting in the first state (here state `A`).
 
 # Analyse results
 
