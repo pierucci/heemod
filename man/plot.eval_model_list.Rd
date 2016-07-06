@@ -2,7 +2,7 @@
 % Please edit documentation in R/model_print.R
 \name{plot.eval_model_list}
 \alias{plot.eval_model_list}
-\title{Plot Results of Markov Model}
+\title{Plot Results of a Markov Model}
 \usage{
 \method{plot}{eval_model_list}(x, type = c("counts", "ce"), model = 1, ...)
 }
