@@ -11,6 +11,10 @@
 #' @example inst/examples/example_run_sensitivity.R
 run_sensitivity <- function(model, sensitivity) {
   
+  if (! all(c(".cost", ".effect") %in% names(model))) {
+    stop("No cost and/or effect defined, sensitivity analysis unavailable.")
+  }
+  
   init <- attr(model, "init")
   cycles <- attr(model, "cycles")
   method <- attr(model, "method")

@@ -86,6 +86,19 @@ test_that(
         method = "zzz"
       )
     )
+    expect_warning(
+      run_models(
+        mod1, mod2,
+        parameters = par1
+      )
+    )
+    expect_warning(
+      run_models(
+        mod1, mod2,
+        parameters = par1,
+        cost = x
+      )
+    )
   }
 )
 
@@ -286,9 +299,9 @@ test_that("Discounting", {
     "II 3292.352 4193.422 0.7851231"
   )
   res1 <- run_models(mod1, mod2, cycles = 10,
-                    parameters = par1, cost = x, effect = y)
+                     parameters = par1, cost = x, effect = y)
   res2 <- run_models(mod3, mod2, cycles = 10,
-                    parameters = par1, cost = x, effect = y)
+                     parameters = par1, cost = x, effect = y)
   expect_output(
     print(res1),
     "I  3144649 2942952

@@ -16,6 +16,10 @@ run_probabilistic <- function(model, resample, N) {
     N > 0
   )
   
+  if (! all(c(".cost", ".effect") %in% names(model))) {
+    stop("No cost and/or effect defined, probabilistic analysis unavailable.")
+  }
+  
   newdata <- eval_resample(resample, N)
   
   init <- attr(model, "init")

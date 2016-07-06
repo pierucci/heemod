@@ -215,5 +215,16 @@ test_that(
 1 64.82732  1105.112    0.56 0.4842654
 2 77.79468  1164.304    0.57 0.6539179"
     )
+    res2 <- suppressWarnings(run_models(
+      mod1, mod2,
+      parameters = define_parameters(
+        age_init = 60,
+        cost_init = 1000,
+        age = age_init + markov_cycle
+      ),
+      init = 1:0,
+      cycles = 10
+    ))
+    expect_error(run_probabilistic(res3, resample = rsp2, N = 10))
   }
 )

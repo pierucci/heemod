@@ -53,7 +53,7 @@ run_models <- function(...,
                        cycles = 1,
                        method = c("beginning", "end",
                                   "half-cycle", "life-table"),
-                       cost, effect, base_model = NULL) {
+                       cost = NULL, effect = NULL, base_model = NULL) {
   list_models <- list(...)
   
   method <- match.arg(method)
@@ -81,16 +81,14 @@ run_models_ <- function(list_models,
   
   stopifnot(
     all(unlist(lapply(list_models,
-                      function(x) "uneval_model" %in% class(x)))),
-    ! missing(cost),
-    ! missing(effect)
+                      function(x) "uneval_model" %in% class(x))))
   )
   
   list_ce <- list(
-    cost,
-    effect
+    .cost = cost,
+    .effect = effect
   )
-  names(list_ce) <- c(".cost", ".effect")
+  
   ce <- c(
     lazyeval::lazy_dots(),
     list_ce
@@ -195,6 +193,10 @@ get_base_model <- function(x, ...) {
 }
 
 get_base_model.default <- function(x, ...) {
+  if (! ".effect" %in% names(x)) {
+    warning("No effect defined, cannot find base model.")
+    return(NULL)
+  }
   x$.model_names[which(x$.effect == min(x$.effect))[1]]
 }
 
