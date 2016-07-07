@@ -56,11 +56,14 @@ define_distrib <- function(...,
 
 define_distrib_ <- function(list_qdist, list_multi, correlation) {
   
-  stopifnot(
-    length(unique(names(list_qdist))) == length(list_qdist),
-    all(unlist(lapply(list_multi,
-                      function(x) "multinom" %in% class(x))))
-  )
+  if (any(duplicated(names(list_qdist)))) {
+    stop("Some names in 'list_qdist' are duplicated.")
+  }
+  
+  if (! all(unlist(lapply(list_multi,
+                          function(x) "multinom" %in% class(x))))) {
+    stop("All objects in 'list_multi' must come from 'define_multinom()'.")
+  }
   
   # additional checks
   # all parameters in list_multi are r_multi ou r_binom parameters
@@ -150,9 +153,9 @@ define_correlation <- function(...) {
 }
 
 define_correlation_ <- function(.dots) {
-  stopifnot(
-    length(.dots) %% 3 == 0
-  )
+  if (! length(.dots) %% 3 == 0) {
+    stop("Incorrect number of elements in correlation definition, the correct form is A, B, cor(A, B)...")
+  }
   
   f <- function(i) {
     if (i %% 3 == 0) {
@@ -170,13 +173,14 @@ define_correlation_ <- function(.dots) {
     cor = unlist(list_res[seq(from = 3, to = length(list_res), by = 3)])
   )
   
-  stopifnot(
-    ! any(duplicated(
-      mapply(
-        function(x, y) paste(sort(c(x, y)), collapse = ""),
-        res$v1, res$v2
-      )))
-  )
+  if (any(duplicated(
+    mapply(
+      function(x, y) paste(sort(c(x, y)), collapse = ""),
+      res$v1, res$v2
+    )))) {
+    stop("A correlation is defined more than once.")
+  }
+  
   structure(res, class = c("correlation_matrix", class(res)))
 }
 

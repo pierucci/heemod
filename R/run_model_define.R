@@ -79,10 +79,17 @@ run_models_ <- function(list_models,
                         method,
                         cost, effect, base_model) {
   
-  stopifnot(
-    all(unlist(lapply(list_models,
-                      function(x) "uneval_model" %in% class(x))))
-  )
+  if (! all(unlist(lapply(list_models,
+                          function(x) "uneval_model" %in% class(x))))) {
+    .x <- names(list_models[! unlist(lapply(list_models,
+                                            function(x) "uneval_model" %in% class(x)))])
+    stop(sprintf(
+      "Incorrect model object%s: %s.",
+      plur(length(.x)),
+      paste(.x, collapse = ", ")
+    ))
+  }
+  
   
   list_ce <- list(
     .cost = cost,
@@ -108,25 +115,34 @@ run_models_ <- function(list_models,
     names(list_models) <- model_names
   }
   
-  stopifnot(
-    all("uneval_model" %in% unlist(lapply(list_models, class))),
-    list_all_same(lapply(list_models,
-                         function(x) sort(get_state_names(x)))),
-    list_all_same(lapply(list_models,
-                         function(x) sort(get_state_value_names(x))))
-  )
+  if (! list_all_same(lapply(list_models,
+                             function(x) sort(get_state_names(x))))) {
+    stop("State names differ between models.")
+  }
   
-  stopifnot(
-    length(init) == get_state_number(list_models[[1]]),
-    all(init >= 0)
-  )
+  if (! list_all_same(lapply(list_models,
+                             function(x) sort(get_state_value_names(x))))) {
+    stop("State value names differ between models.")
+  }
+  
+  if (! length(init) == get_state_number(list_models[[1]])) {
+    stop(sprintf(
+      "Length of 'init' vector (%i) differs from number of states (%i).",
+      length(init),
+      get_state_number(list_models[[1]])
+    ))
+  }
+  
+  if (! all(init >= 0)) {
+    stop("At least one init count must be > 0.")
+  }
   
   if (is.null(names(init)))
     names(init) <- get_state_names(list_models[[1]])
   
-  stopifnot(
-    all(sort(names(init)) == sort(get_state_names(list_models[[1]])))
-  )
+  if (! all(sort(names(init)) == sort(get_state_names(list_models[[1]])))) {
+    stop("Names of 'init' vector differ from state names.")
+  }
   
   eval_model_list <- lapply(list_models, eval_model, 
                             parameters = parameters,

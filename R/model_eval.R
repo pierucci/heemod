@@ -94,9 +94,13 @@ compute_counts <- function(
   method
 ) {
   
-  stopifnot(
-    length(init) == get_matrix_order(transition_matrix)
-  )
+  if (! length(init) == get_matrix_order(transition_matrix)) {
+    stop(sprintf(
+      "Length of 'init' vector (%i) differs from the number of states (%i).",
+      length(init),
+      get_matrix_order(transition_matrix)
+    ))
+  }
   
   list_counts <- Reduce(
     "%*%",
