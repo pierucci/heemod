@@ -38,8 +38,7 @@ define_model <- function(...,
 #' @rdname define_model
 define_model_ <- function(transition_matrix, states) {
   
-  if (! (get_state_number(states) == 0 |
-      get_state_number(states) == get_matrix_order(transition_matrix))) {
+  if (! get_state_number(states) == get_matrix_order(transition_matrix)) {
     stop(sprintf(
       "Number of state in model input (%i) differ from number of state in transition matrix (%i).",
       get_state_number(states),
