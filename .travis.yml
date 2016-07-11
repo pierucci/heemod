@@ -1,6 +1,6 @@
 # Sample .travis.yml for R projects
 
-language: R
+language: r
 sudo: false
 cache: packages
 r:
