@@ -35,10 +35,7 @@ discount <- function(x, r, first = FALSE) {
     r >= 0,
     r <= 1
   )
-  
-  if (length(x) == 1)
-    warning("The function 'discount' should only take as an 'x' argument the names of variables already defined in 'define_parameteres' or 'define_state', and not numeric constants.")
-  
+
   x / (1 + r) ^ (seq_along(x) - (1 - isTRUE(first)))
 }
 
