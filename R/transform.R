@@ -22,6 +22,12 @@ NULL
 #' @export
 #' @rdname probability
 prob_to_prob <- function(p, to = 1, from = 1) {
+  stopifnot(
+    p >= 0,
+    p <= 1,
+    to > 0,
+    from > 0
+  )
   r <- - log(1 - p) / from
   rate_to_prob(r, to = to)
 }
@@ -29,6 +35,11 @@ prob_to_prob <- function(p, to = 1, from = 1) {
 #' @export
 #' @rdname probability
 rate_to_prob <- function(r, to = 1, per = 1) {
+  stopifnot(
+    r > 0,
+    to > 0,
+    per > 0
+  )
   r <- r / per
   1 - exp(- r * to)
 }
@@ -41,7 +52,7 @@ or_to_prob <- function(or, p) {
     p >= 0,
     p <= 1
   )
-  res <- 1 / (1 + exp(- log(or) + log(p / (1 - p))))
+  res <- 1 / (1 + exp(- log(p / (1 - p) + log(or))))
   
   stopifnot(
     res >= 0,
