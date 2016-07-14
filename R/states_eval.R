@@ -47,7 +47,8 @@ discount_hack <- function(.dots) {
       x
     } else if (is.call(x)) {
       if (identical(x[[1]], quote(discount))) {
-        x[[2]] <- substitute((.x * rep(1, n())), list(.x = x[[2]]))
+        x <- pryr::standardise_call(x)
+        x$x <- substitute((.x * rep(1, n())), list(.x = x$x))
       }
       as.call(lapply(x, f))
     } else if (is.pairlist(x)) {

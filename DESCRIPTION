@@ -17,7 +17,8 @@ Imports:  lazyeval,
           tidyr,
           DT,
           memoise,
-          rgho
+          rgho,
+          pryr
 License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr

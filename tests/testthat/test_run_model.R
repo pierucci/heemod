@@ -282,16 +282,6 @@ test_that("Discounting", {
     X1 = s6,
     X2 = s4
   )
-  s7 <- define_state(
-    x = discount(100, .1),
-    y = discount(200, .05, TRUE)
-  )
-  mod5 <- define_model(
-    transition_matrix = mat1,
-    X1 = s7,
-    X2 = s4
-  )
-  
   res <- run_models(mod1, mod2, cycles = 10,
                     parameters = par1, cost = x, effect = y)
   expect_output(
@@ -315,10 +305,6 @@ II 6437001 7136374"
   
   expect_error(
     run_models(mod1, mod4, cycles = 10,
-               parameters = par1, cost = x, effect = y)
-  )
-  expect_warning(
-    run_models(mod1, mod5, cycles = 10,
                parameters = par1, cost = x, effect = y)
   )
 })
