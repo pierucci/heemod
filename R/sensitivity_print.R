@@ -22,7 +22,7 @@ plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
   
   n_ind <- sum(attr(attr(x, "model_ref"), "init"))
   
-  if(length(model) != 1) stop("model must have length 1")  
+  if(length(model) != 1) stop("Argumemt 'model' must have length 1.")  
   
   switch(
     type,
@@ -50,11 +50,16 @@ plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
       l <- diff(range(tab$.y)) * .1
       
       if(widest_on_top){
-        order_df <- tab %>% group_by(.variable) %>% summarize(width = max(.y) - min(.y))
-        tab$.variable <- factor(tab$.variable, 
-                                levels = unique(order_df$.variable)[order(order_df$width)])
+        order_df <- tab %>%
+          dplyr::group_by(.variable) %>% 
+          dplyr::summarize(width = max(.y) - min(.y))
+        
+        tab$.variable <- factor(
+          tab$.variable, 
+          levels = unique(order_df$.variable)[order(order_df$width)]
+        )
       }
-      plot_title <- paste("model:", unique(tab$.model_names))
+      plot_title <- paste("Model:", unique(tab$.model_names))
       ggplot2::ggplot(
         tab,
         ggplot2::aes(
@@ -123,9 +128,14 @@ plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
       ## order .variable by width of effect, so widest bars
       ##   of tornado plot will be on top
       if(widest_on_top){
-        order_df <- tab1 %>% group_by(.variable) %>% summarize(width = max(.y) - min(.y))
-        tab1$.variable <- factor(tab1$.variable, 
-                                 levels = unique(order_df$.variable)[order(order_df$width)])
+        order_df <- tab1 %>% 
+          dplyr::group_by(.variable) %>% 
+          dplyr::summarize(width = max(.y) - min(.y))
+        
+        tab1$.variable <- factor(
+          tab1$.variable, 
+          levels = unique(order_df$.variable)[order(order_df$width)]
+        )
       }
       ggplot2::ggplot(
         tab1,
