@@ -11,7 +11,8 @@ discount(x, r, first = FALSE)
 
 \item{r}{discount rate.}
 
-\item{first}{logical. Should the discouting start at the first value ?}
+\item{first}{logical. Should the discouting start 
+at the first value ?}
 }
 \value{
 A numeric vector of the same length as \code{x}.

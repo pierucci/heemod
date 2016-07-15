@@ -26,10 +26,14 @@ define_sensitivity <- function(...) {
 
 define_sensitivity_ <- function(.dots) {
   check_names(names(.dots))
-  stopifnot(
-    all(unlist(lapply(.dots, function(x) length(x))) == 2),
-    ! any(duplicated(names(.dots)))
-  )
+  
+  if (! all(unlist(lapply(.dots, function(x) length(x))) == 2)) {
+    stop("Incorrect number of elements in sensitivity definition, the correct form is A = c(A_min, A_max)...")
+  }
+  
+  if (any(duplicated(names(.dots)))) {
+    stop("Some names are duplicated.")
+  }
   
   f <- function(x, y) {
     x <- dplyr::data_frame(x = x)

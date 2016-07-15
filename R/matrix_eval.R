@@ -18,12 +18,13 @@
 check_matrix <- function(x, ...) {
   info <- list(...)
   
-  stopifnot(
-    isTRUE(
-      all.equal(rowSums(x), rep(1, nrow(x)))
-    ),
-    all(x >= 0 & x <= 1)
-  )
+  if (! isTRUE(all.equal(rowSums(x), rep(1, nrow(x))))) {
+    stop("Not all transition matrix rows sum to 1.")
+  }
+  
+  if (! all(x >= 0 & x <= 1)) {
+    stop("Some transition probabilities are outside the interval [0 - 1].")
+  }
 }
 
 #' Evaluate Markov Model Transition Matrix

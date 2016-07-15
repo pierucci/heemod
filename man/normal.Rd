@@ -7,8 +7,8 @@
 \alias{multinom}
 \alias{normal}
 \alias{prop}
-\title{Convenience Probability Density Functions for 
-Probabilistic Analysis}
+\title{Probability Density Functions for 
+Probabilistic Uncertainty Analysis}
 \usage{
 normal(mean, sd)
 
@@ -42,7 +42,7 @@ logitnormal(mu, sigma)
 \item{sigma}{SD on the logit scale.}
 }
 \description{
-Convenience Probability Density Functions for 
-Probabilistic Analysis
+Probability Density Functions for 
+Probabilistic Uncertainty Analysis
 }
 

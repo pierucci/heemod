@@ -85,9 +85,10 @@ if(getRversion() >= "2.15.1") utils::globalVariables(c("."))
 #'   
 run_newdata <- function(x, newdata) {
   
-  stopifnot(
-    any(class(x) %in% "eval_model_list")
-  )
+  if (! any(class(x) %in% "eval_model_list")) {
+    stop("Object 'x' must be the result of 'run_models()'.")
+  }
+  
   list_models <- attr(x, "uneval_model_list")
   
   init <- attr(x, "init")

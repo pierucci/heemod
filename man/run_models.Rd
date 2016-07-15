@@ -7,8 +7,8 @@
 \usage{
 run_models(..., parameters = define_parameters(), init = c(1000L, rep(0L,
   get_state_number(get_states(list(...)[[1]])) - 1)), cycles = 1,
-  method = c("beginning", "end", "half-cycle", "life-table"), cost, effect,
-  base_model = NULL)
+  method = c("beginning", "end", "half-cycle", "life-table"), cost = NULL,
+  effect = NULL, base_model = NULL)
 
 run_models_(list_models, parameters, init, cycles, method, cost, effect,
   base_model)

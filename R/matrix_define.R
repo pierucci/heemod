@@ -67,11 +67,22 @@ define_matrix_ <- function(
   
   n <- sqrt(length(.dots))
   
-  stopifnot(
-    is.wholenumber(n),
-    length(state_names) == n,
-    length(unique(state_names)) == length(state_names)
-  )
+  if (! is.wholenumber(n)) {
+    stop(sprintf(
+      "Impossible to build a square matrix with %i elements.",
+      length(.dots)))
+  }
+  
+  if (! length(state_names) == n) {
+    stop(sprintf(
+      "Length of 'state_names' (%i) and size of matrix (%i x %i) differ.",
+      length(state_names), n, n
+    ))
+  }
+  
+  if (! length(unique(state_names)) == length(state_names)) {
+    stop("A least one state name is duplicated.")
+  }
   
   names(.dots) <- sprintf("cell_%i_%i",
                           rep(seq_len(n), each = n),
@@ -121,9 +132,12 @@ modify_.uneval_matrix <- function(.OBJECT, .dots){
   # !mod!
   # modifier par rr simplment
   
-  stopifnot(
-    all(names(.dots) %in% names(.OBJECT))
-  )
+  if (! all(names(.dots) %in% names(.OBJECT))) {
+    stop(sprintf(
+      "Trying to modify undefined cells (%s).",
+      paste(names(.dots)[! names(.dots) %in% names(.OBJECT)], collapse = ", ")
+    ))
+  }
   
   modifyList(.OBJECT, .dots)
 }

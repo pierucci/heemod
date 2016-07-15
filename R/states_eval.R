@@ -12,6 +12,8 @@
 eval_state_list <- function(x, parameters) {
   
   f <- function(x) {
+    x <- discount_hack(x)
+    
     # bottleneck!
     dplyr::mutate_(parameters, .dots = x)[c("markov_cycle",
                                             names(x))]
@@ -25,4 +27,45 @@ eval_state_list <- function(x, parameters) {
 
 get_state_value_names.eval_state_list <- function(x){
   names(x[[1]])[-1]
+}
+
+#' Hack to Work Around a Discounting Issue
+#' 
+#' This function is a hack to avoid a problem with discounting
+#' when the argument is a constant.
+#' 
+#' The hack consists in replacing calls to \code{discount(x)} by
+#' \code{discount(x * rep(1, n()))} to ensure \code{x} is 
+#' recycled to the correct length.
+#'
+#' @param .dots A state object.
+#'
+#' @return A modified state object.
+discount_hack <- function(.dots) {
+  f <- function (x) {
+    if (is.atomic(x) || is.name(x)) {
+      x
+    } else if (is.call(x)) {
+      if (identical(x[[1]], quote(discount))) {
+        x <- pryr::standardise_call(x)
+        x$x <- substitute((.x * rep(1, n())), list(.x = x$x))
+      }
+      as.call(lapply(x, f))
+    } else if (is.pairlist(x)) {
+      as.pairlist(lapply(x, discount_hack))
+    } else {
+      stop(sprintf("Don't know how to handle type %s.", typeof(x)))
+    }
+  }
+  
+  structure(
+    lapply(
+      .dots,
+      function(x) {
+        x$expr <- f(x$expr)
+        x
+      }
+    ),
+    class = "lazy_dots"
+  )
 }

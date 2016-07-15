@@ -35,10 +35,7 @@ discount <- function(x, r, first = FALSE) {
     r >= 0,
     r <= 1
   )
-  
-  if (length(x) == 1)
-    warning("The function 'discount' should only take as an 'x' argument the names of variables already defined in 'define_parameteres' or 'define_state', and not numeric constants.")
-  
+
   x / (1 + r) ^ (seq_along(x) - (1 - isTRUE(first)))
 }
 
@@ -104,4 +101,16 @@ check_names <- function(x) {
   if (any(grepl("^\\.", x))) {
     stop("Names starting with '.' are reserved.")
   }
+}
+
+#' Make Syntactically Valid Names
+#'
+#' Compared to \code{\link{make.names}} this function also 
+#' converts characters to lower case and replaces \code{.} by \code{_}.
+#'
+#' @param x A character vector.
+#'
+#' @return A character vector.
+make_names <- function(x) {
+  gsub("\\.+", "_", make.names(tolower(x)))
 }

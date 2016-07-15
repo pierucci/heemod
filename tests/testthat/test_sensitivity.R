@@ -85,6 +85,12 @@ test_that(
       cost = cost,
       effect = ly
     )
+    res3 <- suppressWarnings(run_models(
+      mod1, mod2,
+      parameters = param,
+      init = c(100, 0),
+      cycles = 10
+    ))
     
     ds <- define_sensitivity(
       p1 = c(.1, .9),
@@ -105,6 +111,8 @@ test_that(
  $ .effect     : num  871 587 611 695 871 ...',
       fixed = TRUE
     )
+    
+    expect_error(run_sensitivity(res3, ds))
     
     plot(x, type = "diff", model = "II")
     plot(x, type = "simple", model = 2)

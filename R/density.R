@@ -1,5 +1,5 @@
-#' Convenience Probability Density Functions for 
-#' Probabilistic Analysis
+#' Probability Density Functions for 
+#' Probabilistic Uncertainty Analysis
 #' 
 #' @param mean Distribution mean.
 #' @param sd Distribution standard deviation.

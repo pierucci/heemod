@@ -15,7 +15,7 @@ print.uneval_model <- function(x, ...) {
   ))
 }
 
-#' Plot Results of Markov Model
+#' Plot Results of a Markov Model
 #' 
 #' Various plots for Markov models.
 #' 

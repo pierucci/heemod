@@ -10,16 +10,19 @@
 #' @param x A result of \code{\link{run_sensitivity}}.
 #' @param model Name or index of model to plot.
 #' @param type Type of plot (see details).
+#' @param widest_on_top Logical. Should bars be sorted so widest are on top?
 #' @param ... Additional arguments passed to \code{plot}.
 #'   
 #' @return A \code{ggplot2} object.
 #' @export
 #' 
 plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
-                                  model = 1, ...) {
+                                  model = 1, widest_on_top = TRUE, ...) {
   type <- match.arg(type)
   
   n_ind <- sum(attr(attr(x, "model_ref"), "init"))
+  
+  if(length(model) != 1) stop("Argumemt 'model' must have length 1.")  
   
   switch(
     type,
@@ -31,7 +34,7 @@ plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
         data = tab,
         key_col = ".variable",
         value_col = ".value",
-        gather_col = attr(x, "variables"),
+        gather_cols = attr(x, "variables"),
         na.rm = TRUE
       )
       
@@ -46,7 +49,17 @@ plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
       
       l <- diff(range(tab$.y)) * .1
       
-      
+      if(widest_on_top){
+        order_df <- tab %>%
+          dplyr::group_by(.variable) %>% 
+          dplyr::summarize(width = max(.y) - min(.y))
+        
+        tab$.variable <- factor(
+          tab$.variable, 
+          levels = unique(order_df$.variable)[order(order_df$width)]
+        )
+      }
+      plot_title <- paste("Model:", unique(tab$.model_names))
       ggplot2::ggplot(
         tab,
         ggplot2::aes(
@@ -73,6 +86,7 @@ plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
         ) +
         ggplot2::xlab("Cost") +
         ggplot2::ylab("Variable") +
+        ggplot2::ggtitle(plot_title) + 
         ggplot2::xlim(min(tab$.y) - l, max(tab$.y) + l)
     },
     diff = {
@@ -82,19 +96,20 @@ plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
       tab1 <- get_model(x, model)
       ref0 <- get_model(attr(x, "model_ref"), bm)
       ref1 <- get_model(attr(x, "model_ref"), model)
-      
+      if(identical(tab0, tab1)) 
+        stop("It doesn't make sense to plot the difference of a model with itself.")      
       tab0 <- tidyr::gather_(
         data = tab0,
         key_col = ".variable",
         value_col = ".value",
-        gather_col = attr(x, "variables"),
+        gather_cols = attr(x, "variables"),
         na.rm = TRUE
       )
       tab1 <- tidyr::gather_(
         data = tab1,
         key_col = ".variable",
         value_col = ".value",
-        gather_col = attr(x, "variables"),
+        gather_cols = attr(x, "variables"),
         na.rm = TRUE
       )
       
@@ -109,7 +124,19 @@ plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
         dplyr::mutate(.hjust = 1 - (row_number() - 1))
       
       l <- diff(range(tab1$.y)) * .1
-      
+      plot_title <- paste(unique(tab1$.model_names), bm, sep = " - ")
+      ## order .variable by width of effect, so widest bars
+      ##   of tornado plot will be on top
+      if(widest_on_top){
+        order_df <- tab1 %>% 
+          dplyr::group_by(.variable) %>% 
+          dplyr::summarize(width = max(.y) - min(.y))
+        
+        tab1$.variable <- factor(
+          tab1$.variable, 
+          levels = unique(order_df$.variable)[order(order_df$width)]
+        )
+      }
       ggplot2::ggplot(
         tab1,
         ggplot2::aes(
@@ -133,8 +160,9 @@ plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
             hjust = .hjust
           )
         ) +
-        ggplot2::xlab("Cost") +
+        ggplot2::xlab("Difference in Cost") +
         ggplot2::ylab("Variable") +
+        ggplot2::ggtitle(plot_title) + 
         ggplot2::xlim(min(tab1$.y) - l, max(tab1$.y) + l)
       
     },

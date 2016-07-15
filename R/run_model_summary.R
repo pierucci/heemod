@@ -12,6 +12,11 @@ print.eval_model_list <- function(x, ...) {
 #' @export
 #' 
 summary.eval_model_list <- function(object, ...) {
+  if (! all(c(".cost", ".effect") %in% names(object))) {
+    warning("No cost and/or effect defined, model summary unavailable.")
+    return(invisible(NULL))
+  }
+  
   res <- as.data.frame(compute_icer(normalize_ce(object)))
   
   res <- dplyr::select(res, - .model_names)
