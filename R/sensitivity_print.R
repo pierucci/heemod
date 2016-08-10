@@ -22,7 +22,7 @@ plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
   
   n_ind <- sum(attr(attr(x, "model_ref"), "init"))
   
-  if(length(model) != 1) stop("Argumemt 'model' must have length 1.")  
+  check_model_index(model = x, i = model) 
   
   switch(
     type,
