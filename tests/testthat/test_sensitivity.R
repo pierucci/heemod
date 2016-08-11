@@ -100,15 +100,11 @@ test_that(
     x <- run_sensitivity(res2, ds)
     
     expect_output(
-      str(x),
-      '8 obs. of  7 variables:
- $ p1          : num  0.1 0.9 NA NA 0.1 0.9 NA NA
- $ p2          : num  NA NA 0.1 0.3 NA NA 0.1 0.3
+      str(head(as.data.frame(x))),
+      '6 obs. of  8 variables:
  $ cost        : num  514389 451356 456666 475359 703168 ...
  $ ly          : num  871 587 611 695 871 ...
- $ .model_names: chr  "I" "I" "I" "I" ...
- $ .cost       : num  514389 451356 456666 475359 703168 ...
- $ .effect     : num  871 587 611 695 871 ...',
+ $ .mod        :List of 6',
       fixed = TRUE
     )
     

@@ -11,6 +11,7 @@
 #' @importFrom dplyr left_join
 #' @importFrom dplyr "%>%"
 #' @importFrom dplyr desc
+#' @importFrom dplyr ungroup
 #' 
 #' @importFrom lazyeval lazy
 #' @importFrom lazyeval lazy_dots

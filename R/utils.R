@@ -139,7 +139,7 @@ check_model_index <- function(x, i) {
   if (is.character(i) & ! i %in% get_model_names(x)) {
     stop(sprintf(
       "Model index is not the name of a model (%s).",
-      paste(names(x), collapse = " - ")
+      paste(get_model_names(x), collapse = " - ")
     ))
   }
 }

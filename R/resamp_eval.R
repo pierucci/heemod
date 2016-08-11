@@ -24,19 +24,24 @@ run_probabilistic <- function(model, resample, N) {
   
   list_res <- list()
   
-  for (i in names(model)) {
+  for (n in get_model_names(model)) {
     message(sprintf("Running model '%s'...", n))
     list_res <- c(
       list_res,
       list(
         eval_model_newdata(
-          x = model, model = n, newdata = newdata
-        )
+          x = model,
+          model = n,
+          newdata = newdata) %>% 
+          dplyr::rowwise() %>% 
+          dplyr::do(get_total_state_values(.$.mod)) %>% 
+          dplyr::bind_cols(newdata) %>% 
+          dplyr::ungroup()
       )
     )
   }
   
-  names(list_res) <- names(list_models)
+  names(list_res) <- get_model_names(model)
   index <- seq_len(N)
   
   for (n in names(list_res)) {

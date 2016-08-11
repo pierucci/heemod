@@ -90,7 +90,7 @@ run_newdata <- function(x, newdata) {
   ce <- attr(x, "ce")
   
   list_res <- lapply(
-    names(x),
+    get_model_names(x),
     function(n) eval_model_newdata(x, model = n, newdata = newdata)
   )
   
@@ -99,7 +99,6 @@ run_newdata <- function(x, newdata) {
   }
   
   res <- Reduce(dplyr::bind_rows, list_res)
-  res <- dplyr::mutate_(res, .dots = ce)
   
   structure(res, class = c("eval_newdata", class(res)))
 }
