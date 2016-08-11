@@ -22,7 +22,7 @@ plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
   
   n_ind <- sum(attr(attr(x, "model_ref"), "init"))
   
-  check_model_index(model = x, i = model) 
+  check_model_index(x = x, i = model) 
   
   switch(
     type,
