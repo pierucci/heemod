@@ -20,19 +20,14 @@
 #' 
 #' @example inst/examples/example_eval_model_newdata.R
 #' 
-eval_model_newdata <- function(x,
-                               model = 1,
-                               newdata,
-                               cycles,
-                               init, method) {
-  browser()
+eval_model_newdata <- function(x, model = 1, newdata) {
   check_model_index(x = x, i = model)
   
   old_parameters <- attr(x, "parameters")
   cycles <- attr(x, "cycles")
   init <- attr(x, "init")
   method <- attr(x, "method")
-  uneval_model <- x[model]
+  uneval_model <- attr(x, "uneval_model_list")[[model]]
   
   eval_newdata <- function(new_parameters, model, old_parameters) {
     new_parameters <- Filter(function(x) !is.na(x), new_parameters)
@@ -53,16 +48,16 @@ eval_model_newdata <- function(x,
     )
   }
   
-  dplyr::bind_cols(
-    newdata,
+  newdata %>% 
+    dplyr::rowwise() %>% 
     dplyr::do(
-      dplyr::rowwise(newdata),
-      get_total_state_values(
-        eval_newdata(., model = uneval_model,
-                     old_parameters = old_parameters)
+      .mod = eval_newdata(
+        .,
+        model = uneval_model,
+        old_parameters = old_parameters
       )
-    )
-  )
+    ) %>% 
+    dplyr::bind_cols(newdata)
 }
 
 if(getRversion() >= "2.15.1") utils::globalVariables(c("."))

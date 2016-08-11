@@ -178,6 +178,14 @@ run_models_ <- function(list_models,
   )
 }
 
+get_model_names <- function(x) {
+  x$.model_names
+}
+
+get_model_count <- function(x) {
+  nrow(x)
+}
+
 #' Get Markov Model Parameters
 #' 
 #' 

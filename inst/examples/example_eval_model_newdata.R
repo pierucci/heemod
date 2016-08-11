@@ -15,6 +15,7 @@ mod1 <- define_model(
 
 res1 <- run_models(
   mod1,
+  parameters = par1,
   cycles = 5,
   init = 1:0,
   method = "end"
@@ -25,6 +26,6 @@ new_tab <- data.frame(
 )
 
 heemod:::eval_model_newdata(
-  mod1,
+  res1,
   newdata = new_tab
 )

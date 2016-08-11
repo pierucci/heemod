@@ -5,26 +5,16 @@
 \title{Iteratively Evaluate a Markov Model With New Parameter 
 Values}
 \usage{
-eval_model_newdata(model, old_parameters, newdata, cycles, init, method)
+eval_model_newdata(x, model = 1, newdata)
 }
 \arguments{
-\item{model}{An \code{uneval_model} object.}
+\item{x}{Result from \code{\link{run_models}}.}
 
-\item{old_parameters}{Current parameters used to compute
-model.}
+\item{model}{Name or index of model to recompute.}
 
 \item{newdata}{a data.frame whose names match parameters 
 names. \code{model} will be evaluated iteratively, 
 taking successivel values from each row.}
-
-\item{cycles}{positive integer. Number of Markov Cycles 
-to compute.}
-
-\item{init}{numeric vector, same length as number of 
-model states. Number of individuals in each model state
-at the beginning.}
-
-\item{method}{Counting method.}
 }
 \value{
 A data.frame containing the values of 
@@ -56,17 +46,21 @@ mod1 <- define_model(
   define_state(var = a * markov_cycle)
 )
 
+res1 <- run_models(
+  mod1,
+  parameters = par1,
+  cycles = 5,
+  init = 1:0,
+  method = "end"
+)
+
 new_tab <- data.frame(
   a = 1:10
 )
 
 heemod:::eval_model_newdata(
-  mod1,
-  old_parameters = par1,
-  cycles = 5,
-  init = 1:0,
-  newdata = new_tab,
-  method = "end"
+  res1,
+  newdata = new_tab
 )
 }
 

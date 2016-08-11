@@ -128,18 +128,18 @@ check_model_index <- function(x, i) {
   
   if(length(i) != 1) stop("Model index must have length 1.")
   
-  if (is.numeric(i) & (i > length(x) | i < 1)) {
-    stop(sprintf("Model index out of range [%i - %i].", 1, length(x)))
+  if (! (is.character(i) | is.numeric(i))) {
+    stop("Model index must be either numeric or character.")
   }
   
-  if (is.character(i) & ! i %in% names(x)) {
+  if (is.numeric(i) & (i > get_model_count(x) | i < 1)) {
+    stop(sprintf("Model index out of range [%i - %i].", 1, get_model_count(x)))
+  }
+  
+  if (is.character(i) & ! i %in% get_model_names(x)) {
     stop(sprintf(
       "Model index is not the name of a model (%s).",
       paste(names(x), collapse = " - ")
     ))
-  }
-  
-  if (! (is.character(i) | is.factor(i))) {
-    stop("Model index must be either numeric or character.")
   }
 }
