@@ -133,7 +133,7 @@ run_models_ <- function(list_models,
     ))
   }
   
-  if (! all(init >= 0)) {
+  if (! any(init > 0)) {
     stop("At least one init count must be > 0.")
   }
   
