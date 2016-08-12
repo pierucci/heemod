@@ -66,7 +66,7 @@ get_counts <- function(x){
   UseMethod("get_counts")
 }
 
-get_counts.eval_model <- function(x){
+get_counts.eval_model <- function(x) {
   x$counts
 }
 
