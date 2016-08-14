@@ -64,8 +64,8 @@ run_models <- function(...,
     init = init,
     cycles = cycles,
     method = method,
-    cost = lazyeval::lazy(cost),
-    effect = lazyeval::lazy(effect),
+    cost = lazyeval::lazy_(substitute(cost), env = parent.frame()),
+    effect = lazyeval::lazy_(substitute(effect), env = parent.frame()),
     base_model = base_model
   )
 }
@@ -89,7 +89,6 @@ run_models_ <- function(list_models,
       paste(.x, collapse = ", ")
     ))
   }
-  
   
   list_ce <- list(
     .cost = cost,
@@ -220,7 +219,7 @@ get_base_model.default <- function(x, ...) {
     warning("No effect defined, cannot find base model.")
     return(NULL)
   }
-  x$.model_names[which(x$.effect == min(x$.effect))[1]]
+  x$.model_names[x$.effect == min(x$.effect)][1]
 }
 
 get_base_model.run_models <- function(x, ...) {
