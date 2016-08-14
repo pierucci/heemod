@@ -10,7 +10,6 @@ print.run_models <- function(x, ...) {
 #'   
 #' @return A \code{summary_eval_model_list} object.
 #' @export
-#' 
 summary.run_models <- function(object, ...) {
   if (! all(c(".cost", ".effect") %in% names(object))) {
     warning("No cost and/or effect defined, model summary unavailable.")
@@ -18,10 +17,9 @@ summary.run_models <- function(object, ...) {
   }
   
   res <- as.data.frame(compute_icer(normalize_ce(object)))
-  
+  rownames(res) <- res$.model_names
   res <- dplyr::select_(res, quote(- .model_names))
   
-  rownames(res) <- object$.model_names
   
   res_comp <- res[c(".dcost", ".deffect", ".icer")]
   is.na(res_comp$.icer) <- ! is.finite(res_comp$.icer)
