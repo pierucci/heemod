@@ -17,7 +17,7 @@
 #' Weights are automatillcally scaled. If no weights are provided
 #' equal weights are used for each strata.
 #'
-#' @return A \code{\link{run_demographic}} object, mostly
+#' @return A \code{run_demographics} object, mostly
 #' similar to a result from \code{\link{run_models}}. \code{plot} and
 #' \code{summary} methods are available.
 #' 
@@ -118,8 +118,8 @@ plot.run_demographics <- function(x, ...) {
 }
 
 #' @export
-summary.run_demographics <- function(x, ...) {
-  summary.run_models(x, ...)
+summary.run_demographics <- function(object, ...) {
+  summary.run_models(object, ...)
 }
 
 normalize_ce.run_demographics <- function(x, ...) {
