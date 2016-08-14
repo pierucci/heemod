@@ -167,7 +167,7 @@ run_models_ <- function(list_models,
     res,
     eval_model_list = eval_model_list,
     uneval_model_list = list_models,
-    class = c("eval_model_list", class(res)),
+    class = c("run_models", class(res)),
     parameters = parameters,
     init = init,
     cycles = cycles,
@@ -223,6 +223,6 @@ get_base_model.default <- function(x, ...) {
   x$.model_names[which(x$.effect == min(x$.effect))[1]]
 }
 
-get_base_model.eval_model_list <- function(x, ...) {
+get_base_model.run_models <- function(x, ...) {
   attr(x, "base_model")
 }

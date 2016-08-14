@@ -1,5 +1,5 @@
 #' @export
-print.eval_model_list <- function(x, ...) {
+print.run_models <- function(x, ...) {
   print(summary(x, ...))
 }
 #' Summarise Markov Model Results
@@ -11,7 +11,7 @@ print.eval_model_list <- function(x, ...) {
 #' @return A \code{summary_eval_model_list} object.
 #' @export
 #' 
-summary.eval_model_list <- function(object, ...) {
+summary.run_models <- function(object, ...) {
   if (! all(c(".cost", ".effect") %in% names(object))) {
     warning("No cost and/or effect defined, model summary unavailable.")
     return(invisible(NULL))
@@ -40,7 +40,7 @@ summary.eval_model_list <- function(object, ...) {
       count_args = attr(object, "count_args"),
       frontier = get_frontier(object)
     ),
-    class = "summary_eval_model_list"
+    class = "summary_run_models"
   )
 }
 if(getRversion() >= "2.15.1")
@@ -59,7 +59,7 @@ if(getRversion() >= "2.15.1")
 normalize_ce <- function(x) {
   UseMethod("normalize_ce")
 }
-normalize_ce.eval_model_list <- function(x) {
+normalize_ce.run_models <- function(x) {
   bm <- get_base_model(x)
   x$.cost <- x$.cost - x$.cost[x$.model_names == bm]
   x$.effect <- x$.effect - x$.effect[x$.model_names == bm]
@@ -93,7 +93,7 @@ compute_icer <- function(x) {
 }
 
 #' @export
-print.summary_eval_model_list <- function(x, ...) {
+print.summary_run_models <- function(x, ...) {
   cat(sprintf(
     "%i Markov model%s run for %i cycle%s.\n\n",
     nrow(x$res),

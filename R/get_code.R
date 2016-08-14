@@ -162,7 +162,7 @@ get_code.uneval_model <- function(x, name = NULL, sub = FALSE, ...) {
 
 #' @export
 #' @rdname get_code
-get_code.eval_model_list <- function(x, name = NULL, sub = FALSE, ...) {
+get_code.run_models <- function(x, name = NULL, sub = FALSE, ...) {
   if (! is.null(name)) {
     name <- paste(name, "<- ")
   }
