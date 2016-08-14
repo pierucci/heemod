@@ -23,13 +23,12 @@ summary.run_models <- function(object, ...) {
   
   rownames(res) <- object$.model_names
   
-  res_comp <- res[c(".cost", ".effect", ".icer")]
+  res_comp <- res[c(".dcost", ".deffect", ".icer")]
   is.na(res_comp$.icer) <- ! is.finite(res_comp$.icer)
   res_comp$.icer <- format(res_comp$.icer)
   res_comp$.icer[res_comp$.icer == "NA"] <- "-"
-  res_comp$.cost <- res_comp$.cost / sum(attr(object, "init"))
-  res_comp$.effect <- res_comp$.effect / sum(attr(object, "init"))
-  names(res_comp) <- c("Cost", "Effect", "ICER")
+  res_comp$.dcost <- res_comp$.dcost / sum(attr(object, "init"))
+  res_comp$.deffect <- res_comp$.deffect / sum(attr(object, "init"))
   
   structure(
     list(
@@ -37,9 +36,11 @@ summary.run_models <- function(object, ...) {
         res,
         quote(- .cost),
         quote(- .effect),
-        quote(- .icer)
+        quote(- .icer),
+        quote(- .dcost),
+        quote(- .deffect)
       ),
-      res_comp = res_comp[-1, ],
+      res_comp = res_comp,
       cycles = attr(object, "cycles"),
       init = attr(object, "init"),
       count_args = attr(object, "count_args"),
@@ -76,20 +77,26 @@ normalize_ce.run_models <- function(x) {
 #' Models are ordered by effectiveness and ICER are computed sequencially.
 #' 
 #' @param x Result of \code{\link{run_models}}.
+#' @param model_order Order in which the models 
+#' should be sorted. Default: by increasing effect.
 #'   
 #' @return A \code{data.frame} with computed ICER.
 #' @export
 #' 
-compute_icer <- function(x) {
-  tab <- x[order(x$.effect), ]
+compute_icer <- function(x, model_order = order(x$.effect)) {
+  
+  tab <- x[model_order, ]
   
   tab$.icer <- NA
+  tab$.dcost <- NA
+  tab$.deffect <- NA
   for (i in seq_len(nrow(tab))) {
     if (i == 1) {
       tab$.icer[i] <- -Inf
     } else {
-      tab$.icer[i] <- (tab$.cost[i] - tab$.cost[i-1]) /
-        (tab$.effect[i] - tab$.effect[i-1])
+      tab$.dcost[i] <- tab$.cost[i] - tab$.cost[i-1]
+      tab$.deffect[i] <- tab$.effect[i] - tab$.effect[i-1]
+      tab$.icer[i] <- tab$.dcost[i] / tab$.deffect[i]
     }
   }
   tab
@@ -118,6 +125,6 @@ print.summary_run_models <- function(x, ...) {
     cat("\nEfficiency frontier:\n\n")
     cat(x$frontier)
     cat("\n\nModel difference:\n\n")
-    print(x$res_comp)
+    print(setNames(x$res_comp[-1, ], c("Cost", "Effect", "ICER")))
   }
 }
