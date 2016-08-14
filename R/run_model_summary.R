@@ -19,7 +19,7 @@ summary.eval_model_list <- function(object, ...) {
   
   res <- as.data.frame(compute_icer(normalize_ce(object)))
   
-  res <- dplyr::select(res, - .model_names)
+  res <- dplyr::select_(res, quote(- .model_names))
   
   rownames(res) <- object$.model_names
   
@@ -33,7 +33,12 @@ summary.eval_model_list <- function(object, ...) {
   
   structure(
     list(
-      res = dplyr::select(res, - .cost, - .effect, - .icer),
+      res = dplyr::select_(
+        res,
+        quote(- .cost),
+        quote(- .effect),
+        quote(- .icer)
+      ),
       res_comp = res_comp[-1, ],
       cycles = attr(object, "cycles"),
       init = attr(object, "init"),
@@ -43,8 +48,6 @@ summary.eval_model_list <- function(object, ...) {
     class = "summary_eval_model_list"
   )
 }
-if(getRversion() >= "2.15.1")
-  utils::globalVariables(c(".model_names", ".cost", ".effect", ".icer"))
 
 #' Normalize Cost and Effect
 #' 

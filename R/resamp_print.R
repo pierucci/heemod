@@ -41,10 +41,6 @@ plot.probabilistic <- function(x, type = c("ce", "ac"),
     stop("Unknown plot type."))
 }
 
-if(getRversion() >= "2.15.1")
-  utils::globalVariables(c(".ceac", ".index", ".effect", ".p", "n",
-                           ",cost", ".n", ".key", ".model_name", ".model"))
-
 normalize_ce.probabilistic <- function(x) {
   .bm <- get_base_model(x)
   res <- dplyr::mutate(
@@ -53,5 +49,3 @@ normalize_ce.probabilistic <- function(x) {
     .effect = .effect - sum(.effect * (.model_names == .bm))
   )
 }
-if(getRversion() >= "2.15.1")
-  utils::globalVariables(c(".index", ".cost", ".effect"))

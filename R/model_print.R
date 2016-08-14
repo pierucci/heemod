@@ -69,6 +69,3 @@ plot.eval_model_list <- function(x, type = c("counts", "ce"), model = 1, ...) {
     stop(sprintf("Unknown type: '%s'.", type))
   )
 }
-if(getRversion() >= "2.15.1")
-  utils::globalVariables(c("row_number", "markov_cycle", "value", "key",
-                           ".cost", ".effect", ".model_names"))

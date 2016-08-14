@@ -62,9 +62,6 @@ eval_model_newdata <- function(model,
   )
 }
 
-if(getRversion() >= "2.15.1") utils::globalVariables(c("."))
-
-
 #' Iteratively Run Markov Models Over New Parameter Sets 
 #' (Heterogeneity or Probabilistic analysis)
 #' 

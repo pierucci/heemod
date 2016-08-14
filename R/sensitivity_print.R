@@ -169,6 +169,3 @@ plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
     stop("Unknown type.")
   )
 }
-if(getRversion() >= "2.15.1") utils::globalVariables(
-  c(".variable", ".x", ".y", ".ref", ".value", ".sign", ".hjust")
-)
