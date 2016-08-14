@@ -1,0 +1,192 @@
+---
+title: "Demographic Analysis"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Demographic Analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r, echo=FALSE, include=FALSE}
+library(heemod)
+```
+
+```{r, include = FALSE}
+
+param <- define_parameters(
+    age_init = 60,
+    sex = 0,
+    # age increases with cycles
+    age = age_init + markov_cycle,
+    
+    # operative mortality rates
+    omrPTHR = .02,
+    omrRTHR = .02,
+    
+    # re-revision mortality rate
+    rrr = .04,
+    
+    # parameters for calculating primary revision rate
+    cons = -5.49094,
+    ageC = -.0367,
+    maleC = .768536,
+    lambda = exp(cons + ageC * age_init + maleC * sex),
+    gamma = 1.45367786,
+    
+    rrNP1 = .260677,
+    
+    # revision probability of primary procedure
+    standardRR = 1 - exp(lambda * ((markov_cycle - 1) ^ gamma -
+                                     markov_cycle ^ gamma)),
+    np1RR = 1 - exp(lambda * rrNP1 * ((markov_cycle - 1) ^ gamma - 
+                                        markov_cycle ^ gamma)),
+    
+    # age-related mortality rate
+    sex_cat = ifelse(sex == 0, "FMLE", "MLE"),
+    mr = get_who_mr(age, sex_cat, country = "GBR"),
+    
+    # state values
+    u_SuccessP = .85,
+    u_RevisionTHR = .30,
+    u_SuccessR = .75,
+    c_RevisionTHR = 5294
+)
+
+mat_standard <- define_matrix(
+    state_names = c(
+      "PrimaryTHR",
+      "SuccessP",
+      "RevisionTHR",
+      "SuccessR",
+      "Death"
+    ),
+    0, C, 0,          0, omrPTHR,
+    0, C, standardRR, 0, mr,
+    0, 0, 0,          C, omrRTHR+mr,
+    0, 0, rrr,        C, mr,
+    0, 0, 0,          0, 1
+)
+
+mat_np1 <- define_matrix(
+    state_names = c(
+      "PrimaryTHR",
+      "SuccessP",
+      "RevisionTHR",
+      "SuccessR",
+      "Death"
+    ),
+    0, C, 0,          0, omrPTHR,
+    0, C, np1RR,      0, mr,
+    0, 0, 0,          C, omrRTHR+mr,
+    0, 0, rrr,        C, mr,
+    0, 0, 0,          0, 1
+)
+
+mod_standard <- define_model(
+  transition_matrix = mat_standard,
+  PrimaryTHR = define_state(
+    utility = 0,
+    cost = 394
+  ),
+  SuccessP = define_state(
+    utility = discount(u_SuccessP, .015),
+    cost = 0
+  ),
+  RevisionTHR = define_state(
+    utility = discount(u_RevisionTHR, .015),
+    cost = discount(c_RevisionTHR, .06)
+  ),
+  SuccessR = define_state(
+    utility = discount(u_SuccessR, .015),
+    cost = 0
+  ),
+  Death = define_state(
+    utility = 0,
+    cost = 0
+  )
+)
+
+mod_np1 <- define_model(
+  transition_matrix = mat_np1,
+  PrimaryTHR = define_state(
+    utility = 0,
+    cost = 579
+  ),
+  SuccessP = define_state(
+    utility = discount(u_SuccessP, .015),
+    cost = 0
+  ),
+  RevisionTHR = define_state(
+    utility = discount(u_RevisionTHR, .015),
+    cost = discount(c_RevisionTHR, .06)
+  ),
+  SuccessR = define_state(
+    utility = discount(u_SuccessR, .015),
+    cost = 0
+  ),
+  Death = define_state(
+    utility = 0,
+    cost = 0
+  )
+)
+
+res_mod <- run_models(
+  standard = mod_standard,
+  np1 = mod_np1,
+  parameters = param,
+  cycles = 60,
+  cost = cost,
+  effect = utility,
+  method = "end"
+)
+```
+
+# Introduction
+
+The goal of demographic analysis is to estimate the values of a model on an entire population. In `heemod` models are either run on a single set of parameters with `run_models()`, or on parameter distributions with `run_probabilistic()`. Demographic analysis runs the model on multiple sets of parameters (reflecting differents characteristics found in the target population) and combines the results.
+
+# Population characteristics
+
+The characteristics of the population are input from a table, with one column per parameter and one row per population strata. Here we define a simple population structure, with varying ages and sexes:
+
+```{r}
+pop_tab <- data.frame(
+  age = rep(seq(30, 80, 10), 2),
+  sex = rep(0:1, each = 6)
+)
+pop_tab
+```
+
+An optional value, `.weights`, allows to specify the respective weight of each strata in the target population:
+
+```{r}
+pop_tab$.weights <- c(
+  3322, 5307, 7897, 1758,
+  8878, 4052, 8555, 4120,
+  4004, 5287, 9030, 8779
+)
+pop_tab
+```
+
+# Running model
+
+For this example we will use the result from the assessment of a new total hip replacement previously described in `vignette("non-homogeneous", package = "heemod")`. `res_mod`, the result we obtained from `run_models()` in this previous vignette can be passed to `run_demographic()` to compute population-level results.
+
+```{r message=FALSE}
+res_mod
+
+res_demo <- run_demographics(res_mod, pop_tab)
+```
+
+# Interpreting results
+
+We can then print or plot the result of `run_demographics()` exactly like the results from `run_models()`.
+
+```{r, fig.width = 6, fig.height=4, fig.align='center'}
+res_demo
+
+plot(res_demo, model = "np1")
+```

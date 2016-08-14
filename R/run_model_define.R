@@ -133,7 +133,7 @@ run_models_ <- function(list_models,
     ))
   }
   
-  if (! all(init >= 0)) {
+  if (! any(init > 0)) {
     stop("At least one init count must be > 0.")
   }
   
@@ -156,9 +156,8 @@ run_models_ <- function(list_models,
     list_res[[n]]$.model_names <- n
   }
   
-  res <- Reduce(dplyr::bind_rows, list_res)
-  
-  res <- dplyr::mutate_(res, .dots = ce)
+  res <- Reduce(dplyr::bind_rows, list_res) %>% 
+    dplyr::mutate_(.dots = ce)
   
   if (is.null(base_model)) {
     base_model <- get_base_model(res)
@@ -168,7 +167,7 @@ run_models_ <- function(list_models,
     res,
     eval_model_list = eval_model_list,
     uneval_model_list = list_models,
-    class = c("eval_model_list", class(res)),
+    class = c("run_models", class(res)),
     parameters = parameters,
     init = init,
     cycles = cycles,
@@ -176,6 +175,14 @@ run_models_ <- function(list_models,
     ce = ce,
     base_model = base_model
   )
+}
+
+get_model_names <- function(x) {
+  x$.model_names
+}
+
+get_model_count <- function(x) {
+  nrow(x)
 }
 
 #' Get Markov Model Parameters
@@ -216,6 +223,6 @@ get_base_model.default <- function(x, ...) {
   x$.model_names[which(x$.effect == min(x$.effect))[1]]
 }
 
-get_base_model.eval_model_list <- function(x, ...) {
+get_base_model.run_models <- function(x, ...) {
   attr(x, "base_model")
 }

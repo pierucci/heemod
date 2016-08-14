@@ -56,14 +56,11 @@ test_that(
     ndt1 <- run_newdata(res2, newdata = new_tab)
     
     expect_output(
-      str(ndt1),
-      '22 obs. of  6 variables:
- $ age_init    : int  40 41 42 43 44 45 46 47 48 49 ...
- $ cost        : num  5418 5436 5455 5474 5493 ...
- $ ly          : num  10 10 10 10 10 10 10 10 10 10 ...
- $ .model_names: chr  "I" "I" "I" "I" ...
- $ .cost       : num  5418 5436 5455 5474 5493 ...
- $ .effect     : num  10 10 10 10 10 10 10 10 10 10 ...',
+      print(ndt1),
+      '               .mod age_init
+             <list>    <int>
+1  <S3: eval_model>       40
+2  <S3: eval_model>       41',
       fixed= TRUE
     )
   }
@@ -157,16 +154,16 @@ test_that(
     res2 <- heemod:::eval_resample(x, 2)
     
     expect_output(
-      str(ndt1),
-      '20 obs. of  8 variables:
- $ age_init    : num  65.5 71.3 76.5 74.4 59.9 ...
- $ cost_init   : num  1118 948 1212 1024 1045 ...
- $ cost        : num  12515 10923 13662 11742 11678 ...
- $ ly          : num  10 10 10 10 10 10 10 10 10 10 ...
- $ .model_names: chr  "I" "I" "I" "I" ...
- $ .index      : int  1 2 3 4 5 6 7 8 9 10 ...
- $ .cost       : num  12515 10923 13662 11742 11678 ...
- $ .effect     : num  10 10 10 10 10 10 10 10 10 10 ...',
+      str(head(as.data.frame(ndt2))),
+      '2 obs. of  8 variables:
+ $ cost        : num  10653 38163
+ $ ly          : num  10 10
+ $ age_init    : num  66.6 66.6
+ $ cost_init   : num  930 930
+ $ .model_names: chr  "I" "II"
+ $ .index      : int  1 1
+ $ .cost       : num  10653 38163
+ $ .effect     : num  10 10',
       fixed = TRUE
     )
 
@@ -186,12 +183,12 @@ test_that(
     )
     expect_identical(ndt1, ndt3)
     expect_output(
-      str(ndt2),
+      str(head(as.data.frame(ndt2))),
       '2 obs. of  8 variables:
- $ age_init    : num  66.6 66.6
- $ cost_init   : num  930 930
  $ cost        : num  10653 38163
  $ ly          : num  10 10
+ $ age_init    : num  66.6 66.6
+ $ cost_init   : num  930 930
  $ .model_names: chr  "I" "II"
  $ .index      : int  1 1
  $ .cost       : num  10653 38163

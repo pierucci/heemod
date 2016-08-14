@@ -25,7 +25,7 @@ If you are not familiar with `heemod`, first consult the introduction vignette `
 
 # Model description
 
-This example is an implementation of the assessment of a new total hip replacement (THR) technology described in chapter 3.5 of [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do). A more detailed report is available [at this location](https://www.york.ac.uk/media/che/documents/papers/technicalpapers/CHE%20Technical%20Paper%2028.pdf), event though this reports goes a bit further in the analysis.
+This example is an implementation of the assessment of a new total hip replacement (THR) technology described in chapter 3.5 of [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do). A more detailed report is available [at this location](https://www.york.ac.uk/media/che/documents/papers/technicalpapers/CHE%20Technical%20Paper%2028.pdf), event though this reports goes a bit further in the analysis. For the sake of simplicity we will not reproduce exactly the analysis from the book. See vignette `vignette("reproduction", package = "heemod")` for an exact reproduction of the analysis.
 
 This model has 5 states:
 
@@ -77,8 +77,6 @@ In order to build this more complex Markov model, parameters need to be defined 
 Note that state values that are going to be discounted need to be defined through `define_parameters()`.
 
 ```{r}
-# a function to return age-related mortality rate
-# given age and sex
 param <- define_parameters(
     age_init = 60,
     sex = 0,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_code.R
 \name{get_code}
 \alias{get_code}
-\alias{get_code.eval_model_list}
+\alias{get_code.run_models}
 \alias{get_code.state}
 \alias{get_code.uneval_matrix}
 \alias{get_code.uneval_model}
@@ -22,7 +22,7 @@ get_code(x, ...)
 
 \method{get_code}{uneval_model}(x, name = NULL, sub = FALSE, ...)
 
-\method{get_code}{eval_model_list}(x, name = NULL, sub = FALSE, ...)
+\method{get_code}{run_models}(x, name = NULL, sub = FALSE, ...)
 }
 \arguments{
 \item{x}{An \code{heemod} object.}
