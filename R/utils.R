@@ -121,22 +121,25 @@ make_names <- function(x) {
 #'
 #' @param x A result from \code{\link{run_models}}.
 #' @param i A model index, character or numeric.
+#' @param allow_multiple logical. Allow multiple model index?
 #'
 #' @return Nothing, just throws an error if an incorrect model 
 #' index is used.
-check_model_index <- function(x, i) {
+check_model_index <- function(x, i, allow_multiple = FALSE) {
   
-  if(length(i) != 1) stop("Model index must have length 1.")
+  if(length(i) != 1 & ! allow_multiple) {
+    stop("Model index must have length 1.")
+  }
   
   if (! (is.character(i) | is.numeric(i))) {
     stop("Model index must be either numeric or character.")
   }
   
-  if (is.numeric(i) & (i > get_model_count(x) | i < 1)) {
+  if (is.numeric(i) & (any(i > get_model_count(x)) | any(i < 1))) {
     stop(sprintf("Model index out of range [%i - %i].", 1, get_model_count(x)))
   }
   
-  if (is.character(i) & ! i %in% get_model_names(x)) {
+  if (is.character(i) & any(! i %in% get_model_names(x))) {
     stop(sprintf(
       "Model index is not the name of a model (%s).",
       paste(get_model_names(x), collapse = " - ")
