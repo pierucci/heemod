@@ -1,6 +1,11 @@
-# heemod 0.3.4
+# heemod 0.4.0
 
 ## New features
+
+  * `run_demographics()` to compute population-level values, with vignette.
+  * `run_heterogeneity()` for heterogeneity analysis, with vignette.
+  
+## Enhancements
 
   * `plot_sensitivity()` now plots by default the widest bar on top (thanks to @MattWiener).
   * convenience functions for converting rates to probabilities.

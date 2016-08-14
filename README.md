@@ -31,6 +31,8 @@ devtools::install_github("pierucci/heemod")
   * Probabilistic uncertainty analysis.
   * Deterministic sensitivity analysis.
   * Multiple state membership correction methods (life-table, half-cycle...).
+  * Demographic analysis to compute population-level results.
+  * Heterogeneity analysis.
 
 ## Learning heemod
 
@@ -42,11 +44,7 @@ Specific analysis examples (mostly inspired from Decision Modelling for Health E
   * Non-homogeneous Markov model (or `vignette("non-homogeneous", package = "heemod")`).
   * Probabilistic uncertainty analysis in `vignette("probabilistic", package = "heemod")`.
   * Deterministic sensitivity analysis in `vignette("sensitivity", package = "heemod")`.
-
-## Future developments
-
-Upcoming vignettes:
-
+  * Demographic analysis in `vignette("demographic", package = "heemod")`.
   * Heterogeneity analysis in `vignette("heterogeneity", package = "heemod")`.
 
 ## Devs
