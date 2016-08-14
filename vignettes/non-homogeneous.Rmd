@@ -77,8 +77,6 @@ In order to build this more complex Markov model, parameters need to be defined 
 Note that state values that are going to be discounted need to be defined through `define_parameters()`.
 
 ```{r}
-# a function to return age-related mortality rate
-# given age and sex
 param <- define_parameters(
     age_init = 60,
     sex = 0,
