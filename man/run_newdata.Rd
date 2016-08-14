@@ -36,7 +36,7 @@ mod1 <-
     ),
     define_state(
       cost = 432 + age,
-      ly = 1
+      ly = 1 * age / 100
     )
     
   )
@@ -53,7 +53,7 @@ mod2 <-
     ),
     define_state(
       cost = 456 * age / 10,
-      ly = 1
+      ly = 1 * age / 200
     )
     
   )
@@ -75,7 +75,7 @@ new_tab <- data.frame(
 )
 new_tab2 <- data.frame(
   age_init = 40:80,
-  .weigth = runif(41)
+  .weigths = runif(41)
 )
 
 # with run_model result

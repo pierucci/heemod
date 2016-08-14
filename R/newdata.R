@@ -83,7 +83,7 @@ if(getRversion() >= "2.15.1") utils::globalVariables(c("."))
 #'   
 run_newdata <- function(x, newdata) {
   
-  if (! any(class(x) %in% "eval_model_list")) {
+  if (! any(class(x) %in% "run_models")) {
     stop("Object 'x' must be the result of 'run_models()'.")
   }
   
@@ -98,7 +98,8 @@ run_newdata <- function(x, newdata) {
     list_res[[n]]$.model_names <- n
   }
   
-  res <- Reduce(dplyr::bind_rows, list_res)
+  res <- Reduce(dplyr::bind_rows, list_res) %>% 
+    dplyr::ungroup()
   
   structure(res, class = c("eval_newdata", class(res)))
 }

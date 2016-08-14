@@ -57,9 +57,8 @@ test_that(
     
     expect_output(
       print(ndt1),
-      '# A tibble: 22 x 2
-               .mod age_init
-*            <list>    <int>
+      '               .mod age_init
+             <list>    <int>
 1  <S3: eval_model>       40
 2  <S3: eval_model>       41',
       fixed= TRUE

@@ -62,11 +62,7 @@ eval_model <- function(model, parameters, cycles,
     cycles = cycles)
 }
 
-get_counts <- function(x){
-  UseMethod("get_counts")
-}
-
-get_counts.eval_model <- function(x) {
+get_counts <- function(x) {
   x$counts
 }
 

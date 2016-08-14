@@ -157,7 +157,7 @@ run_models_ <- function(list_models,
   }
   
   res <- Reduce(dplyr::bind_rows, list_res) %>% 
-    dplyr::mutate_(res, .dots = ce)
+    dplyr::mutate_(.dots = ce)
   
   if (is.null(base_model)) {
     base_model <- get_base_model(res)

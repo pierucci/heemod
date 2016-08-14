@@ -2,19 +2,86 @@
 % Please edit documentation in R/demographics.R
 \name{run_demographics}
 \alias{run_demographics}
-\title{Title}
+\title{Run Models on Demographic Data}
 \usage{
 run_demographics(x, demographics)
 }
 \arguments{
-\item{x}{x}
+\item{x}{Result from \code{\link{run_models}}.}
 
-\item{demographics}{d}
+\item{demographics}{A table containing demographic
+data (see details).
+
+The demographic data table must be a \code{data.frame} with
+the following properties: the column names must be parameter 
+names used in \code{\link{define_parameters}}; and an optional
+column \code{.weights} can give the respective weight of
+each row in the target population.
+
+Weights are automatillcally scaled. If no weights are provided
+equal weights are used for each strata.}
 }
 \value{
-z
+A \code{\link{run_demographic}} object, mostly
+similar to a result from \code{\link{run_models}}. \code{plot} and
+\code{summary} methods are available.
 }
 \description{
-Title
+Run a model on a set of demographic data giving population
+characteristics per strata, return aggregated results
+to estimate population-level values.
+}
+\examples{
+mod1 <-
+  define_model(
+    transition_matrix = define_matrix(
+      .4, .6,
+      .1, .9
+    ),
+    define_state(
+      cost = 543 + age * 5,
+      ly = 1
+    ),
+    define_state(
+      cost = 432 + age,
+      ly = 1 * age / 100
+    )
+  )
+
+mod2 <-
+  define_model(
+    transition_matrix = define_matrix(
+      .5, .5,
+      .1, .9
+    ),
+    define_state(
+      cost = 789 * age / 10,
+      ly = 1
+    ),
+    define_state(
+      cost = 456 * age / 10,
+      ly = 1 * age / 200
+    )
+  )
+
+res <- run_models(
+  mod1, mod2,
+  parameters = define_parameters(
+    age_init = 60,
+    age = age_init + markov_cycle
+  ),
+  init = 1:0,
+  cycles = 10,
+  cost = cost,
+  effect = ly
+)
+
+# generating table with demographic data
+new_tab <- data.frame(
+  age_init = 40:80,
+  .weights = runif(41)
+)
+
+run_demographics(res, demographics = new_tab)
 }
 
