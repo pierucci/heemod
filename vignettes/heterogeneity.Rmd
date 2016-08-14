@@ -1,11 +1,11 @@
 ---
-title: "Demographic Analysis"
+title: "Heterogeneity Analysis"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{Demographic Analysis}
+  %\VignetteIndexEntry{Heterogeneity Analysis}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -146,49 +146,56 @@ res_mod <- run_models(
 
 # Introduction
 
-The goal of demographic analysis is to estimate the average values of a model on an entire population. In `heemod` models are either run on a single set of parameters with `run_models()`, or on parameter distributions with `run_probabilistic()`. Demographic analysis runs the model on multiple sets of parameters (reflecting differents characteristics found in the target population) and combines the results.
+Heterogeneity analysis is a way to explore how the results of a model can vary depending on the characteristics of individuals in a population.
 
-This is different from heterogeneity analysis that does not combine results, but is a way to explore how the results of a model can vary depending on the characteristics of a population.
+This is different from demographic analysis where all results are combined in a final result to estimate the average values of a model on an entire population.
+
+For this example we will use the result from the assessment of a new total hip replacement previously described in `vignette("non-homogeneous", package = "heemod")`.
 
 # Population characteristics
 
-The characteristics of the population are input from a table, with one column per parameter and one row per population strata. Here we define a simple population structure, with varying ages and sexes:
+The characteristics of the population are input from a table, with one column per parameter and one row per individul. Those may be per example the characteristics of the indiviuals included in the original trial data.
 
-```{r}
-pop_tab <- data.frame(
-  age = rep(seq(30, 80, 10), 2),
-  sex = rep(0:1, each = 6)
+```{r include = FALSE}
+N <- 100
+
+tab_indiv <- dplyr::data_frame(
+  age = round(rnorm(N, mean = 60, sd = 10)),
+  sex = sample(0:1, N, TRUE)
 )
-pop_tab
 ```
 
-An optional value, `.weights`, allows to specify the respective weight of each strata in the target population:
+For this example we will use the characteristics of `r N` individuals, with varying sex and age:
 
 ```{r}
-pop_tab$.weights <- c(
-  3322, 5307, 7897, 1758,
-  8878, 4052, 8555, 4120,
-  4004, 5287, 9030, 8779
-)
-pop_tab
+tab_indiv
+
+library(ggplot2)
+ggplot(tab_indiv, aes(x = age)) +
+  geom_histogram(binwidth = 2)
 ```
 
 # Running the analysis
 
-For this example we will use the result from the assessment of a new total hip replacement previously described in `vignette("non-homogeneous", package = "heemod")`. `res_mod`, the result we obtained from `run_models()` in this previous vignette, can be passed to `run_demographic()` to compute population-level results.
+`res_mod`, the result we obtained from `run_models()` in the *Time-varying Markov models* vignette, can be passed to `run_heterogeneity()` to perform the heterogeneity analysis.
 
-```{r message=FALSE}
-res_mod
-
-res_demo <- run_demographics(res_mod, pop_tab)
+```{r}
+res_h <- run_heterogeneity(res_mod, tab_indiv)
+res_h
 ```
 
 # Interpreting results
 
-We can then print or plot the result of `run_demographics()` exactly like the results from `run_models()`.
+The `summary()` method reports summary statistics for cost, effect and ICER.
 
-```{r, fig.width = 6, fig.height=4, fig.align='center'}
-res_demo
+```{r}
+summary(res_h, model = "np1")
+```
 
-plot(res_demo, model = "np1")
+The variation of the incremental differences in cost, effect or ICER can then be plotted.
+
+```{r, fig.align='center', fig.height=4, fig.width=6}
+plot(res_h, type = "icer", model = "np1", binwidth = 500)
+plot(res_h, type = "effect", model = "np1", binwidth = 50)
+plot(res_h, type = "cost", model = "np1", binwidth = 25000)
 ```

@@ -62,8 +62,8 @@ test_that(
     
     expect_output(
       print(x),
-      "        Cost   Effect      ICER
-II -28996.37 2.403762 -12062.91",
+      "       Cost   Effect      ICER
+I -28996.37 2.403762 -12062.91",
       fixed = TRUE
     )
   })

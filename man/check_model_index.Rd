@@ -4,12 +4,14 @@
 \alias{check_model_index}
 \title{Check Model Index}
 \usage{
-check_model_index(x, i)
+check_model_index(x, i, allow_multiple = FALSE)
 }
 \arguments{
 \item{x}{A result from \code{\link{run_models}}.}
 
 \item{i}{A model index, character or numeric.}
+
+\item{allow_multiple}{logical. Allow multiple model index?}
 }
 \value{
 Nothing, just throws an error if an incorrect model 

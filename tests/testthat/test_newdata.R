@@ -1,8 +1,7 @@
-context("Newdata & probabilistic")
+context("Heterogeneity & probabilistic")
 
 test_that(
-  "run_newdata works", {
-    
+  "Heterogeneity analysis", {
     mod1 <-
       define_model(
         transition_matrix = define_matrix(
@@ -15,7 +14,7 @@ test_that(
         ),
         define_state(
           cost = 432 + age,
-          ly = 1
+          ly = 1 * age / 100
         )
         
       )
@@ -32,11 +31,12 @@ test_that(
         ),
         define_state(
           cost = 456 * age / 10,
-          ly = 1
+          ly = 1 * age / 200
         )
+        
       )
     
-    res2 <- run_models(
+    res <- run_models(
       mod1, mod2,
       parameters = define_parameters(
         age_init = 60,
@@ -47,20 +47,29 @@ test_that(
       cost = cost,
       effect = ly
     )
+    
     # generating table with new parameter sets
     new_tab <- data.frame(
-      age_init = 40:50
+      age_init = 40:80
     )
     
     # with run_model result
-    ndt1 <- run_newdata(res2, newdata = new_tab)
+    ndt <- run_heterogeneity(res, newdata = new_tab)
     
     expect_output(
-      print(ndt1),
-      '               .mod age_init
-             <list>    <int>
-1  <S3: eval_model>       40
-2  <S3: eval_model>       41',
+      print(ndt),
+      'An heterogeneity analysis on 41 parameter sets.',
+      fixed= TRUE
+    )
+    expect_error(
+      summary(ndt, model = "II")
+    )
+    expect_output(
+      str(summary(ndt, model = "I")),
+      'num [1:3, 1:6] -39070 1.78 -11710 -33960 2.17 ...
+ - attr(*, "dimnames")=List of 2
+  ..$ : chr [1:3] "Cost" "Effect" "ICER"
+  ..$ : chr [1:6] "Min." "1st Qu." "Median" "Mean" ...',
       fixed= TRUE
     )
   }

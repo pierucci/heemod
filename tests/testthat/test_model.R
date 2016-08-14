@@ -218,8 +218,8 @@ Initial states:
 X1 1
 X2 0
           x        y
-I  1170.000  615.000
-II 1592.538 1514.507
+II 1170.000  615.000
+I  1592.538 1514.507
 
 Efficiency frontier:
 
@@ -227,8 +227,8 @@ II I
 
 Model difference:
 
-       Cost   Effect      ICER
-II 422.5384 899.5074 0.4697442",
+      Cost   Effect      ICER
+I 422.5384 899.5074 0.4697442",
       fixed = TRUE
     )
     expect_output(
@@ -241,7 +241,7 @@ II 422.5384 899.5074 0.4697442",
     )
     expect_output(
       print(summary(e_mod2)),
-      '2 Markov models run for 5 cycles.
+      "2 Markov models run for 5 cycles.
 
 Initial states:
 
@@ -249,8 +249,8 @@ Initial states:
 X1 1
 X2 0
           x        y
-I  1170.000  615.000
-II 1592.538 1514.507
+II 1170.000  615.000
+I  1592.538 1514.507
 
 Efficiency frontier:
 
@@ -258,8 +258,8 @@ II I
 
 Model difference:
 
-       Cost   Effect      ICER
-II 422.5384 899.5074 0.4697442',
+      Cost   Effect      ICER
+I 422.5384 899.5074 0.4697442",
       fixed = TRUE
     )
     expect_output(
@@ -281,8 +281,8 @@ Initial states:
 X1 1
 X2 0
             x        y
-mod1 1170.000  615.000
-mod2 1592.538 1514.507
+mod2 1170.000  615.000
+mod1 1592.538 1514.507
 
 Efficiency frontier:
 
@@ -291,7 +291,7 @@ mod2 mod1
 Model difference:
 
          Cost   Effect      ICER
-mod2 422.5384 899.5074 0.4697442",
+mod1 422.5384 899.5074 0.4697442",
       fixed = TRUE
     )
   }
