@@ -50,6 +50,14 @@ test_that(
     )
     expect_error(
       define_model(
+        transition_matrix = mat2,
+        s1,
+        s2,
+        s2
+      )
+    )
+    expect_error(
+      define_model(
         transition_matrix = mat1,
         X1 = s1,
         X3 = s2
