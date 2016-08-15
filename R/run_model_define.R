@@ -184,24 +184,6 @@ get_model_count <- function(x) {
   nrow(x)
 }
 
-#' Get Markov Model Parameters
-#' 
-#' 
-#' For internal use.
-#' 
-#' @param x An \code{eval_model_list}
-#'   object.
-#'   
-#' @return An \code{uneval_parameters} or
-#'   \code{eval_parameters} object.
-get_parameters <- function(x){
-  UseMethod("get_parameters")
-}
-
-get_parameters.default <- function(x){
-  attr(x, "parameters")
-}
-
 get_total_state_values <- function(x) {
   # faster than as.data.frame or dplyr::as_data_frame
   res <- as.list(colSums((x$values)[- 1]))

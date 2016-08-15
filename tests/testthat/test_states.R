@@ -146,6 +146,18 @@ y"
         X1 = s2
       )
     )
+    expect_error(
+      heemod:::define_state_list(
+        X1 = define_state(x = 1, y = 2),
+        X2 = define_state(x = 1)
+      )
+    )
+    expect_error(
+      heemod:::define_state_list(
+        X1 = define_state(x = 1, y = 2),
+        X2 = define_state(x = 1, z = 2)
+      )
+    )
     expect_warning(
       heemod:::define_state_list(
         X1 = s1,

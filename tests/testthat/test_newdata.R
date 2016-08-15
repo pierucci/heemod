@@ -56,6 +56,17 @@ test_that(
     # with run_model result
     ndt <- run_heterogeneity(res, newdata = new_tab)
     
+    plot(ndt, model = 1, type = "icer")
+    plot(ndt, model = 1, type = "cost")
+    plot(ndt, model = 1, type = "effect")
+    
+    expect_error(
+      plot(ndt, model = "II")
+    )
+    expect_error(
+      run_heterogeneity(mod1, newdata = new_tab)
+    )
+    
     expect_output(
       print(ndt),
       'An heterogeneity analysis on 41 parameter sets.',
@@ -63,6 +74,10 @@ test_that(
     )
     expect_error(
       summary(ndt, model = "II")
+    )
+    expect_identical(
+      summary(ndt, model = 1),
+      summary(ndt, model = "I")
     )
     expect_output(
       str(summary(ndt, model = "I")),
@@ -72,14 +87,23 @@ test_that(
   ..$ : chr [1:6] "Min." "1st Qu." "Median" "Mean" ...',
       fixed= TRUE
     )
+    expect_error(
+      summary(ndt, model = "x")
+    )
+    expect_error(
+      summary(ndt, model = as.factor("x"))
+    )
+    expect_error(
+      summary(ndt, model = 1:2)
+    )
+    expect_error(
+      summary(ndt, model = 3)
+    )
   }
 )
 
 test_that(
   "Probabilistic analysis works", {
-    
-    # example for run_probabilistic
-    
     mod1 <-
       define_model(
         transition_matrix = define_matrix(
@@ -232,5 +256,25 @@ test_that(
       cycles = 10
     ))
     expect_error(run_probabilistic(res3, resample = rsp2, N = 10))
+    expect_error(
+      define_distrib(
+        age_init ~ normal(60, 10),
+        age_init ~ normal(1000, 100),
+        
+        correlation = matrix(c(
+          1, .4,
+          .4, 1
+        ), byrow = TRUE, ncol = 2)
+      )
+    )
+    expect_error(
+      define_correlation(age_init, cost_init, .4, .5)
+    )
+    expect_error(
+      define_correlation(age_init, cost_init, 2)
+    )
+    expect_error(
+      define_correlation(age_init, cost_init, .4, age_init, cost_init, .5)
+    )
   }
 )

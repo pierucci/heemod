@@ -57,7 +57,7 @@ test_that(
     )
     
     x <- run_demographics(res, demographics = new_tab2)
-    
+    plot(x)
     expect_message(run_demographics(res, demographics = new_tab))
     
     expect_output(

@@ -11,6 +11,11 @@ test_that(
       1-a, a,
       1-b, b
     )
+    mat2 <- define_matrix(
+      state_names = c("X1", "X3"),
+      1-a, a,
+      1-b, b
+    )
     s1 <- define_state(
       x = 234,
       y = 123
@@ -33,10 +38,24 @@ test_that(
       x = 456,
       y = 1029
     )
+    s5 <- define_state(
+      a = 456,
+      b = 1029
+    )
     mod2 <- define_model(
       transition_matrix = mat1,
       X1 = s3,
       X2 = s4
+    )
+    mod3 <- define_model(
+      transition_matrix = mat2,
+      X1 = s3,
+      X3 = s4
+    )
+    mod4 <- define_model(
+      transition_matrix = mat1,
+      X1 = s5,
+      X2 = s5
     )
     expect_error(
       run_models(
@@ -57,6 +76,13 @@ test_that(
         mod1, mod2,
         parameters = par1,
         init = c(-1, 0)
+      )
+    )
+    expect_error(
+      run_models(
+        mod1, mod2,
+        parameters = par1,
+        init = c(1, 0, 0)
       )
     )
     expect_error(
@@ -84,6 +110,16 @@ test_that(
         mod1, mod2,
         parameters = par1,
         method = "zzz"
+      )
+    )
+    expect_error(
+      run_models(
+        mod1, mod3, parameters = par1
+      )
+    )
+    expect_error(
+      run_models(
+        mod1, mod4, parameters = par1
       )
     )
     expect_warning(
@@ -155,6 +191,10 @@ test_that(
     expect_warning(
       run_models(I = mod1, mod2,
                  parameters = par1, cost = x, effect = y)
+    )
+    expect_warning(
+      summary(run_models(mod1, mod2,
+                         parameters = par1))
     )
     expect_output(
       str(run_models(mod1, mod2,
