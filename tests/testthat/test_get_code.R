@@ -12,7 +12,7 @@ test_that(
     )
     mod1 <-
       define_model(
-        mat1,
+        transition_matrix =  mat1,
         s1,
         define_state(
           cost = 432 + age,
