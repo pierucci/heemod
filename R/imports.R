@@ -33,6 +33,7 @@
 #' @importFrom stats qnorm
 #' @importFrom stats terms
 #' @importFrom stats setNames
+#' @importFrom stats reorder
 #' 
 #' @importFrom graphics par
 #' 

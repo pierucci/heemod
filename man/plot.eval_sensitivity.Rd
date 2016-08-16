@@ -4,8 +4,9 @@
 \alias{plot.eval_sensitivity}
 \title{Plot Sensitivity Analysis}
 \usage{
-\method{plot}{eval_sensitivity}(x, type = c("simple", "diff"), model = 1,
-  widest_on_top = TRUE, ...)
+\method{plot}{eval_sensitivity}(x, type = c("simple", "difference"),
+  result = c("cost", "effect", "icer"), model = 1, widest_on_top = TRUE,
+  ...)
 }
 \arguments{
 \item{x}{A result of \code{\link{run_sensitivity}}.}
@@ -14,7 +15,7 @@
 
 \item{model}{Name or index of model to plot.}
 
-\item{widest_on_top}{Logical. Should bars be sorted so widest are on top?}
+\item{widest_on_top}{logical. Should bars be sorted so widest are on top?}
 
 \item{...}{Additional arguments passed to \code{plot}.}
 }
@@ -27,7 +28,7 @@ plot.
 }
 \details{
 Plot type \code{simple} plots variations of single model 
-costs, while \code{diff} plots cost difference between 
+costs, while \code{difference} plots cost difference between 
 the specified model and the reference model.
 }
 

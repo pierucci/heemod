@@ -29,13 +29,9 @@ run_sensitivity <- function(model, sensitivity) {
     list_res[[i]]$.model_names <- names_models[i]
   }
   
-  res <- Reduce(dplyr::bind_rows, list_res)
-  res <- res %>% 
-    dplyr::rowwise() %>% 
-    dplyr::do(get_total_state_values(.$.mod)) %>% 
-    dplyr::bind_cols(res)
-  
-  res <- dplyr::mutate_(res, .dots = attr(model, "ce"))
+  res <- Reduce(dplyr::bind_rows, list_res) %>% 
+    tidyr::gather_(".par_names", ".par_value",
+                   attr(sensitivity, "variables"), na.rm = TRUE)
   
   structure(
     res,
