@@ -1,7 +1,7 @@
 mod1 <-
   define_model(
     transition_matrix = define_matrix(
-      .5, .5,
+      .4, .6,
       .1, .9
     ),
     define_state(
@@ -10,9 +10,8 @@ mod1 <-
     ),
     define_state(
       cost = 432 + age,
-      ly = 1
+      ly = 1 * age / 100
     )
-    
   )
 
 mod2 <-
@@ -27,12 +26,11 @@ mod2 <-
     ),
     define_state(
       cost = 456 * age / 10,
-      ly = 1
+      ly = 1 * age / 200
     )
-    
   )
 
-res2 <- run_models(
+res <- run_models(
   mod1, mod2,
   parameters = define_parameters(
     age_init = 60,
@@ -43,10 +41,11 @@ res2 <- run_models(
   cost = cost,
   effect = ly
 )
-# generating table with new parameter sets
+
+# generating table with demographic data
 new_tab <- data.frame(
-  age_init = 40:80
+  age_init = 40:80,
+  .weights = runif(41)
 )
 
-# with run_model result
-ndt1 <- run_newdata(res2, newdata = new_tab)
+run_demographics(res, demographics = new_tab)

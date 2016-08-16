@@ -11,6 +11,7 @@
 #' @importFrom dplyr left_join
 #' @importFrom dplyr "%>%"
 #' @importFrom dplyr desc
+#' @importFrom dplyr ungroup
 #' 
 #' @importFrom lazyeval lazy
 #' @importFrom lazyeval lazy_dots
@@ -31,6 +32,7 @@
 #' @importFrom stats qlnorm
 #' @importFrom stats qnorm
 #' @importFrom stats terms
+#' @importFrom stats setNames
 #' 
 #' @importFrom graphics par
 #' 

@@ -35,7 +35,7 @@ discount <- function(x, r, first = FALSE) {
     r >= 0,
     r <= 1
   )
-
+  
   x / (1 + r) ^ (seq_along(x) - (1 - isTRUE(first)))
 }
 
@@ -77,11 +77,13 @@ get_model <- function(x, m) {
 #' 
 #' Throws an error if any of the names are reserved.
 #'
-#' Reserved names are \code{markov_cycle} and anything starting with \code{.}.
+#' Reserved names are \code{markov_cycle} and anything starting 
+#' with \code{.}.
 #'
 #' @param x A character vector of names.
 #'
-#' @return Nothing, just throws an error if a reserved name is encountered.
+#' @return Nothing, just throws an error if a reserved name is 
+#' encountered.
 check_names <- function(x) {
   if (is.null(x)) {
     stop("Names must exist.")
@@ -113,4 +115,34 @@ check_names <- function(x) {
 #' @return A character vector.
 make_names <- function(x) {
   gsub("\\.+", "_", make.names(tolower(x)))
+}
+
+#' Check Model Index
+#'
+#' @param x A result from \code{\link{run_models}}.
+#' @param i A model index, character or numeric.
+#' @param allow_multiple logical. Allow multiple model index?
+#'
+#' @return Nothing, just throws an error if an incorrect model 
+#' index is used.
+check_model_index <- function(x, i, allow_multiple = FALSE) {
+  
+  if(length(i) != 1 & ! allow_multiple) {
+    stop("Model index must have length 1.")
+  }
+  
+  if (! (is.character(i) | is.numeric(i))) {
+    stop("Model index must be either numeric or character.")
+  }
+  
+  if (is.numeric(i) & (any(i > get_model_count(x)) | any(i < 1))) {
+    stop(sprintf("Model index out of range [%i - %i].", 1, get_model_count(x)))
+  }
+  
+  if (is.character(i) & any(! i %in% get_model_names(x))) {
+    stop(sprintf(
+      "Model index is not the name of a model (%s).",
+      paste(get_model_names(x), collapse = " - ")
+    ))
+  }
 }

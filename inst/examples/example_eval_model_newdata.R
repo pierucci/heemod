@@ -13,15 +13,19 @@ mod1 <- define_model(
   define_state(var = a * markov_cycle)
 )
 
+res1 <- run_models(
+  mod1,
+  parameters = par1,
+  cycles = 5,
+  init = 1:0,
+  method = "end"
+)
+
 new_tab <- data.frame(
   a = 1:10
 )
 
 heemod:::eval_model_newdata(
-  mod1,
-  old_parameters = par1,
-  cycles = 5,
-  init = 1:0,
-  newdata = new_tab,
-  method = "end"
+  res1,
+  newdata = new_tab
 )

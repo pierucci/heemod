@@ -1,0 +1,29 @@
+if(getRversion() >= "2.15.1") {
+  utils::globalVariables(c(
+    ".",
+    ".ceac",
+    ".cost",
+    ".effect",
+    ".hjust",
+    ".icer",
+    ".index",
+    ".key",
+    ".model",
+    ".model_name",
+    ".model_names",
+    ".n",
+    ".p",
+    ".ref",
+    ".sign",
+    ".value",
+    ".variable",
+    ".x",
+    ".y",
+    
+    "key",
+    "markov_cycle",
+    "n",
+    "row_number",
+    "value"
+  ))
+}

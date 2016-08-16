@@ -57,12 +57,7 @@ define_distrib <- function(...,
 define_distrib_ <- function(list_qdist, list_multi, correlation) {
   
   if (any(duplicated(names(list_qdist)))) {
-    stop("Some names in 'list_qdist' are duplicated.")
-  }
-  
-  if (! all(unlist(lapply(list_multi,
-                          function(x) "multinom" %in% class(x))))) {
-    stop("All objects in 'list_multi' must come from 'define_multinom()'.")
+    stop("Some parameter names are duplicated.")
   }
   
   # additional checks
@@ -172,6 +167,10 @@ define_correlation_ <- function(.dots) {
     v2 = unlist(list_res[seq(from = 2, to = length(list_res), by = 3)]),
     cor = unlist(list_res[seq(from = 3, to = length(list_res), by = 3)])
   )
+  
+  if (any(res$cor >1) | any(res$cor < -1)) {
+    stop("Correlation values must be between -1 and 1.")
+  }
   
   if (any(duplicated(
     mapply(

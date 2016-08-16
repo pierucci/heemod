@@ -52,7 +52,7 @@ discount_hack <- function(.dots) {
       }
       as.call(lapply(x, f))
     } else if (is.pairlist(x)) {
-      as.pairlist(lapply(x, discount_hack))
+      as.pairlist(lapply(x, f))
     } else {
       stop(sprintf("Don't know how to handle type %s.", typeof(x)))
     }

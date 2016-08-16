@@ -22,7 +22,7 @@ plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
   
   n_ind <- sum(attr(attr(x, "model_ref"), "init"))
   
-  if(length(model) != 1) stop("Argumemt 'model' must have length 1.")  
+  check_model_index(x = x, i = model) 
   
   switch(
     type,
@@ -169,6 +169,3 @@ plot.eval_sensitivity <- function(x, type = c("simple", "diff"),
     stop("Unknown type.")
   )
 }
-if(getRversion() >= "2.15.1") utils::globalVariables(
-  c(".variable", ".x", ".y", ".ref", ".value", ".sign", ".hjust")
-)

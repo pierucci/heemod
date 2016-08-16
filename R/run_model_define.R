@@ -64,8 +64,8 @@ run_models <- function(...,
     init = init,
     cycles = cycles,
     method = method,
-    cost = lazyeval::lazy(cost),
-    effect = lazyeval::lazy(effect),
+    cost = lazyeval::lazy_(substitute(cost), env = parent.frame()),
+    effect = lazyeval::lazy_(substitute(effect), env = parent.frame()),
     base_model = base_model
   )
 }
@@ -89,7 +89,6 @@ run_models_ <- function(list_models,
       paste(.x, collapse = ", ")
     ))
   }
-  
   
   list_ce <- list(
     .cost = cost,
@@ -133,7 +132,7 @@ run_models_ <- function(list_models,
     ))
   }
   
-  if (! all(init >= 0)) {
+  if (! any(init > 0)) {
     stop("At least one init count must be > 0.")
   }
   
@@ -156,9 +155,8 @@ run_models_ <- function(list_models,
     list_res[[n]]$.model_names <- n
   }
   
-  res <- Reduce(dplyr::bind_rows, list_res)
-  
-  res <- dplyr::mutate_(res, .dots = ce)
+  res <- Reduce(dplyr::bind_rows, list_res) %>% 
+    dplyr::mutate_(.dots = ce)
   
   if (is.null(base_model)) {
     base_model <- get_base_model(res)
@@ -168,7 +166,7 @@ run_models_ <- function(list_models,
     res,
     eval_model_list = eval_model_list,
     uneval_model_list = list_models,
-    class = c("eval_model_list", class(res)),
+    class = c("run_models", class(res)),
     parameters = parameters,
     init = init,
     cycles = cycles,
@@ -178,22 +176,12 @@ run_models_ <- function(list_models,
   )
 }
 
-#' Get Markov Model Parameters
-#' 
-#' 
-#' For internal use.
-#' 
-#' @param x An \code{eval_model_list}
-#'   object.
-#'   
-#' @return An \code{uneval_parameters} or
-#'   \code{eval_parameters} object.
-get_parameters <- function(x){
-  UseMethod("get_parameters")
+get_model_names <- function(x) {
+  x$.model_names
 }
 
-get_parameters.default <- function(x){
-  attr(x, "parameters")
+get_model_count <- function(x) {
+  nrow(x)
 }
 
 get_total_state_values <- function(x) {
@@ -213,9 +201,9 @@ get_base_model.default <- function(x, ...) {
     warning("No effect defined, cannot find base model.")
     return(NULL)
   }
-  x$.model_names[which(x$.effect == min(x$.effect))[1]]
+  x$.model_names[x$.effect == min(x$.effect)][1]
 }
 
-get_base_model.eval_model_list <- function(x, ...) {
+get_base_model.run_models <- function(x, ...) {
   attr(x, "base_model")
 }
