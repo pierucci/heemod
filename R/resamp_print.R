@@ -30,30 +30,8 @@ plot.probabilistic <- function(x, type = c("ce", "ac"),
         ggplot2::ylab("Cost")
     },
     ac = {
-      f <- function(.cost, .effect, .ceac, .model_names) {
-        t1 <- dplyr::data_frame(
-          .cost = .cost,
-          .effect = .effect,
-          .ceac = .ceac,
-          .model_names = .model_names
-        )
-        .icer <- .cost / .effect
-        t1$.icer <- replace(.icer, is.na(.icer), 0)
-        t2 <- filter(t1, .effect >= 0 & .icer <= .ceac)
-        filter(t2, .effect == max(.effect))$.model_names[1]
-      }
-      suppressMessages({
-        # to optimize
-        tab <- normalize_ce(x) %>%
-          dplyr::mutate(.key = 1) %>%
-          dplyr::left_join(dplyr::data_frame(.ceac = values, .key = 1)) %>%
-          dplyr::group_by(.index, .ceac) %>%
-          dplyr::summarise(.top = f(.cost, .effect, .ceac, .model_names)) %>%
-          dplyr::group_by(.ceac, .top) %>%
-          dplyr::summarise(.n = n()) %>%
-          dplyr::mutate(.p = .n / sum(.n))
-      })
-      ggplot2::ggplot(tab, aes(x = .ceac, y = .p, colour = .top)) +
+      tab <- acceptability_curve(x, values)
+      ggplot2::ggplot(tab, aes(x = .ceac, y = .p, colour = .model)) +
         ggplot2::geom_line() +
         ggplot2::ylim(0, 1) +
         ggplot2::scale_colour_hue(name = "Model") +
@@ -63,10 +41,6 @@ plot.probabilistic <- function(x, type = c("ce", "ac"),
     stop("Unknown plot type."))
 }
 
-if(getRversion() >= "2.15.1")
-  utils::globalVariables(c(".ceac", ".index", ".effect", ".p", "n",
-                           ",cost", ".n", ".key", ".model_name", ".top"))
-
 normalize_ce.probabilistic <- function(x) {
   .bm <- get_base_model(x)
   res <- dplyr::mutate(
@@ -75,5 +49,3 @@ normalize_ce.probabilistic <- function(x) {
     .effect = .effect - sum(.effect * (.model_names == .bm))
   )
 }
-if(getRversion() >= "2.15.1")
-  utils::globalVariables(c(".index", ".cost", ".effect"))

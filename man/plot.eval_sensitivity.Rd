@@ -5,7 +5,7 @@
 \title{Plot Sensitivity Analysis}
 \usage{
 \method{plot}{eval_sensitivity}(x, type = c("simple", "diff"), model = 1,
-  ...)
+  widest_on_top = TRUE, ...)
 }
 \arguments{
 \item{x}{A result of \code{\link{run_sensitivity}}.}
@@ -13,6 +13,8 @@
 \item{type}{Type of plot (see details).}
 
 \item{model}{Name or index of model to plot.}
+
+\item{widest_on_top}{Logical. Should bars be sorted so widest are on top?}
 
 \item{...}{Additional arguments passed to \code{plot}.}
 }

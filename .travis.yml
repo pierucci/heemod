@@ -1,12 +1,15 @@
 # Sample .travis.yml for R projects
 
-language: R
+language: r
 sudo: false
 cache: packages
+r:
+  - oldrel
+  - release
+  - devel
 
-env:
-  matrix:
-    - RVERSION=release
+r_github_packages:
+  - HenrikBengtsson/devtools@hotfix/parse_deps
 
 branches:
   only:

@@ -51,9 +51,12 @@ modify_.state <- function(.OBJECT, .dots) {
   # message d'erreur informatif quand valeurs pas dans
   # bon ordre
   
-  stopifnot(
-    all(names(.dots) %in% names(.OBJECT))
-  )
+  if (! all(names(.dots) %in% names(.OBJECT))) {
+    stop(sprintf(
+      "The following state values are not defined: %s.",
+      names(.dots)[names(.dots) %in% names(.OBJECT)]
+    ))
+  }
   
   modifyList(.OBJECT, .dots)
 }
@@ -110,11 +113,6 @@ define_state_list <- function(...) {
 #' @export
 #' @rdname define_state_list
 define_state_list_ <- function(.dots) {
-  stopifnot(
-    ! any(duplicated(names(.dots))),
-    all(unlist(lapply(.dots,
-                      function(x) "state" %in% class(x))))
-  )
   
   state_names <- names(.dots)
   
@@ -129,6 +127,24 @@ define_state_list_ <- function(.dots) {
     state_names <- LETTERS[seq_along(.dots)]
     names(.dots) <- state_names
   }
+  
+  if (any(duplicated(names(.dots)))) {
+    stop("Some state names are duplicated.")
+  }
+  
+  if (! all(unlist(lapply(.dots,
+                          function(x) "state" %in% class(x))))) {
+    
+    .x <- names(.dots)[! unlist(lapply(.dots,
+                                       function(x) "state" %in% class(x)))]
+    
+    stop(sprintf(
+      "Incorrect state object%s: %s",
+      plur(length(.x)),
+      paste(.x, collapse = ", ")
+    ))
+  }
+  
   check_states(.dots)
   
   structure(
@@ -163,10 +179,13 @@ modify_.uneval_state_list <- function(.OBJECT, .dots) {
 #' @return \code{NULL}
 #' 
 check_states <- function(x){
-  stopifnot(
-    list_all_same(lapply(x, length)),
-    list_all_same(lapply(x, function(y) sort(names(y))))
-  )
+  if (! list_all_same(lapply(x, length))) {
+    stop("Number of state values differ between states.")
+  }
+  
+  if (! list_all_same(lapply(x, function(y) sort(names(y))))) {
+    stop("State value names differ between states.")
+  }
   NULL
 }
 

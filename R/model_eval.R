@@ -62,11 +62,7 @@ eval_model <- function(model, parameters, cycles,
     cycles = cycles)
 }
 
-get_counts <- function(x){
-  UseMethod("get_counts")
-}
-
-get_counts.eval_model <- function(x){
+get_counts <- function(x) {
   x$counts
 }
 
@@ -94,9 +90,13 @@ compute_counts <- function(
   method
 ) {
   
-  stopifnot(
-    length(init) == get_matrix_order(transition_matrix)
-  )
+  if (! length(init) == get_matrix_order(transition_matrix)) {
+    stop(sprintf(
+      "Length of 'init' vector (%i) differs from the number of states (%i).",
+      length(init),
+      get_matrix_order(transition_matrix)
+    ))
+  }
   
   list_counts <- Reduce(
     "%*%",

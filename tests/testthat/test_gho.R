@@ -11,12 +11,12 @@ test_that(
       age = 0:99,
       sex = rep(c("MLE", "FMLE"), 50),
       country = "FRA",
-      year = 2013
+      year = 2015
     )
     
     expect_output(
       print(head(res_latest)),
-      "0.00361 0.00015 0.00020 0.00015 0.00020 0.00007"
+      "0.00391 0.00018 0.00023 0.00018 0.00023 0.00007"
     )
     expect_identical(
       res_latest,

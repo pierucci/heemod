@@ -1,3 +1,26 @@
+# heemod 0.4.0
+
+## New features
+
+  * `run_demographics()` to compute population-level values, with vignette.
+  * `run_heterogeneity()` for heterogeneity analysis, with vignette.
+  
+## Enhancements
+
+  * `plot_sensitivity()` now plots by default the widest bar on top (thanks to @MattWiener).
+  * convenience functions for converting rates to probabilities.
+  * models can be run without state values, to compute counts.
+  * much more informative error messages.
+  * objects can be converted to the `R` code to generate them (same idea as `dput()`, but easier to read).
+
+## Bug fixes
+
+  * _really_ fixed problem when argument to `discount()` was not defined as a parameter.
+  
+## Changes
+
+  * `eval_model_newdata()`, the function behind resampling and sensitivity analysis now returns list-variables in order to prepare the heterogeneity/demographic analysis update.
+
 # heemod 0.3.3
 
 ## New features
@@ -7,7 +30,8 @@
 ## Bug fixes
 
   * fixed problem when argument to `discount()` was not defined as a parameter.
-  * corrected several errors in the vignettes.
+  * corrected several errors in the vignettes (thanks to Michael Schenkenberg from SBU, Stockholm, Sweden).
+  * updated mortality rate tests to reflect GHO database update.
 
 # heemod 0.3.2
 

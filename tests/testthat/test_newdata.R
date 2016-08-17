@@ -1,8 +1,7 @@
-context("Newdata & probabilistic")
+context("Heterogeneity & probabilistic")
 
 test_that(
-  "run_newdata works", {
-    
+  "Heterogeneity analysis", {
     mod1 <-
       define_model(
         transition_matrix = define_matrix(
@@ -15,7 +14,7 @@ test_that(
         ),
         define_state(
           cost = 432 + age,
-          ly = 1
+          ly = 1 * age / 100
         )
         
       )
@@ -32,11 +31,12 @@ test_that(
         ),
         define_state(
           cost = 456 * age / 10,
-          ly = 1
+          ly = 1 * age / 200
         )
+        
       )
     
-    res2 <- run_models(
+    res <- run_models(
       mod1, mod2,
       parameters = define_parameters(
         age_init = 60,
@@ -47,33 +47,63 @@ test_that(
       cost = cost,
       effect = ly
     )
+    
     # generating table with new parameter sets
     new_tab <- data.frame(
-      age_init = 40:50
+      age_init = 40:80
     )
     
     # with run_model result
-    ndt1 <- run_newdata(res2, newdata = new_tab)
+    ndt <- run_heterogeneity(res, newdata = new_tab)
+    
+    plot(ndt, model = 1, type = "icer")
+    plot(ndt, model = 1, type = "cost")
+    plot(ndt, model = 1, type = "effect")
+    
+    expect_error(
+      plot(ndt, model = "II")
+    )
+    expect_error(
+      run_heterogeneity(mod1, newdata = new_tab)
+    )
     
     expect_output(
-      str(ndt1),
-      '22 obs. of  6 variables:
- $ age_init    : int  40 41 42 43 44 45 46 47 48 49 ...
- $ cost        : num  5418 5436 5455 5474 5493 ...
- $ ly          : num  10 10 10 10 10 10 10 10 10 10 ...
- $ .model_names: chr  "I" "I" "I" "I" ...
- $ .cost       : num  5418 5436 5455 5474 5493 ...
- $ .effect     : num  10 10 10 10 10 10 10 10 10 10 ...',
+      print(ndt),
+      'An heterogeneity analysis on 41 parameter sets.',
       fixed= TRUE
+    )
+    expect_error(
+      summary(ndt, model = "II")
+    )
+    expect_identical(
+      summary(ndt, model = 1),
+      summary(ndt, model = "I")
+    )
+    expect_output(
+      str(summary(ndt, model = "I")),
+      'num [1:3, 1:6] -39070 1.78 -11710 -33960 2.17 ...
+ - attr(*, "dimnames")=List of 2
+  ..$ : chr [1:3] "Cost" "Effect" "ICER"
+  ..$ : chr [1:6] "Min." "1st Qu." "Median" "Mean" ...',
+      fixed= TRUE
+    )
+    expect_error(
+      summary(ndt, model = "x")
+    )
+    expect_error(
+      summary(ndt, model = as.factor("x"))
+    )
+    expect_error(
+      summary(ndt, model = 1:2)
+    )
+    expect_error(
+      summary(ndt, model = 3)
     )
   }
 )
 
 test_that(
   "Probabilistic analysis works", {
-    
-    # example for run_probabilistic
-    
     mod1 <-
       define_model(
         transition_matrix = define_matrix(
@@ -157,16 +187,16 @@ test_that(
     res2 <- heemod:::eval_resample(x, 2)
     
     expect_output(
-      str(ndt1),
-      '20 obs. of  8 variables:
- $ age_init    : num  65.5 71.3 76.5 74.4 59.9 ...
- $ cost_init   : num  1118 948 1212 1024 1045 ...
- $ cost        : num  12515 10923 13662 11742 11678 ...
- $ ly          : num  10 10 10 10 10 10 10 10 10 10 ...
- $ .model_names: chr  "I" "I" "I" "I" ...
- $ .index      : int  1 2 3 4 5 6 7 8 9 10 ...
- $ .cost       : num  12515 10923 13662 11742 11678 ...
- $ .effect     : num  10 10 10 10 10 10 10 10 10 10 ...',
+      str(head(as.data.frame(ndt2))),
+      '2 obs. of  8 variables:
+ $ cost        : num  10653 38163
+ $ ly          : num  10 10
+ $ age_init    : num  66.6 66.6
+ $ cost_init   : num  930 930
+ $ .model_names: chr  "I" "II"
+ $ .index      : int  1 1
+ $ .cost       : num  10653 38163
+ $ .effect     : num  10 10',
       fixed = TRUE
     )
 
@@ -186,12 +216,12 @@ test_that(
     )
     expect_identical(ndt1, ndt3)
     expect_output(
-      str(ndt2),
+      str(head(as.data.frame(ndt2))),
       '2 obs. of  8 variables:
- $ age_init    : num  66.6 66.6
- $ cost_init   : num  930 930
  $ cost        : num  10653 38163
  $ ly          : num  10 10
+ $ age_init    : num  66.6 66.6
+ $ cost_init   : num  930 930
  $ .model_names: chr  "I" "II"
  $ .index      : int  1 1
  $ .cost       : num  10653 38163
@@ -214,6 +244,37 @@ test_that(
       "  age_init cost_init p_trans         a
 1 64.82732  1105.112    0.56 0.4842654
 2 77.79468  1164.304    0.57 0.6539179"
+    )
+    res2 <- suppressWarnings(run_models(
+      mod1, mod2,
+      parameters = define_parameters(
+        age_init = 60,
+        cost_init = 1000,
+        age = age_init + markov_cycle
+      ),
+      init = 1:0,
+      cycles = 10
+    ))
+    expect_error(run_probabilistic(res3, resample = rsp2, N = 10))
+    expect_error(
+      define_distrib(
+        age_init ~ normal(60, 10),
+        age_init ~ normal(1000, 100),
+        
+        correlation = matrix(c(
+          1, .4,
+          .4, 1
+        ), byrow = TRUE, ncol = 2)
+      )
+    )
+    expect_error(
+      define_correlation(age_init, cost_init, .4, .5)
+    )
+    expect_error(
+      define_correlation(age_init, cost_init, 2)
+    )
+    expect_error(
+      define_correlation(age_init, cost_init, .4, age_init, cost_init, .5)
     )
   }
 )

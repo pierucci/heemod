@@ -85,6 +85,12 @@ test_that(
       cost = cost,
       effect = ly
     )
+    res3 <- suppressWarnings(run_models(
+      mod1, mod2,
+      parameters = param,
+      init = c(100, 0),
+      cycles = 10
+    ))
     
     ds <- define_sensitivity(
       p1 = c(.1, .9),
@@ -94,17 +100,15 @@ test_that(
     x <- run_sensitivity(res2, ds)
     
     expect_output(
-      str(x),
-      '8 obs. of  7 variables:
- $ p1          : num  0.1 0.9 NA NA 0.1 0.9 NA NA
- $ p2          : num  NA NA 0.1 0.3 NA NA 0.1 0.3
+      str(head(as.data.frame(x))),
+      '6 obs. of  8 variables:
  $ cost        : num  514389 451356 456666 475359 703168 ...
  $ ly          : num  871 587 611 695 871 ...
- $ .model_names: chr  "I" "I" "I" "I" ...
- $ .cost       : num  514389 451356 456666 475359 703168 ...
- $ .effect     : num  871 587 611 695 871 ...',
+ $ .mod        :List of 6',
       fixed = TRUE
     )
+    
+    expect_error(run_sensitivity(res3, ds))
     
     plot(x, type = "diff", model = "II")
     plot(x, type = "simple", model = 2)

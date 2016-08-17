@@ -16,29 +16,32 @@ run_probabilistic <- function(model, resample, N) {
     N > 0
   )
   
-  newdata <- eval_resample(resample, N)
+  if (! all(c(".cost", ".effect") %in% names(model))) {
+    stop("No cost and/or effect defined, probabilistic analysis unavailable.")
+  }
   
-  init <- attr(model, "init")
-  cycles <- attr(model, "cycles")
-  method <- attr(model, "method")
-  list_models <- attr(model, "uneval_model_list")
+  newdata <- eval_resample(resample, N)
   
   list_res <- list()
   
-  for (i in seq_along(list_models)) {
-    message(sprintf("Running model '%s'...", names(list_models)[i]))
+  for (n in get_model_names(model)) {
+    message(sprintf("Running model '%s'...", n))
     list_res <- c(
       list_res,
       list(
         eval_model_newdata(
-          model = list_models[[i]], method = method,
-          old_parameters = get_parameters(model),
-          init = init, cycles = cycles, newdata = newdata
-        )
+          x = model,
+          model = n,
+          newdata = newdata) %>% 
+          dplyr::rowwise() %>% 
+          dplyr::do(get_total_state_values(.$.mod)) %>% 
+          dplyr::bind_cols(newdata) %>% 
+          dplyr::ungroup()
       )
     )
   }
-  names(list_res) <- names(list_models)
+  
+  names(list_res) <- get_model_names(model)
   index <- seq_len(N)
   
   for (n in names(list_res)) {

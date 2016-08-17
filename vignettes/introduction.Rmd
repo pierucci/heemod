@@ -109,7 +109,7 @@ res_mod_1 <- run_models(
 res_mod_1
 ```
 
-By default the model is run for one person starting in the first state (here state `A`).
+By default the model is run for 1000 persons starting in the first state (here state `A`).
 
 # Analyse results
 
@@ -133,6 +133,18 @@ plot(res_mod_1) +
     palette = "Set1"
   )
 ```
+
+# Convenience functions
+
+Convenience functions are avaible to make it easier to compute transition probabilities from indidence rates, OR, RR, or probabilities estiamted on a different timeframe.
+
+Example : convert an incidence rate of 162 cases per 1,000 person-years to a 5-year probability.
+
+```{r}
+rate_to_prob(r = 162, per = 1000, to = 5)
+```
+
+Type `?probability` to see a list of the convenience functions available.
 
 # Going futher
 
