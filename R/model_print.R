@@ -41,11 +41,24 @@ plot.run_models <- function(x, type = c("counts", "ce"), model = 1, ...) {
         get_counts(attr(x, "eval_model_list")[[model]]),
         markov_cycle = row_number()
       )
-      pos_cycle <- pretty(seq_len(nrow(tab_counts)), n = min(nrow(tab_counts), 10))
-      tab_counts <- tidyr::gather(data = tab_counts, ... = - markov_cycle)
+      
+      pos_cycle <- pretty(
+        seq_len(nrow(tab_counts)),
+        n = min(nrow(tab_counts), 10)
+      )
+      tab_counts <- tidyr::gather_(
+        data = tab_counts,
+        key_col = "key",
+        value_col = "value",
+        gather_cols = names(tab_counts)[names(tab_counts) != "markov_cycle"]
+      )
       
       y_max <- max(attr(x, "init"), tab_counts$value)
-      ggplot2::ggplot(tab_counts, ggplot2::aes(markov_cycle, value, colour = key)) +
+      ggplot2::ggplot(tab_counts,
+                      ggplot2::aes_string(
+                        x = "markov_cycle",
+                        y = "value",
+                        colour = "key")) +
         ggplot2::geom_line() +
         ggplot2::geom_point() +
         ggplot2::scale_x_continuous(breaks = pos_cycle) +
