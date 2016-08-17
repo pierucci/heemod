@@ -23,8 +23,6 @@ summary.run_models <- function(object, ...) {
   
   res_comp <- res[c(".dcost", ".deffect", ".icer")]
   is.na(res_comp$.icer) <- ! is.finite(res_comp$.icer)
-  res_comp$.icer <- format(res_comp$.icer)
-  res_comp$.icer[res_comp$.icer == "NA"] <- "-"
   res_comp$.dcost <- res_comp$.dcost / sum(attr(object, "init"))
   res_comp$.deffect <- res_comp$.deffect / sum(attr(object, "init"))
   
@@ -119,10 +117,16 @@ print.summary_run_models <- function(x, ...) {
   ))
   print(x$res)
   
+  res_comp <- x$res_comp
+  res_comp$.icer <- format(res_comp$.icer)
+  res_comp$.icer[res_comp$.icer == "NA"] <- "-"
+  res_comp <- res_comp[-1, ]
+  names(res_comp) <- c("Cost", "Effect", "ICER")
+  
   if (nrow(x$res) > 1) {
     cat("\nEfficiency frontier:\n\n")
     cat(x$frontier)
     cat("\n\nModel difference:\n\n")
-    print(setNames(x$res_comp[-1, ], c("Cost", "Effect", "ICER")))
+    print(res_comp)
   }
 }
