@@ -54,3 +54,4 @@ print(ds)
 x <- run_sensitivity(res2, ds)
 
 plot(x, value = "cost")
+plot(x, value = "icer", type = "difference", model = 2)

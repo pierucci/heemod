@@ -101,9 +101,7 @@ test_that(
     
     expect_output(
       str(head(as.data.frame(x))),
-      '6 obs. of  8 variables:
- $ cost        : num  514389 451356 456666 475359 703168 ...
- $ ly          : num  871 587 611 695 871 ...
+      '6 obs. of  4 variables:
  $ .mod        :List of 6',
       fixed = TRUE
     )
@@ -126,9 +124,19 @@ test_that(
     
     expect_output(
       print(x),
-      "p1 = 0.1 (I)  514389.5 871.1237             -",
+      "p1 = 0.1 (I)  514389.5 871.1237         -",
       fixed = TRUE
     )
     
+    plot(x, type = "simple", result = "cost")
+    plot(x, type = "simple", result = "effect")
+    
+    expect_error(
+      plot(x, type = "difference", result = "cost")
+    )
+    
+    plot(x, type = "difference", result = "cost", model = 2)
+    plot(x, type = "difference", result = "effect", model = 2)
+    plot(x, type = "difference", result = "icer", model = 2)
   })
 

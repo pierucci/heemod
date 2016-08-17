@@ -13,6 +13,8 @@
 
 \item{type}{Type of plot (see details).}
 
+\item{result}{Plot cost, effect, or ICER.}
+
 \item{model}{Name or index of model to plot.}
 
 \item{widest_on_top}{logical. Should bars be sorted so widest are on top?}

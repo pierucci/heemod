@@ -178,22 +178,50 @@ res <- run_sensitivity(
 
 # Interpretation
 
-Two distinct plot are available. The basic plot displays cost variations for each model, around the base cost.
+All the results can be displayed in a table.
 
-As expected the `mono` model is not senstive to `cost_lami`, since this drug was not given to this group. Similarly it is not sensitive to `rr`, because this parameters only modifies transition probabilities in the other model.
-
-```{r, fig.width = 6, fig.align='center'}
-plot(res, model = "mono")
+```{r}
+res
 ```
 
-On the other hand the `comb` model is sensitive to all 4 parameters.
+Two distinct plot types are available. The basic plot (`type = "simple"`) displays cost variations for each model, around the base cost.
+
+As expected `mono` model costs are not senstive to `cost_lami`, since this drug was not given to this group. Similarly it is not sensitive to `rr`, because this parameters only modifies transition probabilities in the other model.
 
 ```{r, fig.width = 6, fig.align='center'}
-plot(res, model = "comb")
+plot(res,
+     model = "mono",
+     result = "cost",
+     type = "simple")
 ```
 
-The difference plot displays the cost difference between the specified model `comb` and the reference model `mono`.
+On the other hand the `comb` model cost is sensitive to all 4 parameters.
 
 ```{r, fig.width = 6, fig.align='center'}
-plot(res, model = "comb", type = "diff")
+plot(res,
+     model = "comb",
+     result = "cost",
+     type = "simple")
+```
+
+And its effectiveness is sensitive to `rr`
+
+```{r, fig.width = 6, fig.align='center'}
+plot(res, 
+     model = "comb",
+     result = "effect",
+     type = "simple")
+```
+
+The difference plot (`type = "difference"`) displays the difference between the specified model `comb` and the reference model `mono`.
+
+```{r, fig.width = 6, fig.align='center'}
+plot(res,
+     model = "comb",
+     result = "cost",
+     type = "difference")
+plot(res,
+     model = "comb",
+     result = "icer",
+     type = "difference")
 ```
