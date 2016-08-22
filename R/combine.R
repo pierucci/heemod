@@ -21,33 +21,12 @@
 #' similar to a result from \code{\link{run_models}}. \code{plot} and
 #' \code{summary} methods are available.
 #' 
-#' @export
-#' 
 #' @example inst/examples/example_run_demographic.R
 #'
-run_demographics <- function(x, demographics) {
-  if (".weights" %in% names(demographics)) {
-    weights <- demographics$.weights
-    demographics <- dplyr::select_(demographics, ~ - .weights)
-    
-  } else {
-    message("No weights specified, using equal weights.")
-    weights <- rep(1, nrow(demographics))
-  }
-  
-  model_names <- get_model_names(x)
-  
-  # run each model against new data
-  list_newmodels <- lapply(
-    model_names,
-    function(n) eval_model_newdata(
-      x,
-      model = n,
-      newdata = demographics
-    )
-  )
+combine_models <- function(list_newmodels, weights, oldmodel) {
   
   total_weights <- sum(weights)
+  model_names <- names(list_newmodels)
   
   f <- function(x) {
     sum(x * weights / total_weights)
@@ -63,7 +42,7 @@ run_demographics <- function(x, demographics) {
       dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
       dplyr::ungroup() %>% 
       dplyr::summarise_all(f) %>% 
-      dplyr::mutate_(.dots = attr(x, "ce"))
+      dplyr::mutate_(.dots = attr(oldmodel, "ce"))
     
     tab_counts <- (list_newmodels[[i]]) %>% 
       dplyr::rowwise() %>% 
@@ -91,37 +70,37 @@ run_demographics <- function(x, demographics) {
     list_res[[i]]$.model_names <- model_names[i]
   }
   res <- Reduce(dplyr::bind_rows, list_res) %>% 
-    dplyr::mutate_(.dots = attr(x, "ce"))
+    dplyr::mutate_(.dots = attr(oldmodel, "ce"))
   
   structure(
     res,
-    class = c("run_demographics", class(res)),
-    base_model = get_base_model(x),
+    class = c("combined_models", class(res)),
+    base_model = get_base_model(oldmodel),
     eval_model_list = list_counts,
-    parameters = attr(x, "parameters"),
-    init = attr(x, "init"),
-    cycles = attr(x, "cycles"),
-    method = attr(x, "method"),
-    ce = attr(x, "ce"),
-    base_model = attr(x, "base_model")
+    parameters = attr(oldmodel, "parameters"),
+    init = attr(oldmodel, "init"),
+    cycles = attr(oldmodel, "cycles"),
+    method = attr(oldmodel, "method"),
+    ce = attr(oldmodel, "ce"),
+    base_model = attr(oldmodel, "base_model")
   )
 }
 
 #' @export
-print.run_demographics <- function(x, ...) {
+print.combined_models <- function(x, ...) {
   print(summary(x, ...))
 }
 
 #' @export
-plot.run_demographics <- function(x, ...) {
+plot.combined_models <- function(x, ...) {
   plot.run_models(x, ...)
 }
 
 #' @export
-summary.run_demographics <- function(object, ...) {
+summary.combined_models <- function(object, ...) {
   summary.run_models(object, ...)
 }
 
-normalize_ce.run_demographics <- function(x, ...) {
+normalize_ce.combined_models <- function(x, ...) {
   normalize_ce.run_models(x, ...)
 }

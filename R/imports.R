@@ -63,4 +63,8 @@
 #' 
 #' @importFrom rgho get_gho_data
 #' 
+#' @importFrom Hmisc wtd.quantile
+#' @importFrom Hmisc wtd.mean
+#' @importFrom Hmisc wtd.var
+#' 
 NULL
