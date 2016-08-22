@@ -37,9 +37,9 @@ plot.run_models <- function(x, type = c("counts", "ce"), model = 1, ...) {
   switch(
     type,
     counts = {
-      tab_counts <- dplyr::mutate(
+      tab_counts <- dplyr::mutate_(
         get_counts(attr(x, "eval_model_list")[[model]]),
-        markov_cycle = row_number()
+        markov_cycle = ~ row_number()
       )
       
       pos_cycle <- pretty(
@@ -72,7 +72,10 @@ plot.run_models <- function(x, type = c("counts", "ce"), model = 1, ...) {
       ef <- get_frontier(x)
       
       ggplot2::ggplot(tab_ce,
-                      ggplot2::aes(x = .effect, y = .cost, label = .model_names)) +
+                      ggplot2::aes_string(
+                        x = ".effect",
+                        y = ".cost", 
+                        label = ".model_names")) +
         ggplot2::geom_line(data = tab_ce[tab_ce$.model_names %in% ef, ]) +
         ggplot2::geom_point() +
         ggplot2::geom_text(hjust = 1) +

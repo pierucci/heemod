@@ -50,8 +50,8 @@ eval_model_newdata <- function(x, model = 1, newdata) {
   
   newdata %>% 
     dplyr::rowwise() %>% 
-    dplyr::do(
-      .mod = eval_newdata(
+    dplyr::do_(
+      .mod = ~ eval_newdata(
         .,
         model = uneval_model,
         old_parameters = old_parameters

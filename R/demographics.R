@@ -28,7 +28,7 @@
 run_demographics <- function(x, demographics) {
   if (".weights" %in% names(demographics)) {
     weights <- demographics$.weights
-    demographics <- dplyr::select_(demographics, quote(- .weights))
+    demographics <- dplyr::select_(demographics, ~ - .weights)
     
   } else {
     message("No weights specified, using equal weights.")
@@ -60,14 +60,14 @@ run_demographics <- function(x, demographics) {
   for (i in seq_along(list_newmodels)) {
     collapsed_values <- (list_newmodels[[i]]) %>% 
       dplyr::rowwise() %>% 
-      dplyr::do(get_total_state_values(.$.mod)) %>% 
+      dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
       dplyr::ungroup() %>% 
       dplyr::summarise_all(f) %>% 
       dplyr::mutate_(.dots = attr(x, "ce"))
     
     tab_counts <- (list_newmodels[[i]]) %>% 
       dplyr::rowwise() %>% 
-      dplyr::do(.counts = get_counts(.$.mod))
+      dplyr::do_(.counts = ~ get_counts(.$.mod))
     
     counts <- tab_counts$.counts %>% 
       mapply(

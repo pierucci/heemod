@@ -18,7 +18,7 @@ summary.run_models <- function(object, ...) {
   
   res <- as.data.frame(compute_icer(normalize_ce(object)))
   rownames(res) <- res$.model_names
-  res <- dplyr::select_(res, quote(- .model_names))
+  res <- dplyr::select_(res, ~ - .model_names)
   
   
   res_comp <- res[c(".dcost", ".deffect", ".icer")]
@@ -30,11 +30,11 @@ summary.run_models <- function(object, ...) {
     list(
       res = dplyr::select_(
         res,
-        quote(- .cost),
-        quote(- .effect),
-        quote(- .icer),
-        quote(- .dcost),
-        quote(- .deffect)
+        ~ - .cost,
+        ~ - .effect,
+        ~ - .icer,
+        ~ - .dcost,
+        ~ - .deffect
       ),
       res_comp = res_comp,
       cycles = attr(object, "cycles"),
