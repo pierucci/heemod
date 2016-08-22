@@ -50,7 +50,7 @@
 #' @importFrom ggplot2 geom_text
 #' @importFrom ggplot2 xlab
 #' @importFrom ggplot2 ylab
-#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 aes_string
 #' @importFrom ggplot2 xlim
 #' 
 #' @importFrom tidyr gather_

@@ -53,12 +53,12 @@ run_heterogeneity <- function(x, newdata) {
   
   res_total <- res %>% 
     dplyr::rowwise() %>% 
-    dplyr::do(get_total_state_values(.$.mod)) %>% 
-    dplyr::bind_cols(res %>% dplyr::select_(quote(- .mod))) %>% 
+    dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
+    dplyr::bind_cols(res %>% dplyr::select_(~ - .mod)) %>% 
     dplyr::ungroup() %>% 
-    dplyr::group_by(.index) %>% 
+    dplyr::group_by_(".index") %>% 
     dplyr::mutate_(.dots = ce) %>% 
-    dplyr::do(compute_icer(., model_order = order(x$.effect)))
+    dplyr::do_(~ compute_icer(., model_order = order(x$.effect)))
   
   structure(
     res_total,

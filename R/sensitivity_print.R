@@ -97,35 +97,32 @@ plot.eval_sensitivity <- function(x, type = c("simple", "difference"),
           )
       ) %>% 
       dplyr::mutate_(
-        .dcost = substitute(.dcost / n_ind, list(n_ind = n_ind)),
-        .deffect = substitute(.deffect / n_ind, list(n_ind = n_ind)),
-        .col_cost = quote(ifelse(.cost > .cost_ref, ">",
-                                 ifelse(.cost == .cost_ref, "=", "<"))),
-        .col_effect = quote(ifelse(.effect > .effect_ref, ">",
-                                   ifelse(.effect == .effect_ref, "=", "<"))),
-        .col_dcost = quote(ifelse(.dcost > .dcost_ref, ">",
-                                  ifelse(.dcost == .dcost_ref, "=", "<"))),
-        .col_deffect = quote(ifelse(.deffect > .deffect_ref, ">",
-                                    ifelse(.deffect == .deffect_ref, "=", "<"))),
-        .col_icer = quote(ifelse(.icer > .icer_ref, ">",
-                                 ifelse(.icer == .icer_ref, "=", "<")))
+        .dcost = ~ .dcost / n_ind,
+        .deffect = ~ .deffect / n_ind,
+        .col_cost = ~ ifelse(.cost > .cost_ref, ">",
+                                 ifelse(.cost == .cost_ref, "=", "<")),
+        .col_effect = ~ ifelse(.effect > .effect_ref, ">",
+                                   ifelse(.effect == .effect_ref, "=", "<")),
+        .col_dcost = ~ ifelse(.dcost > .dcost_ref, ">",
+                                  ifelse(.dcost == .dcost_ref, "=", "<")),
+        .col_deffect = ~ ifelse(.deffect > .deffect_ref, ">",
+                                    ifelse(.deffect == .deffect_ref, "=", "<")),
+        .col_icer = ~ ifelse(.icer > .icer_ref, ">",
+                                 ifelse(.icer == .icer_ref, "=", "<"))
       ) %>% 
       dplyr::filter_(
-        substitute(
-          .model_names == model,
-          list(model = model)
-        )
+          ~ .model_names == model
       ) %>%
       dplyr::arrange_(
         ".par_names", var_plot) %>%
       dplyr::group_by_(".par_names") %>%
-      dplyr::mutate_(.hjust = quote(1 - (row_number() - 1)))
+      dplyr::mutate_(.hjust = ~ 1 - (row_number() - 1))
   })
   
   if (widest_on_top) {
     tab$.par_names <- stats::reorder(
       tab$.par_names,
-      (tab %>% dplyr::group_by_(quote(.par_names)) %>% 
+      (tab %>% dplyr::group_by_(~ .par_names) %>% 
          dplyr::mutate_(d = substitute(diff(range(xxx)),
                                        list(xxx = as.name(var_plot)))))$d
     )
@@ -197,16 +194,17 @@ print.eval_sensitivity <- function(x, ...) {
 
 #' @export
 summary.eval_sensitivity <- function(object, ...) {
-  object %>% 
+  res <- object %>% 
     dplyr::rowwise() %>% 
-    dplyr::do(get_total_state_values(.$.mod)) %>% 
-    dplyr::bind_cols(object %>% dplyr::select_(quote(- .mod))) %>% 
+    dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
+    dplyr::bind_cols(object %>% dplyr::select_(~ - .mod)) %>% 
     dplyr::ungroup() %>% 
-    dplyr::group_by_(quote(.par_names), quote(.par_value)) %>% 
+    dplyr::group_by_(~ .par_names, ~ .par_value) %>% 
     dplyr::mutate_(.dots = attr(object, "model_ref") %>% attr("ce")) %>% 
-    dplyr::do(compute_icer(., model_order = order(attr(object, "model_ref")$.effect))) %>% 
+    dplyr::do_(~ compute_icer(., model_order = order(attr(object, "model_ref")$.effect))) %>% 
     dplyr::select_(".model_names", ".par_names", ".par_value",
-                   ".cost", ".effect", ".dcost", ".deffect", ".icer") %>% 
-    structure(., class = c("summary_sensitivity", class(.)),
-              sensitivity = object)
+                   ".cost", ".effect", ".dcost", ".deffect", ".icer")
+  
+  structure(res, class = c("summary_sensitivity", class(res)),
+            sensitivity = object)
 }

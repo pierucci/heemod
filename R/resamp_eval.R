@@ -34,7 +34,7 @@ run_probabilistic <- function(model, resample, N) {
           model = n,
           newdata = newdata) %>% 
           dplyr::rowwise() %>% 
-          dplyr::do(get_total_state_values(.$.mod)) %>% 
+          dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
           dplyr::bind_cols(newdata) %>% 
           dplyr::ungroup()
       )
