@@ -124,7 +124,7 @@ test_that(
     
     expect_output(
       print(x),
-      "p1 = 0.1 (I)  514389.5 871.1237         -",
+      "p1 = 0.1 (I)  514389.5 871.1237",
       fixed = TRUE
     )
     
