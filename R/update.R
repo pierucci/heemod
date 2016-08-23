@@ -1,9 +1,9 @@
-#' Run Heterogeneity Analysis 
-#'  
+#' Run Heterogeneity Analysis
+#'
 #' Given a table of new parameter values with a new 
 #' parameter set per line, runs iteratively Markov models 
 #' over these sets and return an heterogeneity analysis.
-#' 
+#'
 #' @name update-model
 #' @param x The result of \code{\link{run_models}}.
 #' @param newdata A \code{data.frame} of new parameter sets, one 
@@ -14,16 +14,17 @@
 #' @param type The type of plot to return (see details).
 #' @param ... Additional arguments passed to \code{geom_histogram}.
 #' Especially usefull to specify \code{binwidth}.
-#' 
+#'
 #' For the plotting function, the \code{type} argument can take
 #' the following values: \code{"cost"}, \code{"effect"} or 
 #' \code{"icer"} to plot the heterogeneity of the respective
 #' values; \code{"ce"} to draw a scatterplot of cost vs. effect.
-#'   
+#'
 #' @return A \code{data.frame} with one row per model/value.
 #' @export
 #' 
-#' @example inst/examples/example_run_heterogeneity.R
+#' @example inst/examples/example_update.R
+#' 
 update.run_models <- function(object, newdata) {
   
   if (! any(class(object) %in% "run_models")) {
@@ -34,8 +35,7 @@ update.run_models <- function(object, newdata) {
   
   if (has_weights) {
     weights <- newdata$.weights
-    newdata <- dplyr::select_(newdata, ~ - .weights)
-    
+    newdata <- dplyr::select_(newdata, ~ (- .weights))
   } else {
     message("No weights specified, using equal weights.")
     weights <- rep(1, nrow(newdata))
@@ -163,39 +163,70 @@ summary.updated_models <- function(object, ...) {
     list_res <- c(
       list_res,
       lapply(c(".cost", ".effect", ".dcost", ".deffect", ".icer"),
-             function(x) c(
-               Model = n,
-               Value = x,
-               wtd_summary(
+             function(x) {
+               wsum <- wtd_summary(
                  object[object$.model_names == n, ][[x]],
                  object[object$.model_names == n, ]$.weights
                )
-             )
+               is.na(wsum) <- ! is.finite(wsum)
+               tab_summary <- matrix(
+                 wsum,
+                 nrow = 1
+               )
+               colnames(tab_summary) <- names(wsum)
+               cbind(
+                 data.frame(Model = n,
+                            Value = x),
+                 tab_summary
+               )
+             }
       )
     )
   }
   
   tab_res <- Reduce(rbind, list_res)
   
+  tab_res$Value <- tab_res$Value %>% 
+    factor(
+      levels = c(".cost", ".effect",
+                 ".dcost", ".deffect", 
+                 ".icer"),
+      labels = c("Cost", "Effect",
+                 "\u0394 Cost", "\u0394 Effect",
+                 "Icer")
+    )
+  
+  mat_res <- dplyr::select_(
+    tab_res,
+    ~ (- Model),
+    ~ (- Value)
+  ) %>% 
+    as.matrix
+  
+  rownames(mat_res) <- tab_res$Model %>% 
+    paste(tab_res$Value, sep = " - ")
+  
   cat(sprintf(
-    "An analysis re-run on %i parameter sets.\n",
-    nrow(attr(x, "newdata"))
+    "An analysis re-run on %i parameter sets.\n\n",
+    nrow(attr(object, "newdata"))
   ))
   
-  if (attr(object, "has_weights")) {
-    cat("Unweighted analysis.\n")
+  if (! attr(object, "has_weights")) {
+    cat("* Unweighted analysis.")
   } else {
-    cat("Weigths distribution:'n")
+    cat("* Weigths distribution:\n\n")
     print(summary(attr(object, "weights")))
-    cat(sprintf("Total weight: %s",
+    cat(sprintf("\nTotal weight: %s",
                 format(sum(attr(object, "weights")))))
   }
   
-  cat("Distribution of values.\n")
+  cat("\n\n* Distribution of values:\n\n")
   
-  print(tab_res, na.print = "-")
+  print(mat_res, na.print = "-")
   
-  cat("Combined result.\n")
+  cat("\n* Combined result:\n\n")
   
-  print(attr(object, "comb_mods"))
+  print(attr(object, "combined_models"))
+  
+  invisible(tab_res)
 }

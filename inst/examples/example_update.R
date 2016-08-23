@@ -1,7 +1,7 @@
 mod1 <-
   define_model(
     transition_matrix = define_matrix(
-      .4, .6,
+      .5, .5,
       .1, .9
     ),
     define_state(
@@ -42,10 +42,22 @@ res <- run_models(
   effect = ly
 )
 
-# generating table with demographic data
+# generating table with new parameter sets
 new_tab <- data.frame(
+  age_init = 40:80
+)
+
+# with run_model result
+ndt <- update(res, newdata = new_tab)
+
+summary(ndt)
+
+# using weights
+
+new_tab2 <- data.frame(
   age_init = 40:80,
   .weights = runif(41)
 )
+ndt2 <- update(res, newdata = new_tab2)
 
-run_demographics(res, demographics = new_tab)
+summary(ndt2)

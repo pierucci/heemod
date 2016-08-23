@@ -20,8 +20,6 @@
 #' @return A \code{run_demographics} object, mostly
 #' similar to a result from \code{\link{run_models}}. \code{plot} and
 #' \code{summary} methods are available.
-#' 
-#' @example inst/examples/example_run_demographic.R
 #'
 combine_models <- function(list_newmodels, weights, oldmodel) {
   

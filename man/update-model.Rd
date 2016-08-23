@@ -4,11 +4,7 @@
 \alias{plot.updated_models}
 \alias{update-model}
 \alias{update.run_models}
-\title{Run Heterogeneity Analysis 
- 
-Given a table of new parameter values with a new 
-parameter set per line, runs iteratively Markov models 
-over these sets and return an heterogeneity analysis.}
+\title{Run Heterogeneity Analysis}
 \usage{
 \method{update}{run_models}(object, newdata)
 
@@ -39,8 +35,6 @@ values; \code{"ce"} to draw a scatterplot of cost vs. effect.}
 A \code{data.frame} with one row per model/value.
 }
 \description{
-Run Heterogeneity Analysis 
- 
 Given a table of new parameter values with a new 
 parameter set per line, runs iteratively Markov models 
 over these sets and return an heterogeneity analysis.
@@ -60,7 +54,6 @@ mod1 <-
       cost = 432 + age,
       ly = 1 * age / 100
     )
-    
   )
 
 mod2 <-
@@ -77,7 +70,6 @@ mod2 <-
       cost = 456 * age / 10,
       ly = 1 * age / 200
     )
-    
   )
 
 res <- run_models(
@@ -98,8 +90,18 @@ new_tab <- data.frame(
 )
 
 # with run_model result
-ndt <- run_heterogeneity(res, newdata = new_tab)
+ndt <- update(res, newdata = new_tab)
 
-summary(ndt, model = "I")
+summary(ndt)
+
+# using weights
+
+new_tab2 <- data.frame(
+  age_init = 40:80,
+  .weights = runif(41)
+)
+ndt2 <- update(res, newdata = new_tab2)
+
+summary(ndt2)
 }
 
