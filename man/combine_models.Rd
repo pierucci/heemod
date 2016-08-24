@@ -2,33 +2,26 @@
 % Please edit documentation in R/combine.R
 \name{combine_models}
 \alias{combine_models}
-\title{Run Models on Demographic Data}
+\title{Combine Multiple Models}
 \usage{
 combine_models(list_newmodels, weights, oldmodel)
 }
 \arguments{
-\item{x}{Result from \code{\link{run_models}}.}
+\item{list_newmodels}{A list of models run over a set of
+multiple parameters.}
 
-\item{demographics}{A table containing demographic
-data (see details).
+\item{weights}{A vector of weigths, same length as the number
+of parameter sets.}
 
-The demographic data table must be a \code{data.frame} with
-the following properties: the column names must be parameter 
-names used in \code{\link{define_parameters}}; and an optional
-column \code{.weights} can give the respective weight of
-each row in the target population.
-
-Weights are automatillcally scaled. If no weights are provided
-equal weights are used for each strata.}
+\item{oldmodel}{The original model.}
 }
 \value{
-A \code{run_demographics} object, mostly
+A \code{combined_models} object, mostly
 similar to a result from \code{\link{run_models}}. \code{plot} and
 \code{summary} methods are available.
 }
 \description{
-Run a model on a set of demographic data giving population
-characteristics per strata, return aggregated results
-to estimate population-level values.
+Given a set of models run with different parameters,
+return aggregated results to estimate population-level values.
 }
 

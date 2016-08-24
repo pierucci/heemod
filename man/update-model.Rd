@@ -4,32 +4,27 @@
 \alias{plot.updated_models}
 \alias{update-model}
 \alias{update.run_models}
-\title{Run Heterogeneity Analysis}
+\title{Run Model on New Data}
 \usage{
 \method{update}{run_models}(object, newdata)
 
-\method{plot}{updated_models}(x, model, type = c("cost", "effect", "icer"),
-  ...)
+\method{plot}{updated_models}(x, model, type = c("cost", "effect", "icer",
+  "counts", "ce"), ...)
 }
 \arguments{
-\item{newdata}{A \code{data.frame} of new parameter sets, one 
-column per parameter and one row per parameter set. Can
-be prespecified for heterogeneity analysis or randomly 
-drawn with resample for probability analysis.}
+\item{object}{The result of \code{\link{run_models}}.}
 
-\item{x}{The result of \code{\link{run_models}}.}
+\item{newdata}{A \code{data.frame} of new parameter sets, one 
+column per parameter and one row per parameter set. An
+optional \code{.weights} column can be included for a
+weighted analysis.}
 
 \item{model}{A model index, character or numeric.}
 
 \item{type}{The type of plot to return (see details).}
 
 \item{...}{Additional arguments passed to \code{geom_histogram}.
-Especially usefull to specify \code{binwidth}.
-
-For the plotting function, the \code{type} argument can take
-the following values: \code{"cost"}, \code{"effect"} or 
-\code{"icer"} to plot the heterogeneity of the respective
-values; \code{"ce"} to draw a scatterplot of cost vs. effect.}
+Especially usefull to specify \code{binwidth}.}
 }
 \value{
 A \code{data.frame} with one row per model/value.
@@ -37,7 +32,30 @@ A \code{data.frame} with one row per model/value.
 \description{
 Given a table of new parameter values with a new 
 parameter set per line, runs iteratively Markov models 
-over these sets and return an heterogeneity analysis.
+over these sets.
+}
+\details{
+\code{newdata} must be a \code{data.frame} with
+the following properties: the column names must be parameter 
+names used in \code{\link{define_parameters}}; and an optional
+column \code{.weights} can give the respective weight of
+each row in the target population.
+
+Weights are automatillcally scaled. If no weights are provided
+equal weights are used for each strata.
+
+For the plotting function, the \code{type} argument can take
+the following values: \code{"cost"}, \code{"effect"} or 
+\code{"icer"} to plot the heterogeneity of the respective
+values. Furthermore \code{"ce"} and \code{"count"}
+can produce from the combined model plots similar to those
+of \code{\link{run_model}}.
+}
+\section{Warning}{
+
+
+Histograms do not account for weights. On the other hand
+summary results do.
 }
 \examples{
 mod1 <-

@@ -1,11 +1,11 @@
 ---
-title: "Heterogeneity Analysis"
+title: "Heterogeneity & Demographic Analysis"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{Heterogeneity Analysis}
+  %\VignetteIndexEntry{Heterogeneity & Demographic Analysis}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -146,9 +146,9 @@ res_mod <- run_models(
 
 # Introduction
 
-Heterogeneity analysis is a way to explore how the results of a model can vary depending on the characteristics of individuals in a population.
+Heterogeneity analysis is a way to explore how the results of a model can vary depending on the characteristics of individuals in a population, and demographic analysis estimates the average values of a model over an entire population.
 
-This is different from demographic analysis where all results are combined in a final result to estimate the average values of a model on an entire population.
+In practice these two analyses naturally complement each other: heterogeneity analysis runs the model on multiple sets of parameters (reflecting differents characteristics found in the target population), and demographic analysis combines the results.
 
 For this example we will use the result from the assessment of a new total hip replacement previously described in `vignette("non-homogeneous", package = "heemod")`.
 
@@ -162,6 +162,11 @@ N <- 100
 tab_indiv <- dplyr::data_frame(
   age = round(rnorm(N, mean = 60, sd = 10)),
   sex = sample(0:1, N, TRUE)
+)
+tab_indiv_w <- dplyr::data_frame(
+  age = round(rnorm(N, mean = 60, sd = 10)),
+  sex = sample(0:1, N, TRUE),
+  .weights = runif(N)
 )
 ```
 
@@ -177,7 +182,7 @@ ggplot(tab_indiv, aes(x = age)) +
 
 # Running the analysis
 
-`res_mod`, the result we obtained from `run_models()` in the *Time-varying Markov models* vignette, can be passed to `run_heterogeneity()` to perform the heterogeneity analysis.
+`res_mod`, the result we obtained from `run_models()` in the *Time-varying Markov models* vignette, can be passed to `update()` to update the model woth the new data and perform the heterogeneity analysis.
 
 ```{r}
 res_h <- update(res_mod, newdata = tab_indiv)
@@ -186,10 +191,10 @@ res_h
 
 # Interpreting results
 
-The `summary()` method reports summary statistics for cost, effect and ICER.
+The `summary()` method reports summary statistics for cost, effect and ICER, as well as the result from the combined model.
 
 ```{r}
-summary(res_h, model = "np1")
+summary(res_h)
 ```
 
 The variation of the incremental differences in cost, effect or ICER can then be plotted.
@@ -199,3 +204,20 @@ plot(res_h, type = "icer", model = "np1", binwidth = 500)
 plot(res_h, type = "effect", model = "np1", binwidth = 50)
 plot(res_h, type = "cost", model = "np1", binwidth = 25000)
 ```
+
+The results from the combined model can be plotted similarly to the results from `run_models()`.
+
+```{r}
+plot(res_h, type = "counts", model = "np1")
+```
+
+# Weigthed results
+
+Weights can be used in the analysis by including an optional column `.weights` in the new data to specify the respective weights of each strata in the target population.
+
+```{r}
+tab_indiv_w
+res_w <- update(res_mod, newdata = tab_indiv)
+res_w
+```
+

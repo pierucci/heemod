@@ -1,24 +1,40 @@
-#' Run Heterogeneity Analysis
+#' Run Model on New Data
 #'
 #' Given a table of new parameter values with a new 
 #' parameter set per line, runs iteratively Markov models 
-#' over these sets and return an heterogeneity analysis.
+#' over these sets.
+#'
+#' \code{newdata} must be a \code{data.frame} with
+#' the following properties: the column names must be parameter 
+#' names used in \code{\link{define_parameters}}; and an optional
+#' column \code{.weights} can give the respective weight of
+#' each row in the target population.
+#' 
+#' Weights are automatillcally scaled. If no weights are provided
+#' equal weights are used for each strata.
+#' 
+#' For the plotting function, the \code{type} argument can take
+#' the following values: \code{"cost"}, \code{"effect"} or 
+#' \code{"icer"} to plot the heterogeneity of the respective
+#' values. Furthermore \code{"ce"} and \code{"count"}
+#' can produce from the combined model plots similar to those
+#' of \code{\link{run_model}}.
 #'
 #' @name update-model
-#' @param x The result of \code{\link{run_models}}.
+#' @param object The result of \code{\link{run_models}}.
 #' @param newdata A \code{data.frame} of new parameter sets, one 
-#'   column per parameter and one row per parameter set. Can
-#'   be prespecified for heterogeneity analysis or randomly 
-#'   drawn with resample for probability analysis.
+#'   column per parameter and one row per parameter set. An
+#'   optional \code{.weights} column can be included for a
+#'   weighted analysis.
 #' @param model A model index, character or numeric.
 #' @param type The type of plot to return (see details).
 #' @param ... Additional arguments passed to \code{geom_histogram}.
 #' Especially usefull to specify \code{binwidth}.
-#'
-#' For the plotting function, the \code{type} argument can take
-#' the following values: \code{"cost"}, \code{"effect"} or 
-#' \code{"icer"} to plot the heterogeneity of the respective
-#' values; \code{"ce"} to draw a scatterplot of cost vs. effect.
+#' 
+#' @section Warning:
+#' 
+#' Histograms do not account for weights. On the other hand
+#' summary results do.
 #'
 #' @return A \code{data.frame} with one row per model/value.
 #' @export
@@ -105,17 +121,24 @@ print.updated_models <- function(x, ...) {
 #' @export
 #' @rdname update-model
 plot.updated_models <- function(x, model,
-                                type = c("cost", "effect", "icer"),
+                                type = c("cost", "effect", "icer",
+                                         "counts", "ce"),
                                 ...) {
-  if (get_base_model(attr(x, "original_model")) %in% model) {
-    stop("Cannot represent value differences from base model.")
-  }
   type <- match.arg(type)
+  
+  if (type %in% c("counts", "ce")) {
+    plot(attr(x, "combined_models"), type = type, model = model)
+  }
+  
   check_model_index(
     attr(x, "original_model"),
     model,
     allow_multiple = TRUE
   )
+  
+  if (get_base_model(attr(x, "original_model")) %in% model) {
+    stop("Cannot represent value differences from base model.")
+  }
   
   if (is.numeric(model)) {
     model <- get_model_names(attr(x, "original_model"))[model]

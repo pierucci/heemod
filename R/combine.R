@@ -1,26 +1,17 @@
-#' Run Models on Demographic Data
+#' Combine Multiple Models
 #'
-#' Run a model on a set of demographic data giving population
-#' characteristics per strata, return aggregated results
-#' to estimate population-level values.
+#' Given a set of models run with different parameters,
+#' return aggregated results to estimate population-level values.
 #' 
-#' @param x Result from \code{\link{run_models}}.
-#' @param demographics A table containing demographic
-#' data (see details).
+#' @param list_newmodels A list of models run over a set of
+#'  multiple parameters.
+#' @param weights A vector of weigths, same length as the number
+#'   of parameter sets.
+#' @param oldmodel The original model.
 #' 
-#' The demographic data table must be a \code{data.frame} with
-#' the following properties: the column names must be parameter 
-#' names used in \code{\link{define_parameters}}; and an optional
-#' column \code{.weights} can give the respective weight of
-#' each row in the target population.
-#' 
-#' Weights are automatillcally scaled. If no weights are provided
-#' equal weights are used for each strata.
-#'
-#' @return A \code{run_demographics} object, mostly
+#' @return A \code{combined_models} object, mostly
 #' similar to a result from \code{\link{run_models}}. \code{plot} and
 #' \code{summary} methods are available.
-#'
 combine_models <- function(list_newmodels, weights, oldmodel) {
   
   total_weights <- sum(weights)
@@ -39,8 +30,7 @@ combine_models <- function(list_newmodels, weights, oldmodel) {
       dplyr::rowwise() %>% 
       dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
       dplyr::ungroup() %>% 
-      dplyr::summarise_all(f) %>% 
-      dplyr::mutate_(.dots = attr(oldmodel, "ce"))
+      dplyr::summarise_all(f)
     
     tab_counts <- (list_newmodels[[i]]) %>% 
       dplyr::rowwise() %>% 
