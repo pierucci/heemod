@@ -6,7 +6,7 @@
 \alias{update.run_models}
 \title{Run Model on New Data}
 \usage{
-\method{update}{run_models}(object, newdata)
+\method{update}{run_models}(object, newdata, ...)
 
 \method{plot}{updated_models}(x, model, type = c("cost", "effect", "icer",
   "counts", "ce"), ...)
@@ -19,12 +19,14 @@ column per parameter and one row per parameter set. An
 optional \code{.weights} column can be included for a
 weighted analysis.}
 
+\item{...}{Additional arguments passed to \code{geom_histogram}.
+Especially usefull to specify \code{binwidth}.}
+
+\item{x}{Updated model to plot.}
+
 \item{model}{A model index, character or numeric.}
 
 \item{type}{The type of plot to return (see details).}
-
-\item{...}{Additional arguments passed to \code{geom_histogram}.
-Especially usefull to specify \code{binwidth}.}
 }
 \value{
 A \code{data.frame} with one row per model/value.
@@ -49,7 +51,7 @@ the following values: \code{"cost"}, \code{"effect"} or
 \code{"icer"} to plot the heterogeneity of the respective
 values. Furthermore \code{"ce"} and \code{"count"}
 can produce from the combined model plots similar to those
-of \code{\link{run_model}}.
+of \code{\link{run_models}}.
 }
 \section{Warning}{
 

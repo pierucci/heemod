@@ -67,4 +67,6 @@
 #' @importFrom Hmisc wtd.mean
 #' @importFrom Hmisc wtd.var
 #' 
+#' @importFrom graphics plot
+#' 
 NULL

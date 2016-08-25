@@ -172,7 +172,7 @@ tab_indiv_w <- dplyr::data_frame(
 
 For this example we will use the characteristics of `r N` individuals, with varying sex and age:
 
-```{r}
+```{r, fig.align='center', fig.height=4, fig.width=6}
 tab_indiv
 
 library(ggplot2)
@@ -186,7 +186,6 @@ ggplot(tab_indiv, aes(x = age)) +
 
 ```{r}
 res_h <- update(res_mod, newdata = tab_indiv)
-res_h
 ```
 
 # Interpreting results
@@ -207,7 +206,7 @@ plot(res_h, type = "cost", model = "np1", binwidth = 25000)
 
 The results from the combined model can be plotted similarly to the results from `run_models()`.
 
-```{r}
+```{r, fig.align='center', fig.height=4, fig.width=6}
 plot(res_h, type = "counts", model = "np1")
 ```
 
@@ -217,7 +216,7 @@ Weights can be used in the analysis by including an optional column `.weights` i
 
 ```{r}
 tab_indiv_w
-res_w <- update(res_mod, newdata = tab_indiv)
+res_w <- update(res_mod, newdata = tab_indiv_w)
 res_w
 ```
 

@@ -18,7 +18,7 @@
 #' \code{"icer"} to plot the heterogeneity of the respective
 #' values. Furthermore \code{"ce"} and \code{"count"}
 #' can produce from the combined model plots similar to those
-#' of \code{\link{run_model}}.
+#' of \code{\link{run_models}}.
 #'
 #' @name update-model
 #' @param object The result of \code{\link{run_models}}.
@@ -26,6 +26,7 @@
 #'   column per parameter and one row per parameter set. An
 #'   optional \code{.weights} column can be included for a
 #'   weighted analysis.
+#' @param x Updated model to plot.
 #' @param model A model index, character or numeric.
 #' @param type The type of plot to return (see details).
 #' @param ... Additional arguments passed to \code{geom_histogram}.
@@ -41,7 +42,7 @@
 #' 
 #' @example inst/examples/example_update.R
 #' 
-update.run_models <- function(object, newdata) {
+update.run_models <- function(object, newdata, ...) {
   
   if (! any(class(object) %in% "run_models")) {
     stop("'object' must be the result of 'run_models()'.")
@@ -127,7 +128,8 @@ plot.updated_models <- function(x, model,
   type <- match.arg(type)
   
   if (type %in% c("counts", "ce")) {
-    plot(attr(x, "combined_models"), type = type, model = model)
+    return(graphics::plot(attr(x, "combined_models"),
+                          type = type, model = model))
   }
   
   check_model_index(
@@ -229,6 +231,18 @@ summary.updated_models <- function(object, ...) {
   rownames(mat_res) <- tab_res$Model %>% 
     paste(tab_res$Value, sep = " - ")
   
+  structure(
+    tab_res,
+    class = c("summary_updated_models", class(tab_res)),
+    model = object,
+    to_print = mat_res
+  )
+}
+
+#' @export
+print.summary_updated_models <- function(x, ...) {
+  object <- attr(x, "model")
+  
   cat(sprintf(
     "An analysis re-run on %i parameter sets.\n\n",
     nrow(attr(object, "newdata"))
@@ -243,13 +257,13 @@ summary.updated_models <- function(object, ...) {
                 format(sum(attr(object, "weights")))))
   }
   
-  cat("\n\n* Distribution of values:\n\n")
+  cat("\n\n* Values distribution:\n\n")
   
-  print(mat_res, na.print = "-")
+  print(attr(x, "to_print"), na.print = "-")
   
   cat("\n* Combined result:\n\n")
   
   print(attr(object, "combined_models"))
   
-  invisible(tab_res)
+  invisible(x)
 }
