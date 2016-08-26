@@ -18,7 +18,8 @@ Imports:  lazyeval,
           DT,
           memoise,
           rgho,
-          pryr
+          pryr,
+          Hmisc
 License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr

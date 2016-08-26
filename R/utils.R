@@ -146,3 +146,20 @@ check_model_index <- function(x, i, allow_multiple = FALSE) {
     ))
   }
 }
+
+wtd_summary <- function(x, weights = NULL) {
+  if (is.null(weights)) {
+    res <- summary(x)
+    
+  } else if (all(is.na(x))) {
+    res <- rep(NA, 6)
+    
+  } else {
+    w_mean <- Hmisc::wtd.mean(x, weights = weights)
+    w_q <- Hmisc::wtd.quantile(x, weights = weights,
+                               probs = c(0, .25, .5, .75, 1))
+    res <- c(w_q[1], w_q[2], w_q[3], w_mean, w_q[4], w_q[5])
+  }
+  
+  setNames(res, c("Min.", "1st Qu.", "Median", "Mean", "3rd Qu.", "Max."))
+}
