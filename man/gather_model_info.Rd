@@ -7,30 +7,31 @@
 gather_model_info(base_dir, ref_file, base_model = NULL)
 }
 \arguments{
-\item{base_dir}{directory in which \code{ref-file} will be found.}
+\item{base_dir}{directory in which \code{ref-file} will
+be found.}
 
-\item{ref_file}{name of a file specifying where model inputs will be found.}
+\item{ref_file}{name of a file specifying where model
+inputs will be found.}
 
-\item{base_model}{which of the models should be the base model}
+\item{base_model}{which of the models should be the base
+model}
 }
 \value{
 an unevaluated models object
 
-a list with elements: \itemize{
-  \item models (of type \code{uneval_model}, created by
-  \code{\link{import_models_from_files}})
-  \item param_info
-  \item use_envir an environment containing
-  data frames with information necessary for the models to run
-  (see \code{\link{load_df_from_files}})
-  \item output_dir where to store output files, if specified
-  }
+a list with elements: \itemize{ \item models (of
+  type \code{uneval_model}, created by 
+  \code{\link{import_models_from_files}}) \item
+  param_info \item use_envir an environment containing 
+  data frames with information necessary for the models
+  to run (see \code{\link{load_df_from_files}}) \item
+  output_dir where to store output files, if specified }
 }
 \description{
 Gather information for running a model
 }
 \details{
 For more information see the vignette: 
-     \code{vignette("file-input", package = "heemod")}.`
+\code{vignette("file-input", package = "heemod")}.`
 }
 

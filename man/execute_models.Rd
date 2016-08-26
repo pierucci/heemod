@@ -8,19 +8,24 @@ execute_models(inputs, base_dir, N.prob = 50, cost, effect, init = NULL,
   base_model = NULL, run_demo = TRUE, run_psa = TRUE, ...)
 }
 \arguments{
-\item{inputs}{a list containing the unevaluated models ($models), 
-parameters for  the base model and sensitivity analyses ($param_info), 
-and possibly an environment containing additional information 
-necessary to run the model.}
+\item{inputs}{a list containing the unevaluated models
+($models),    parameters for  the base model and
+sensitivity analyses ($param_info), and possibly an
+environment containing additional information necessary
+to run the model.}
 
-\item{base_dir}{directory in which \code{ref-file} will be found.}
+\item{base_dir}{directory in which \code{ref-file} will
+be found.}
 
-\item{N.prob, cost, effect, init}{arguments to \code{\link{run_models}}}
+\item{N.prob, cost, effect, init}{arguments to 
+\code{\link{run_models}}}
 
-\item{base_model}{which of the models should be the base model}
+\item{base_model}{which of the models should be the base
+model}
 
-\item{run_demo, run_psa}{Useful for limiting computation, for example, 
-when running a model interactively in shiny.}
+\item{run_demo, run_psa}{Useful for limiting computation,
+for example, when running a model interactively in
+shiny.}
 
 \item{...}{additional arguments}
 }
@@ -28,25 +33,24 @@ when running a model interactively in shiny.}
 an unevaluated models object
 
 a list \itemize{ \item \code{model}s (always) 
-\item \code{model_runs} (always)
-  \item \code{dsa} (deterministic sensitivity
-  analysis) - if appropriate parameters provided 
-  \item \code{psa} (probabilistic sensitivity analysis) - 
-    if appropriate parameters provided
-   \item \code{demographics} results across different demographic groups
-   }
+  \item \code{model_runs} (always) \item \code{dsa}
+  (deterministic sensitivity analysis) - if appropriate
+  parameters provided \item \code{psa} (probabilistic
+  sensitivity analysis) - if appropriate parameters
+  provided \item \code{demographics} results across
+  different demographic groups }
 }
 \description{
-Execute a full set of analyses, possibly including
-  discrete sensitivity analysis, probabilistic sensitivity analysis,
-  and analyses across demographics.
+Execute a full set of analyses, possibly
+  including discrete sensitivity analysis, probabilistic
+  sensitivity analysis, and analyses across demographics.
 }
 \details{
-Relies on the inputs collated by \code{\link{gather_model_info}}.
-  These pieces were broken apart to facilitate putting together
-  a shiny interface.
+Relies on the inputs collated by 
+\code{\link{gather_model_info}}. These pieces were broken
+apart to facilitate putting together a shiny interface.
 
-     For more information see the vignette: 
-     \code{vignette("file-input", package = "heemod")}.`
+For more information see the vignette: 
+\code{vignette("file-input", package = "heemod")}.`
 }
 
