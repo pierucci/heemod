@@ -50,7 +50,7 @@
 #' @importFrom ggplot2 geom_text
 #' @importFrom ggplot2 xlab
 #' @importFrom ggplot2 ylab
-#' @importFrom ggplot2 aes_string
+#' @importFrom ggplot2 aes
 #' @importFrom ggplot2 xlim
 #' 
 #' @importFrom tidyr gather_
@@ -63,10 +63,17 @@
 #' 
 #' @importFrom rgho get_gho_data
 #' 
-#' @importFrom Hmisc wtd.quantile
-#' @importFrom Hmisc wtd.mean
-#' @importFrom Hmisc wtd.var
+#' @importFrom grDevices dev.new
+#' @importFrom grDevices dev.off
+#' @importFrom grDevices pdf
+#' @importFrom grDevices png
 #' 
 #' @importFrom graphics plot
+#' 
+#' @importFrom utils read.csv
+#' @importFrom utils write.csv
+#' @importFrom utils tail
+#' 
+#' @importFrom stats as.formula
 #' 
 NULL

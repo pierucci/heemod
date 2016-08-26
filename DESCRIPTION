@@ -19,7 +19,11 @@ Imports:  lazyeval,
           memoise,
           rgho,
           pryr,
-          Hmisc
+          utils,
+          grDevices,
+          graphics,
+          stats,
+          printr
 License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr
@@ -27,6 +31,8 @@ RoxygenNote: 5.0.1
 Suggests: testthat,
           knitr,
           rmarkdown,
-          formatR
+          formatR,
+          readxl,
+          flexsurv
 URL: https://github.com/pierucci/heemod, https://pierucci.github.io
 BugReports: https://github.com/pierucci/heemod/issues
