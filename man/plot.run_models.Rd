@@ -4,7 +4,8 @@
 \alias{plot.run_models}
 \title{Plot Results of a Markov Model}
 \usage{
-\method{plot}{run_models}(x, type = c("counts", "ce"), model = 1, ...)
+\method{plot}{run_models}(x, type = c("counts", "ce"), model = 1,
+  include_states = character(0), panels = c("by_model", "by_state"), ...)
 }
 \arguments{
 \item{x}{Result from \code{\link{run_models}}.}
@@ -12,6 +13,10 @@
 \item{type}{Type of plot, see details.}
 
 \item{model}{Name or position of model of interest.}
+
+\item{include_states}{Names of states to be included in the plot.}
+
+\item{panels}{Should plots be faceted by model or by state?}
 
 \item{...}{Additional arguments passed to \code{plot}.}
 }
@@ -23,7 +28,32 @@ Various plots for Markov models.
 }
 \details{
 \code{type = "counts"} represents state memberships 
-(corrected) by cycle, \code{type = "ce"} plots models on
-the cost-efficiency plane with the efficiency frontier.
+  (corrected) by cycle, \code{type = "ce"} plots models on
+  the cost-efficiency plane with the efficiency frontier.
+
+When \code{type = "count"}, 
+   model can be a vector of model numbers or names, or "all".
+   
+\code{include_states} and \code{panels} are active only when 
+  \code{type = "count"}.   When \code{include_states = character(0)} 
+  (the default), all states will be included.
+}
+\examples{
+
+## These examples require \\code{res_mod} from the hip replacement model discussed in
+## `vignette("non-homogeneous", package = "heemod")`.
+
+\dontrun{
+  plot(res_mod)
+
+  plot(res_mod, model = "all")
+  plot(res_mod, model = "all", panels = "by_state")
+
+  plot(res_mod, model = "all", include_states = c("RevisionTHR", "SuccessR"))
+  plot(res_mod, model = "all", panels = "by_state", include_states = c("RevisionTHR", "SuccessR"))
+ 
+  plot(res_mod, model = 2, panel = "by_state", include_states = c("RevisionTHR", "SuccessR"))
+  
+}
 }
 

@@ -36,16 +36,15 @@ devtools::install_github("pierucci/heemod")
 
 ## Learning heemod
 
-To get started read the intro vignette (or `vignette("introduction", package = "heemod")`).
+To get started read the intro vignette in `vignette("introduction", package = "heemod")`.
 
 Specific analysis examples (mostly inspired from Decision Modelling for Health Economic Evaluation) can be found in the following vignettes:
 
-  * Homogeneous Markov model (or `vignette("homogeneous", package = "heemod")`).
-  * Non-homogeneous Markov model (or `vignette("non-homogeneous", package = "heemod")`).
+  * Homogeneous Markov model in `vignette("homogeneous", package = "heemod")`.
+  * Non-homogeneous Markov model in `vignette("non-homogeneous", package = "heemod")`.
   * Probabilistic uncertainty analysis in `vignette("probabilistic", package = "heemod")`.
   * Deterministic sensitivity analysis in `vignette("sensitivity", package = "heemod")`.
-  * Demographic analysis in `vignette("demographic", package = "heemod")`.
-  * Heterogeneity analysis in `vignette("heterogeneity", package = "heemod")`.
+  * Heterogeneity & Demographic analysis in `vignette("heterogeneity", package = "heemod")`.
 
 ## Devs
 
