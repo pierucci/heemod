@@ -2,29 +2,27 @@
 % Please edit documentation in R/load_df_from_files.R
 \name{load_df_from_files}
 \alias{load_df_from_files}
-\title{Title  Load data frames in files in a directory into an environment}
+\title{Load Data From a Folder Into an Environment}
 \usage{
-load_df_from_files(base_dir, df_dir, this_envir)
+load_df_from_files(df_dir, df_envir)
 }
 \arguments{
-\item{base_dir}{a directory}
+\item{df_envir}{An environment.}
 
-\item{df_dir}{a subdirectory containing the files}
-
-\item{this_envir}{an environment}
+\item{full_path}{A directory containing the files.}
 }
 \value{
-invisibly, the environment with loaded objects
+The environment with the data frames.
 }
 \description{
-Reads files containing data frames (in tabular format)
-  from a directory, and loads them in an environment to be available
-  during an analysis.  Typically used with 
-  \code{\link{f_look_up_values_df}}.
+Reads files containing data frames (in tabular format) 
+from a directory, and loads them in an environment to be 
+available during an analysis.  Typically used with 
+\code{\link{f_look_up_values_df}}.
 }
 \details{
-The files must be in .csv, .xls, or .xlsx format.
-  A file my_df.csv (or my_df.xls, or my_df.xlsx) 
-  will cause the contents to be loaded as a data frame my_df.
+The files must be in .csv, .xls, or .xlsx format. A file 
+my_df.csv (or my_df.xls, or my_df.xlsx) will be loaded as
+a data frame my_df.
 }
 

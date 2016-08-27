@@ -100,30 +100,26 @@ gather_model_info <-
     
     ref$full_file <- file.path(base_dir, ref$file)
     
+    df_env <- new.env()
     models <- import_models_from_files(
       base_dir = base_dir,
       ref = ref,
-      base_model = base_model
+      base_model = base_model,
+      df_env = df_env
     )
     
-    
-    use_envir <- new.env()
     if ("data" %in% ref$data) {
       ## load data frames with required data into an environment
-      load_df_from_files(base_dir, ref[ref$data == "data", "file"],
-                         use_envir)
-    }
-    if (length(ls(use_envir))) {
-      attach(use_envir, pos = 2L,
-             name = "heemod_temp_variables_envir_detach_me")
-      on.exit(detach(name = "heemod_temp_variables_envir_detach_me"))
+      load_df_from_files(ref$full_file[ref$data == "data"],
+                         df_env)
     }
     
-    param_info <-
-      f_parameters_from_tabular(ref[ref$data == "parameters", "full_file"],
-                                output_file_name_base = NULL,
-                                param_obj_name = "params")
-    if("survivalDataDirectory" %in% ref$data){
+    param_info <- create_parameters_from_tabular(
+      read_file(ref$full_file[ref$data == "parameters"]),
+      df_env
+    )
+    
+    if("survivalDataDirectory" %in% ref$data) {
       ## load or fit survival models into the environment
       
       ## TODO - currently assumes fit_files and fit_names
@@ -273,8 +269,8 @@ execute_models <-
 #' @param base_model Which of the models should be the base 
 #'   model.
 #'   
-#' @return  an unevaluated models object
-import_models_from_files <- function(ref, base_model) {
+#' @return A list of unevaluated models.
+import_models_from_files <- function(ref, base_model, df_env) {
   
   state_info <- parse_multi_spec(
     ref$full_file[ref$data == "state"],
@@ -295,7 +291,8 @@ import_models_from_files <- function(ref, base_model) {
   models <- lapply(
     seq_along(state_info),
     function(i) {
-      create_model_from_tabular(state_info[[i]], tm_info[[i]])
+      create_model_from_tabular(state_info[[i]], tm_info[[i]],
+                                df_env = df_env)
     })
   
   names(models) <- names(state_info)

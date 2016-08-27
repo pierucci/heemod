@@ -2,14 +2,13 @@
 % Please edit documentation in R/tabular_input.R
 \name{create_states_from_tabular}
 \alias{create_states_from_tabular}
-\title{Create a State Definition From Tabular Input.}
+\title{Create State Definitions From Tabular Input.}
 \usage{
 create_states_from_tabular(state_info)
 }
 \arguments{
 \item{state_info}{Result for one model of 
-\code{\link{parse_multi_spec}}, or the name of a file 
-containing the information.}
+\code{\link{parse_multi_spec}}.}
 }
 \value{
 A state list.

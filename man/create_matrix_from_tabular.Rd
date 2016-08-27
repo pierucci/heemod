@@ -8,8 +8,7 @@ create_matrix_from_tabular(trans_probs, state_names)
 }
 \arguments{
 \item{trans_probs}{Result for one model of 
-\code{\link{parse_multi_spec}}, or the name of a file 
-containing the information.}
+\code{\link{parse_multi_spec}}.}
 
 \item{state_names}{The names of the states used in the 
 transition matrix.}

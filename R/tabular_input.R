@@ -1,4 +1,4 @@
-#' Create a State Definition From Tabular Input.
+#' Create State Definitions From Tabular Input
 #' 
 #' Transforms tabular input defining states into an
 #' \code{heemod} object.
@@ -24,13 +24,11 @@
 #' \code{vignette("file-input", package = "heemod")}.
 #' 
 #' @param state_info Result for one model of 
-#'   \code{\link{parse_multi_spec}}, or the name of a file 
-#'   containing the information.
+#'   \code{\link{parse_multi_spec}}.
 #'   
 #' @return A state list.
-create_states_from_tabular <- function(state_info) {
-  if(is.character(state_info)) state_info <- read_file(state_info)
-  
+create_states_from_tabular <- function(state_info,
+                                       df_env) {
   if(length(state_info) == 0 | !inherits(state_info, "data.frame"))
     stop("state_info must be a non-empty data frame (or the name of a file containing the frame).")
   
@@ -91,7 +89,8 @@ create_states_from_tabular <- function(state_info) {
               function(value) {
                 state_info[[value]][state_info$state == state]
               }
-            ), values)
+            ), values),
+            env = df_env
           )
         )
       }
@@ -100,7 +99,7 @@ create_states_from_tabular <- function(state_info) {
 }
 
 
-#' Create a Transition Matrix From Tabular Input.
+#' Create a Transition Matrix From Tabular Input
 #' 
 #' Transforms tabular input defining a transition matrix 
 #' into an \code{heemod} object.
@@ -120,17 +119,13 @@ create_states_from_tabular <- function(state_info) {
 #' from and to themselves with probability 1.
 #' 
 #' @param trans_probs  Result for one model of 
-#'   \code{\link{parse_multi_spec}}, or the name of a file 
-#'   containing the information.
+#'   \code{\link{parse_multi_spec}}.
 #' @param state_names The names of the states used in the 
 #'   transition matrix.
 #'   
 #' @return A transition matrix.
-create_matrix_from_tabular <- function(trans_probs, state_names){
-  if(length(trans_probs) == 0) stop("must specify trans_probs")
-  if(is.character(trans_probs))
-    trans_probs <- f_read_file(trans_probs)
-  
+create_matrix_from_tabular <- function(trans_probs, state_names,
+                                       df_env) {
   stopifnot(
     all(c("from", "to", "prob") %in% names(trans_probs)),
     length(state_names) > 0,
@@ -167,167 +162,132 @@ create_matrix_from_tabular <- function(trans_probs, state_names){
                      dimnames = list(state_names, state_names))
   prob_mat[as.matrix(trans_probs[, c("to", "from")])] <- trans_probs$prob
   
-  ## create the command to send to define_matrix
   define_matrix_(
-    lazyeval::as.lazy_dots(prob_mat),
+    lazyeval::as.lazy_dots(prob_mat, env = df_env),
     state_names = state_names
   )
 }
 
-#' Create a heemod parameter file from tabular input.
-#' @param input_file_name character. Contains the name (and
-#'   path) to R, CSV, XLS or XLSX file with parameters.
-#' @param output_file_name_base character. If not NULL, the
-#'   parameters will be saved as .R files with this prefix.
-#'   NULL by default.
-#' @param param_obj_name base name for parameter objects
-#' @details The tabular parameter definition file can have
-#'   the following columns: parameter (the parameter name,
-#'   required), value (required), low and high (if both are
-#'   present, a deterministic sensitivity analysis will be
-#'   performed), and psa (a definition of a distribution to
-#'   use in a probabilistic sensitivity analysis. Other
-#'   columns can exist, but will be ignored.
-#'   
-#'   If it ends in ".csv", ".xls", or ".xlsx", name of a
-#'   .csv file defining the parameters (see details for
-#'   contents). If the file name ends in ".R", a parameter
-#'   definition file that can be sourced.  (This can be
-#'   useful if you've previously read a  parameter
-#'   definition and want to make modifications directly in
-#'   the R.)
-#'   
-#'   If output_file_name_base is not \code{NULL} (the
-#'   default), then it is the file name into which a heemod
-#'   parameter definition file will be written.  The basic
-#'   parameter file will get extension ".R", and the
-#'   discrete and probabilistic sensitivity analysis
-#'   parameter definition files (if created) will get
-#'   extensions ".dsa.R" and ".psa.R" respectively. If
-#'   \code{NULL}, no file will be written.
-#'   
-#'   For more information see the vignette: 
-#'   \code{vignette("file-input", package = "heemod")}.`
-#'   
+#' Create a Parameter Definition From Tabular Input
+#' 
+#' If specified in the tabular file, DSA and PSA can also be
+#' created.
+#' 
+#' The tabular parameter definition file can have the 
+#' following columns: \code{parameter} (the parameter name, 
+#' required), \code{value} (required), \code{low} and 
+#' \code{high} (if both are present, a deterministic 
+#' sensitivity analysis will be performed), and \code{psa} 
+#' (a definition of a distribution to use in a probabilistic
+#' sensitivity analysis. Other columns will be ignored.
+#' 
+#' @param param_defs A parameter definition file.
 #' @return the parameter definition, invisibly.
-
-f_parameters_from_tabular <-
-  function(input_file_name,
-           output_file_name_base = NULL,
-           param_obj_name = "params") {
-    ## If we are given a file name ending in ".R", assume
-    ##    that the files have already been defined.  Source
-    ##    them and return the results
-    if (substr(input_file_name,
-               nchar(input_file_name) - 1,
-               nchar(input_file_name)) == ".R") {
-      output1 <- source(input_file_name)[[1]]
-      dsa_file_name <- gsub(input_file_name, ".R$", ".dsa.R")
-      if (file.exists(dsa_file_name))
-        output2 <- source(dsa_file_name)[[1]]
-      psa_file_name <- gsub(input_file_name, ".R$", ".psa.R")
-      if (file.exists(psa_file_name))
-        output3 <- source(psa_file_name)[[1]]
-    }
-    
-    ## If instead we have a .csv file or xlsx file,
-    ## put together the command that will create
-    ##   the parameters file, and then write it to
-    ##   an R file, which later can be sourced.
-    
-    else{
-      # Avoid NOTE related to "visible binding for global variable"
-      low <- high <- NULL
-      param_defs <- f_read_file(input_file_name)
-      
-      pieces <-
-        paste(param_defs$parameter,
-              param_defs$value,
-              collapse = ",\n",
-              sep = " = ")
-      output1 <- paste(param_obj_name,
-                       "<- define_parameters(", pieces, ")")
-      if (!is.null(output_file_name_base)) {
-        output_file_name_R <-
-          paste(output_file_name_base, ".R", sep = "")
-        cat(output1, file = output_file_name_R)
-      }
-      output2 <- output3 <- NULL
-      if ("low" %in% names(param_defs) &
-          "high" %in% names(param_defs)) {
-        ## now we'll do something similar for the deterministic
-        ##   sensitivity analysis (dsa)
-        output2 <- ""
-        output_file_name_dsa_R <-
-          paste(output_file_name_base, ".dsa.R", sep = "")
-        ## columns where low and high are not populated
-        ##   will have come in as NA
-        param_defs_dsa <-
-          subset(param_defs, !is.na(low) & !is.na(high))
-        
-        if (nrow(param_defs_dsa) > 0) {
-          piece <-
-            paste(
-              param_defs_dsa$parameter,
-              "= c(",
-              param_defs_dsa$low,
-              ",",
-              param_defs_dsa$high,
-              ")",
-              collapse = ", \n"
-            )
-          param_names_dsa <-
-            paste(param_obj_name, "_dsa", sep = "")
-          output2 <- paste(param_names_dsa,
-                           "<- define_sensitivity(", piece, ")")
-          if(!is.null(output_file_name_base))
-            cat(output2, file = output_file_name_dsa_R)
-        }
-      }
-      
-      ## and finally for probabilistic sensitivity analysis (dsa)
-      output3 <- ""
-      if ("psa" %in% names(param_defs)) {
-        # Avoid NOTE related to "visible binding for global variable"
-        psa <- NULL
-        
-        output_file_name_psa_R <-
-          paste(output_file_name_base, ".psa.R", sep = "")
-        ## columns where psa is not populated
-        ##   will have come in as NA or blank
-        param_defs_psa <- subset(param_defs, (!is.na(psa)) &
-                                   (psa != ""))
-        if (nrow(param_defs_psa) > 0) {
-          piece <-
-            paste(
-              param_defs_psa$parameter,
-              " ~ ",
-              param_defs_psa$psa,
-              sep = "",
-              collapse = ", \n"
-            )
-          param_names_psa <-
-            paste(param_obj_name, "_psa", sep = "")
-          output3 <- paste(param_names_psa,
-                           "<- define_distrib(", piece, ")")
-          if(!is.null(output_file_name_base))
-            cat(output3, file = output_file_name_psa_R)
-        }
-      }
-    }
-    
-    if (is.character(output1))
-      output1 <- eval(parse(text = output1))
-    if (is.character(output2))
-      output2 <- eval(parse(text = output2))
-    if (is.character(output3))
-      output3 <- eval(parse(text = output3))
-    invisible(list(
-      params = output1,
-      dsa_params = output2,
-      psa_params = output3
-    ))
+create_parameters_from_tabular <- function(param_defs,
+                                           df_env) {
+  if (xor("low" %in% names(param_defs),
+          "high" %in% names(param_defs))) {
+    stop("Both 'low' and 'high' columns must be present in parameter tabular file to define DSA.")
   }
+  
+  parameters <- define_parameters_(
+    lazyeval::as.lazy_dots(
+      setNames(
+        lapply(param_defs$value, function(x) x),
+        param_defs$parameter
+      ),
+      env = df_env
+    )
+  )
+  
+  output2 <- output3 <- NULL
+  if ("low" %in% names(param_defs) &
+      "high" %in% names(param_defs)) {
+    
+    if (! all(is.na(param_defs$low) ==
+              is.na(param_defs$high))) {
+      stop("'low' and 'high' must be both present in DSA tabular definition.")
+    }
+      
+      param_sens
+    dsa <- define_sensitivity_(
+      lazyeval::as.lazy_dots(
+        lapply()
+      )
+    )
+    ## now we'll do something similar for the deterministic
+    ##   sensitivity analysis (dsa)
+    output2 <- ""
+    output_file_name_dsa_R <-
+      paste(output_file_name_base, ".dsa.R", sep = "")
+    ## columns where low and high are not populated
+    ##   will have come in as NA
+    param_defs_dsa <-
+      subset(param_defs, !is.na(low) & !is.na(high))
+    
+    if (nrow(param_defs_dsa) > 0) {
+      piece <-
+        paste(
+          param_defs_dsa$parameter,
+          "= c(",
+          param_defs_dsa$low,
+          ",",
+          param_defs_dsa$high,
+          ")",
+          collapse = ", \n"
+        )
+      param_names_dsa <-
+        paste(param_obj_name, "_dsa", sep = "")
+      output2 <- paste(param_names_dsa,
+                       "<- define_sensitivity(", piece, ")")
+      if(!is.null(output_file_name_base))
+        cat(output2, file = output_file_name_dsa_R)
+    }
+  }
+  
+  ## and finally for probabilistic sensitivity analysis (dsa)
+  output3 <- ""
+  if ("psa" %in% names(param_defs)) {
+    # Avoid NOTE related to "visible binding for global variable"
+    psa <- NULL
+    
+    output_file_name_psa_R <-
+      paste(output_file_name_base, ".psa.R", sep = "")
+    ## columns where psa is not populated
+    ##   will have come in as NA or blank
+    param_defs_psa <- subset(param_defs, (!is.na(psa)) &
+                               (psa != ""))
+    if (nrow(param_defs_psa) > 0) {
+      piece <-
+        paste(
+          param_defs_psa$parameter,
+          " ~ ",
+          param_defs_psa$psa,
+          sep = "",
+          collapse = ", \n"
+        )
+      param_names_psa <-
+        paste(param_obj_name, "_psa", sep = "")
+      output3 <- paste(param_names_psa,
+                       "<- define_distrib(", piece, ")")
+      if(!is.null(output_file_name_base))
+        cat(output3, file = output_file_name_psa_R)
+    }
+  }
+}
+
+if (is.character(output1))
+  output1 <- eval(parse(text = output1))
+if (is.character(output2))
+  output2 <- eval(parse(text = output2))
+if (is.character(output3))
+  output3 <- eval(parse(text = output3))
+invisible(list(
+  params = output1,
+  dsa_params = output2,
+  psa_params = output3
+))
+}
 
 
 #' Create a \code{heemod} Model From Tabular Files Info
@@ -342,10 +302,13 @@ f_parameters_from_tabular <-
 #' @return A \code{heemod} model as returned by 
 #'   \code{\link{define_model}}.
 create_model_from_tabular <- function(state_file,
-                                      tm_file) {
+                                      tm_file,
+                                      df_env) {
   
-  states <- create_states_from_tabular(state_file)
-  TM <- create_matrix_from_tabular(tm_file, states$state_names)
+  states <- create_states_from_tabular(state_file,
+                                       df_env = df_env)
+  TM <- create_matrix_from_tabular(tm_file, states$state_names,
+                                   df_env = df_env)
   
   define_model_(transition_matrix = TM, states = states)
 }
@@ -382,7 +345,8 @@ create_model_from_tabular <- function(state_file,
 #'  
 parse_multi_spec <- function(multi_spec,
                              split_on = ".model",
-                             group_vars) {
+                             group_vars,
+                             df_dir) {
   
   if(is.character(multi_spec)) multi_spec <- read_file(multi_spec)
   

@@ -13,7 +13,7 @@ import_models_from_files(ref, base_model)
 model.}
 }
 \value{
-an unevaluated models object
+A list of unevaluated models.
 }
 \description{
 Read Models Specified by Files
