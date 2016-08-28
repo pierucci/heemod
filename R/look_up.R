@@ -7,8 +7,8 @@
 #' informations (such as mortality rates), given some 
 #' individual caracteristics.
 #' 
-#' If binning is activated, numeric individual
-#' characteristics are matched to the corresponding
+#' If binning is activated, numeric individual 
+#' characteristics are matched to the corresponding 
 #' reference value that is directly inferior.
 #' 
 #' @param data A reference data frame.
@@ -16,8 +16,9 @@
 #'   data frame.
 #' @param ... Individual characteristics, should be named 
 #'   like the columns of \code{data}.
-#' @param bin Should numeric variable be binned? (see 
-#'   examples).
+#' @param bin Either logical: should all numeric variable be
+#'   binned, or character vector giving the names of
+#'   variables to bin (see examples).
 #'   
 #' @return A vector of values, same lenght as \code{...}.
 #' @export
@@ -30,7 +31,7 @@ look_up <- function(data, value, ..., bin = FALSE) {
   list_specs <- list(...)
   
   if (any(names(list_specs) == "")) {
-    stop("All arguments to 'look_up()' must be named.")
+    stop("All variables passed to 'look_up()' must be named.")
   }
   
   df_vars <- do.call(
@@ -38,16 +39,29 @@ look_up <- function(data, value, ..., bin = FALSE) {
     list_specs
   )
   
-  if (! all(pb <- names(df_vars) %in% names(data))) {
+  if (any(pb <- ! names(df_vars) %in% names(data))) {
     stop(sprintf(
-      "Names passed to 'look_up()' not found in data: %s.",
+      "Names passed to 'look_up()' not found in 'data': %s.",
       paste(names(df_vars)[pb], collapse = ", ")
     ))
   }
   
-  if (bin) {
-    num_cols <- unlist(Map(is.numeric, df_vars))
-    for (n in names(num_cols)[num_cols]) {
+  if (isTRUE(bin)) {
+    bin <- names(df_vars)[unlist(Map(is.numeric, df_vars))]
+    
+  } else if (is.character(bin)) {
+    if (any(pb <- ! bin %in% names(df_vars))) {
+      stop(sprintf(
+        "Names in 'bin' not found in source data: %s.",
+        paste(bin[pb], collapse = ", ")
+      ))
+    }
+  } else {
+    bin <- character(0)
+  }
+  
+  if (length(bin)) {
+    for (n in bin) {
       bin_values <- c(sort(unique(data[[n]])), +Inf)
       data[[n]] <- cut(data[[n]], bin_values,
                        include.lowest = TRUE,
@@ -58,6 +72,13 @@ look_up <- function(data, value, ..., bin = FALSE) {
     }
   }
   
+  if (any(pb <- duplicated(data[names(df_vars)]))) {
+    stop(sprintf(
+      "Some rows in 'data' are duplicates: %s.",
+      paste(which(pb), collapse = ", ")
+    ))
+  }
+  
   res <- suppressMessages(
     dplyr::left_join(
       df_vars,
@@ -66,7 +87,7 @@ look_up <- function(data, value, ..., bin = FALSE) {
   )
   
   if (length(res) != nrow(df_vars)) {
-    stop("Ooops, something unexpected went wrong...")
+    stop("Ooops, something unexpectedly went wrong...")
   }
   
   res

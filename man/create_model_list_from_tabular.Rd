@@ -4,7 +4,7 @@
 \alias{create_model_list_from_tabular}
 \title{Read Models Specified by Files}
 \usage{
-create_model_list_from_tabular(ref, base_model, df_env)
+create_model_list_from_tabular(ref, df_env)
 }
 \arguments{
 \item{ref}{Imported reference file.}

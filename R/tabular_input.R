@@ -32,7 +32,7 @@ run_models_from_tabular <- function(base_dir, ref_file = "REFERENCE.csv",
                                     save_outputs = TRUE,
                                     overwrite = FALSE) {
   
-  inputs <- gather_model_info(base_dir, ref_file, base_model)
+  inputs <- gather_model_info(base_dir, ref_file)
   
   outputs <- eval_models_from_tabular(inputs)
   
@@ -68,18 +68,28 @@ run_models_from_tabular <- function(base_dir, ref_file = "REFERENCE.csv",
 gather_model_info <- function(base_dir, ref_file) {
   
   ref <- read_file(file.path(base_dir, ref_file))
-  ref$full_file <- ifelse(
-    ! is.null(ref$absolute_path) &
-      isTRUE(as.logical(ref$absolute_path)),
-    ref$file,
-    file.path(base_dir, ref$file)
-  )
+  
+  if (any(pb <- duplicated(ref$data))) {
+    stop(sprintf(
+      "Duplicated values in reference file 'data' column: %s.",
+      paste(ref$data[pb], collapse = ", ")
+    ))
+  }
+  
+  if (is.null(ref$absolute_path)) {
+    ref$full_file <- file.path(base_dir, ref$file)
+  } else {
+    ref$full_file <- ifelse(
+      ref$absolute_path & ! is.na(ref$absolute_path),
+      ref$file,
+      file.path(base_dir, ref$file)
+    )
+  }
+
   df_env <- new.env()
   
   models <- create_model_list_from_tabular(
-    base_dir = base_dir,
     ref = ref,
-    base_model = base_model,
     df_env = df_env
   )
   
@@ -210,8 +220,8 @@ eval_models_from_tabular <- function(inputs,
 #'   model.
 #'   
 #' @return A list of unevaluated models.
-create_model_list_from_tabular <- function(ref, base_model, df_env) {
-  
+create_model_list_from_tabular <- function(ref, df_env) {
+
   state_info <- parse_multi_spec(
     ref$full_file[ref$data == "state"],
     group_vars = "state"
@@ -221,7 +231,7 @@ create_model_list_from_tabular <- function(ref, base_model, df_env) {
     ref$full_file[ref$data == "tm"],
     group_vars = c("from", "to")
   )
-  
+  browser()
   if(any(sort(names(state_info)) != sort(names(tm_info)))) {
     stop("Mismatch between state names and transition matrix names.")
   }
@@ -236,10 +246,7 @@ create_model_list_from_tabular <- function(ref, base_model, df_env) {
     })
   
   names(models) <- names(state_info)
-  
-  which_base <- which(names(models) == base_model)
-  models <- models[c(which_base, setdiff(seq_len(models), which_base))]
-  
+
   models
 }
 
@@ -569,7 +576,7 @@ create_model_from_tabular <- function(state_file,
   
   states <- create_states_from_tabular(state_file,
                                        df_env = df_env)
-  TM <- create_matrix_from_tabular(tm_file, states$state_names,
+  TM <- create_matrix_from_tabular(tm_file, get_state_names(states),
                                    df_env = df_env)
   
   define_model_(transition_matrix = TM, states = states)
@@ -641,9 +648,8 @@ create_df_from_tabular <- function(df_dir, df_envir) {
 #'  \code{split_on.}
 #'  
 parse_multi_spec <- function(multi_spec,
-                             split_on = ".model",
-                             group_vars,
-                             df_dir) {
+                             split_on = "model",
+                             group_vars) {
   
   if(is.character(multi_spec)) multi_spec <- read_file(multi_spec)
   

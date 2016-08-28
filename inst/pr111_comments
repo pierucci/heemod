@@ -1,0 +1,41 @@
+More generally I am rather against "smart" functions that try to take various input types and try to make the best of it, e.g. create_states_from_tabular that can either take a data.frame or a file name as argument, or load_df_from_files that looks in the parent dir if it does not find the data in the original directory.
+
+If you want to share a directory of data between several models then why not specify an absolute path in the definition file?
+
+This kind of programming may allow for more flexibility, but it adds complexity to the functions, it becomes harder to know what to expect the arguements to be when you see a function call, and adds complexity to the input types.
+
+In load_df_from_files I don't think the function should look in the parent folder if the data folder does not exist. There should be only one correct file structure, otherwise an error should occur.
+
+Rather than attaching the environment containing the data frames (dangerous because of possible name collisions), one could use the env= argument from lazyeval.
+
+More generally, to generate heemod objects from text, it may be cleaner, safer and easier to use the as.lazy_dots function in combination with *_ heemod functions instead of creating the function call as text and then parsing it.
+
+Why only parameters can be specified as an R file, while matrix and states cannot?
+
+No need to use invisible for functions that wont be called from the command prompt.
+
+How do you specify multinomial resampling from a tabular file?
+
+Using file of full_file should be consistent.
+
+The survival module is unfinished and not error-proof enough, it should be added when the feature is more finalized.
+
+I take issue with f_look_up_values_df that tries.
+
+To work with testthat, tests must be located in the test/testthat directory.
+
+Why do most roxygen coments end with a trailing` and have 2 @return tags?
+
+Use Hadley's style guide regarding curly braces use in if else statements and spacing of operators.
+
+... should not be used to catch unwanted arguements, because if unwanted arguements are passed to a function that is a problem that needs to be corrected, not hidden.
+
+The demographic analysis doesnt have a constrain that weights add to 1, why add the constrain in the tabular input?
+
+Why create a class demographicTable if no methods are defined for this class?
+
+Just export functions that need to be used by the end user.
+
+Different functions need to perform different steps: data should be read and checked in gather_model_info and processed in execute_..., some for example the demographic table should not be read in the second function.
+
+printr package is not on CRAN
