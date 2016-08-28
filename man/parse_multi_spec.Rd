@@ -4,7 +4,7 @@
 \alias{parse_multi_spec}
 \title{Specify Inputs for Multiple Models From a Single File}
 \usage{
-parse_multi_spec(multi_spec, split_on = ".model", group_vars)
+parse_multi_spec(multi_spec, split_on = ".model", group_vars, df_dir)
 }
 \arguments{
 \item{multi_spec}{\code{data frame}, or, if of type 

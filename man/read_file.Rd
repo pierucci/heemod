@@ -13,6 +13,6 @@ read_file(file_name)
 A \code{data.frame}.
 }
 \description{
-Columns named '.comment' are ignored.
+Columns starting with '.comment' are ignored.
 }
 

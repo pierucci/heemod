@@ -23,7 +23,8 @@ Imports:  lazyeval,
           grDevices,
           graphics,
           stats,
-          printr
+          printr,
+          tibble
 License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr

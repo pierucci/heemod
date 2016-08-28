@@ -1,3 +1,248 @@
+#' Run Analyses From Files
+#' 
+#' This function runs a model from tabular input.
+#' 
+#' The reference file should have two columns, \code{data} 
+#' and \code{file}. (Additional columns are allowed, but 
+#' will be ignored.) \code{data} values must include
+#' \code{"state"}, \code{"tm"}, and \code{"parameters"}, and
+#' can also include \code{"options"}, \code{"demographics"} 
+#' and \code{"data"}.  The corresponding file values give
+#' the names of the files (located in \code{base_dir}) that
+#' contain the corresponding information - or, in the case
+#' of \code{"data"}, the directory containing the tables to
+#' be loaded.
+#' 
+#' @param base_dir Directory where the files are located.
+#' @param ref_file Name of the reference file.
+#' @param save_outputs Should the outputs be saved? Only
+#'   works if the reference file specifies an output 
+#'   directory.
+#' @param overwrite Should the outputs be overwritten? Not
+#'   relevant if \code{save_outputs} = FALSE.
+#'   
+#' @return A list of evaluated models (always), and, if
+#'   appropriate input is provided, dsa (deterministic
+#'   sensitivity analysis), psa (probabilistic sensitivity
+#'   analysis) and demographics (results across different
+#'   demographic groups).
+#'   
+#' @export
+run_models_from_tabular <- function(base_dir, ref_file = "REFERENCE.csv",  
+                                    save_outputs = TRUE,
+                                    overwrite = FALSE) {
+  
+  inputs <- gather_model_info(base_dir, ref_file, base_model)
+  
+  outputs <- eval_models_from_tabular(inputs)
+  
+  output_dir <- inputs$output_dir
+  
+  if(save_outputs & is.null(output_dir)) {
+    warning("Output directory not defined in the specification file - the outputs will not be saved.")
+  }
+  
+  if(save_outputs & ! is.null(output_dir)) {
+    if(dir.exists(file.path(base_dir, output_dir)) & ! overwrite) {
+      warning("Output directory exists and overwrite is FALSE - the outputs will not be saved.")
+    } else {
+      save_outputs(outputs, base_dir = base_dir, 
+                   output_dir = output_dir,
+                   overwrite = overwrite, create_dir = TRUE)
+    }
+  } 
+  invisible(outputs)
+}
+
+#' Gather Information for Running a Model From Tabular Data
+#' 
+#' @param base_dir Directory where the files are located.
+#' @param ref_file Name of the reference file.
+#' 
+#' @return A list with elements: \itemize{ \item models (of 
+#'   type \code{uneval_model}, created by 
+#'   \code{\link{import_models_from_files}}) \item 
+#'   param_info  \item output_dir where to store output
+#'   files, if specified \item demographic_file a table for
+#'   demographic analysis.}
+gather_model_info <- function(base_dir, ref_file) {
+  
+  ref <- read_file(file.path(base_dir, ref_file))
+  ref$full_file <- ifelse(
+    ! is.null(ref$absolute_path) &
+      isTRUE(as.logical(ref$absolute_path)),
+    ref$file,
+    file.path(base_dir, ref$file)
+  )
+  df_env <- new.env()
+  
+  models <- create_model_list_from_tabular(
+    base_dir = base_dir,
+    ref = ref,
+    base_model = base_model,
+    df_env = df_env
+  )
+  
+  model_options <- NULL
+  if ("options" %in% ref$data) {
+    model_options <- create_options_from_tabular(
+      read_files(ref$full_file[ref$data == "options"])
+    )
+  }
+  
+  if ("data" %in% ref$data) {
+    create_df_from_tabular(
+      ref$full_file[ref$data == "data"],
+      df_env
+    )
+  }
+  
+  param_info <- create_parameters_from_tabular(
+    read_file(ref$full_file[ref$data == "parameters"]),
+    df_env
+  )
+  
+  output_dir <- NULL
+  if("output" %in% ref$data) {
+    output_dir <- ref$full_file[ref$data == "output"]
+  }
+  
+  demographic_file <- NULL
+  if("demographics" %in% ref$data) {
+    demographic_file <- create_demographic_table(
+      read_file(ref$full_file[ref$data == "demographics"]),
+      params = param_info$params
+    )
+  }
+  
+  list(
+    models = models,
+    param_info = param_info,
+    output_dir = output_dir,
+    demographic_file = demographic_file,
+    model_options = model_options
+  )
+}
+
+#' Evaluate Models From a Tabular Source
+#' 
+#' Execute a full set of analyses, possibly including
+#' discrete sensitivity analysis, probabilistic sensitivity
+#' analysis, and analyses across demographics.
+#' 
+#' @param inputs Result from
+#'   \code{\link{gather_model_info}}.
+#' @param run_psa Run PSA?
+#' @param run_demo Run demographic analysis?
+#'   
+#' @return a list \itemize{ \item \code{models} (always)
+#'   unevaluated model. \item \code{model_runs} (always)
+#'   evaluated models \item \code{dsa} (deterministic
+#'   sensitivity analysis) - if appropriate parameters
+#'   provided \item \code{psa} (probabilistic sensitivity
+#'   analysis) - if appropriate parameters provided \item
+#'   \code{demographics} results across different
+#'   demographic groups - if appropriate parameters 
+#'   provided}
+eval_models_from_tabular <- function(inputs,
+                                     run_psa = TRUE,
+                                     run_demo = TRUE) {
+  list_args <- c(
+    inputs$models,
+    list(
+      parameters = inputs$param_info$params,
+      init = inputs$options$init,
+      cost = inputs$options$cost,
+      effect = inputs$options$cost,
+      base_model = inputs$options$base_model,
+      method = inputs$options$base_model,
+      cycles = inputs$options$cycles
+    )
+  )
+  
+  list_args <- Filter(
+    function(x) ! is.null(x),
+    list_args
+  )
+  
+  model_runs <- do.call(
+    run_models,
+    list_args
+  )
+  
+  model_dsa <- NULL
+  if (! is.null(inputs$param_info$dsa)) {
+    model_dsa <- run_sensitivity(
+      model_runs,
+      inputs$param_info$dsa_params
+    )
+  }
+  
+  model_psa <- NULL
+  if (! is.null(inputs$param_info$psa_params) & run_psa) {
+    model_psa <- run_probabilistic(
+      model_runs,
+      resample = inputs$param_info$psa_params,
+      N = inputs$options$n
+    )
+  }
+  
+  demo_res <- NULL
+  if (! is.null(inputs$demographic_file) & run_demo) {
+    demo_res <- update(model_runs, inputs$demographic_file)
+  }
+  
+  
+  
+  list(
+    models = inputs$models,
+    model_runs = model_runs,
+    dsa = model_dsa,
+    psa = model_psa,
+    demographics = demo_res
+  )
+}
+
+#' Read Models Specified by Files
+#' 
+#' @param ref Imported reference file.
+#' @param base_model Which of the models should be the base 
+#'   model.
+#'   
+#' @return A list of unevaluated models.
+create_model_list_from_tabular <- function(ref, base_model, df_env) {
+  
+  state_info <- parse_multi_spec(
+    ref$full_file[ref$data == "state"],
+    group_vars = "state"
+  )
+  
+  tm_info <- parse_multi_spec(
+    ref$full_file[ref$data == "tm"],
+    group_vars = c("from", "to")
+  )
+  
+  if(any(sort(names(state_info)) != sort(names(tm_info)))) {
+    stop("Mismatch between state names and transition matrix names.")
+  }
+  
+  tm_info <- tm_info[names(state_info)]
+  
+  models <- lapply(
+    seq_along(state_info),
+    function(i) {
+      create_model_from_tabular(state_info[[i]], tm_info[[i]],
+                                df_env = df_env)
+    })
+  
+  names(models) <- names(state_info)
+  
+  which_base <- which(names(models) == base_model)
+  models <- models[c(which_base, setdiff(seq_len(models), which_base))]
+  
+  models
+}
+
 #' Create State Definitions From Tabular Input
 #' 
 #' Transforms tabular input defining states into an
@@ -97,7 +342,6 @@ create_states_from_tabular <- function(state_info,
     ), state_info$state)
   )
 }
-
 
 #' Create a Transition Matrix From Tabular Input
 #' 
@@ -200,95 +444,113 @@ create_parameters_from_tabular <- function(param_defs,
     )
   )
   
-  output2 <- output3 <- NULL
+  dsa <- psa <- NULL
+  
   if ("low" %in% names(param_defs) &
       "high" %in% names(param_defs)) {
     
     if (! all(is.na(param_defs$low) ==
               is.na(param_defs$high))) {
-      stop("'low' and 'high' must be both present in DSA tabular definition.")
+      stop("'low' and 'high' must be both non missing in DSA tabular definition.")
     }
-      
-      param_sens
+    
+    if (all(is.na(param_defs$low))) {
+      stop("Non non-missing values in columns 'low' and 'high'.")
+    }
+    
+    param_sens <- param_defs$parameter[! is.na(param_defs$low)]
+    low <- as_numeric_safe(na.omit(param_defs$low))
+    high <- as_numeric_safe(na.omit(param_defs$high))
+    
     dsa <- define_sensitivity_(
-      lazyeval::as.lazy_dots(
-        lapply()
+      setNames(lazyeval::as.lazy_dots(
+        lapply(
+          seq_along(param_sens),
+          function(i) c(low[i], high[i])
+        )),
+        param_sens
       )
     )
-    ## now we'll do something similar for the deterministic
-    ##   sensitivity analysis (dsa)
-    output2 <- ""
-    output_file_name_dsa_R <-
-      paste(output_file_name_base, ".dsa.R", sep = "")
-    ## columns where low and high are not populated
-    ##   will have come in as NA
-    param_defs_dsa <-
-      subset(param_defs, !is.na(low) & !is.na(high))
-    
-    if (nrow(param_defs_dsa) > 0) {
-      piece <-
-        paste(
-          param_defs_dsa$parameter,
-          "= c(",
-          param_defs_dsa$low,
-          ",",
-          param_defs_dsa$high,
-          ")",
-          collapse = ", \n"
-        )
-      param_names_dsa <-
-        paste(param_obj_name, "_dsa", sep = "")
-      output2 <- paste(param_names_dsa,
-                       "<- define_sensitivity(", piece, ")")
-      if(!is.null(output_file_name_base))
-        cat(output2, file = output_file_name_dsa_R)
-    }
   }
   
-  ## and finally for probabilistic sensitivity analysis (dsa)
-  output3 <- ""
   if ("psa" %in% names(param_defs)) {
-    # Avoid NOTE related to "visible binding for global variable"
-    psa <- NULL
     
-    output_file_name_psa_R <-
-      paste(output_file_name_base, ".psa.R", sep = "")
-    ## columns where psa is not populated
-    ##   will have come in as NA or blank
-    param_defs_psa <- subset(param_defs, (!is.na(psa)) &
-                               (psa != ""))
-    if (nrow(param_defs_psa) > 0) {
-      piece <-
-        paste(
-          param_defs_psa$parameter,
-          " ~ ",
-          param_defs_psa$psa,
-          sep = "",
-          collapse = ", \n"
-        )
-      param_names_psa <-
-        paste(param_obj_name, "_psa", sep = "")
-      output3 <- paste(param_names_psa,
-                       "<- define_distrib(", piece, ")")
-      if(!is.null(output_file_name_base))
-        cat(output3, file = output_file_name_psa_R)
+    if (all(is.na(param_defs$psa))) {
+      stop("Non non-missing values in column 'psa'.")
     }
+    
+    param_psa <- param_defs$parameter[! is.na(param_defs$psa)]
+    distrib_psa <- na.omit(param_defs$psa)
+    
+    psa <- do.call(
+      define_distrib,
+      lapply(
+        seq_along(param_psa),
+        function(i) {
+          substitute(
+            rhs ~ lhs,
+            list(
+              rhs = as.name(param_psa[i]),
+              lhs = parse(text = distrib_psa[i])[[1]]))
+        }
+      )
+    )
+    
   }
+  
+  list(
+    params = parameters,
+    dsa_params = dsa,
+    psa_params = psa
+  )
 }
 
-if (is.character(output1))
-  output1 <- eval(parse(text = output1))
-if (is.character(output2))
-  output2 <- eval(parse(text = output2))
-if (is.character(output3))
-  output3 <- eval(parse(text = output3))
-invisible(list(
-  params = output1,
-  dsa_params = output2,
-  psa_params = output3
-))
-}
 
+#' Create Model Options From a Tabular Input
+#'
+#' @param opt An option data frame.
+#'
+#' @return A list of model options.
+create_options_from_tabular <- function(opt) {
+  allowed_opt <- c("cost", "effect", "init",
+                   "method", "base", "cycles", "n")
+  
+  if (any(ukn_opt <- ! opt$option %in% allowed_opt)) {
+    stop(sprintf(
+      "Unkmown options: %s.",
+      paste(opt$option[ukn_opt], collapse = ", ")
+    ))
+  }
+  
+  res <- list()
+  for (n in intersect(allowed_opt, opt$option)) {
+    res <- c(res, list(opt$value[opt$option == n]))
+  }
+  
+  if (! is.null(res$init)) {
+    res$init <- as_numeric_safe(
+      strsplit(res$init, ",")[[1]]
+    )
+  }
+  
+  if (! is.null(res$cycles)) {
+    res$cycles <- as_integer_safe(res$cycles)
+  }
+  
+  if (! is.null(res$n)) {
+    res$n <- as_integer_safe(res$n)
+  }
+  
+  if (! is.null(res$cost)) {
+    res$cost <- lazyeval::lazy(res$cost)
+  }
+  
+  if (! is.null(res$effect)) {
+    res$effect <- lazyeval::lazy(res$effect)
+  }
+  
+  res
+}
 
 #' Create a \code{heemod} Model From Tabular Files Info
 #' 
@@ -311,6 +573,41 @@ create_model_from_tabular <- function(state_file,
                                    df_env = df_env)
   
   define_model_(transition_matrix = TM, states = states)
+}
+
+#' Load Data From a Folder Into an Environment
+#' 
+#' Reads files containing data frames (in tabular format) 
+#' from a directory, and loads them in an environment to be 
+#' available during an analysis.
+#' 
+#' The files must be in .csv, .xls, or .xlsx format. A file 
+#' my_df.csv (or my_df.xls, or my_df.xlsx) will be loaded as
+#' a data frame my_df.
+#' 
+#' @param full_path A directory containing the files.
+#' @param df_envir An environment.
+#' 
+#' @return The environment with the data frames.
+create_df_from_tabular <- function(df_dir, df_envir) {
+  if(! file.exists(df_dir))
+    stop(paste(df_dir, "does not exist."))
+  
+  all_files <- list.files(df_dir, full.names = TRUE)
+  obj_names <- all_files %>% 
+    basename %>% 
+    tools::file_path_sans_ext()
+  
+  if(any(duplicate_names <- duplicated(obj_names)))
+    stop(paste("Duplicate data names:",
+               paste(obj_names[duplicate_names], collapse = ", ")))
+  
+  ## do the assignments
+  for(i in seq(along = all_files)){
+    this_val <- read_file(all_files[i])
+    assign(obj_names[i], this_val, envir = df_envir)
+  }
+  df_envir
 }
 
 #'Specify Inputs for Multiple Models From a Single File
@@ -431,65 +728,40 @@ parse_multi_spec <- function(multi_spec,
   })
 }
 
-#'
-#' Read in demographic table.
-#'
-#' @param demographicTable A demographic table, which contains one column for each
-#'   stratifying variable in the model (for example, age and sex).
-#' @param weight_col_name  The name of the column that contains the weight of each
-#'   demographic group defined by the stratifying variables.
-#' @param params Parameters of a model, to check that all the columns in the demographic
-#'   table (other than the weight column) are in the model.
+#' Read a Demographic Table
+#' 
+#' This function mostly checks whether the parameters are
+#' correct.
+#' 
+#' An optional \code{.weights} column can exist in the file.
+#' 
+#' @param newdata A data frame.
+#' @param params Parameters of a model, to check that all
+#'   the columns in the demographic table (other than the
+#'   weight column) are in the model.
 #' @param ... catches other, unwanted arguments.
-#'
-#' @return  A data frame with the information from the file.
-#' @export
-#' @details The demographic table should be a data frame with n+1 columns, where there are
-#'   n variables we use to stratify the population.    The first n columns
-#'   correspond to the stratification variables (for example sex and age),
-#'   and the column names must correspond to the variables used in calculating
-#'   probabilities in the parameters object.
-#'   The n+1-st column gives the proportion of the population in each group.
-#'   The values in the n+1-st column should add to 1; if they do not, they will
-#'   be renormalized, with a warning.
-
-f_read_demographic_table <- function(demographicTable,
-                                     weight_col_name = "weight",
-                                     params, ...){
-  ## if demographicTable is a string, it is a file name.  Read the file.
-  if(is.character(demographicTable))
-    demographicTable <- f_read_file(demographicTable)
-  
-  ## should have one and only one column giving weights
-  weight_col <- which(names(demographicTable) == weight_col_name)
-  if(length(weight_col) < 1)
-    stop(paste("column", weight_col_name, "not found"))
-  ## make sure all variables in the demographicTable 
-  ##   are part of the model
-  var_names <- names(demographicTable)[-weight_col]
+#'   
+#' @return  A data frame.
+create_demographic_table <- function(newdata,
+                                     params) {
+  weight_col <- which(names(newdata) == ".weights")
+  var_names <- names(newdata)[- weight_col]
   valid_names <- var_names %in% names(params)
-  if(!all(valid_names)){
-    invalid_names <- paste(var_names[!valid_names], collapse = "; ")
-    stop(paste("the following names in demographicTable are not parameters of the model:"),
-         invalid_names, sep = "\n\t\t")
+  
+  if(! all(valid_names)) {
+    invalid_names <- paste(var_names[!valid_names], collapse = ", ")
+    stop(sprintf(
+      "The following columns in the demographic table are not parameters of the model: %s.",
+      invalid_names
+    ))
   }
   
-  ## warn if weights don't add to 1
-  
-  sum_weights <- sum(demographicTable[, weight_col])
-  if(sum_weights != 1.0){
-    warning(paste("weights in demographicTable add up to", sum_weights,
-                  "which is different from 1.0; renormalizing"))
-    demographicTable[, weight_col] <- demographicTable[, weight_col]/sum_weights
-  }
-  names(demographicTable)[names(demographicTable) == weight_col_name] <- ".weights"
-  class(demographicTable) <- c("demographicTable", class(demographicTable))
-  demographicTable
+  newdata
 }
 
 #' Read the accepted file formats for tabular input
 #'
-#' Columns named '.comment' are ignored.
+#' Columns starting with '.comment' are ignored.
 #' 
 #' @param file_name File name.
 #' 
@@ -545,23 +817,23 @@ filter_blanks <- function(x) {
   x[! apply(is.na(x), 1, all), , drop = FALSE]
 }
 
-#' File checkers
+#' Check File Type
 #' 
 #' @param x A file name.
 #' @return Whether the file is (respectively)
 #'  csv, xlsx, or xls.
-#' @rdname file_checkers
+#' @rdname file-checkers
 #'
 is_csv <- function(x) {
   tolower(tools::file_ext(x)) == "csv"
 }
 
-#' @rdname file_checkers
+#' @rdname file-checkers
 is_xlsx <- function(x) {
   tolower(tools::file_ext(x)) == "xlsx"
 }
 
-#' @rdname file_checkers
+#' @rdname file-checkers
 is_xls <- function(x) {
   tolower(tools::file_ext(x)) == "xls"
 }

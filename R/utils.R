@@ -163,3 +163,37 @@ wtd_summary <- function(x, weights = NULL) {
   
   setNames(res, c("Min.", "1st Qu.", "Median", "Mean", "3rd Qu.", "Max."))
 }
+
+#' Safely Convert From Characters to Numbers
+#' 
+#' These function return an error if a conversion fails.
+#' 
+#' @name safe-conversion
+#' @param x A character vector.
+#' @param f A conversion function.
+#'   
+#' @return A \code{numeric} of \code{integer} vector.
+safe_convert <- function(x, f) {
+  na1 <- is.na(x)
+  res <- f(x)
+  na2 <- is.na(res)
+  
+  if (any(pb <- na1 != na2)) {
+    stop(sprintf(
+      "Failed to convert values: %s.",
+      paste(x[pb], collapse = ", ")
+    ))
+  }
+  
+  res
+}
+
+#' @rdname safe-conversion
+as_numeric_safe <- function(x) {
+  safe_convert(x, as.numeric)
+}
+
+#' @rdname safe-conversion
+as_integer_safe <- function(x) {
+  safe_convert(x, as.integer)
+}

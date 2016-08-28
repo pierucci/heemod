@@ -2,9 +2,9 @@
 % Please edit documentation in R/tabular_input.R
 \name{create_states_from_tabular}
 \alias{create_states_from_tabular}
-\title{Create State Definitions From Tabular Input.}
+\title{Create State Definitions From Tabular Input}
 \usage{
-create_states_from_tabular(state_info)
+create_states_from_tabular(state_info, df_env)
 }
 \arguments{
 \item{state_info}{Result for one model of 

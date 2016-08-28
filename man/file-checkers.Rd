@@ -4,7 +4,7 @@
 \alias{is_csv}
 \alias{is_xls}
 \alias{is_xlsx}
-\title{File checkers}
+\title{Check File Type}
 \usage{
 is_csv(x)
 
@@ -20,6 +20,6 @@ Whether the file is (respectively)
  csv, xlsx, or xls.
 }
 \description{
-File checkers
+Check File Type
 }
 

@@ -2,9 +2,9 @@
 % Please edit documentation in R/tabular_input.R
 \name{create_matrix_from_tabular}
 \alias{create_matrix_from_tabular}
-\title{Create a Transition Matrix From Tabular Input.}
+\title{Create a Transition Matrix From Tabular Input}
 \usage{
-create_matrix_from_tabular(trans_probs, state_names)
+create_matrix_from_tabular(trans_probs, state_names, df_env)
 }
 \arguments{
 \item{trans_probs}{Result for one model of 

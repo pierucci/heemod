@@ -22,6 +22,7 @@
 #' @importFrom dplyr "%>%"
 #' @importFrom dplyr desc
 #' @importFrom dplyr ungroup
+#' @importFrom dplyr mutate_if
 #'   
 #' @importFrom lazyeval lazy
 #' @importFrom lazyeval lazy_dots
@@ -87,4 +88,6 @@
 #' @importFrom tools file_ext
 #'   
 #' @importFrom stats as.formula
+#'   
+#' @importFrom tibble tibble
 NULL
