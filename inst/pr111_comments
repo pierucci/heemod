@@ -1,3 +1,12 @@
+Function names starting by f_ are maybe not needed.
+Use cat() instead of print() to display messages (best practice should be to use message(), warning() or stop() so that the user can better control and monitor outputs, but I understand that sometimes you need to print() a data.frame in between).
+Rely more on functions like file_ext().
+@importFrom need to be stated in heemod.R (previously called imports.R, renamed to follow classical R packages conventions).
+Comments column should start by .comment to allow for values starting with comment (I prefer to keep the number of reserved names to a minimum, so far the is already 3 rules: no names starting with a ., no C, and no markov_cycle).
+I corrected some differences between the documentation and what the functions actually did (like f_transition_prob_matrix_from_tabular that actually takes input for only one model).
+
+The vignette should be in the vignette directory, not at the pakage root.
+
 More generally I am rather against "smart" functions that try to take various input types and try to make the best of it, e.g. create_states_from_tabular that can either take a data.frame or a file name as argument, or load_df_from_files that looks in the parent dir if it does not find the data in the original directory.
 
 If you want to share a directory of data between several models then why not specify an absolute path in the definition file?
@@ -40,4 +49,6 @@ Different functions need to perform different steps: data should be read and che
 
 I did not find the definition of function save_output(). So I did not include the feature.
 
-printr package is not on CRAN
+printr package is not on CRAN so it should not be included.
+
+The vignette should only explain how to use tabular input for an ned user, not the internal mechanisms of the function (too specialized), nor what is a discounting rate (too broad).

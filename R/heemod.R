@@ -68,26 +68,11 @@
 #'   
 #' @importFrom memoise memoise
 #'   
-#' @importFrom DT dataTableOutput
-#' @importFrom DT renderDataTable
-#' @importFrom DT datatable
-#'   
 #' @importFrom rgho get_gho_data
 #'   
-#' @importFrom grDevices dev.new
-#' @importFrom grDevices dev.off
-#' @importFrom grDevices pdf
-#' @importFrom grDevices png
-#'   
-#' @importFrom graphics plot
-#'   
 #' @importFrom utils read.csv
-#' @importFrom utils write.csv
-#' @importFrom utils tail
 #'   
 #' @importFrom tools file_ext
-#'   
-#' @importFrom stats as.formula
 #'   
 #' @importFrom tibble tibble
 NULL

@@ -1,0 +1,133 @@
+---
+title: "Run models from tabular input"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Run models from tabular input}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r, echo=FALSE, include=FALSE}
+library(heemod)
+library(magrittr)
+format_na <- function(x, char = " ") {
+  x[is.na(x)] <- char
+  x
+}
+```
+
+Most of the vignettes in `heemod` define models by `R` code. Models with large numbers of states and transition probabilities might be unwieldy to input at the keyboard, and could be conveniently specified by inputs in files.
+
+This vignette demonstrates how to make and use files to input models to heemod. The files can then be used to run a suite of analyses (including deterministic and probabilistic sensitivity analyses, acceptability curve calculation, etc.) and optionally save results to a folder.
+
+# Introduction
+
+The inputs for state definition, transition matrices, model options, etc. (referenced as *tabular inputs*) must be provided via `csv`, `xls` or `xlsx` files.^[French `csv` (with `;` separator) is not supported.] Columns starting by `.comment` are ignored, as well as blank rows.
+
+These inputs must be provided in separate files. The path to these files is specified in a *reference file*, that acts as an 'umbrella' file atop of the other inputs.
+
+*Warning for users of the `xls` format:*  
+The `xls` (and `xlsx`) files are read with the `readxl` package. As of version 0.1.1 if a file contains strings and numeric values in one column the numeric values are rounded to 6 decimal places. We therefore recommend to use solely the `csv` or `xlsx` format.
+
+```{r}
+# res <- run_models_from_tabular(
+#   "../inst/tabular/thr/",
+#   "THR_specification.csv"
+# )
+```
+
+# Reference file
+
+This file contains two mandatory columns `data` and `file`, as well as optional columns with comments, which will be ignored. The `data` column must contain the following keywords:  
+
+  1. `state`: file containing model states. 
+  2. `tm`: file containing transition probabilities.
+  3. `parameters`: file containing model parameters.
+
+Optionally, the following rows can be provided:  
+
+  4. `options`: file specifying model options.
+  5. `demographics`: file describing of the population to run the models on.
+  6. `data`: a *directory* containing additional tables to be loaded; these can be `.csv`, `.xls` or `.xlsx`.
+  7. `output`: a *directory* to save the output graphics.  
+
+```{r echo = FALSE}
+heemod:::read_file("../inst/tabular/thr/THR_specification.csv") %>% 
+  format_na %>% 
+  knitr::kable()
+```
+
+All the files and directories must be in the reference file directory. Files or directories located elsewhere must be given by absolute path and marked by a `TRUE` value in an optional `absolute_path` column.
+
+# States file
+
+A state file contains 2 mandatory columns: `.model` and `.state`, corresponding to model and state names respectively. The other columns correspond to the state values.
+
+Discounting rates can be specified in `.discount.*` columns, where `*` stands for the name of the value to discount. Values are always discounted at the same rate in all states.^[A single discount rate can be duplicated across states, or specified in one state and left blank elsewhere. Specifying two different discount rates for a single variable in different states will cause an error.]
+
+```{r echo = FALSE}
+heemod:::read_file("../inst/tabular/thr/THR_states.csv") %>% 
+  format_na %>% 
+  knitr::kable()
+```
+
+State values that do not change between models need only be specified once (such as all states except `PrimaryTHR` in the `new` model) and will automatically be repeated between models.
+
+# Transition probabilities
+
+A transition probabilities file contains 4 columns:
+
+  * `.model`: model name.
+  * `from`: initial state.
+  * `to`: end state.
+  * `prob`: transition probability from initial state to end state.
+
+```{r echo = FALSE}
+heemod:::read_file("../inst/tabular/thr/THR_transition_probs.csv") %>% 
+  format_na %>% 
+  knitr::kable()
+```
+
+A probability can be defined by any expression: a number, `C`, a different parameter name (specified in the parameter file), or a function call.
+
+As with the state file above probabilities specified for only one model will be carried over to others. Only probabilities that differ from one model to another must be specified separately for each model. Unspecified transition probabilities are assumed to be 0.
+
+# Parameters
+
+A parameter file contains 2 mandatory columns: the parameter names `parameter` and the values `value`.
+
+Optional columns can be added to perform determinist or probabilist sensitivity analysis (DSA and PSA). `low` and `high` columns specify the lower and upper bounds of parameter values for DSA, while `psa` contains the parameter distribution for PSA.
+
+```{r echo = FALSE}
+heemod:::read_file("../inst/tabular/thr/THR_parameters.csv") %>% 
+  format_na %>% 
+  knitr::kable()
+```
+
+A parameter can be specified as any expression: as a number, through a previously defined parameter, with a mathematical formula or a function call.
+ 
+The `look_up()` function can be used to look up parameter values in external reference tables (see section **User-defined data**), if a `data` argument is given in the reference file (as for the `mr` parameter in the above example).
+
+# User-defined data
+
+Sometimes external data is required for an analysis (e.g. age-specific mortality rates). A `data` row in the reference file specifies a subdirectory containing data frames to be loaded (saved as `csv`, `xls`, or `xlsx` files). Multiple files can be placed here, and each filename (without the extension) is used as the dataframe name.^[Having multiple files with the same base name but different extensions in the directory will cause an error.]
+
+# Model options
+
+Models specified by tabular input will run with defaults options. The following options can be specified in a non-mandatory `options` file:
+
+  * `cost`, `effect`: values to be used as cost and effect.
+  * `init` comma separated starting values.
+  * `method`: counting method.
+  * `base`: name of base model.
+  * `cycles`: run the model for how many cycles?
+  * `n`: number of resample for PSA.
+
+```{r echo = FALSE}
+heemod:::read_file("../inst/tabular/thr/THR_options.csv") %>% 
+  format_na %>% 
+  knitr::kable(row.names = FALSE)
+```

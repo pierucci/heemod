@@ -15,15 +15,10 @@ Imports:  lazyeval,
           logitnorm,
           ggplot2,
           tidyr,
-          DT,
           memoise,
           rgho,
           pryr,
           utils,
-          grDevices,
-          graphics,
-          stats,
-          printr,
           tibble
 License: GPL (>= 3)
 LazyData: true
@@ -32,8 +27,6 @@ RoxygenNote: 5.0.1
 Suggests: testthat,
           knitr,
           rmarkdown,
-          formatR,
-          readxl,
-          flexsurv
+          readxl
 URL: https://github.com/pierucci/heemod, https://pierucci.github.io
 BugReports: https://github.com/pierucci/heemod/issues
