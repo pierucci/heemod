@@ -38,4 +38,6 @@ Just export functions that need to be used by the end user.
 
 Different functions need to perform different steps: data should be read and checked in gather_model_info and processed in execute_..., some for example the demographic table should not be read in the second function.
 
+I did not find the definition of function save_output(). So I did not include the feature.
+
 printr package is not on CRAN
