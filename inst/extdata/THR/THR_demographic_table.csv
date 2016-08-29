@@ -1,4 +1,4 @@
-age_init,sex,weight
+age_init,sex,.weights
 60,1,0.014443906
 61,1,0.019486162
 62,1,0.022763342

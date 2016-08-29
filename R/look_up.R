@@ -25,8 +25,6 @@
 #' 
 #' @example inst/examples/example_look_up.R
 look_up <- function(data, value, ..., bin = FALSE) {
-  data <- data %>% 
-    mutate_if(is.factor, "as.character")
   
   list_specs <- list(...)
   
@@ -37,7 +35,8 @@ look_up <- function(data, value, ..., bin = FALSE) {
   df_vars <- do.call(
     tibble::tibble,
     list_specs
-  )
+  ) %>%
+    clean_factors
   
   if (any(pb <- ! names(df_vars) %in% names(data))) {
     stop(sprintf(

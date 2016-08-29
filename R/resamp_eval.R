@@ -13,7 +13,8 @@
 run_probabilistic <- function(model, resample, N) {
   
   stopifnot(
-    N > 0
+    N > 0,
+    ! is.null(N)
   )
   
   if (! all(c(".cost", ".effect") %in% names(model))) {
@@ -86,6 +87,7 @@ eval_correlation <- function(x, var_names) {
 #' 
 #' 
 eval_resample <- function(resample, N) {
+  
   mat_p <- stats::pnorm(
     mvnfast::rmvn(
       n = N,

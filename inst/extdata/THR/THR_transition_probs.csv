@@ -1,4 +1,4 @@
-model,from,to,prob
+.model,from,to,prob
 standard,PrimaryTHR,SuccessfulPrimary,C
 standard,PrimaryTHR,Death,0.02
 standard,SuccessfulPrimary,SuccessfulPrimary,C

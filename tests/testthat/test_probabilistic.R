@@ -70,6 +70,10 @@ test_that(
     ndt1 <- run_probabilistic(res2, resample = rsp1, N = 10)
     ndt2 <- run_probabilistic(res2, resample = rsp1, N = 1)
     
+    expect_error(
+      run_probabilistic(res2, resample = rsp1, N = NULL)
+    )
+    
     plot(ndt1, type = "ce")
     plot(ndt1, type = "ac")
     

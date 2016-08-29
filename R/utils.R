@@ -197,3 +197,19 @@ as_numeric_safe <- function(x) {
 as_integer_safe <- function(x) {
   safe_convert(x, as.integer)
 }
+
+#' Convert Data Frame Factor Variables to Character
+#'
+#' @param x A data frame.
+#'
+#' @return A data frame.
+clean_factors <- function(x) {
+  if (any(unlist(lapply(x, is.factor)))){
+    for (i in seq_along(x)) {
+      if (is.factor(x[[i]])) {
+        x[[i]] <- as.character(x[[i]])
+      }
+    }
+  }
+  x
+}

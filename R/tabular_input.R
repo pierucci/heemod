@@ -85,7 +85,7 @@ gather_model_info <- function(base_dir, ref_file) {
       file.path(base_dir, ref$file)
     )
   }
-
+  
   df_env <- new.env()
   
   models <- create_model_list_from_tabular(
@@ -96,7 +96,7 @@ gather_model_info <- function(base_dir, ref_file) {
   model_options <- NULL
   if ("options" %in% ref$data) {
     model_options <- create_options_from_tabular(
-      read_files(ref$full_file[ref$data == "options"])
+      read_file(ref$full_file[ref$data == "options"])
     )
   }
   
@@ -161,12 +161,12 @@ eval_models_from_tabular <- function(inputs,
     inputs$models,
     list(
       parameters = inputs$param_info$params,
-      init = inputs$options$init,
-      cost = inputs$options$cost,
-      effect = inputs$options$cost,
-      base_model = inputs$options$base_model,
-      method = inputs$options$base_model,
-      cycles = inputs$options$cycles
+      init = inputs$model_options$init,
+      cost = inputs$model_options$cost,
+      effect = inputs$model_options$effect,
+      base_model = inputs$model_options$base_model,
+      method = inputs$model_options$base_model,
+      cycles = inputs$model_options$cycles
     )
   )
   
@@ -193,7 +193,7 @@ eval_models_from_tabular <- function(inputs,
     model_psa <- run_probabilistic(
       model_runs,
       resample = inputs$param_info$psa_params,
-      N = inputs$options$n
+      N = inputs$model_options$n
     )
   }
   
@@ -201,8 +201,6 @@ eval_models_from_tabular <- function(inputs,
   if (! is.null(inputs$demographic_file) & run_demo) {
     demo_res <- update(model_runs, inputs$demographic_file)
   }
-  
-  
   
   list(
     models = inputs$models,
@@ -221,17 +219,17 @@ eval_models_from_tabular <- function(inputs,
 #'   
 #' @return A list of unevaluated models.
 create_model_list_from_tabular <- function(ref, df_env) {
-
+  
   state_info <- parse_multi_spec(
     ref$full_file[ref$data == "state"],
-    group_vars = "state"
+    group_vars = ".state"
   )
   
   tm_info <- parse_multi_spec(
     ref$full_file[ref$data == "tm"],
     group_vars = c("from", "to")
   )
-  browser()
+  
   if(any(sort(names(state_info)) != sort(names(tm_info)))) {
     stop("Mismatch between state names and transition matrix names.")
   }
@@ -246,7 +244,7 @@ create_model_list_from_tabular <- function(ref, df_env) {
     })
   
   names(models) <- names(state_info)
-
+  
   models
 }
 
@@ -284,8 +282,8 @@ create_states_from_tabular <- function(state_info,
   if(length(state_info) == 0 | !inherits(state_info, "data.frame"))
     stop("state_info must be a non-empty data frame (or the name of a file containing the frame).")
   
-  if(!("state" %in% names(state_info)))
-    stop("'state' should be a column name.")
+  if(!(".state" %in% names(state_info)))
+    stop("'.state' should be a column name.")
   
   if (any(duplicated(state_info$state))) {
     stop(sprintf(
@@ -295,8 +293,8 @@ create_states_from_tabular <- function(state_info,
     ))
   }
   
-  state_names <- state_info$state
-  values <- setdiff(names(state_info), c(".model", "state"))
+  state_names <- state_info$.state
+  values <- setdiff(names(state_info), c(".model", ".state"))
   discounts <- values[grep("^\\.discount", values)]
   values <- setdiff(values, discounts)
   discounts_clean <- gsub("^\\.discount\\.(.+)", "\\1", discounts)
@@ -332,21 +330,21 @@ create_states_from_tabular <- function(state_info,
   
   define_state_list_(
     setNames(lapply(
-      state_info$state,
+      state_info$.state,
       function(state) {
         define_state_(
           lazyeval::as.lazy_dots(
             setNames(lapply(
               values,
               function(value) {
-                state_info[[value]][state_info$state == state]
+                state_info[[value]][state_info$.state == state]
               }
             ), values),
             env = df_env
           )
         )
       }
-    ), state_info$state)
+    ), state_info$.state)
   )
 }
 
@@ -470,11 +468,11 @@ create_parameters_from_tabular <- function(param_defs,
     high <- as_numeric_safe(na.omit(param_defs$high))
     
     dsa <- define_sensitivity_(
-      setNames(lazyeval::as.lazy_dots(
+      setNames(
         lapply(
           seq_along(param_sens),
           function(i) c(low[i], high[i])
-        )),
+        ),
         param_sens
       )
     )
@@ -530,9 +528,10 @@ create_options_from_tabular <- function(opt) {
   }
   
   res <- list()
-  for (n in intersect(allowed_opt, opt$option)) {
+  for (n in opt$option) {
     res <- c(res, list(opt$value[opt$option == n]))
   }
+  names(res) <- opt$option
   
   if (! is.null(res$init)) {
     res$init <- as_numeric_safe(
@@ -549,11 +548,11 @@ create_options_from_tabular <- function(opt) {
   }
   
   if (! is.null(res$cost)) {
-    res$cost <- lazyeval::lazy(res$cost)
+    res$cost <- parse(text = res$cost)[[1]]
   }
   
   if (! is.null(res$effect)) {
-    res$effect <- lazyeval::lazy(res$effect)
+    res$effect <- parse(text = res$effect)[[1]]
   }
   
   res
@@ -648,7 +647,7 @@ create_df_from_tabular <- function(df_dir, df_envir) {
 #'  \code{split_on.}
 #'  
 parse_multi_spec <- function(multi_spec,
-                             split_on = "model",
+                             split_on = ".model",
                              group_vars) {
   
   if(is.character(multi_spec)) multi_spec <- read_file(multi_spec)
@@ -783,22 +782,23 @@ read_file <- function(file_name) {
     stop("file names must be for csv, xls, or xlsx")
   }
   
-  if(have_csv)
+  if(have_csv) {
     tab <- utils::read.csv(
       file_name, header = TRUE,
       stringsAsFactors = FALSE,
-      strip.white = TRUE
+      strip.white = TRUE,
+      na.strings = c(".", "NA", "")
+    ) 
+  } else if(have_xls | have_xlsx) {
+    if (! requireNamespace("readxl", quietly = TRUE)) {
+      stop("readxl packaged needed to read Excel files")
       
-    ) else if(have_xls | have_xlsx) {
-      if (! requireNamespace("readxl", quietly = TRUE)) {
-        stop("readxl packaged needed to read Excel files")
-        
-      } else {
-        tab <- as.data.frame(
-          readxl::read_excel(file_name)
-        )
-      }
+    } else {
+      tab <- as.data.frame(
+        readxl::read_excel(file_name)
+      )
     }
+  }
   
   ## get rid of "comment" columns, if any
   tab <- tab[! grepl("^\\.comment", names(tab))]
