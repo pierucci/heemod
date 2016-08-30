@@ -4,13 +4,10 @@
 \alias{look_up}
 \title{Look Up Values in a Data Frame}
 \usage{
-look_up(data, value, ..., bin = FALSE)
+look_up(data, ..., bin = FALSE, value = "value")
 }
 \arguments{
 \item{data}{A reference data frame.}
-
-\item{value}{The value to extract ffrom the reference 
-data frame.}
 
 \item{...}{Individual characteristics, should be named 
 like the columns of \code{data}.}
@@ -18,6 +15,9 @@ like the columns of \code{data}.}
 \item{bin}{Either logical: should all numeric variable be
 binned, or character vector giving the names of
 variables to bin (see examples).}
+
+\item{value}{The value to extract ffrom the reference 
+data frame.}
 }
 \value{
 A vector of values, same lenght as \code{...}.

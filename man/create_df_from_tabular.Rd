@@ -7,9 +7,9 @@
 create_df_from_tabular(df_dir, df_envir)
 }
 \arguments{
-\item{df_envir}{An environment.}
+\item{df_dir}{A directory containing the files.}
 
-\item{full_path}{A directory containing the files.}
+\item{df_envir}{An environment.}
 }
 \value{
 The environment with the data frames.

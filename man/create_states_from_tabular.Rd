@@ -4,11 +4,13 @@
 \alias{create_states_from_tabular}
 \title{Create State Definitions From Tabular Input}
 \usage{
-create_states_from_tabular(state_info, df_env)
+create_states_from_tabular(state_info, df_env = globalenv())
 }
 \arguments{
 \item{state_info}{Result for one model of 
 \code{\link{parse_multi_spec}}.}
+
+\item{df_env}{An environment containing external data.}
 }
 \value{
 A state list.

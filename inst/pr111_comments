@@ -52,3 +52,5 @@ I did not find the definition of function save_output(). So I did not include th
 printr package is not on CRAN so it should not be included.
 
 The vignette should only explain how to use tabular input for an ned user, not the internal mechanisms of the function (too specialized), nor what is a discounting rate (too broad).
+
+Test match regexp, not strings, so characters such as . need to be escaped, or use fixed = TRUE.

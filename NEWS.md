@@ -4,6 +4,8 @@
 
   * `run_demographics()` to compute population-level values, with vignette.
   * `run_heterogeneity()` for heterogeneity analysis, with vignette.
+  * `run_models_tabular()` to import models from tabular data, with vignette.
+  * `look_up()` to look up values in external data.
   
 ## Enhancements
 

@@ -187,24 +187,25 @@ summary.updated_models <- function(object, ...) {
   for (n in model_names) {
     list_res <- c(
       list_res,
-      lapply(c(".cost", ".effect", ".dcost", ".deffect", ".icer"),
-             function(x) {
-               wsum <- wtd_summary(
-                 object[object$.model_names == n, ][[x]],
-                 object[object$.model_names == n, ]$.weights
-               )
-               is.na(wsum) <- ! is.finite(wsum)
-               tab_summary <- matrix(
-                 wsum,
-                 nrow = 1
-               )
-               colnames(tab_summary) <- names(wsum)
-               cbind(
-                 data.frame(Model = n,
-                            Value = x),
-                 tab_summary
-               )
-             }
+      lapply(
+        c(".cost", ".effect", ".dcost", ".deffect", ".icer"),
+        function(x) {
+          wsum <- wtd_summary(
+            object[object$.model_names == n, ][[x]],
+            object[object$.model_names == n, ]$.weights
+          )
+          is.na(wsum) <- ! is.finite(wsum)
+          tab_summary <- matrix(
+            wsum,
+            nrow = 1
+          )
+          colnames(tab_summary) <- names(wsum)
+          cbind(
+            data.frame(Model = n,
+                       Value = x),
+            tab_summary
+          )
+        }
       )
     )
   }

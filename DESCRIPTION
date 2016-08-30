@@ -19,7 +19,8 @@ Imports:  lazyeval,
           rgho,
           pryr,
           utils,
-          tibble
+          tibble,
+          Hmisc
 License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr

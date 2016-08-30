@@ -24,7 +24,13 @@
 #' @export
 #' 
 #' @example inst/examples/example_look_up.R
-look_up <- function(data, value, ..., bin = FALSE) {
+look_up <- function(data, ..., bin = FALSE, value = "value") {
+  
+  stopifnot(
+    inherits(data, "data.frame")
+  )
+  
+  data <- clean_factors(data)
   
   list_specs <- list(...)
   
@@ -38,20 +44,29 @@ look_up <- function(data, value, ..., bin = FALSE) {
   ) %>%
     clean_factors
   
-  if (any(pb <- ! names(df_vars) %in% names(data))) {
+  if (any(pb <- ! c(names(df_vars), value) %in% names(data))) {
     stop(sprintf(
       "Names passed to 'look_up()' not found in 'data': %s.",
-      paste(names(df_vars)[pb], collapse = ", ")
+      paste(c(names(df_vars), value)[pb], collapse = ", ")
     ))
   }
   
+  num_vars <- names(df_vars)[unlist(Map(is.numeric, df_vars))]
+  
   if (isTRUE(bin)) {
-    bin <- names(df_vars)[unlist(Map(is.numeric, df_vars))]
+    bin <- num_vars
     
   } else if (is.character(bin)) {
     if (any(pb <- ! bin %in% names(df_vars))) {
       stop(sprintf(
         "Names in 'bin' not found in source data: %s.",
+        paste(bin[pb], collapse = ", ")
+      ))
+    }
+    
+    if (any(pb <- ! bin %in% num_vars)) {
+      stop(sprintf(
+        "Some variables in 'bin' are not numeric: %s.",
         paste(bin[pb], collapse = ", ")
       ))
     }
@@ -71,6 +86,7 @@ look_up <- function(data, value, ..., bin = FALSE) {
     }
   }
   
+  # do this test after binning
   if (any(pb <- duplicated(data[names(df_vars)]))) {
     stop(sprintf(
       "Some rows in 'data' are duplicates: %s.",
@@ -87,6 +103,10 @@ look_up <- function(data, value, ..., bin = FALSE) {
   
   if (length(res) != nrow(df_vars)) {
     stop("Ooops, something unexpectedly went wrong...")
+  }
+  
+  if (any(is.na(res))) {
+    warning("Some values were not found, returning missing data.")
   }
   
   res

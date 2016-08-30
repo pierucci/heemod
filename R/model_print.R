@@ -64,7 +64,7 @@ plot.run_models <- function(x, type = c("counts", "ce"),
         if(!all(include_states %in% all_states))
           stop("all elements of include_states must be states of the model")
       }
-
+      
       ## set up some of the plot parameters we'll need
       title_string <- NULL
       if(panels == "by_model"){
@@ -80,9 +80,9 @@ plot.run_models <- function(x, type = c("counts", "ce"),
         }
       }
       if(panels == "by_state"){
-          color_string <- ".model"
-          legend_name <- "Model"
-          use_facets <- TRUE
+        color_string <- ".model"
+        legend_name <- "Model"
+        use_facets <- TRUE
         facet_string <- "key ~ ."
         scale_string <- "free_y"
         if(length(include_states) == 1){
@@ -92,53 +92,74 @@ plot.run_models <- function(x, type = c("counts", "ce"),
       
       ## prepare the data
       tab_counts_pieces <- lapply(names(model_info),
-                            function(this_model) {
-                              dplyr::mutate(
-                                get_counts(model_info[[this_model]]),
-                                .model = this_model,
-                                markov_cycle = row_number())
-                            })
+                                  function(this_model) {
+                                    dplyr::mutate_(
+                                      get_counts(model_info[[this_model]]),
+                                      .model = ~ this_model,
+                                      markov_cycle = ~ row_number())
+                                  })
       tab_counts <- do.call("rbind", tab_counts_pieces)
       tab_counts$.model <- factor(tab_counts$.model, levels = names(model_info))
       pos_cycle <- pretty(seq_len(nrow(tab_counts)), n = min(nrow(tab_counts), 10))
-      tab_counts <- tidyr::gather(data = tab_counts, ... = - c(.model, markov_cycle))
+      browser()
+      tab_counts <- tidyr::gather_(
+        data = tab_counts,
+        key_col = "key",
+        value_col = "value",
+        gather_cols = setdiff(names(tab_counts),
+                              c(".model", "markov_cycle")))
       
-      tab_counts <- subset(tab_counts, .model %in% names(model_info)[model])
+      tab_counts <- dplyr::filter_(
+        tab_counts, ~ .model %in% names(model_info)[model]
+      )
       if(length(include_states) > 0)
-        tab_counts <- subset(tab_counts, key %in% include_states)
+        tab_counts <- dplyr::filter_(
+          tab_counts, ~ key %in% include_states
+        )
+      
       y_max <- max(tab_counts$value)
-           this_plot <- ggplot2::ggplot(tab_counts, 
-                                        ggplot2::aes_(quote(markov_cycle), 
-                                                      quote(value), 
-                                                      col = as.name(color_string))) +
-                        ggplot2::geom_line() +
-                        ggplot2::geom_point() +
-                        ggplot2::scale_x_continuous(breaks = pos_cycle) +
-                        ggplot2::xlab("Markov cycle") +
-                        ggplot2::ylab("Count") +
-                        ggplot2::scale_colour_hue(name = legend_name) +
-                        ggplot2::ggtitle(label = title_string)
-        
+      this_plot <- ggplot2::ggplot(
+        tab_counts, 
+        ggplot2::aes_string(
+          x = "markov_cycle", 
+          y = "value", 
+          colour = "color_string")) +
+        ggplot2::geom_line() +
+        ggplot2::geom_point() +
+        ggplot2::scale_x_continuous(breaks = pos_cycle) +
+        ggplot2::xlab("Markov cycle") +
+        ggplot2::ylab("Count") +
+        ggplot2::scale_colour_hue(name = legend_name) +
+        ggplot2::ggtitle(label = title_string)
+      
       if(use_facets) 
-        this_plot <- this_plot + ggplot2::facet_grid(facet_string, scales = scale_string)
-
-     if(scale_string == "fixed") this_plot <- this_plot + ggplot2::ylim(0, y_max)
-     if("legend.position" %in% names(extra_args))
-       this_plot <- this_plot + ggplot2::theme(legend.position = extra_args$legend.position)
-     this_plot
-     },
+        this_plot <- this_plot +
+        ggplot2::facet_grid(
+          facet_string, scales = scale_string
+          )
+      
+      if(scale_string == "fixed") this_plot <- this_plot +
+        ggplot2::ylim(0, y_max)
+      if("legend.position" %in% names(extra_args))
+        this_plot <- this_plot +
+        ggplot2::theme(legend.position = extra_args$legend.position)
+      this_plot
+    },
     ce = {
       tab_ce <- normalize_ce(x)
       ef <- get_frontier(x)
       
       ggplot2::ggplot(tab_ce,
-                      ggplot2::aes(x = .effect, y = .cost, label = .model_names)) +
+                      ggplot2::aes_string(
+                        x = ".effect",
+                        y = ".cost",
+                        label = ".model_names")) +
         ggplot2::geom_line(data = tab_ce[tab_ce$.model_names %in% ef, ]) +
         ggplot2::geom_point() +
         ggplot2::geom_text(hjust = 1) +
         ggplot2::xlab("Effect") +
         ggplot2::ylab("Cost")
     },
-     stop(sprintf("Unknown type: '%s'.", type))
+    stop(sprintf("Unknown type: '%s'.", type))
   )
 }

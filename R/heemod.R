@@ -45,6 +45,8 @@
 #' @importFrom stats terms
 #' @importFrom stats setNames
 #' @importFrom stats reorder
+#' @importFrom stats na.omit
+#' @importFrom stats update
 #'   
 #' @importFrom graphics par
 #'   
@@ -73,6 +75,10 @@
 #' @importFrom utils read.csv
 #'   
 #' @importFrom tools file_ext
+#' 
+#' @importFrom Hmisc wtd.quantile
+#' @importFrom Hmisc wtd.mean
+#' @importFrom Hmisc wtd.var
 #'   
 #' @importFrom tibble tibble
 NULL

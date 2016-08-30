@@ -1,4 +1,4 @@
-.model,state,cost,qaly,.discount.cost,.discount.qaly,comment1, Comment - two,COMMENT THREE,valid.column
+.model,state,cost,qaly,.discount.cost,.discount.qaly,.comment1, .comment - two,.comment THREE,valid.column
 standard,mystate1,0,qalyS1S,0.03,0.03,text of comment,yet another text,,a
 standard,mystaet2,0,qalyS2,,,another comment,,,b
 new,mystate1,12,qalyS1N,0.03,0.03,this has no comment,blank,,555

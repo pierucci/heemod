@@ -4,13 +4,12 @@
 \alias{create_model_list_from_tabular}
 \title{Read Models Specified by Files}
 \usage{
-create_model_list_from_tabular(ref, df_env)
+create_model_list_from_tabular(ref, df_env = globalenv())
 }
 \arguments{
 \item{ref}{Imported reference file.}
 
-\item{base_model}{Which of the models should be the base 
-model.}
+\item{df_env}{An environment containing external data.}
 }
 \value{
 A list of unevaluated models.

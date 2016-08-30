@@ -14,10 +14,11 @@ gather_model_info(base_dir, ref_file)
 \value{
 A list with elements: \itemize{ \item models (of 
   type \code{uneval_model}, created by 
-  \code{\link{import_models_from_files}}) \item 
-  param_info  \item output_dir where to store output
-  files, if specified \item demographic_file a table for
-  demographic analysis.}
+  \code{\link{create_model_list_from_tabular}}) \item 
+  param_info  \item output_dir where to store output 
+  files, if specified \item demographic_file a table for 
+  demographic analysis \item model_options a list of
+  model options.}
 }
 \description{
 Gather Information for Running a Model From Tabular Data

@@ -3,46 +3,45 @@
 #' This function runs a model from tabular input.
 #' 
 #' The reference file should have two columns, \code{data} 
-#' and \code{file}. (Additional columns are allowed, but 
-#' will be ignored.) \code{data} values must include
-#' \code{"state"}, \code{"tm"}, and \code{"parameters"}, and
-#' can also include \code{"options"}, \code{"demographics"} 
-#' and \code{"data"}.  The corresponding file values give
-#' the names of the files (located in \code{base_dir}) that
-#' contain the corresponding information - or, in the case
-#' of \code{"data"}, the directory containing the tables to
-#' be loaded.
+#' and \code{file}. An optional \code{absolute_path} column 
+#' can be added, having value \code{TRUE} where an absolute 
+#' file path is provided. \code{data} values must include 
+#' \code{state}, \code{tm}, and \code{parameters}, and can
+#' also include \code{options}, \code{demographics} and
+#' \code{data}.  The corresponding values in the \code{file}
+#' column give the names of the files (located in
+#' \code{base_dir}) that contain the corresponding
+#' information - or, in the case of \code{data}, the
+#' directory containing the tables to be loaded.
 #' 
-#' @param base_dir Directory where the files are located.
-#' @param ref_file Name of the reference file.
+#' @param location Directory where the files are located.
+#' @param reference Name of the reference file.
 #'   
-#' @return A list of evaluated models (always), and, if
-#'   appropriate input is provided, dsa (deterministic
-#'   sensitivity analysis), psa (probabilistic sensitivity
-#'   analysis) and demographics (results across different
+#' @return A list of evaluated models (always), and, if 
+#'   appropriate input is provided, dsa (deterministic 
+#'   sensitivity analysis), psa (probabilistic sensitivity 
+#'   analysis) and demographics (results across different 
 #'   demographic groups).
 #'   
 #' @export
-run_models_from_tabular <- function(base_dir, ref_file = "REFERENCE.csv") {
-  
-  inputs <- gather_model_info(base_dir, ref_file)
-  
+run_models_tabular <- function(location, reference = "REFERENCE.csv") {
+  inputs <- gather_model_info(location, reference)
   outputs <- eval_models_from_tabular(inputs)
-  
-  invisible(outputs)
+  outputs
 }
 
 #' Gather Information for Running a Model From Tabular Data
 #' 
 #' @param base_dir Directory where the files are located.
 #' @param ref_file Name of the reference file.
-#' 
+#'   
 #' @return A list with elements: \itemize{ \item models (of 
 #'   type \code{uneval_model}, created by 
-#'   \code{\link{import_models_from_files}}) \item 
-#'   param_info  \item output_dir where to store output
-#'   files, if specified \item demographic_file a table for
-#'   demographic analysis.}
+#'   \code{\link{create_model_list_from_tabular}}) \item 
+#'   param_info  \item output_dir where to store output 
+#'   files, if specified \item demographic_file a table for 
+#'   demographic analysis \item model_options a list of
+#'   model options.}
 gather_model_info <- function(base_dir, ref_file) {
   
   ref <- read_file(file.path(base_dir, ref_file))
@@ -177,7 +176,7 @@ eval_models_from_tabular <- function(inputs,
   
   demo_res <- NULL
   if (! is.null(inputs$demographic_file) & run_demo) {
-    demo_res <- update(model_runs, inputs$demographic_file)
+    demo_res <- stats::update(model_runs, inputs$demographic_file)
   }
   
   list(
@@ -192,11 +191,12 @@ eval_models_from_tabular <- function(inputs,
 #' Read Models Specified by Files
 #' 
 #' @param ref Imported reference file.
-#' @param base_model Which of the models should be the base 
-#'   model.
+#' @param df_env An environment containing external data.
 #'   
 #' @return A list of unevaluated models.
-create_model_list_from_tabular <- function(ref, df_env) {
+create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
+  if(! inherits(ref, "data.frame"))
+    stop("'ref' must be a data frame.")
   
   state_info <- parse_multi_spec(
     ref$full_file[ref$data == "state"],
@@ -253,12 +253,13 @@ create_model_list_from_tabular <- function(ref, df_env) {
 #' 
 #' @param state_info Result for one model of 
 #'   \code{\link{parse_multi_spec}}.
+#' @param df_env An environment containing external data.
 #'   
 #' @return A state list.
 create_states_from_tabular <- function(state_info,
-                                       df_env) {
-  if(length(state_info) == 0 | !inherits(state_info, "data.frame"))
-    stop("state_info must be a non-empty data frame (or the name of a file containing the frame).")
+                                       df_env = globalenv()) {
+  if(! inherits(state_info, "data.frame"))
+    stop("'state_info' must be a data frame.")
   
   if(!(".state" %in% names(state_info)))
     stop("'.state' should be a column name.")
@@ -289,12 +290,21 @@ create_states_from_tabular <- function(state_info,
       stop(sprintf(
         "No discount values found for '%s'.", n
       ))
-    } else if (length(unique(na.omit(state_info[[n]]))) > 1) {
+      
+    } else if (! is.numeric(state_info[[n]])) {
+      stop("Discount values must be numeric.")
+      
+    } else if (length(unique(stats::na.omit(state_info[[n]]))) > 1) {
       stop(sprintf(
         "Multiple discount values for '%s'.", n
       ))
+      
+    } else if (any(stats::na.omit(state_info[[n]]) < 0) ||
+               any(stats::na.omit(state_info[[n]]) > 1)) {
+      stop("Discount values out of range [0 - 1].")
+      
     } else {
-      state_info[[n]] <- na.omit(state_info[[n]])[1]
+      state_info[[n]] <- stats::na.omit(state_info[[n]])[1]
     }
   }
   
@@ -349,10 +359,14 @@ create_states_from_tabular <- function(state_info,
 #'   \code{\link{parse_multi_spec}}.
 #' @param state_names The names of the states used in the 
 #'   transition matrix.
+#' @param df_env An environment containing external data.
 #'   
 #' @return A transition matrix.
 create_matrix_from_tabular <- function(trans_probs, state_names,
-                                       df_env) {
+                                       df_env = globalenv()) {
+  if(! inherits(trans_probs, "data.frame"))
+    stop("'trans_probs' must be a data frame.")
+  
   stopifnot(
     all(c("from", "to", "prob") %in% names(trans_probs)),
     length(state_names) > 0,
@@ -409,9 +423,14 @@ create_matrix_from_tabular <- function(trans_probs, state_names,
 #' sensitivity analysis. Other columns will be ignored.
 #' 
 #' @param param_defs A parameter definition file.
+#' @param df_env An environment containing external data.
+#' 
 #' @return the parameter definition, invisibly.
 create_parameters_from_tabular <- function(param_defs,
-                                           df_env) {
+                                           df_env = globalenv()) {
+  if(! inherits(param_defs, "data.frame"))
+    stop("'param_defs' must be a data frame.")
+  
   if (xor("low" %in% names(param_defs),
           "high" %in% names(param_defs))) {
     stop("Both 'low' and 'high' columns must be present in parameter tabular file to define DSA.")
@@ -442,8 +461,8 @@ create_parameters_from_tabular <- function(param_defs,
     }
     
     param_sens <- param_defs$parameter[! is.na(param_defs$low)]
-    low <- as_numeric_safe(na.omit(param_defs$low))
-    high <- as_numeric_safe(na.omit(param_defs$high))
+    low <- as_numeric_safe(stats::na.omit(param_defs$low))
+    high <- as_numeric_safe(stats::na.omit(param_defs$high))
     
     dsa <- define_sensitivity_(
       setNames(
@@ -463,7 +482,7 @@ create_parameters_from_tabular <- function(param_defs,
     }
     
     param_psa <- param_defs$parameter[! is.na(param_defs$psa)]
-    distrib_psa <- na.omit(param_defs$psa)
+    distrib_psa <- stats::na.omit(param_defs$psa)
     
     psa <- do.call(
       define_distrib,
@@ -497,6 +516,8 @@ create_parameters_from_tabular <- function(param_defs,
 create_options_from_tabular <- function(opt) {
   allowed_opt <- c("cost", "effect", "init",
                    "method", "base", "cycles", "n")
+  if(! inherits(opt, "data.frame"))
+    stop("'opt' must be a data frame.")
   
   if (any(ukn_opt <- ! opt$option %in% allowed_opt)) {
     stop(sprintf(
@@ -545,11 +566,17 @@ create_options_from_tabular <- function(opt) {
 #'   parsed file).
 #' @param tm_file A transition matrix tabular file (file 
 #'   path or parsed file).
+#' @param df_env An environment containing external data.
+#' 
 #' @return A \code{heemod} model as returned by 
 #'   \code{\link{define_model}}.
 create_model_from_tabular <- function(state_file,
                                       tm_file,
-                                      df_env) {
+                                      df_env = globalenv()) {
+  if(! inherits(state_file, "data.frame"))
+    stop("'state_file' must be a data frame.")
+  if(! inherits(tm_file, "data.frame"))
+    stop("'tm_file' must be a data frame.")
   
   states <- create_states_from_tabular(state_file,
                                        df_env = df_env)
@@ -569,7 +596,7 @@ create_model_from_tabular <- function(state_file,
 #' my_df.csv (or my_df.xls, or my_df.xlsx) will be loaded as
 #' a data frame my_df.
 #' 
-#' @param full_path A directory containing the files.
+#' @param df_dir A directory containing the files.
 #' @param df_envir An environment.
 #' 
 #' @return The environment with the data frames.
@@ -631,11 +658,11 @@ parse_multi_spec <- function(multi_spec,
   if(is.character(multi_spec)) multi_spec <- read_file(multi_spec)
   
   if(length(split_on) != 1) stop("'split_on' must have a length of exactly 1.")
-  if(any(names(multi_spec) == "")) stop("'multi_spec' can't have empty names")
+  if(any(names(multi_spec) == "")) stop("'multi_spec' can't have empty names.")
   # but they can have no names??
   
   if(! all(c(split_on, group_vars) %in% names(multi_spec)))
-    stop("'split_on' and 'group_vars' must be column names of the input 'multi_spec'")
+    stop("'split_on' and 'group_vars' must be column names of the input 'multi_spec'.")
   
   remaining <- setdiff(names(multi_spec), c(split_on, group_vars))
   
@@ -657,10 +684,7 @@ parse_multi_spec <- function(multi_spec,
   wrong_number_times <- 
     occurences$count > 1 & occurences$count < num_splits
   
-  if(any(wrong_number_times)){
-    occurences$num_splits <- num_splits
-    cat("Problem in multi_spec specification:\n")
-    print(occurences[wrong_number_times, , drop = FALSE])
+  if(any(wrong_number_times)) {
     stop("'group_var' combinations must be specified either once for all splits or once for each split.")
   }
   

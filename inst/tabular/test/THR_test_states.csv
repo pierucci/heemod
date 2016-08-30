@@ -1,4 +1,4 @@
-.model,state,cost,qaly,.discount.qaly
+.model,.state,cost,qaly,.discount.qaly
 standard,PrimaryTHR,0,0,0.01
 standard,SuccessfulPrimary,0,0.85,
 standard,RevisionTHR,5294,0.3,
