@@ -73,12 +73,21 @@
 #' @importFrom rgho get_gho_data
 #'   
 #' @importFrom utils read.csv
+#' @importFrom utils write.csv
+#' @importFrom utils tail
 #'   
 #' @importFrom tools file_ext
 #' 
 #' @importFrom Hmisc wtd.quantile
 #' @importFrom Hmisc wtd.mean
 #' @importFrom Hmisc wtd.var
+#' 
+#' @importFrom grDevices dev.new
+#' @importFrom grDevices dev.off
+#' @importFrom grDevices pdf
+#' @importFrom grDevices png
+#' 
+#' @importFrom graphics plot
 #'   
 #' @importFrom tibble tibble
 NULL
