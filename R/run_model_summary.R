@@ -5,7 +5,7 @@ print.run_models <- function(x, ...) {
 #' Summarise Markov Model Results
 #' 
 #' @param object Output from \code{\link{run_models}}.
-#' @param ... additional arguments affecting the summary
+#' @param ... additional arguments affecting the summary 
 #'   produced.
 #'   
 #' @return A \code{summary_eval_model_list} object.
@@ -51,7 +51,7 @@ summary.run_models <- function(object, ...) {
 #' Normalize cost and effect values taking base model as a 
 #' reference.
 #' 
-#' @param x Result of \code{\link{run_models}} or
+#' @param x Result of \code{\link{run_models}} or 
 #'   \code{\link{run_probabilistic}}.
 #'   
 #' @return Input with normalized \code{.cost} and 
@@ -70,11 +70,12 @@ normalize_ce.run_models <- function(x) {
 #' 
 #' Compute ICER for Markov models.
 #' 
-#' Models are ordered by effectiveness and ICER are computed sequencially.
+#' Models are ordered by effectiveness and ICER are computed
+#' sequencially.
 #' 
 #' @param x Result of \code{\link{run_models}}.
-#' @param model_order Order in which the models 
-#' should be sorted. Default: by increasing effect.
+#' @param model_order Order in which the models should be
+#'   sorted. Default: by increasing effect.
 #'   
 #' @return A \code{data.frame} with computed ICER.
 #' @export

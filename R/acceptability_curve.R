@@ -4,9 +4,12 @@
 #' @param x Result from \code{\link{run_sensitivity}}.
 #' @param wtp_thresholds willingness to pay thresholds
 #'   
-#' @return A data frame with columns .ceac (the cost-effectiveness acceptability threshold),
-#'   .top (treatments or models), .n (the number of cases in which the treatment was most
-#'   cost-effective), and .p (the proportion of cases in which the treatment was most effective).
+#' @return A data frame with columns \code{.ceac} (the 
+#'   cost-effectiveness acceptability threshold), 
+#'   \code{.top} (treatments or models), \code{.n} (the
+#'   number of cases in which the treatment was most
+#'   cost-effective), and \code{.p} (the proportion of cases
+#'   in which the treatment was most effective).
 #' @export
 #' 
 acceptability_curve <- function(x, wtp_thresholds){

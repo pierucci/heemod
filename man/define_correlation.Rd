@@ -17,7 +17,7 @@ An object of class \code{correlation_matrix}.
 }
 \description{
 Not all correlation need to be specified for all variable
-combinations, unspecified correlations are assumed to be
+combinations, unspecified correlations are assumed to be 
 0.
 }
 \examples{

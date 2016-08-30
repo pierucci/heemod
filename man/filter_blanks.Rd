@@ -16,8 +16,8 @@ A \code{data.frame} without blank rows.
 Remove rows were all values are \code{NA}.
 }
 \details{
-Some rows can be left blanks in the input table for
-readability, this function ensures those rows are
+Some rows can be left blanks in the input table for 
+readability, this function ensures those rows are 
 removed.
 }
 

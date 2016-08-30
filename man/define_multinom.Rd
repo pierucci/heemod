@@ -2,7 +2,7 @@
 % Please edit documentation in R/resamp_define.R
 \name{define_multinom}
 \alias{define_multinom}
-\title{Define That Parameters Belong to the Same Multinomial
+\title{Define That Parameters Belong to the Same Multinomial 
 Distribution}
 \usage{
 define_multinom(x)
@@ -14,7 +14,7 @@ define_multinom(x)
 An object of class \code{multinomial}.
 }
 \description{
-Define That Parameters Belong to the Same Multinomial
+Define That Parameters Belong to the Same Multinomial 
 Distribution
 }
 

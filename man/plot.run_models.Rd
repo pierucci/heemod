@@ -14,9 +14,11 @@
 
 \item{model}{Name or position of model of interest.}
 
-\item{include_states}{Names of states to be included in the plot.}
+\item{include_states}{Names of states to be included in
+the plot.}
 
-\item{panels}{Should plots be faceted by model or by state?}
+\item{panels}{Should plots be faceted by model or by
+state?}
 
 \item{...}{Additional arguments passed to \code{plot}.}
 }
@@ -27,16 +29,17 @@ A \code{ggplot2} object.
 Various plots for Markov models.
 }
 \details{
-\code{type = "counts"} represents state memberships 
-  (corrected) by cycle, \code{type = "ce"} plots models on
-  the cost-efficiency plane with the efficiency frontier.
+\code{type = "counts"} represents state
+memberships (corrected) by cycle, \code{type = "ce"}
+plots models on the cost-efficiency plane with the
+efficiency frontier.
 
-When \code{type = "count"}, 
-   model can be a vector of model numbers or names, or "all".
-   
-\code{include_states} and \code{panels} are active only when 
-  \code{type = "count"}.   When \code{include_states = character(0)} 
-  (the default), all states will be included.
+When \code{type = "count"}, model can be a vector of
+model numbers or names, or "all".
+
+\code{include_states} and \code{panels} are active only
+when \code{type = "count"}.   When \code{include_states =
+character(0)} (the default), all states will be included.
 }
 \examples{
 

@@ -1,17 +1,18 @@
 #' Combine Multiple Models
-#'
-#' Given a set of models run with different parameters,
-#' return aggregated results to estimate population-level values.
 #' 
-#' @param list_newmodels A list of models run over a set of
-#'  multiple parameters.
-#' @param weights A vector of weigths, same length as the number
-#'   of parameter sets.
+#' Given a set of models run with different parameters, 
+#' return aggregated results to estimate population-level
+#' values.
+#' 
+#' @param list_newmodels A list of models run over a set of 
+#'   multiple parameters.
+#' @param weights A vector of weigths, same length as the
+#'   number of parameter sets.
 #' @param oldmodel The original model.
-#' 
-#' @return A \code{combined_models} object, mostly
-#' similar to a result from \code{\link{run_models}}. \code{plot} and
-#' \code{summary} methods are available.
+#'   
+#' @return A \code{combined_models} object, mostly similar
+#'   to a result from \code{\link{run_models}}. \code{plot}
+#'   and \code{summary} methods are available.
 combine_models <- function(list_newmodels, weights, oldmodel) {
   
   total_weights <- sum(weights)

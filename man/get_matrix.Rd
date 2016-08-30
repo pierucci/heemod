@@ -7,11 +7,11 @@
 get_matrix(x)
 }
 \arguments{
-\item{x}{An \code{uneval_model} or \code{eval_model}
+\item{x}{An \code{uneval_model} or \code{eval_model} 
 object.}
 }
 \value{
-An \code{uneval_matrix} or \code{uneval_matrix}
+An \code{uneval_matrix} or \code{uneval_matrix} 
   object.
 }
 \description{

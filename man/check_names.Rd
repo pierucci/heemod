@@ -10,14 +10,14 @@ check_names(x)
 \item{x}{A character vector of names.}
 }
 \value{
-Nothing, just throws an error if a reserved name is 
-encountered.
+Nothing, just throws an error if a reserved name
+  is encountered.
 }
 \description{
 Throws an error if any of the names are reserved.
 }
 \details{
-Reserved names are \code{markov_cycle} and anything starting 
-with \code{.}.
+Reserved names are \code{markov_cycle} and anything
+starting with \code{.}.
 }
 

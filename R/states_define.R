@@ -3,13 +3,13 @@
 #' Define the values characterising a Markov Model state for
 #' 1 cycle.
 #' 
-#' As with \code{\link{define_parameters}}, state values are defined
-#' sequencially. Later state definition can thus only refer to values
-#' defined earlier.
+#' As with \code{\link{define_parameters}}, state values are
+#' defined sequencially. Later state definition can thus
+#' only refer to values defined earlier.
 #' 
-#' For the \code{modify} function, existing values are
-#' modified, no new values can be added. Values order
-#' matters since only values defined earlier can be
+#' For the \code{modify} function, existing values are 
+#' modified, no new values can be added. Values order 
+#' matters since only values defined earlier can be 
 #' referenced in later expressions.
 #' 
 #' @param ... Name-value pairs of expressions defining state
@@ -22,7 +22,7 @@
 #' @export
 #' 
 #' @example inst/examples/example_define_state.R
-#' 
+#'   
 define_state <- function(...) {
   .dots <- lazyeval::lazy_dots(...)
   
@@ -80,9 +80,9 @@ modify_.state <- function(.OBJECT, .dots) {
 #' @param .dots List of states, only used by 
 #'   \code{define_state_list_} to avoid using \code{...}.
 #'   
-#' @return An object of class \code{uneval_state_list} (a
+#' @return An object of class \code{uneval_state_list} (a 
 #'   list of \code{state} objects).
-#' 
+#'   
 #' @examples
 #' \dontrun{
 #' s1 <- define_state(cost = 1, util = 1)
@@ -135,8 +135,9 @@ define_state_list_ <- function(.dots) {
   if (! all(unlist(lapply(.dots,
                           function(x) "state" %in% class(x))))) {
     
-    .x <- names(.dots)[! unlist(lapply(.dots,
-                                       function(x) "state" %in% class(x)))]
+    .x <- names(.dots)[! unlist(lapply(
+      .dots,
+      function(x) "state" %in% class(x)))]
     
     stop(sprintf(
       "Incorrect state object%s: %s",
@@ -173,11 +174,11 @@ modify_.uneval_state_list <- function(.OBJECT, .dots) {
 #' For internal use.
 #' 
 #' All states should have the same value names.
-#'
-#' @param x An object of class \code{uneval_states}.
-#'
-#' @return \code{NULL}
 #' 
+#' @param x An object of class \code{uneval_states}.
+#'   
+#' @return \code{NULL}
+#'   
 check_states <- function(x){
   if (! list_all_same(lapply(x, length))) {
     stop("Number of state values differ between states.")
@@ -190,15 +191,16 @@ check_states <- function(x){
 }
 
 #' Return Number of State
-#'
+#' 
 #' For internal use.
 #' 
-#' Work with both \code{uneval_states} and \code{eval_states}.
-#'
-#' @param x An object containing states.
-#'
-#' @return An integer: number of states.
+#' Work with both \code{uneval_states} and
+#' \code{eval_states}.
 #' 
+#' @param x An object containing states.
+#'   
+#' @return An integer: number of states.
+#'   
 get_state_number <- function(x){
   # !mod!
   # rename get_state_count
@@ -206,12 +208,12 @@ get_state_number <- function(x){
 }
 
 #' Return Names of State Values
-#'
+#' 
 #' @param x An object containing states.
 #' @param ... Additional arguments passed to methods.
-#'
+#'   
 #' @return A character vector of state value names.
-#' 
+#'   
 get_state_value_names <- function(x){
   UseMethod("get_state_value_names")
 }
@@ -227,10 +229,10 @@ get_state_value_names.state <- function(x){
 #' Get State Names
 #' 
 #' Retrieve state names from an object containing states.
-#'
+#' 
 #' @param x An object containing states.
 #' @param ... Additional arguments passed to methods.
-#'
+#'   
 #' @return A character vector of state names.
 get_state_names <- function(x, ...){
   UseMethod("get_state_names")

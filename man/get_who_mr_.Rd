@@ -16,11 +16,13 @@ get_who_mr(age, sex, country, year = "latest")
 
 \item{country}{Country code (see details).}
 
-\item{year}{Use data from that year. Defaults to \code{"latest"}.}
+\item{year}{Use data from that year. Defaults to
+\code{"latest"}.}
 }
 \value{
-This function should be used within
- \code{\link{define_matrix}} or \code{\link{define_parameters}}.
+This function should be used within 
+  \code{\link{define_matrix}} or
+  \code{\link{define_parameters}}.
 }
 \description{
 Use WHO Mortality Rate

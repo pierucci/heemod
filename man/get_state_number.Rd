@@ -16,6 +16,7 @@ An integer: number of states.
 For internal use.
 }
 \details{
-Work with both \code{uneval_states} and \code{eval_states}.
+Work with both \code{uneval_states} and
+\code{eval_states}.
 }
 

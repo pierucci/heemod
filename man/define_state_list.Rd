@@ -22,7 +22,7 @@ states.}
 \item{.OBJECT}{An \code{uneval_states} object.}
 }
 \value{
-An object of class \code{uneval_state_list} (a
+An object of class \code{uneval_state_list} (a 
   list of \code{state} objects).
 }
 \description{

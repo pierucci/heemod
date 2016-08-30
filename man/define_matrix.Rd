@@ -19,7 +19,7 @@ define_matrix_(.dots, state_names)
 \arguments{
 \item{...}{Name-value pairs of expressions definig matrix
 cells. Can refer to parameters defined with 
-\code{\link{define_parameters}}. For \code{plot},
+\code{\link{define_parameters}}. For \code{plot}, 
 additional arguments passed to \code{digram::plotmat}.}
 
 \item{state_names}{character vector, optional. State 
@@ -33,7 +33,8 @@ names.}
 
 \item{relsize}{Argument passed to \code{\link{plotmat}}.}
 
-\item{shadow.size}{Argument passed to \code{\link{plotmat}}.}
+\item{shadow.size}{Argument passed to
+\code{\link{plotmat}}.}
 
 \item{latex}{Argument passed to \code{\link{plotmat}}.}
 }

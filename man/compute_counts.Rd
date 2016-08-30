@@ -24,8 +24,8 @@ transition matrix, returns the number of individual per
 state per cycle.
 }
 \details{
-Use the \code{method} argument to specify if transitions
-are supposed to happen at the beginning or the end of
+Use the \code{method} argument to specify if transitions 
+are supposed to happen at the beginning or the end of 
 each cycle. Alternatively linear interpolation between 
 cycles can be performed.
 }

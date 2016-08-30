@@ -13,7 +13,7 @@ run_sensitivity(model, sensitivity)
 \code{\link{define_sensitivity}}.}
 }
 \value{
-A \code{data.frame} with one row per model and
+A \code{data.frame} with one row per model and 
   parameter value.
 }
 \description{

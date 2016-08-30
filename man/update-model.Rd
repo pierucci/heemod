@@ -14,13 +14,14 @@
 \arguments{
 \item{object}{The result of \code{\link{run_models}}.}
 
-\item{newdata}{A \code{data.frame} of new parameter sets, one 
-column per parameter and one row per parameter set. An
-optional \code{.weights} column can be included for a
-weighted analysis.}
+\item{newdata}{A \code{data.frame} of new parameter sets,
+one column per parameter and one row per parameter set.
+An optional \code{.weights} column can be included for
+a weighted analysis.}
 
-\item{...}{Additional arguments passed to \code{geom_histogram}.
-Especially usefull to specify \code{binwidth}.}
+\item{...}{Additional arguments passed to
+\code{geom_histogram}. Especially usefull to specify
+\code{binwidth}.}
 
 \item{x}{Updated model to plot.}
 
@@ -37,27 +38,27 @@ parameter set per line, runs iteratively Markov models
 over these sets.
 }
 \details{
-\code{newdata} must be a \code{data.frame} with
-the following properties: the column names must be parameter 
-names used in \code{\link{define_parameters}}; and an optional
-column \code{.weights} can give the respective weight of
-each row in the target population.
+\code{newdata} must be a \code{data.frame} with the
+following properties: the column names must be parameter 
+names used in \code{\link{define_parameters}}; and an
+optional column \code{.weights} can give the respective
+weight of each row in the target population.
 
-Weights are automatillcally scaled. If no weights are provided
-equal weights are used for each strata.
+Weights are automatillcally scaled. If no weights are
+provided equal weights are used for each strata.
 
-For the plotting function, the \code{type} argument can take
-the following values: \code{"cost"}, \code{"effect"} or 
-\code{"icer"} to plot the heterogeneity of the respective
-values. Furthermore \code{"ce"} and \code{"count"}
-can produce from the combined model plots similar to those
-of \code{\link{run_models}}.
+For the plotting function, the \code{type} argument can
+take the following values: \code{"cost"}, \code{"effect"}
+or \code{"icer"} to plot the heterogeneity of the
+respective values. Furthermore \code{"ce"} and
+\code{"count"} can produce from the combined model plots
+similar to those of \code{\link{run_models}}.
 }
 \section{Warning}{
 
-
-Histograms do not account for weights. On the other hand
-summary results do.
+  
+  Histograms do not account for weights. On the other
+  hand summary results do.
 }
 \examples{
 mod1 <-

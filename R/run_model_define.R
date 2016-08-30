@@ -32,11 +32,11 @@
 #'   at the beginning.
 #' @param cycles positive integer. Number of Markov Cycles 
 #'   to compute.
-#' @param cost Names or expression to compute cost on the
+#' @param cost Names or expression to compute cost on the 
 #'   cost-effectiveness plane.
-#' @param effect Names or expression to compute effect on
+#' @param effect Names or expression to compute effect on 
 #'   the cost-effectiveness plane.
-#' @param base_model Name of base model used as reference.
+#' @param base_model Name of base model used as reference. 
 #'   By default the model with the lowest effectiveness.
 #' @param method Counting method.
 #' @param list_models List of models, only used by 

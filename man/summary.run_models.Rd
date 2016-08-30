@@ -9,7 +9,7 @@
 \arguments{
 \item{object}{Output from \code{\link{run_models}}.}
 
-\item{...}{additional arguments affecting the summary
+\item{...}{additional arguments affecting the summary 
 produced.}
 }
 \value{

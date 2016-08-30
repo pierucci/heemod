@@ -66,10 +66,10 @@ define_model_ <- function(transition_matrix, states) {
 #' 
 #' For internal use.
 #' 
-#' @param x An \code{uneval_model} or \code{eval_model}
+#' @param x An \code{uneval_model} or \code{eval_model} 
 #'   object.
 #'   
-#' @return An \code{uneval_matrix} or \code{uneval_matrix}
+#' @return An \code{uneval_matrix} or \code{uneval_matrix} 
 #'   object.
 get_matrix <- function(x){
   UseMethod("get_matrix")

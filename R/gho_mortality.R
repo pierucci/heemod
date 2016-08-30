@@ -1,13 +1,15 @@
 #' Use WHO Mortality Rate
-#'
+#' 
 #' @param age age as a continuous variable.
 #' @param sex sex as \code{"FMLE"} or \code{"MLE"}.
 #' @param country Country code (see details).
-#' @param year Use data from that year. Defaults to \code{"latest"}.
-#'
-#' @return This function should be used within
-#'  \code{\link{define_matrix}} or \code{\link{define_parameters}}.
-#'  
+#' @param year Use data from that year. Defaults to
+#'   \code{"latest"}.
+#'   
+#' @return This function should be used within 
+#'   \code{\link{define_matrix}} or
+#'   \code{\link{define_parameters}}.
+#'   
 #' @examples 
 #' 
 #' define_matrix(

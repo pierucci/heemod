@@ -4,7 +4,7 @@
 #' @param sensitivity An object returned by 
 #'   \code{\link{define_sensitivity}}.
 #'   
-#' @return A \code{data.frame} with one row per model and
+#' @return A \code{data.frame} with one row per model and 
 #'   parameter value.
 #' @export
 #' 

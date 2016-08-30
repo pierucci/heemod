@@ -6,7 +6,7 @@
 #' Parameter variations windows are given as length 2 vector
 #' of the form \code{c(min, max)}.
 #' 
-#' @param ... A named list of min and max values that
+#' @param ... A named list of min and max values that 
 #'   parameters will take.
 #'   
 #' @return A \code{sensitivity} object.

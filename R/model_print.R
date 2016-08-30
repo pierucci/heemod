@@ -23,22 +23,24 @@ print.uneval_model <- function(x, ...) {
 #' @param x Result from \code{\link{run_models}}.
 #' @param type Type of plot, see details.
 #' @param model Name or position of model of interest.
-#' @param include_states Names of states to be included in the plot.
-#' @param panels Should plots be faceted by model or by state?
+#' @param include_states Names of states to be included in
+#'   the plot.
+#' @param panels Should plots be faceted by model or by
+#'   state?
 #' @param ... Additional arguments passed to \code{plot}.
 #'   
-#' @details 
-#' \code{type = "counts"} represents state memberships 
-#'   (corrected) by cycle, \code{type = "ce"} plots models on
-#'   the cost-efficiency plane with the efficiency frontier.
+#' @details \code{type = "counts"} represents state
+#' memberships (corrected) by cycle, \code{type = "ce"}
+#' plots models on the cost-efficiency plane with the
+#' efficiency frontier.
 #' 
-#' When \code{type = "count"}, 
-#'    model can be a vector of model numbers or names, or "all".
-#'    
-#' \code{include_states} and \code{panels} are active only when 
-#'   \code{type = "count"}.   When \code{include_states = character(0)} 
-#'   (the default), all states will be included.
-#'   
+#' When \code{type = "count"}, model can be a vector of
+#' model numbers or names, or "all".
+#' 
+#' \code{include_states} and \code{panels} are active only
+#' when \code{type = "count"}.   When \code{include_states =
+#' character(0)} (the default), all states will be included.
+#' 
 #' @return A \code{ggplot2} object.
 #' @example inst/examples/example_plot.run_models.R
 #' @export

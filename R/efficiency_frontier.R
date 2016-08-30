@@ -1,9 +1,10 @@
 #' Return Efficiency Frontier
-#'
+#' 
 #' @param x An \code{eval_model_list} object.
-#'
-#' @return A vector of model names on the efficiency frontier.
-#'
+#'   
+#' @return A vector of model names on the efficiency
+#'   frontier.
+#'   
 get_frontier <- function(x) {
   base_model <- get_base_model(x)
   

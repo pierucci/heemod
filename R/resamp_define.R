@@ -86,13 +86,13 @@ define_distrib_ <- function(list_qdist, list_multi, correlation) {
   )
 }
 
-#' Define That Parameters Belong to the Same Multinomial
+#' Define That Parameters Belong to the Same Multinomial 
 #' Distribution
 #' 
 #' @param x A vector of parameter names.
 #'   
 #' @return An object of class \code{multinomial}.
-#' 
+#'   
 define_multinom <- function(x) {
   char_var <- x
   
@@ -123,7 +123,7 @@ define_multinom <- function(x) {
 #' Uncertainty Analysis
 #' 
 #' Not all correlation need to be specified for all variable
-#' combinations, unspecified correlations are assumed to be
+#' combinations, unspecified correlations are assumed to be 
 #' 0.
 #' 
 #' @param ... A list of parameter names and correlation 

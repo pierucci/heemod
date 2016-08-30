@@ -17,9 +17,9 @@
 #' @return A data.frame containing the values of 
 #'   \code{newdata} and each Markov Model evaluation in 
 #'   \code{res}.
-#' 
+#'   
 #' @example inst/examples/example_eval_model_newdata.R
-#' 
+#'   
 eval_model_newdata <- function(x, model = 1, newdata) {
   check_model_index(x = x, i = model)
   

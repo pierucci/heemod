@@ -13,8 +13,8 @@ get_matrix_order(x)
 An integer: matrix order.
 }
 \description{
-A generic that works both with
-\code{uneval_matrix} and \code{eval_matrix}.
+A generic that works both with \code{uneval_matrix} and
+\code{eval_matrix}.
 }
 \details{
 For internal use.

@@ -23,9 +23,9 @@
 #' @return An \code{eval_model} object (actually a list of 
 #'   evaluated parameters, matrix, states and cycles 
 #'   counts).
-#' 
+#'   
 #' @example inst/examples/example_eval_model.R
-#' 
+#'   
 eval_model <- function(model, parameters, cycles, 
                        init, method) {
   
@@ -72,8 +72,8 @@ get_counts <- function(x) {
 #' transition matrix, returns the number of individual per 
 #' state per cycle.
 #' 
-#' Use the \code{method} argument to specify if transitions
-#' are supposed to happen at the beginning or the end of
+#' Use the \code{method} argument to specify if transitions 
+#' are supposed to happen at the beginning or the end of 
 #' each cycle. Alternatively linear interpolation between 
 #' cycles can be performed.
 #' 
@@ -84,7 +84,7 @@ get_counts <- function(x) {
 #' @param method Counting method.
 #'   
 #' @return A \code{cycle_counts} object.
-#' 
+#'   
 compute_counts <- function(
   transition_matrix, init,
   method
@@ -148,13 +148,13 @@ compute_counts <- function(
 
 #' Compute State Values per Cycle
 #' 
-#' Given states and counts, computes the total state values
+#' Given states and counts, computes the total state values 
 #' per cycle.
 #' 
 #' @param states An object of class \code{eval_state_list}.
 #' @param counts An object of class \code{cycle_counts}.
 #'   
-#' @return A data.frame of state values, one column per
+#' @return A data.frame of state values, one column per 
 #'   state value and one row per cycle.
 #'   
 compute_values <- function(states, counts) {

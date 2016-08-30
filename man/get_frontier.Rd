@@ -10,7 +10,8 @@ get_frontier(x)
 \item{x}{An \code{eval_model_list} object.}
 }
 \value{
-A vector of model names on the efficiency frontier.
+A vector of model names on the efficiency
+  frontier.
 }
 \description{
 Return Efficiency Frontier

@@ -33,20 +33,23 @@ get_code(x, ...)
 
 \item{...}{Additional parameters passed to methods.}
 
-\item{name}{character. Optional argument giving the name to assign to the object.}
+\item{name}{character. Optional argument giving the name
+to assign to the object.}
 
 \item{depth}{Depth of the function call.}
 
 \item{n_space}{Number of space used for indentation.}
 
-\item{sub}{logical. Should states or models be referenced by name in \code{define_model}
-and \code{run_model} instead of including the entire code?}
+\item{sub}{logical. Should states or models be referenced
+by name in \code{define_model} and \code{run_model}
+instead of including the entire code?}
 }
 \value{
 A character string.
 }
 \description{
-This function returns the \code{R} code to generate an \code{heemod} oj
+This function returns the \code{R} code to generate an
+\code{heemod} object.
 }
 \examples{
 

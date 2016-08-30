@@ -25,7 +25,8 @@ rr_to_prob(rr, p)
 
 \item{r}{Rate.}
 
-\item{per}{Number of person-time corresponding to the rate.}
+\item{per}{Number of person-time corresponding to the
+rate.}
 
 \item{or}{Odds ratio.}
 
@@ -35,9 +36,9 @@ rr_to_prob(rr, p)
 A probability.
 }
 \description{
-These convienience functions make it easier to compute
-transition probabilities from indidence rates, OR, RR,
-or probabilities estimated on a different timeframe.
+These convienience functions make it easier to compute 
+transition probabilities from indidence rates, OR, RR, or
+probabilities estimated on a different timeframe.
 }
 \examples{
 # convert 5-year probability 

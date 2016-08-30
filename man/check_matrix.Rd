@@ -20,7 +20,7 @@ transition matrix.
 This function is called by \code{\link{eval_matrix}} and 
 should not be used directly.
 
-Checks whether all rows sum to 1 and all probabilities
+Checks whether all rows sum to 1 and all probabilities 
 are between 0 and 1.
 }
 

@@ -28,13 +28,13 @@ to compute.}
 
 \item{method}{Counting method.}
 
-\item{cost}{Names or expression to compute cost on the
+\item{cost}{Names or expression to compute cost on the 
 cost-effectiveness plane.}
 
-\item{effect}{Names or expression to compute effect on
+\item{effect}{Names or expression to compute effect on 
 the cost-effectiveness plane.}
 
-\item{base_model}{Name of base model used as reference.
+\item{base_model}{Name of base model used as reference. 
 By default the model with the lowest effectiveness.}
 
 \item{list_models}{List of models, only used by 

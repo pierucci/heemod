@@ -3,7 +3,7 @@
 #' Various plots for Markov models probabilistic analysis.
 #' 
 #' \code{type = "ac"} plots cost-effectiveness acceptability
-#' curves, \code{type = "ce"} plots results on the
+#' curves, \code{type = "ce"} plots results on the 
 #' cost-efficiency plane.
 #' 
 #' @param x Result from \code{\link{run_models}}.

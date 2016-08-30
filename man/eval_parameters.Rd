@@ -12,8 +12,8 @@ eval_parameters(x, cycles = 1)
 \item{cycles}{integer. Number of cycles to simulate.}
 }
 \value{
-An object of class \code{eval_parameters}
-  (actually a data.frame with one column per parameter
+An object of class \code{eval_parameters} 
+  (actually a data.frame with one column per parameter 
   and one row per cycle).
 }
 \description{

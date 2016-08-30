@@ -12,11 +12,11 @@ compute_values(states, counts)
 \item{counts}{An object of class \code{cycle_counts}.}
 }
 \value{
-A data.frame of state values, one column per
+A data.frame of state values, one column per 
   state value and one row per cycle.
 }
 \description{
-Given states and counts, computes the total state values
+Given states and counts, computes the total state values 
 per cycle.
 }
 

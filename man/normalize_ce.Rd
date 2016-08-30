@@ -7,7 +7,7 @@
 normalize_ce(x)
 }
 \arguments{
-\item{x}{Result of \code{\link{run_models}} or
+\item{x}{Result of \code{\link{run_models}} or 
 \code{\link{run_probabilistic}}.}
 }
 \value{

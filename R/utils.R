@@ -1,7 +1,7 @@
 #' Check Wholenumbers
 #' 
 #' @param x numeric.
-#' @param tol the smallest positive floating-point number x
+#' @param tol the smallest positive floating-point number x 
 #'   such that 1 + x != 1.
 #'   
 #' @return A logical scalar.
@@ -11,16 +11,15 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
 
 #' Discount a Quantity Over Time
 #' 
-#' This function should only take as an \code{x} argument
-#' the names of variables already defined in
-#' \code{\link{define_parameters}} or
-#' \code{\link{define_state}},
-#' and not numeric constants.
+#' This function should only take as an \code{x} argument 
+#' the names of variables already defined in 
+#' \code{\link{define_parameters}} or 
+#' \code{\link{define_state}}, and not numeric constants.
 #' 
 #' @param x numeric. A quantity to discount.
 #' @param r discount rate.
-#' @param first logical. Should the discouting start 
-#'   at the first value ?
+#' @param first logical. Should the discouting start at the
+#'   first value ?
 #'   
 #' @return A numeric vector of the same length as \code{x}.
 #' @export
@@ -40,11 +39,11 @@ discount <- function(x, r, first = FALSE) {
 }
 
 #' Check if All the Elements of a List Are the Same
-#'
-#' @param x a list.
-#'
-#' @return A logical scalar.
 #' 
+#' @param x a list.
+#'   
+#' @return A logical scalar.
+#'   
 list_all_same <- function(x) {
   length(x) == 0 |
     all(unlist(
@@ -76,14 +75,14 @@ get_model <- function(x, m) {
 #' Check Names
 #' 
 #' Throws an error if any of the names are reserved.
-#'
-#' Reserved names are \code{markov_cycle} and anything starting 
-#' with \code{.}.
-#'
+#' 
+#' Reserved names are \code{markov_cycle} and anything
+#' starting with \code{.}.
+#' 
 #' @param x A character vector of names.
-#'
-#' @return Nothing, just throws an error if a reserved name is 
-#' encountered.
+#'   
+#' @return Nothing, just throws an error if a reserved name
+#'   is encountered.
 check_names <- function(x) {
   if (is.null(x)) {
     stop("Names must exist.")
@@ -106,25 +105,27 @@ check_names <- function(x) {
 }
 
 #' Make Syntactically Valid Names
-#'
+#' 
 #' Compared to \code{\link{make.names}} this function also 
-#' converts characters to lower case and replaces \code{.} by \code{_}.
-#'
+#' converts characters to lower case and replaces \code{.}
+#' by \code{_}.
+#' 
 #' @param x A character vector.
-#'
+#'   
 #' @return A character vector.
 make_names <- function(x) {
   gsub("\\.+", "_", make.names(tolower(x)))
 }
 
 #' Check Model Index
-#'
+#' 
 #' @param x A result from \code{\link{run_models}}.
 #' @param i A model index, character or numeric.
-#' @param allow_multiple logical. Allow multiple model index?
-#'
-#' @return Nothing, just throws an error if an incorrect model 
-#' index is used.
+#' @param allow_multiple logical. Allow multiple model
+#'   index?
+#'   
+#' @return Nothing, just throws an error if an incorrect
+#'   model index is used.
 check_model_index <- function(x, i, allow_multiple = FALSE) {
   
   if(length(i) != 1 & ! allow_multiple) {
@@ -136,7 +137,8 @@ check_model_index <- function(x, i, allow_multiple = FALSE) {
   }
   
   if (is.numeric(i) & (any(i > get_model_count(x)) | any(i < 1))) {
-    stop(sprintf("Model index out of range [%i - %i].", 1, get_model_count(x)))
+    stop(sprintf("Model index out of range [%i - %i].",
+                 1, get_model_count(x)))
   }
   
   if (is.character(i) & any(! i %in% get_model_names(x))) {
@@ -199,9 +201,9 @@ as_integer_safe <- function(x) {
 }
 
 #' Convert Data Frame Factor Variables to Character
-#'
+#' 
 #' @param x A data frame.
-#'
+#'   
 #' @return A data frame.
 clean_factors <- function(x) {
   if (any(unlist(lapply(x, is.factor)))){

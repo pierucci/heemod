@@ -6,12 +6,12 @@
 #' and \code{file}. An optional \code{absolute_path} column 
 #' can be added, having value \code{TRUE} where an absolute 
 #' file path is provided. \code{data} values must include 
-#' \code{state}, \code{tm}, and \code{parameters}, and can
-#' also include \code{options}, \code{demographics} and
+#' \code{state}, \code{tm}, and \code{parameters}, and can 
+#' also include \code{options}, \code{demographics} and 
 #' \code{data}.  The corresponding values in the \code{file}
-#' column give the names of the files (located in
-#' \code{base_dir}) that contain the corresponding
-#' information - or, in the case of \code{data}, the
+#' column give the names of the files (located in 
+#' \code{base_dir}) that contain the corresponding 
+#' information - or, in the case of \code{data}, the 
 #' directory containing the tables to be loaded.
 #' 
 #' @param location Directory where the files are located.
@@ -40,7 +40,7 @@ run_models_tabular <- function(location, reference = "REFERENCE.csv") {
 #'   \code{\link{create_model_list_from_tabular}}) \item 
 #'   param_info  \item output_dir where to store output 
 #'   files, if specified \item demographic_file a table for 
-#'   demographic analysis \item model_options a list of
+#'   demographic analysis \item model_options a list of 
 #'   model options.}
 gather_model_info <- function(base_dir, ref_file) {
   
@@ -113,22 +113,22 @@ gather_model_info <- function(base_dir, ref_file) {
 
 #' Evaluate Models From a Tabular Source
 #' 
-#' Execute a full set of analyses, possibly including
-#' discrete sensitivity analysis, probabilistic sensitivity
+#' Execute a full set of analyses, possibly including 
+#' discrete sensitivity analysis, probabilistic sensitivity 
 #' analysis, and analyses across demographics.
 #' 
-#' @param inputs Result from
+#' @param inputs Result from 
 #'   \code{\link{gather_model_info}}.
 #' @param run_psa Run PSA?
 #' @param run_demo Run demographic analysis?
 #'   
-#' @return a list \itemize{ \item \code{models} (always)
-#'   unevaluated model. \item \code{model_runs} (always)
-#'   evaluated models \item \code{dsa} (deterministic
-#'   sensitivity analysis) - if appropriate parameters
-#'   provided \item \code{psa} (probabilistic sensitivity
-#'   analysis) - if appropriate parameters provided \item
-#'   \code{demographics} results across different
+#' @return a list \itemize{ \item \code{models} (always) 
+#'   unevaluated model. \item \code{model_runs} (always) 
+#'   evaluated models \item \code{dsa} (deterministic 
+#'   sensitivity analysis) - if appropriate parameters 
+#'   provided \item \code{psa} (probabilistic sensitivity 
+#'   analysis) - if appropriate parameters provided \item 
+#'   \code{demographics} results across different 
 #'   demographic groups - if appropriate parameters 
 #'   provided}
 eval_models_from_tabular <- function(inputs,
@@ -228,7 +228,7 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
 
 #' Create State Definitions From Tabular Input
 #' 
-#' Transforms tabular input defining states into an
+#' Transforms tabular input defining states into an 
 #' \code{heemod} object.
 #' 
 #' Columns of state_info besides .model and state include 
@@ -351,8 +351,8 @@ create_states_from_tabular <- function(state_info,
 #' inserted.
 #' 
 #' All state names must be used in the \code{from} column of
-#' the transition matrix (otherwise you can just get rid of
-#' the state). Absorbing states should have a transition
+#' the transition matrix (otherwise you can just get rid of 
+#' the state). Absorbing states should have a transition 
 #' from and to themselves with probability 1.
 #' 
 #' @param trans_probs  Result for one model of 
@@ -376,8 +376,8 @@ create_matrix_from_tabular <- function(trans_probs, state_names,
   
   unique_states <- unique(c(trans_probs$from, trans_probs$to))
   
-  ## we can have an initial state where people start but
-  ## can't get to, so we don't check trans_probs$to states
+  ## we can have an initial state where people start but 
+  ## can't get to, so we don't check trans_probs$to states 
   ## the way we check trans_probs$from states
   
   if (! all(trans_probs$to %in% trans_probs$from)) {
@@ -397,7 +397,8 @@ create_matrix_from_tabular <- function(trans_probs, state_names,
     ))
   }
   
-  ## set up matrix of 0's, and then add the listed probabilities
+  ## set up matrix of 0's, and then add the listed
+  ## probabilities
   num_states <- length(unique_states)
   prob_mat <- matrix(0, nrow = num_states, ncol = num_states,
                      dimnames = list(state_names, state_names))
@@ -805,7 +806,8 @@ read_file <- function(file_name) {
   ## get rid of "comment" columns, if any
   tab <- tab[! grepl("^\\.comment", names(tab))]
   
-  ## get rid of NA rows that may have come from blank rows in file
+  ## get rid of NA rows that may have come from blank rows
+  ## in file
   tab <- filter_blanks(tab)
   tab
 }
@@ -814,8 +816,8 @@ read_file <- function(file_name) {
 #' 
 #' Remove rows were all values are \code{NA}.
 #' 
-#' Some rows can be left blanks in the input table for
-#' readability, this function ensures those rows are
+#' Some rows can be left blanks in the input table for 
+#' readability, this function ensures those rows are 
 #' removed.
 #' 
 #' @param x A \code{data.frame}.

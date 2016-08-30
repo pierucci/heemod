@@ -16,7 +16,7 @@ create_states_from_tabular(state_info, df_env = globalenv())
 A state list.
 }
 \description{
-Transforms tabular input defining states into an
+Transforms tabular input defining states into an 
 \code{heemod} object.
 }
 \details{

@@ -17,7 +17,7 @@ A list with elements: \itemize{ \item models (of
   \code{\link{create_model_list_from_tabular}}) \item 
   param_info  \item output_dir where to store output 
   files, if specified \item demographic_file a table for 
-  demographic analysis \item model_options a list of
+  demographic analysis \item model_options a list of 
   model options.}
 }
 \description{

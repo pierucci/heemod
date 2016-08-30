@@ -7,7 +7,7 @@
 define_sensitivity(...)
 }
 \arguments{
-\item{...}{A named list of min and max values that
+\item{...}{A named list of min and max values that 
 parameters will take.}
 }
 \value{

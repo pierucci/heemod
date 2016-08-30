@@ -1,18 +1,21 @@
 #' Display the Code to Generate an Object
 #' 
-#' This function returns the \code{R} code to generate an \code{heemod} oj
-#'
+#' This function returns the \code{R} code to generate an
+#' \code{heemod} object.
+#' 
 #' @param x An \code{heemod} object.
-#' @param name character. Optional argument giving the name to assign to the object.
-#' @param sub logical. Should states or models be referenced by name in \code{define_model}
-#'  and \code{run_model} instead of including the entire code?
+#' @param name character. Optional argument giving the name
+#'   to assign to the object.
+#' @param sub logical. Should states or models be referenced
+#'   by name in \code{define_model} and \code{run_model}
+#'   instead of including the entire code?
 #' @param depth Depth of the function call.
 #' @param n_space Number of space used for indentation.
 #' @param ... Additional parameters passed to methods.
-#'
+#'   
 #' @return A character string.
 #' @export
-#'
+#' 
 #' @examples
 #' 
 #' p <- define_parameters(

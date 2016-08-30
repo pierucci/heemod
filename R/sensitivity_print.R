@@ -4,14 +4,15 @@
 #' plot.
 #' 
 #' Plot type \code{simple} plots variations of single model 
-#' costs, while \code{difference} plots cost difference between 
-#' the specified model and the reference model.
+#' costs, while \code{difference} plots cost difference
+#' between the specified model and the reference model.
 #' 
 #' @param x A result of \code{\link{run_sensitivity}}.
 #' @param model Name or index of model to plot.
 #' @param type Type of plot (see details).
 #' @param result Plot cost, effect, or ICER.
-#' @param widest_on_top logical. Should bars be sorted so widest are on top?
+#' @param widest_on_top logical. Should bars be sorted so
+#'   widest are on top?
 #' @param ... Additional arguments passed to \code{plot}.
 #'   
 #' @return A \code{ggplot2} object.

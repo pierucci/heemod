@@ -14,6 +14,7 @@ A character vector.
 }
 \description{
 Compared to \code{\link{make.names}} this function also 
-converts characters to lower case and replaces \code{.} by \code{_}.
+converts characters to lower case and replaces \code{.}
+by \code{_}.
 }
 

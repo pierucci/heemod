@@ -33,8 +33,8 @@ need not be specified - they will be automatically
 inserted.
 
 All state names must be used in the \code{from} column of
-the transition matrix (otherwise you can just get rid of
-the state). Absorbing states should have a transition
+the transition matrix (otherwise you can just get rid of 
+the state). Absorbing states should have a transition 
 from and to themselves with probability 1.
 }
 

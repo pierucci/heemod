@@ -62,11 +62,11 @@ define_parameters_ <- function(.dots) {
 #' Extract parameters names from an \code{uneval_parameters}
 #' or \code{eval_parameters} object.
 #' 
-#' @param x \code{uneval_parameters} or
+#' @param x \code{uneval_parameters} or 
 #'   \code{eval_parameters} object.
 #'   
 #' @return A character vector of parameter names.
-#' 
+#'   
 get_parameter_names <- function(x) {
   names(x)[names(x) != "markov_cycle"]
 }

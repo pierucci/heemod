@@ -17,7 +17,8 @@
 
 \item{model}{Name or index of model to plot.}
 
-\item{widest_on_top}{logical. Should bars be sorted so widest are on top?}
+\item{widest_on_top}{logical. Should bars be sorted so
+widest are on top?}
 
 \item{...}{Additional arguments passed to \code{plot}.}
 }
@@ -30,7 +31,7 @@ plot.
 }
 \details{
 Plot type \code{simple} plots variations of single model 
-costs, while \code{difference} plots cost difference between 
-the specified model and the reference model.
+costs, while \code{difference} plots cost difference
+between the specified model and the reference model.
 }
 

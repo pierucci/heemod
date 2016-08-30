@@ -82,10 +82,10 @@ eval_correlation <- function(x, var_names) {
 #' @param resample A \code{\link{define_distrib}} object.
 #' @param N > 0. Number of simulation to run.
 #'   
-#' @return A \code{data.frame} of resampled values with on
-#' column per parameter and \code{N} rows.
-#' 
-#' 
+#' @return A \code{data.frame} of resampled values with on 
+#'   column per parameter and \code{N} rows.
+#'   
+#'   
 eval_resample <- function(resample, N) {
   
   mat_p <- stats::pnorm(

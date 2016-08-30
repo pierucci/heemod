@@ -26,12 +26,12 @@ The reference file should have two columns, \code{data}
 and \code{file}. An optional \code{absolute_path} column 
 can be added, having value \code{TRUE} where an absolute 
 file path is provided. \code{data} values must include 
-\code{state}, \code{tm}, and \code{parameters}, and can
-also include \code{options}, \code{demographics} and
+\code{state}, \code{tm}, and \code{parameters}, and can 
+also include \code{options}, \code{demographics} and 
 \code{data}.  The corresponding values in the \code{file}
-column give the names of the files (located in
-\code{base_dir}) that contain the corresponding
-information - or, in the case of \code{data}, the
+column give the names of the files (located in 
+\code{base_dir}) that contain the corresponding 
+information - or, in the case of \code{data}, the 
 directory containing the tables to be loaded.
 }
 
