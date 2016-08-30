@@ -101,7 +101,7 @@ plot.run_models <- function(x, type = c("counts", "ce"),
       tab_counts <- do.call("rbind", tab_counts_pieces)
       tab_counts$.model <- factor(tab_counts$.model, levels = names(model_info))
       pos_cycle <- pretty(seq_len(nrow(tab_counts)), n = min(nrow(tab_counts), 10))
-      browser()
+      
       tab_counts <- tidyr::gather_(
         data = tab_counts,
         key_col = "key",
