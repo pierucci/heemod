@@ -407,12 +407,6 @@ test_that(
     )
     
     expect_output(
-      print(result$psa),
-      "A tibble: 200 x 9",
-      fixed = TRUE
-    )
-    
-    expect_output(
       print(result$demographics),
       "An analysis re-run on 62 parameter sets.",
       fixed = TRUE
