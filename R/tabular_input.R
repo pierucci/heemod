@@ -16,10 +16,8 @@
 #' 
 #' @param location Directory where the files are located.
 #' @param reference Name of the reference file.
-#' @param save_outputs Should the outputs be saved? Only works if the reference 
-#'   file specifies an output directory.
-#' @param overwrite Should the outputs be overwritten? Not relevant if 
-#'   \code{save_outputs} = FALSE
+#' @param save Should the outputs be saved?
+#' @param overwrite Should the outputs be overwritten?
 #'   
 #' @return A list of evaluated models (always), and, if 
 #'   appropriate input is provided, dsa (deterministic 
@@ -29,28 +27,16 @@
 #'   
 #' @export
 run_models_tabular <- function(location, reference = "REFERENCE.csv",
-                               save_outputs = FALSE, overwrite = FALSE) {
-     
+                               save = FALSE, overwrite = FALSE) {
+  
   inputs <- gather_model_info(location, reference)
   outputs <- eval_models_from_tabular(inputs)
   
   output_dir <- inputs$output_dir
   
-  if(save_outputs & is.null(output_dir)) {
-       warning("Output directory not defined in the specification file - the outputs will not be saved.")
+  if (save) {
+    save_outputs(outputs, output_dir, overwrite)
   }
-  
-  if(save_outputs & ! is.null(output_dir)) {
-       if(dir.exists(file.path(location, output_dir)) & ! overwrite) {
-            warning("Output directory exists and overwrite is FALSE - the outputs will not be saved.")
-       } else {
-            save_outputs(outputs, 
-                         base_dir = location, 
-                         output_dir = output_dir,
-                         overwrite = overwrite, 
-                         create_dir = TRUE)
-       }
-  } 
   
   outputs
 }
@@ -872,3 +858,90 @@ is_xlsx <- function(x) {
 is_xls <- function(x) {
   tolower(tools::file_ext(x)) == "xls"
 }
+
+#' Save Model Outputs
+#' 
+#' @param outputs Result from
+#'   \code{\link{run_models_tabular}}.
+#' @param output_dir Subdirectory in which to write output.
+#' @param overwrite Should the outputs be overwritten?
+#'   
+#' @return \code{NULL}. Used for its side effect of creating
+#'   files in the output directory.
+#'   
+save_outputs <- function(outputs, output_dir, overwrite) {
+  if(is.null(output_dir)) {
+    warning("Output directory not defined in the specification file - the outputs will not be saved.")
+    return(NULL)
+    
+  } else if(dir.exists(output_dir) & ! overwrite) {
+    warning("Output directory exists and overwrite is FALSE - the outputs will not be saved.")
+    return(NULL)
+    
+  } else {
+    delete_succes <- 0
+    if(dir.exists(output_dir)) {
+      delete_succes <- unlink(output_dir, recursive = TRUE)
+    }
+    
+    if (delete_succes == 1) {
+      warning("Failed to delete output directory.")
+      return(NULL)
+    }
+    
+    dir.create(output_dir)
+  }
+  
+  ## plots about individual models
+  model_names <- names(outputs$models)
+  
+  message("Generating plots for individual models...")
+  for(this_model in model_names){
+    this_plot <- plot(outputs$model_runs, model = this_model)
+    this_file <- paste("state_count_plot", this_model, sep = "_")
+    save_graph(this_plot, output_dir, this_file)
+    
+    this_plot <- plot(outputs$dsa, model = this_model)
+    this_file <- paste("dsa", this_model, sep = "_")
+    save_graph(this_plot, output_dir, this_file)
+  }
+  
+  base_model <- get_base_model(outputs$model_runs)
+  
+  ## plots about differences between models
+  message("Generating plots with model differences...")
+  for(this_model in setdiff(model_names, base_model)){
+    this_plot <- plot(outputs$dsa, type = "diff", model = this_model)
+    this_file <- paste("dsa", this_model, "vs", base_model, sep = "_")
+    save_graph(this_plot, output_dir, this_file)
+    
+    this_plot <- plot(outputs$psa, model = this_model)
+    this_file <- paste("psa", this_model, "vs", base_model, sep = "_")
+    save_graph(this_plot, output_dir, this_file)
+  }
+  
+  ## acceptability curve
+  message("Generating acceptability curve...")
+  this_plot <- plot(outputs$psa, type = "ac")
+  save_graph(this_plot,
+             output_dir, "acceptability")
+  
+  message("Writing ICER by group to a file...")
+  utils::write.csv(
+    outputs$demographics$icers,
+    file = file.path(this_plot, "icer_by_group.csv"),
+    row.names = FALSE
+  )
+  return(NULL)
+}
+
+save_graph <- function(plot, path, file_name) {
+  full_file <- file.path(path, file_name)
+  grDevices::png(filename = paste(full_file, "png", sep = "."))
+  print(plot)
+  grDevices::dev.off()
+  grDevices::pdf(file = paste(full_file, "pdf", sep = "."))
+  print(plot)
+  grDevices::dev.off()
+}
+

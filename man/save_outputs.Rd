@@ -2,32 +2,23 @@
 % Please edit documentation in R/save_outputs.R
 \name{save_outputs}
 \alias{save_outputs}
-\title{Title Save graphs and other outputs to a designated directory}
+\title{Save Model Outputs}
 \usage{
-save_outputs(outputs, base_dir, output_dir = "output", overwrite = FALSE,
-  create_dir = FALSE, use_devices = c("pdf", "png"))
+save_outputs(outputs, output_dir, overwrite)
 }
 \arguments{
-\item{outputs}{from run_models_from_files}
+\item{outputs}{Result from
+\code{\link{run_models_tabular}}.}
 
-\item{base_dir}{directory in which the analysis is being conducted}
+\item{output_dir}{Subdirectory in which to write output.}
 
-\item{output_dir}{="output" subdirectory in which to write output}
-
-\item{overwrite}{=FALSE if \code{output_dir} already exists, should it
-be overwritten?}
-
-\item{create_dir}{=FALSE if\code{output_dir} does not exist, should it be
-created?}
-
-\item{use_devices}{=c("pdf", "png") the set of devices to output to
-(each plot will be written out to each device)}
+\item{overwrite}{Should the outputs be overwritten?}
 }
 \value{
-NULL; written for the side effect of creating files 
-  in the output directory
+\code{NULL}. Used for its side effect of creating
+  files in the output directory.
 }
 \description{
-Title Save graphs and other outputs to a designated directory
+Save Model Outputs
 }
 

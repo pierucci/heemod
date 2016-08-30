@@ -20,8 +20,7 @@ Imports:  lazyeval,
           pryr,
           utils,
           tibble,
-          Hmisc,
-          flexsurv
+          Hmisc
 License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr

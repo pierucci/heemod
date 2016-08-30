@@ -74,7 +74,6 @@
 #'   
 #' @importFrom utils read.csv
 #' @importFrom utils write.csv
-#' @importFrom utils tail
 #'   
 #' @importFrom tools file_ext
 #' 
@@ -82,7 +81,6 @@
 #' @importFrom Hmisc wtd.mean
 #' @importFrom Hmisc wtd.var
 #' 
-#' @importFrom grDevices dev.new
 #' @importFrom grDevices dev.off
 #' @importFrom grDevices pdf
 #' @importFrom grDevices png
