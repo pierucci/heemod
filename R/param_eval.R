@@ -15,7 +15,7 @@
 eval_parameters <- function(x, cycles = 1) {
   # other datastructure?
   res <- dplyr::mutate_(
-    data.frame(
+    tibble::tibble(
       markov_cycle = seq_len(cycles)
     ),
     .dots = x

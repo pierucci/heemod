@@ -236,6 +236,7 @@ get_state_names <- function(x, ...){
   UseMethod("get_state_names")
 }
 
+#' @export
 get_state_names.default <- function(x, ...){
   names(x)
 }
