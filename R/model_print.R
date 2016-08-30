@@ -125,7 +125,7 @@ plot.run_models <- function(x, type = c("counts", "ce"),
         ggplot2::aes_string(
           x = "markov_cycle", 
           y = "value", 
-          colour = "color_string")) +
+          colour = color_string)) +
         ggplot2::geom_line() +
         ggplot2::geom_point() +
         ggplot2::scale_x_continuous(breaks = pos_cycle) +

@@ -16,6 +16,10 @@
 #' 
 #' @param location Directory where the files are located.
 #' @param reference Name of the reference file.
+#' @param save_outputs Should the outputs be saved? Only works if the reference 
+#'   file specifies an output directory.
+#' @param overwrite Should the outputs be overwritten? Not relevant if 
+#'   \code{save_outputs} = FALSE
 #'   
 #' @return A list of evaluated models (always), and, if 
 #'   appropriate input is provided, dsa (deterministic 
@@ -24,9 +28,30 @@
 #'   demographic groups).
 #'   
 #' @export
-run_models_tabular <- function(location, reference = "REFERENCE.csv") {
+run_models_tabular <- function(location, reference = "REFERENCE.csv",
+                               save_outputs = FALSE, overwrite = FALSE) {
+     
   inputs <- gather_model_info(location, reference)
   outputs <- eval_models_from_tabular(inputs)
+  
+  output_dir <- inputs$output_dir
+  
+  if(save_outputs & is.null(output_dir)) {
+       warning("Output directory not defined in the specification file - the outputs will not be saved.")
+  }
+  
+  if(save_outputs & ! is.null(output_dir)) {
+       if(dir.exists(file.path(location, output_dir)) & ! overwrite) {
+            warning("Output directory exists and overwrite is FALSE - the outputs will not be saved.")
+       } else {
+            save_outputs(outputs, 
+                         base_dir = location, 
+                         output_dir = output_dir,
+                         overwrite = overwrite, 
+                         create_dir = TRUE)
+       }
+  } 
+  
   outputs
 }
 
