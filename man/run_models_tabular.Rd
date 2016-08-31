@@ -4,12 +4,17 @@
 \alias{run_models_tabular}
 \title{Run Analyses From Files}
 \usage{
-run_models_tabular(location, reference = "REFERENCE.csv")
+run_models_tabular(location, reference = "REFERENCE.csv", save = FALSE,
+  overwrite = FALSE)
 }
 \arguments{
 \item{location}{Directory where the files are located.}
 
 \item{reference}{Name of the reference file.}
+
+\item{save}{Should the outputs be saved?}
+
+\item{overwrite}{Should the outputs be overwritten?}
 }
 \value{
 A list of evaluated models (always), and, if 
