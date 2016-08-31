@@ -4,7 +4,7 @@
 
 `heemod` is an `R` toolset for health economic evaluation modelling. It aims to provide a simple and consistent interface for Markov models specification and comparison. Non-homogeneous Markov models (with time varying properties) are supported.
 
-Most of the analyses presented in [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do) can be performed with `heemod`. See vignette `vignette("reproduction", package = "heemod")` for an exact reproduction of the analyses from the book.
+Most of the analyses presented in [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do) can be performed with `heemod`. See `vignette("reproduction", "heemod")` for an exact reproduction of the analyses from the book.
 
 This package is still a *beta* version.
 
@@ -36,15 +36,15 @@ devtools::install_github("pierucci/heemod")
 
 ## Learning heemod
 
-To get started read the intro vignette in `vignette("introduction", package = "heemod")`.
+To get started read the introduction in `vignette("introduction", "heemod")`.
 
-Specific analysis examples (mostly inspired from Decision Modelling for Health Economic Evaluation) can be found in the following vignettes:
+Specific analysis examples (mostly inspired from [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do)) can be found in the following vignettes:
 
-  * Homogeneous Markov model in `vignette("homogeneous", package = "heemod")`.
-  * Non-homogeneous Markov model in `vignette("non-homogeneous", package = "heemod")`.
-  * Probabilistic uncertainty analysis in `vignette("probabilistic", package = "heemod")`.
-  * Deterministic sensitivity analysis in `vignette("sensitivity", package = "heemod")`.
-  * Heterogeneity & Demographic analysis in `vignette("heterogeneity", package = "heemod")`.
+  * Homogeneous Markov model in `vignette("homogeneous", "heemod")`.
+  * Non-homogeneous Markov model in `vignette("non-homogeneous", "heemod")`.
+  * Probabilistic uncertainty analysis in `vignette("probabilistic", "heemod")`.
+  * Deterministic sensitivity analysis in `vignette("sensitivity", "heemod")`.
+  * Heterogeneity & Demographic analysis in `vignette("heterogeneity", "heemod")`.
 
 ## Devs
 
