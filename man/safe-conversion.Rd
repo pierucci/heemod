@@ -19,7 +19,7 @@ as_integer_safe(x)
 \item{f}{A conversion function.}
 }
 \value{
-A \code{numeric} of \code{integer} vector.
+A converted vector.
 }
 \description{
 These function return an error if a conversion fails.

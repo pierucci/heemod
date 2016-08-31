@@ -174,7 +174,7 @@ wtd_summary <- function(x, weights = NULL) {
 #' @param x A character vector.
 #' @param f A conversion function.
 #'   
-#' @return A \code{numeric} of \code{integer} vector.
+#' @return A converted vector.
 safe_convert <- function(x, f) {
   na1 <- is.na(x)
   res <- f(x)
