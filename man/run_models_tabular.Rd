@@ -4,13 +4,17 @@
 \alias{run_models_tabular}
 \title{Run Analyses From Files}
 \usage{
-run_models_tabular(location, reference = "REFERENCE.csv", save = FALSE,
-  overwrite = FALSE)
+run_models_tabular(location, reference = "REFERENCE.csv", run_psa = TRUE,
+  run_demo = TRUE, save = FALSE, overwrite = FALSE)
 }
 \arguments{
 \item{location}{Directory where the files are located.}
 
 \item{reference}{Name of the reference file.}
+
+\item{run_psa}{Run PSA?.}
+
+\item{run_demo}{Run demgraphic analysis?}
 
 \item{save}{Should the outputs be saved?}
 

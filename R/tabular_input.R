@@ -16,6 +16,8 @@
 #' 
 #' @param location Directory where the files are located.
 #' @param reference Name of the reference file.
+#' @param run_psa Run PSA?.
+#' @param run_demo Run demgraphic analysis?
 #' @param save Should the outputs be saved?
 #' @param overwrite Should the outputs be overwritten?
 #'   
@@ -27,10 +29,13 @@
 #'   
 #' @export
 run_models_tabular <- function(location, reference = "REFERENCE.csv",
+                               run_psa = TRUE, run_demo = TRUE,
                                save = FALSE, overwrite = FALSE) {
   
   inputs <- gather_model_info(location, reference)
-  outputs <- eval_models_from_tabular(inputs)
+  outputs <- eval_models_from_tabular(inputs,
+                                      run_psa = run_psa,
+                                      run_demo = run_demo)
   
   output_dir <- inputs$output_dir
   
@@ -928,8 +933,8 @@ save_outputs <- function(outputs, output_dir, overwrite) {
   
   message("Writing ICER by group to a file...")
   utils::write.csv(
-    outputs$demographics$icers,
-    file = file.path(this_plot, "icer_by_group.csv"),
+    outputs$demographics,
+    file = file.path(output_dir, "icer_by_group.csv"),
     row.names = FALSE
   )
   return(NULL)
@@ -944,4 +949,3 @@ save_graph <- function(plot, path, file_name) {
   print(plot)
   grDevices::dev.off()
 }
-
