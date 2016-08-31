@@ -19,7 +19,7 @@ install.packages("heemod")
   * the latest development version from github with:
 
 ```r
-devtools::install_github("pierucci/heemod")
+devtools::install_github("pierucci/heemod@devel")
 ```
 
 ## Main features
