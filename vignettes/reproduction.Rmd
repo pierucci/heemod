@@ -143,6 +143,12 @@ summary(res_mod)
 Key difference in DMHEE:
 
   1. Mortality rates are much higher in the book.
+  
+This can be corrected by using a user-specified mortality table and then fetch the values with:
+
+```r
+look_up(death_prob, age = age, sex = sex, bin = "age")
+```
 
 ```{r}
 # a function to return age-related mortality rate
@@ -150,7 +156,7 @@ Key difference in DMHEE:
 death_prob <- data.frame(
   age = rep(seq(35, 85, 10), each = 2),
   sex = rep(1:0, 6),
-  mr = c(
+  value = c(
     1.51e-3, .99e-3, 3.93e-3,
     2.6e-3, 10.9e-3, 6.7e-3,
     31.6e-3, 19.3e-3, 80.1e-3,
@@ -158,12 +164,6 @@ death_prob <- data.frame(
   )
 )
 death_prob
-
-mr_func <- function(age, sex) {
-  age  <- floor(age/10-.5)*10+5
-  age <- ifelse(age > 85, 85, age)
-  merge(data.frame(age = age, sex = sex), death_prob)$mr
-}
 
 param <- define_parameters(
     age_init = 60,
@@ -195,7 +195,7 @@ param <- define_parameters(
     
     # age-related mortality rate
     sex_cat = ifelse(sex == 0, "FMLE", "MLE"),
-    mr = mr_func(age, sex),
+    mr = look_up(death_prob, age = age, sex = sex, bin = "age"),
     
     u_successP = .85,
     u_revisionTHR = .30,

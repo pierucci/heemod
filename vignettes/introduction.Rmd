@@ -136,7 +136,7 @@ plot(res_mod_1) +
 
 # Convenience functions
 
-Convenience functions are avaible to make it easier to compute transition probabilities from indidence rates, OR, RR, or probabilities estiamted on a different timeframe.
+Convenience functions are available to easily compute transition probabilities from indidence rates, OR, RR, or probabilities estimated on a different timeframe.
 
 Example : convert an incidence rate of 162 cases per 1,000 person-years to a 5-year probability.
 
@@ -145,6 +145,12 @@ rate_to_prob(r = 162, per = 1000, to = 5)
 ```
 
 Type `?probability` to see a list of the convenience functions available.
+
+# External data
+
+Age and sex-specific mortality rates can be downloaded from the WHO online database with the function `get_who_mr()`.
+
+External data contained in user-defined data frames can be referenced in a model with the function `look_up()`.
 
 # Going futher
 
