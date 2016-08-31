@@ -1,6 +1,7 @@
 #' Probability Density Functions for 
 #' Probabilistic Uncertainty Analysis
 #' 
+#' @name density
 #' @param mean Distribution mean.
 #' @param sd Distribution standard deviation.
 #' @param ... Dirichlet distribution parameters.
@@ -12,7 +13,6 @@
 #' @param sigma SD on the logit scale.
 #'   
 #' @export
-#' 
 normal <- function(mean, sd) {
   list(r_norm(mean, sd))
 }
@@ -20,7 +20,7 @@ r_norm <- function(mean, sd) {
   function(x) stats::qnorm(p = x, mean = mean, sd = sd)
 }
 
-#' @rdname normal
+#' @rdname density
 #' @export
 lognormal <- function(mean, sd, meanlog, sdlog) {
   if (missing(sdlog)) sdlog <- sqrt(log(1 + sd^2/mean^2))
@@ -32,7 +32,7 @@ r_lognormal <- function(meanlog, sdlog) {
   function(x) stats::qlnorm(p = x, meanlog = meanlog, sdlog = sdlog)
 }
 
-#' @rdname normal
+#' @rdname density
 #' @export
 make_gamma <- function(mean, sd) {
   list(r_gamma(mean^2/sd^2, sd^2/mean))
@@ -41,7 +41,7 @@ r_gamma <- function(shape, scale) {
   function(x) stats::qgamma(p = x, shape = shape, scale = scale)
 }
 
-#' @rdname normal
+#' @rdname density
 #' @export
 prop <- function(prob, size) {
   list(r_binom(prob, size))
@@ -50,7 +50,7 @@ r_binom <- function(prob, size) {
   function(x) stats::qbinom(p = x, size = size, prob = prob) / size
 }
 
-#' @rdname normal
+#' @rdname density
 #' @export
 multinom <- function(...) {
   list_param <- list(...)
@@ -65,7 +65,7 @@ r_multinom <- function(n, total) {
 }
 
 
-#' @rdname normal
+#' @rdname density
 #' @export
 logitnormal <- function(mu, sigma) {
   list(r_logitnormal(mu, sigma))

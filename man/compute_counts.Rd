@@ -29,4 +29,5 @@ are supposed to happen at the beginning or the end of
 each cycle. Alternatively linear interpolation between 
 cycles can be performed.
 }
+\keyword{internal}
 

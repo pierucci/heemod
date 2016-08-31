@@ -6,12 +6,12 @@
 #'   
 #' @return A data frame with columns \code{.ceac} (the 
 #'   cost-effectiveness acceptability threshold), 
-#'   \code{.top} (treatments or models), \code{.n} (the
-#'   number of cases in which the treatment was most
+#'   \code{.top} (treatments or models), \code{.n} (the 
+#'   number of cases in which the treatment was most 
 #'   cost-effective), and \code{.p} (the proportion of cases
 #'   in which the treatment was most effective).
-#' @export
-#' 
+#'   
+#' @keywords internal
 acceptability_curve <- function(x, wtp_thresholds){
   
   f2 <- function(.effect, .icer, .ceac, .model_names){

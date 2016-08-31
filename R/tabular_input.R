@@ -58,6 +58,8 @@ run_models_tabular <- function(location, reference = "REFERENCE.csv",
 #'   files, if specified \item demographic_file a table for 
 #'   demographic analysis \item model_options a list of 
 #'   model options.}
+#'   
+#' @keywords internal
 gather_model_info <- function(base_dir, ref_file) {
   
   ref <- read_file(file.path(base_dir, ref_file))
@@ -147,6 +149,8 @@ gather_model_info <- function(base_dir, ref_file) {
 #'   \code{demographics} results across different 
 #'   demographic groups - if appropriate parameters 
 #'   provided}
+#'   
+#' @keywords internal
 eval_models_from_tabular <- function(inputs,
                                      run_psa = TRUE,
                                      run_demo = TRUE) {
@@ -210,6 +214,8 @@ eval_models_from_tabular <- function(inputs,
 #' @param df_env An environment containing external data.
 #'   
 #' @return A list of unevaluated models.
+#'   
+#' @keywords internal
 create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   if(! inherits(ref, "data.frame"))
     stop("'ref' must be a data frame.")
@@ -272,6 +278,8 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
 #' @param df_env An environment containing external data.
 #'   
 #' @return A state list.
+#'   
+#' @keywords internal
 create_states_from_tabular <- function(state_info,
                                        df_env = globalenv()) {
   if(! inherits(state_info, "data.frame"))
@@ -378,6 +386,8 @@ create_states_from_tabular <- function(state_info,
 #' @param df_env An environment containing external data.
 #'   
 #' @return A transition matrix.
+#'   
+#' @keywords internal
 create_matrix_from_tabular <- function(trans_probs, state_names,
                                        df_env = globalenv()) {
   if(! inherits(trans_probs, "data.frame"))
@@ -442,7 +452,9 @@ create_matrix_from_tabular <- function(trans_probs, state_names,
 #' @param param_defs A parameter definition file.
 #' @param df_env An environment containing external data.
 #' 
-#' @return the parameter definition, invisibly.
+#' @return The parameter definition.
+#'   
+#' @keywords internal
 create_parameters_from_tabular <- function(param_defs,
                                            df_env = globalenv()) {
   if(! inherits(param_defs, "data.frame"))
@@ -530,6 +542,8 @@ create_parameters_from_tabular <- function(param_defs,
 #' @param opt An option data frame.
 #'
 #' @return A list of model options.
+#'   
+#' @keywords internal
 create_options_from_tabular <- function(opt) {
   allowed_opt <- c("cost", "effect", "init",
                    "method", "base", "cycles", "n")
@@ -587,6 +601,8 @@ create_options_from_tabular <- function(opt) {
 #' 
 #' @return A \code{heemod} model as returned by 
 #'   \code{\link{define_model}}.
+#'   
+#' @keywords internal
 create_model_from_tabular <- function(state_file,
                                       tm_file,
                                       df_env = globalenv()) {
@@ -617,6 +633,8 @@ create_model_from_tabular <- function(state_file,
 #' @param df_envir An environment.
 #' 
 #' @return The environment with the data frames.
+#'   
+#' @keywords internal
 create_df_from_tabular <- function(df_dir, df_envir) {
   if(! file.exists(df_dir))
     stop(paste(df_dir, "does not exist."))
@@ -667,7 +685,8 @@ create_df_from_tabular <- function(df_dir, df_envir) {
 #'  
 #'@return A list of data frames, one for each value of 
 #'  \code{split_on.}
-#'  
+#'   
+#' @keywords internal
 parse_multi_spec <- function(multi_spec,
                              split_on = ".model",
                              group_vars) {
@@ -766,6 +785,8 @@ parse_multi_spec <- function(multi_spec,
 #' @param ... catches other, unwanted arguments.
 #'   
 #' @return  A data frame.
+#'   
+#' @keywords internal
 create_demographic_table <- function(newdata,
                                      params) {
   weight_col <- which(names(newdata) == ".weights")
@@ -790,7 +811,8 @@ create_demographic_table <- function(newdata,
 #' @param file_name File name.
 #' 
 #' @return A \code{data.frame}.
-#'  
+#'   
+#' @keywords internal
 read_file <- function(file_name) {
   
   have_xls <- is_xls(file_name)
@@ -839,6 +861,8 @@ read_file <- function(file_name) {
 #' @param x A \code{data.frame}.
 #'   
 #' @return A \code{data.frame} without blank rows.
+#'   
+#' @keywords internal
 filter_blanks <- function(x) {
   x[! apply(is.na(x), 1, all), , drop = FALSE]
 }
@@ -849,7 +873,8 @@ filter_blanks <- function(x) {
 #' @return Whether the file is (respectively)
 #'  csv, xlsx, or xls.
 #' @rdname file-checkers
-#'
+#'   
+#' @keywords internal
 is_csv <- function(x) {
   tolower(tools::file_ext(x)) == "csv"
 }
@@ -874,6 +899,7 @@ is_xls <- function(x) {
 #' @return \code{NULL}. Used for its side effect of creating
 #'   files in the output directory.
 #'   
+#' @keywords internal
 save_outputs <- function(outputs, output_dir, overwrite) {
   if(is.null(output_dir)) {
     warning("Output directory not defined in the specification file - the outputs will not be saved.")

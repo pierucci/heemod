@@ -13,8 +13,9 @@
 #' @param ... A list of informations to print when checks 
 #'   fail, for debugging purposes.
 #'   
-#' @return NULL
+#' @return \code{NULL}
 #'   
+#' @keywords internal
 check_matrix <- function(x, ...) {
   info <- list(...)
   
@@ -27,7 +28,6 @@ check_matrix <- function(x, ...) {
   }
 }
 
-
 #' Evaluate Markov Model Transition Matrix
 #' 
 #' Evaluate a transition matrix using evaluated parameters.
@@ -39,7 +39,8 @@ check_matrix <- function(x, ...) {
 #'   
 #' @return An \code{eval_matrix} object (actually a list of 
 #'   transition matrix, one per cycle).
-
+#'   
+#' @keywords internal
 eval_matrix <- function(x, parameters) {
 
   tab_res <- mutate_(parameters, C = -pi, .dots = x)[names(x)]

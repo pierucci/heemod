@@ -18,4 +18,5 @@ Input with normalized \code{.cost} and
 Normalize cost and effect values taking base model as a 
 reference.
 }
+\keyword{internal}
 

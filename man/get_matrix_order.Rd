@@ -19,4 +19,5 @@ A generic that works both with \code{uneval_matrix} and
 \details{
 For internal use.
 }
+\keyword{internal}
 

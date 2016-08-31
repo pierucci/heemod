@@ -18,4 +18,5 @@ A \code{data.frame} of resampled values with on
 \description{
 Evaluate Resampling Definition
 }
+\keyword{internal}
 

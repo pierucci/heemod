@@ -2,15 +2,20 @@
 % Please edit documentation in R/resamp_define.R
 \name{define_correlation}
 \alias{define_correlation}
+\alias{define_correlation_}
 \title{Define a Correlation Structure for Probabilistic 
 Uncertainty Analysis}
 \usage{
 define_correlation(...)
+
+define_correlation_(.dots)
 }
 \arguments{
 \item{...}{A list of parameter names and correlation 
 coeficients of the form \code{var1, var2, cor(var1, 
-var2), var3, var4, cor(var3, var4), ...}}
+var2), var3, var4, cor(var3, var4), ...}.}
+
+\item{.dots}{Used to work around non-standard evaluation.}
 }
 \value{
 An object of class \code{correlation_matrix}.

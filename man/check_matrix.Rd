@@ -12,6 +12,9 @@ check_matrix(x, ...)
 \item{...}{A list of informations to print when checks 
 fail, for debugging purposes.}
 }
+\value{
+\code{NULL}
+}
 \description{
 Check whether a matrix fullfills the conditions to be a 
 transition matrix.
@@ -23,4 +26,5 @@ should not be used directly.
 Checks whether all rows sum to 1 and all probabilities 
 are between 0 and 1.
 }
+\keyword{internal}
 

@@ -62,4 +62,5 @@ heemod:::eval_model(
   method = "end"
 )
 }
+\keyword{internal}
 

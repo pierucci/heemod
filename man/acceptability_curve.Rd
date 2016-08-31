@@ -14,12 +14,13 @@ acceptability_curve(x, wtp_thresholds)
 \value{
 A data frame with columns \code{.ceac} (the 
   cost-effectiveness acceptability threshold), 
-  \code{.top} (treatments or models), \code{.n} (the
-  number of cases in which the treatment was most
+  \code{.top} (treatments or models), \code{.n} (the 
+  number of cases in which the treatment was most 
   cost-effective), and \code{.p} (the proportion of cases
   in which the treatment was most effective).
 }
 \description{
 Acceptability Curve from Probabilistic Analysis
 }
+\keyword{internal}
 

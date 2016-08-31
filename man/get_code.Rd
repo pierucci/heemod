@@ -66,6 +66,5 @@ m <- define_matrix(
 )
 
 get_code(m)
-
 }
 

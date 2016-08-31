@@ -18,4 +18,5 @@ For internal use.
 \details{
 All states should have the same value names.
 }
+\keyword{internal}
 

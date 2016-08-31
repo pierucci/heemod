@@ -22,4 +22,5 @@ Whether the file is (respectively)
 \description{
 Check File Type
 }
+\keyword{internal}
 

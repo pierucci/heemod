@@ -21,4 +21,5 @@ Nothing, just throws an error if an incorrect
 \description{
 Check Model Index
 }
+\keyword{internal}
 

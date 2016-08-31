@@ -17,4 +17,5 @@ A character vector of state names.
 \description{
 Retrieve state names from an object containing states.
 }
+\keyword{internal}
 

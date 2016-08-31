@@ -10,9 +10,10 @@ plur(x)
 \item{x}{integer.}
 }
 \value{
-"s" or ""
+\code{"s"} or \code{""}.
 }
 \description{
 Returns "s" if x > 1
 }
+\keyword{internal}
 

@@ -20,6 +20,7 @@
 #'   
 #' @example inst/examples/example_eval_model_newdata.R
 #'   
+#' @keywords internal
 eval_model_newdata <- function(x, model = 1, newdata) {
   check_model_index(x = x, i = model)
   

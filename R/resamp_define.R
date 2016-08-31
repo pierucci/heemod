@@ -13,6 +13,8 @@
 #' @param ... Formulas defining parameter distributions.
 #' @param correlation A correlation matrix for parameters or
 #'   the output of \code{\link{define_correlation}}.
+#' @param list_qdist List of resampling functions.
+#' @param list_multi List of multinomial parameters.
 #'   
 #' @return An object of class \code{resamp_definition}. 
 #'   Contains \code{list_qdist}, a list of quantile 
@@ -54,6 +56,7 @@ define_distrib <- function(...,
   define_distrib_(list_qdist, list_multi, correlation)
 }
 
+#' @rdname define_distrib
 define_distrib_ <- function(list_qdist, list_multi, correlation) {
   
   if (any(duplicated(names(list_qdist)))) {
@@ -128,7 +131,8 @@ define_multinom <- function(x) {
 #' 
 #' @param ... A list of parameter names and correlation 
 #'   coeficients of the form \code{var1, var2, cor(var1, 
-#'   var2), var3, var4, cor(var3, var4), ...}
+#'   var2), var3, var4, cor(var3, var4), ...}.
+#' @param .dots Used to work around non-standard evaluation.
 #'   
 #' @return An object of class \code{correlation_matrix}.
 #' @export
@@ -147,6 +151,7 @@ define_correlation <- function(...) {
   define_correlation_(.dots)
 }
 
+#' @rdname define_correlation
 define_correlation_ <- function(.dots) {
   if (! length(.dots) %% 3 == 0) {
     stop("Incorrect number of elements in correlation definition, the correct form is A, B, cor(A, B)...")

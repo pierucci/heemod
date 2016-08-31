@@ -2,6 +2,7 @@
 print.run_models <- function(x, ...) {
   print(summary(x, ...))
 }
+
 #' Summarise Markov Model Results
 #' 
 #' @param object Output from \code{\link{run_models}}.
@@ -56,6 +57,8 @@ summary.run_models <- function(object, ...) {
 #'   
 #' @return Input with normalized \code{.cost} and 
 #'   \code{.effect}, ordered by \code{.effect}.
+#'   
+#' @keywords internal
 normalize_ce <- function(x) {
   UseMethod("normalize_ce")
 }
@@ -78,8 +81,8 @@ normalize_ce.run_models <- function(x) {
 #'   sorted. Default: by increasing effect.
 #'   
 #' @return A \code{data.frame} with computed ICER.
-#' @export
-#' 
+#'   
+#' @keywords internal
 compute_icer <- function(x, model_order = order(x$.effect)) {
   
   tab <- x[model_order, ]

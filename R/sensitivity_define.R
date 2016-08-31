@@ -8,6 +8,7 @@
 #' 
 #' @param ... A named list of min and max values that 
 #'   parameters will take.
+#' @param .dots Used to work around non-standard evaluation.
 #'   
 #' @return A \code{sensitivity} object.
 #' @export
@@ -24,6 +25,7 @@ define_sensitivity <- function(...) {
   define_sensitivity_(.dots)
 }
 
+#' @rdname define_sensitivity
 define_sensitivity_ <- function(.dots) {
   check_names(names(.dots))
   

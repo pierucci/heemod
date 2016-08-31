@@ -34,8 +34,8 @@ define_model <- function(...,
   )
 }
 
-#' @export
 #' @rdname define_model
+#' @export
 define_model_ <- function(transition_matrix, states) {
   
   if (! get_state_number(states) == get_matrix_order(transition_matrix)) {
@@ -64,13 +64,13 @@ define_model_ <- function(transition_matrix, states) {
 #' 
 #' Works on both unevaluated and evaluated models.
 #' 
-#' For internal use.
-#' 
 #' @param x An \code{uneval_model} or \code{eval_model} 
 #'   object.
 #'   
 #' @return An \code{uneval_matrix} or \code{uneval_matrix} 
 #'   object.
+#'   
+#' @keywords internal
 get_matrix <- function(x){
   UseMethod("get_matrix")
 }

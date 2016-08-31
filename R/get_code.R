@@ -31,15 +31,9 @@
 #' )
 #' 
 #' get_code(m)
-#' 
 get_code <- function(x, ...) {
   UseMethod("get_code")
 }
-# 
-# p <- define_parameters(
-#   a = 2,
-#   b = 2 * x + 1
-# )
 
 to_text_dots <- function(x, name = TRUE) {
   n <- names(x)

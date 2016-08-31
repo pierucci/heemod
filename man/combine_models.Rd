@@ -25,4 +25,5 @@ Given a set of models run with different parameters,
 return aggregated results to estimate population-level
 values.
 }
+\keyword{internal}
 

@@ -2,13 +2,18 @@
 % Please edit documentation in R/sensitivity_define.R
 \name{define_sensitivity}
 \alias{define_sensitivity}
+\alias{define_sensitivity_}
 \title{Define a Sensitivity Analysis}
 \usage{
 define_sensitivity(...)
+
+define_sensitivity_(.dots)
 }
 \arguments{
 \item{...}{A named list of min and max values that 
 parameters will take.}
+
+\item{.dots}{Used to work around non-standard evaluation.}
 }
 \value{
 A \code{sensitivity} object.

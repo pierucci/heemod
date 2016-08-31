@@ -15,4 +15,5 @@ A logical scalar.
 \description{
 Check if All the Elements of a List Are the Same
 }
+\keyword{internal}
 

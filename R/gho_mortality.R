@@ -1,5 +1,6 @@
 #' Use WHO Mortality Rate
 #' 
+#' @name who-mortality
 #' @param age age as a continuous variable.
 #' @param sex sex as \code{"FMLE"} or \code{"MLE"}.
 #' @param country Country code (see details).
@@ -34,8 +35,8 @@ get_who_mr_ <- function(age, sex, country, year = "latest") {
   })
 }
 
+#' @rdname who-mortality
 #' @export
-#' @rdname get_who_mr_
 get_who_mr <- memoise::memoise(get_who_mr_)
 
 

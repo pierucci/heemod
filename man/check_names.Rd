@@ -20,4 +20,5 @@ Throws an error if any of the names are reserved.
 Reserved names are \code{markov_cycle} and anything
 starting with \code{.}.
 }
+\keyword{internal}
 

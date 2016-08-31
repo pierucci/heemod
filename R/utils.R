@@ -5,6 +5,8 @@
 #'   such that 1 + x != 1.
 #'   
 #' @return A logical scalar.
+#'   
+#' @keywords internal
 is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
   abs(x - round(x)) < tol
 }
@@ -29,6 +31,7 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
 #' discount(rep(10, 5), .02)
 #' discount(rep(10, 5), .02, first = FALSE)
 #' 
+#' @keywords internal
 discount <- function(x, r, first = FALSE) {
   stopifnot(
     r >= 0,
@@ -44,6 +47,7 @@ discount <- function(x, r, first = FALSE) {
 #'   
 #' @return A logical scalar.
 #'   
+#' @keywords internal
 list_all_same <- function(x) {
   length(x) == 0 |
     all(unlist(
@@ -55,21 +59,11 @@ list_all_same <- function(x) {
 #'
 #' @param x integer.
 #'
-#' @return "s" or ""
+#' @return \code{"s"} or \code{""}.
+#'   
+#' @keywords internal
 plur <- function(x) {
   if (x > 1) "s" else ""
-}
-
-#' Get values from a specific model
-#' 
-#' @param x A data.frame with results from several models.
-#' @param m Model name or position.
-#'   
-#' @return A data.frame with results from only one model.
-get_model <- function(x, m) {
-  model_names <- unique(x$.model_names)
-  names(model_names) <- model_names
-  x[x$.model_names == model_names[m], ]
 }
 
 #' Check Names
@@ -83,6 +77,8 @@ get_model <- function(x, m) {
 #'   
 #' @return Nothing, just throws an error if a reserved name
 #'   is encountered.
+#'   
+#' @keywords internal
 check_names <- function(x) {
   if (is.null(x)) {
     stop("Names must exist.")
@@ -113,6 +109,8 @@ check_names <- function(x) {
 #' @param x A character vector.
 #'   
 #' @return A character vector.
+#'   
+#' @keywords internal
 make_names <- function(x) {
   gsub("\\.+", "_", make.names(tolower(x)))
 }
@@ -126,6 +124,8 @@ make_names <- function(x) {
 #'   
 #' @return Nothing, just throws an error if an incorrect
 #'   model index is used.
+#'   
+#' @keywords internal
 check_model_index <- function(x, i, allow_multiple = FALSE) {
   
   if(length(i) != 1 & ! allow_multiple) {
@@ -149,6 +149,21 @@ check_model_index <- function(x, i, allow_multiple = FALSE) {
   }
 }
 
+#' Weighted Summary
+#' 
+#' Compute a weighted summary of a numeric vector.
+#' 
+#' If \code{weights} is \code{NULL} an unweighted summar is
+#' returned.
+#' 
+#' @param x A numeric vector.
+#' @param weights A vector of weights, same length as 
+#'   \code{x}.
+#'   
+#' @return A vector with values \code{Min., 1st Qu., Median,
+#'   Mean, 3rd Qu., Max.}.
+#'   
+#' @keywords internal
 wtd_summary <- function(x, weights = NULL) {
   if (is.null(weights)) {
     res <- summary(x)
@@ -175,6 +190,8 @@ wtd_summary <- function(x, weights = NULL) {
 #' @param f A conversion function.
 #'   
 #' @return A converted vector.
+#'   
+#' @keywords internal
 safe_convert <- function(x, f) {
   na1 <- is.na(x)
   res <- f(x)
@@ -205,6 +222,8 @@ as_integer_safe <- function(x) {
 #' @param x A data frame.
 #'   
 #' @return A data frame.
+#'   
+#' @keywords internal
 clean_factors <- function(x) {
   if (any(unlist(lapply(x, is.factor)))){
     for (i in seq_along(x)) {

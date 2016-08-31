@@ -85,7 +85,7 @@ eval_correlation <- function(x, var_names) {
 #' @return A \code{data.frame} of resampled values with on 
 #'   column per parameter and \code{N} rows.
 #'   
-#'   
+#' @keywords internal
 eval_resample <- function(resample, N) {
   
   mat_p <- stats::pnorm(

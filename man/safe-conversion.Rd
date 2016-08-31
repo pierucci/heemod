@@ -24,4 +24,5 @@ A converted vector.
 \description{
 These function return an error if a conversion fails.
 }
+\keyword{internal}
 

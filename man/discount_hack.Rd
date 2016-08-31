@@ -21,4 +21,5 @@ The hack consists in replacing calls to
 \code{discount(x)} by \code{discount(x * rep(1, n()))} to
 ensure \code{x} is recycled to the correct length.
 }
+\keyword{internal}
 

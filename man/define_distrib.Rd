@@ -2,15 +2,22 @@
 % Please edit documentation in R/resamp_define.R
 \name{define_distrib}
 \alias{define_distrib}
+\alias{define_distrib_}
 \title{Define Parameters Distribution for Probabilistic Analysis}
 \usage{
 define_distrib(..., correlation)
+
+define_distrib_(list_qdist, list_multi, correlation)
 }
 \arguments{
 \item{...}{Formulas defining parameter distributions.}
 
 \item{correlation}{A correlation matrix for parameters or
 the output of \code{\link{define_correlation}}.}
+
+\item{list_qdist}{List of resampling functions.}
+
+\item{list_multi}{List of multinomial parameters.}
 }
 \value{
 An object of class \code{resamp_definition}. 

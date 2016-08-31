@@ -104,13 +104,14 @@ modify_.state <- function(.OBJECT, .dots) {
 #'   sicker = s3
 #' )
 #' }
+#'   
+#' @keywords internal
 define_state_list <- function(...) {
   .dots <- list(...)
   
   define_state_list_(.dots)
 }
 
-#' @export
 #' @rdname define_state_list
 define_state_list_ <- function(.dots) {
   
@@ -154,7 +155,6 @@ define_state_list_ <- function(.dots) {
   )
 }
 
-#' @export
 #' @rdname define_state_list
 modify.uneval_state_list <- function(.OBJECT, ...) {
   .dots <- list(...)
@@ -179,6 +179,7 @@ modify_.uneval_state_list <- function(.OBJECT, .dots) {
 #'   
 #' @return \code{NULL}
 #'   
+#' @keywords internal
 check_states <- function(x){
   if (! list_all_same(lapply(x, length))) {
     stop("Number of state values differ between states.")
@@ -201,6 +202,7 @@ check_states <- function(x){
 #'   
 #' @return An integer: number of states.
 #'   
+#' @keywords internal
 get_state_number <- function(x){
   # !mod!
   # rename get_state_count
@@ -214,6 +216,7 @@ get_state_number <- function(x){
 #'   
 #' @return A character vector of state value names.
 #'   
+#' @keywords internal
 get_state_value_names <- function(x){
   UseMethod("get_state_value_names")
 }
@@ -234,11 +237,12 @@ get_state_value_names.state <- function(x){
 #' @param ... Additional arguments passed to methods.
 #'   
 #' @return A character vector of state names.
+#'   
+#' @keywords internal
 get_state_names <- function(x, ...){
   UseMethod("get_state_names")
 }
 
-#' @export
 get_state_names.default <- function(x, ...){
   names(x)
 }

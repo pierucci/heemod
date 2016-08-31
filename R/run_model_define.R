@@ -207,3 +207,17 @@ get_base_model.default <- function(x, ...) {
 get_base_model.run_models <- function(x, ...) {
   attr(x, "base_model")
 }
+
+#' Get values from a specific model
+#' 
+#' @param x A data.frame with results from several models.
+#' @param m Model name or position.
+#'   
+#' @return A data.frame with results from only one model.
+#'   
+#' @keywords internal
+get_model <- function(x, m) {
+  model_names <- unique(x$.model_names)
+  names(model_names) <- model_names
+  x[x$.model_names == model_names[m], ]
+}

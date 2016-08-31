@@ -37,4 +37,5 @@ the transition matrix (otherwise you can just get rid of
 the state). Absorbing states should have a transition 
 from and to themselves with probability 1.
 }
+\keyword{internal}
 

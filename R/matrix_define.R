@@ -59,7 +59,6 @@ define_matrix <- function(
   define_matrix_(.dots = .dots, state_names = state_names)
 }
 
-#' @export
 #' @rdname define_matrix
 define_matrix_ <- function(
   .dots,
@@ -108,6 +107,8 @@ get_state_names.uneval_matrix <- function(x, ...){
 #' @param x A transition matrix, evaluated or not.
 #'   
 #' @return An integer: matrix order.
+#'   
+#' @keywords internal
 get_matrix_order <- function(x){
   UseMethod("get_matrix_order")
 }

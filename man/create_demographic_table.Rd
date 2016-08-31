@@ -25,4 +25,5 @@ correct.
 \details{
 An optional \code{.weights} column can exist in the file.
 }
+\keyword{internal}
 

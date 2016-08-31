@@ -12,6 +12,7 @@
 #'   
 #' @example inst/examples/example_eval_parameters.R
 #'   
+#' @keywords internal
 eval_parameters <- function(x, cycles = 1) {
   # other datastructure?
   res <- dplyr::mutate_(

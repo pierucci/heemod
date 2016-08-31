@@ -18,4 +18,5 @@ A logical scalar.
 \description{
 Check Wholenumbers
 }
+\keyword{internal}
 

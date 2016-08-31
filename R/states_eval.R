@@ -9,6 +9,7 @@
 #'   data.frame per state containing a column per state 
 #'   value and a line per cycle.
 #'   
+#' @keywords internal
 eval_state_list <- function(x, parameters) {
   
   f <- function(x) {
@@ -41,6 +42,8 @@ get_state_value_names.eval_state_list <- function(x){
 #' @param .dots A state object.
 #'   
 #' @return A modified state object.
+#'   
+#' @keywords internal
 discount_hack <- function(.dots) {
   f <- function (x) {
     if (is.atomic(x) || is.name(x)) {

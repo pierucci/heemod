@@ -21,4 +21,5 @@ Evaluate a transition matrix using evaluated parameters.
 \details{
 Runs checks on the transition matrix during evaluation.
 }
+\keyword{internal}
 

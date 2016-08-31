@@ -5,6 +5,7 @@
 #' @return A vector of model names on the efficiency
 #'   frontier.
 #'   
+#' @keywords internal
 get_frontier <- function(x) {
   base_model <- get_base_model(x)
   

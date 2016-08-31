@@ -17,7 +17,5 @@ An \code{uneval_matrix} or \code{uneval_matrix}
 \description{
 Works on both unevaluated and evaluated models.
 }
-\details{
-For internal use.
-}
+\keyword{internal}
 

@@ -17,4 +17,5 @@ A character vector of parameter names.
 Extract parameters names from an \code{uneval_parameters}
 or \code{eval_parameters} object.
 }
+\keyword{internal}
 

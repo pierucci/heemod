@@ -12,7 +12,7 @@ create_parameters_from_tabular(param_defs, df_env = globalenv())
 \item{df_env}{An environment containing external data.}
 }
 \value{
-the parameter definition, invisibly.
+The parameter definition.
 }
 \description{
 If specified in the tabular file, DSA and PSA can also be
@@ -27,4 +27,5 @@ sensitivity analysis will be performed), and \code{psa}
 (a definition of a distribution to use in a probabilistic
 sensitivity analysis. Other columns will be ignored.
 }
+\keyword{internal}
 

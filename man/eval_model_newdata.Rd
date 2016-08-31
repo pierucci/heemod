@@ -63,4 +63,5 @@ heemod:::eval_model_newdata(
   newdata = new_tab
 )
 }
+\keyword{internal}
 

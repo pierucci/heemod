@@ -17,4 +17,5 @@ A character vector of state value names.
 \description{
 Return Names of State Values
 }
+\keyword{internal}
 

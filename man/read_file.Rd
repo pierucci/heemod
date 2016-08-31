@@ -15,4 +15,5 @@ A \code{data.frame}.
 \description{
 Columns starting with '.comment' are ignored.
 }
+\keyword{internal}
 

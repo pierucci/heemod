@@ -13,6 +13,8 @@
 #' @return A \code{combined_models} object, mostly similar
 #'   to a result from \code{\link{run_models}}. \code{plot}
 #'   and \code{summary} methods are available.
+#'   
+#' @keywords internal
 combine_models <- function(list_newmodels, weights, oldmodel) {
   
   total_weights <- sum(weights)

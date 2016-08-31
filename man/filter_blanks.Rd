@@ -20,4 +20,5 @@ Some rows can be left blanks in the input table for
 readability, this function ensures those rows are 
 removed.
 }
+\keyword{internal}
 

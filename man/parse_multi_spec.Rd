@@ -40,4 +40,5 @@ unique values of \code{split_on}.
 \code{group_var} can be the state names, or from and to 
 lines for a matrix definition...
 }
+\keyword{internal}
 

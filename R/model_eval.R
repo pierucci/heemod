@@ -26,6 +26,7 @@
 #'   
 #' @example inst/examples/example_eval_model.R
 #'   
+#' @keywords internal
 eval_model <- function(model, parameters, cycles, 
                        init, method) {
   
@@ -85,6 +86,7 @@ get_counts <- function(x) {
 #'   
 #' @return A \code{cycle_counts} object.
 #'   
+#' @keywords internal
 compute_counts <- function(
   transition_matrix, init,
   method
@@ -145,7 +147,6 @@ compute_counts <- function(
   
 }
 
-
 #' Compute State Values per Cycle
 #' 
 #' Given states and counts, computes the total state values 
@@ -157,6 +158,7 @@ compute_counts <- function(
 #' @return A data.frame of state values, one column per 
 #'   state value and one row per cycle.
 #'   
+#' @keywords internal
 compute_values <- function(states, counts) {
   
   states_names <- get_state_names(states)

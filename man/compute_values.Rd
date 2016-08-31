@@ -19,4 +19,5 @@ A data.frame of state values, one column per
 Given states and counts, computes the total state values 
 per cycle.
 }
+\keyword{internal}
 
