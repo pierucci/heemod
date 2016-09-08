@@ -1,14 +1,21 @@
 #' Use WHO Mortality Rate
 #' 
+#' Returns age and sex-specific mortality probabilities for
+#' a given country.
+#' 
+#' The results of \code{get_who_mr} are memoised for 1 hour
+#' to increase resampling performance. \code{get_who_mr_} is
+#' not memoised.
+#' 
 #' @name who-mortality
 #' @param age age as a continuous variable.
 #' @param sex sex as \code{"FMLE"} or \code{"MLE"}.
 #' @param country Country code (see details).
-#' @param year Use data from that year. Defaults to
+#' @param year Use data from that year. Defaults to 
 #'   \code{"latest"}.
 #'   
 #' @return This function should be used within 
-#'   \code{\link{define_matrix}} or
+#'   \code{\link{define_matrix}} or 
 #'   \code{\link{define_parameters}}.
 #'   
 #' @examples 
@@ -37,8 +44,10 @@ get_who_mr_ <- function(age, sex, country, year = "latest") {
 
 #' @rdname who-mortality
 #' @export
-get_who_mr <- memoise::memoise(get_who_mr_)
-
+get_who_mr <- memoise::memoise(
+  get_who_mr_,
+  ~ memoise::timeout(3600)
+)
 
 get_gho_mr <- function(country, year) {
   gho_data <- rgho::get_gho_data(

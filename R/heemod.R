@@ -69,6 +69,7 @@
 #' @importFrom tidyr gather_
 #'   
 #' @importFrom memoise memoise
+#' @importFrom memoise timeout
 #'   
 #' @importFrom rgho get_gho_data
 #'   
