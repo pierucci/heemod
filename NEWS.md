@@ -1,3 +1,10 @@
+# heemod devel
+
+## New features
+
+  * New options `heemod.verbose` and `heemod.memotime`.
+  * More informative messages, especially in verbose mode.
+
 # heemod 0.4.0
 
 ## New features

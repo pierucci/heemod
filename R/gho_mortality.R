@@ -46,7 +46,7 @@ get_who_mr_ <- function(age, sex, country, year = "latest") {
 #' @export
 get_who_mr <- memoise::memoise(
   get_who_mr_,
-  ~ memoise::timeout(3600)
+  ~ memoise::timeout(options()$heemod.memotime)
 )
 
 get_gho_mr <- function(country, year) {
