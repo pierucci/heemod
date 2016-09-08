@@ -55,7 +55,7 @@ update.run_models <- function(object, newdata, ...) {
     weights <- newdata$.weights
     newdata <- dplyr::select_(newdata, ~ (- .weights))
   } else {
-    message("No weights specified, using equal weights.")
+    message("No weights specified in model update, using equal weights.")
     weights <- rep(1, nrow(newdata))
   }
   
@@ -63,7 +63,7 @@ update.run_models <- function(object, newdata, ...) {
   list_res <- list()
   
   for (n in get_model_names(object)) {
-    message(sprintf("Running analysis for model '%s'.", n))
+    message(sprintf("Updating model '%s'...", n))
     suppressMessages({
       list_res <- c(
         list_res,
