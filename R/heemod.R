@@ -83,7 +83,7 @@
 #' @importFrom Hmisc wtd.var
 #' 
 #' @importFrom grDevices dev.off
-#' @importFrom grDevices pdf
+#' @importFrom grDevices cairo_pdf
 #' @importFrom grDevices png
 #' 
 #' @importFrom graphics plot

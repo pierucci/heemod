@@ -385,7 +385,8 @@ test_that(
 test_that(
   "Running model from files works.", {
     result <- run_models_tabular(
-      location = system.file("tabular/thr", package = "heemod")
+      location = system.file("tabular/thr", package = "heemod"),
+      save = TRUE, overwrite = TRUE
     )
     
     expect_identical(
