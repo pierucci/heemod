@@ -13,6 +13,7 @@
 #' @param country Country code (see details).
 #' @param year Use data from that year. Defaults to 
 #'   \code{"latest"}.
+#' @param pool Pool female and male mortality rates?
 #'   
 #' @return This function should be used within 
 #'   \code{\link{define_matrix}} or 
@@ -25,18 +26,25 @@
 #'   0, 1
 #' )
 #' 
-get_who_mr_ <- function(age, sex, country, year = "latest") {
-  mr_data <- get_gho_mr(country = country, year = as.character(year))
+get_who_mr_ <- function(age, sex, country,
+                        year = "latest", pool = FALSE) {
+  mr_data <- get_gho_mr(country = country,
+                        year = as.character(year),
+                        pool = pool)
   
   age_gho <- trans_age_gho(age)
-  sex_gho <- trans_sex_gho(sex)
+  ref_data <- dplyr::data_frame(
+    AGEGROUP = as.character(age_gho)
+  )
+  
+  if (! pool) {
+    sex_gho <- trans_sex_gho(sex)
+    ref_data$SEX <- as.character(sex_gho)
+  }
   
   suppressMessages({
     dplyr::left_join(
-      dplyr::data_frame(
-        AGEGROUP = as.character(age_gho),
-        SEX = as.character(sex_gho)
-      ),
+      ref_data,
       mr_data
     )$Numeric
   })
@@ -49,8 +57,8 @@ get_who_mr <- memoise::memoise(
   ~ memoise::timeout(options()$heemod.memotime)
 )
 
-get_gho_mr <- function(country, year) {
-  gho_data <- rgho::get_gho_data(
+get_gho_mr <- function(country, year, pool) {
+  mr_data <- rgho::get_gho_data(
     dimension = "GHO",
     code = "LIFE_0000000029",
     filter = list(
@@ -58,11 +66,12 @@ get_gho_mr <- function(country, year) {
     )
   )
   
-  years <- unique(gho_data$YEAR)
+  years <- unique(mr_data$YEAR)
   
   if (year == "latest") {
     study_year <- max(years)
     message(sprintf("Using latest year: %s", study_year))
+    
   } else if (! year %in% years) {
     stop(sprintf(
       "Mortality data for YEAR '%s' not available for COUNTRY '%s'.",
@@ -72,13 +81,44 @@ get_gho_mr <- function(country, year) {
     study_year <- year
   }
   
-  gho_data_year <- gho_data[gho_data$YEAR == study_year, ]
+  mr_data_year <- mr_data[mr_data$YEAR == study_year, ]
   
-  if (nrow(gho_data_year) != 44) {
+  if (nrow(mr_data_year) != 44) {
     stop("Strange GHO mortality data.")
   }
   
-  gho_data_year
+  if (pool) {
+    pop_data <- rgho::get_gho_data(
+      dimension = "GHO",
+      code = "LIFE_0000000031",
+      filter = list(
+        COUNTRY = country,
+        YEAR = study_year
+      )
+    )
+    
+    if (nrow(pop_data) == 0) {
+      stop("No population structure for the selected year, cannot pool rates.")
+    }
+    if (nrow(pop_data) != 44) {
+      stop("Strange population structure data.")
+    }
+    
+    mr_data_year <- suppressMessages({
+      pop_data %>% 
+        dplyr::select_(
+          "AGEGROUP", "SEX",
+          weight = ~ Numeric
+        ) %>% 
+        dplyr::left_join(mr_data_year) %>% 
+        dplyr::group_by_("AGEGROUP") %>% 
+        dplyr::summarise_(
+          Numeric = ~ sum(Numeric * weight) / sum(weight)
+        )
+    })
+  }
+  
+  mr_data_year
 }
 
 trans_age_gho <- function(age) {

@@ -6,9 +6,9 @@
 \alias{who-mortality}
 \title{Use WHO Mortality Rate}
 \usage{
-get_who_mr_(age, sex, country, year = "latest")
+get_who_mr_(age, sex, country, year = "latest", pool = FALSE)
 
-get_who_mr(age, sex, country, year = "latest")
+get_who_mr(age, sex, country, year = "latest", pool = FALSE)
 }
 \arguments{
 \item{age}{age as a continuous variable.}
@@ -19,6 +19,8 @@ get_who_mr(age, sex, country, year = "latest")
 
 \item{year}{Use data from that year. Defaults to 
 \code{"latest"}.}
+
+\item{pool}{Pool female and male mortality rates?}
 }
 \value{
 This function should be used within 
