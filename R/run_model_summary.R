@@ -40,7 +40,7 @@ summary.run_models <- function(object, ...) {
       res_comp = res_comp,
       cycles = attr(object, "cycles"),
       init = attr(object, "init"),
-      count_args = attr(object, "count_args"),
+      method = attr(object, "method"),
       frontier = get_frontier(object)
     ),
     class = "summary_run_models"
@@ -118,6 +118,9 @@ print.summary_run_models <- function(x, ...) {
       names(x$init),
       "N"
     )
+  ))
+  cat(sprintf(
+    "\nCounting method: '%s'.\n\n", x$method
   ))
   print(x$res)
   

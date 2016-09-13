@@ -221,3 +221,38 @@ get_model <- function(x, m) {
   names(model_names) <- model_names
   x[x$.model_names == model_names[m], ]
 }
+
+#' Get State Membership Counts
+#' 
+#' Given a result from \code{\link{run_models}}, return
+#' state membership counts for a specifiec model.
+#' 
+#' @param x Result from \code{\link{run_models}}.
+#' @param m Model name or index.
+#'   
+#' @return A data frame of counts per state.
+#' @export
+get_counts <- function(x, ...) {
+  UseMethod("get_counts")
+}
+
+#' @export
+get_counts.run_models <- function(x, m) {
+  check_model_index(x, m)
+  get_counts(attr(x, "eval_model_list")[[m]])
+}
+
+#' @export
+get_counts.eval_model <- function(x) {
+  x$counts
+}
+
+#' Get Initial State Values
+#' 
+#' @param x x Result from \code{\link{run_models}}.
+#'   
+#' @return A vector of initial state values.
+#' @export
+get_init <- function(x) {
+  attr(x, "init")
+}

@@ -63,10 +63,6 @@ eval_model <- function(model, parameters, cycles,
     cycles = cycles)
 }
 
-get_counts <- function(x) {
-  x$counts
-}
-
 #' Compute Count of Individual in Each State per Cycle
 #' 
 #' Given an initial number of individual and an evaluated 

@@ -2,9 +2,11 @@
 
 ## New features
 
+  * Models can be run from tabular input (see `vignette("tabular", "heemod")`).
   * New options `heemod.verbose` and `heemod.memotime`.
   * More informative messages, especially in verbose mode.
   * Added option to pool female and male mortality rates in WHO data.
+  * New functions: `get_counts()` and `get_init()`.
 
 # heemod 0.4.0
 
