@@ -178,7 +178,7 @@ eval_models_from_tabular <- function(inputs,
       cost = inputs$model_options$cost,
       effect = inputs$model_options$effect,
       base_model = inputs$model_options$base_model,
-      method = inputs$model_options$base_model,
+      method = inputs$model_options$method,
       cycles = inputs$model_options$cycles
     )
   )
