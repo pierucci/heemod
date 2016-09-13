@@ -2,12 +2,24 @@
 % Please edit documentation in R/run_model_define.R
 \name{get_counts}
 \alias{get_counts}
+\alias{get_counts.eval_model}
+\alias{get_counts.list}
+\alias{get_counts.run_models}
 \title{Get State Membership Counts}
 \usage{
 get_counts(x, ...)
+
+\method{get_counts}{run_models}(x, m, ...)
+
+\method{get_counts}{eval_model}(x, ...)
+
+\method{get_counts}{list}(x, ...)
 }
 \arguments{
 \item{x}{Result from \code{\link{run_models}}.}
+
+\item{...}{further arguments passed to or from other
+methods.}
 
 \item{m}{Model name or index.}
 }
@@ -15,7 +27,7 @@ get_counts(x, ...)
 A data frame of counts per state.
 }
 \description{
-Given a result from \code{\link{run_models}}, return
+Given a result from \code{\link{run_models}}, return 
 state membership counts for a specifiec model.
 }
 

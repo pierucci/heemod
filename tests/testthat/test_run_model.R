@@ -207,14 +207,19 @@ test_that(
  $ .effect     : num  283300 891300',
       fixed = TRUE
     )
-    expect_output(
-      str(summary(run_models(mod1, mod2,
-                             parameters = par1, cost = x, effect = y))),
-      "List of 6
- $ res       :'data.frame':	2 obs. of  2 variables:
-  ..$ x: num [1:2] 309300 933900
-  ..$ y: num [1:2] 283300 891300",
-      fixed = TRUE
+    s_mod <- summary(run_models(mod1, mod2,
+                                parameters = par1, cost = x, effect = y))
+    expect_length(
+      s_mod, 6
+    )
+    expect_identical(
+      dim(s_mod$res), c(2L, 2L)
+    )
+    expect_identical(
+      round(s_mod$res$x), c(309300, 933900)
+    )
+    expect_identical(
+      round(s_mod$res$y), c(283300, 891300)
     )
     
     res_b <- run_models(mod1, mod2,
