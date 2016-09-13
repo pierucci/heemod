@@ -192,7 +192,7 @@ test_that(
     
     expect_output(
       print(res),
-      '1 Markov model run for 1 cycle.
+      "1 Markov model run for 1 cycle.
 
 Initial states:
 
@@ -200,8 +200,11 @@ Initial states:
 A 1000
 B    0
 C    0
+
+Counting method: 'beginning'.
+
   cost utility
-I 3800    4100',
+I 3800    4100",
       fixed = TRUE
     )
   }
