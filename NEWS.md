@@ -7,6 +7,7 @@
   * More informative messages, especially in verbose mode.
   * Added option to pool female and male mortality rates in WHO data.
   * New functions: `get_counts()` and `get_init()`.
+  * Smart sex conversion for `get_who_mr()`.
 
 # heemod 0.4.0
 

@@ -1,15 +1,17 @@
 #' Use WHO Mortality Rate
 #' 
-#' Returns age and sex-specific mortality probabilities for
+#' Returns age and sex-specific mortality probabilities for 
 #' a given country.
 #' 
-#' The results of \code{get_who_mr} are memoised for 1 hour
+#' The results of \code{get_who_mr} are memoised for 1 hour 
 #' to increase resampling performance. \code{get_who_mr_} is
 #' not memoised.
 #' 
 #' @name who-mortality
 #' @param age age as a continuous variable.
-#' @param sex sex as \code{"FMLE"} or \code{"MLE"}.
+#' @param sex sex as \code{"FMLE"}-\code{"MLE"},
+#'   \code{0}-\code{1} (male = 0, female = 1) or
+#'   \code{1}-\code{2} (male = 1, female = 2).
 #' @param country Country code (see details).
 #' @param year Use data from that year. Defaults to 
 #'   \code{"latest"}.
@@ -125,7 +127,9 @@ trans_age_gho <- function(age) {
   stopifnot(
     age >= 0,
     is.numeric(age),
-    ! any(is.na(age))
+    ! any(is.na(age)),
+    length(age) > 0,
+    ! is.null(age)
   )
   labs <- c(
     "AGELT1", "AGE1-4", "AGE5-9",
@@ -138,13 +142,45 @@ trans_age_gho <- function(age) {
     "AGE100PLUS"
   )
   
-  cut(age, c(0, 1, seq(5, 100, 5), +Inf), right = FALSE, labels = labs)
+  cut(
+    age,
+    c(0, 1, seq(5, 100, 5), +Inf),
+    right = FALSE,
+    labels = labs
+  ) %>% 
+    as.character()
 }
 
 trans_sex_gho <- function(sex) {
+  u_sex <- sort(unique(sex))
+  
+  if (length(u_sex) > 2)
+    stop("More than 2 sex modalities.")
+  
   stopifnot(
-    sex %in% c("FMLE", "MLE")
+    all(u_sex %in% c("FMLE", "MLE")) ||
+      all(u_sex %in% 0:1) ||
+      all(u_sex %in% 1:2),
+    ! any(is.na(sex)),
+    length(sex) > 0,
+    ! is.null(sex)
   )
-  sex
+  
+  if (all(u_sex == 1)) {
+    stop("All values of 'sex' are equal to 1, this format is ambiguous.")
+  }
+  
+  if (all(u_sex %in% c("FMLE", "MLE"))) {
+    return(as.character(sex))
+    
+  } else if (all(u_sex %in% 0:1) || all(u_sex %in% 1:2)) {
+    sex %>% 
+      factor(labels = c("MLE", "FMLE")) %>% 
+      as.character() %>% 
+      return()
+    
+  } else {
+    stop("Error during conversion of labels for 'sex'.")
+  }
 }
 
