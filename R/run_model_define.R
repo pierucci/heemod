@@ -240,7 +240,7 @@ get_counts <- function(x, ...) {
 
 #' @rdname get_counts
 #' @export
-get_counts.run_models <- function(x, m, ...) {
+get_counts.run_models <- function(x, m = 1, ...) {
   check_model_index(x, m, ...)
   get_counts(attr(x, "eval_model_list")[[m]])
 }
