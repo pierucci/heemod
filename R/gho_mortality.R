@@ -3,19 +3,26 @@
 #' Returns age and sex-specific mortality probabilities for 
 #' a given country.
 #' 
-#' The results of \code{get_who_mr} are memoised for 1 hour 
-#' to increase resampling performance. \code{get_who_mr_} is
-#' not memoised.
+#' Locally cached data is used in case of connection 
+#' problems, of if \code{local = TRUE}. For memory space 
+#' reasons local data is only available for WHO high-income 
+#' countries, and only for the latest year.
+#' 
+#' The results of \code{get_who_mr} are memoised for
+#' \code{options("heemod.memotime")} (default: 1 hour) to
+#' increase resampling performance.
 #' 
 #' @name who-mortality
 #' @param age age as a continuous variable.
-#' @param sex sex as \code{"FMLE"}-\code{"MLE"},
-#'   \code{0}-\code{1} (male = 0, female = 1) or
+#' @param sex sex as \code{"FMLE"}-\code{"MLE"}, 
+#'   \code{0}-\code{1} (male = 0, female = 1) or 
 #'   \code{1}-\code{2} (male = 1, female = 2).
 #' @param country Country code (see details).
 #' @param year Use data from that year. Defaults to 
 #'   \code{"latest"}.
 #' @param pool Pool female and male mortality rates?
+#' @param local Fetch mortality data from package cached 
+#'   data?
 #'   
 #' @return This function should be used within 
 #'   \code{\link{define_matrix}} or 
@@ -28,20 +35,39 @@
 #'   0, 1
 #' )
 #' 
-get_who_mr_ <- function(age, sex, country,
-                        year = "latest", pool = FALSE) {
-  mr_data <- get_gho_mr(country = country,
-                        year = as.character(year),
-                        pool = pool)
+get_who_mr_ <- function(age, sex = NULL, country,
+                        year = "latest", pool = FALSE,
+                        local = FALSE) {
+  if (is.null(sex) && ! pool) {
+    stop("'sex' must be provided for non-pooled results.")
+  }
+  if (! local) {
+    message("Fetching mortality data from WHO server.")
+    mr_data <- try(get_gho_mr(
+      country = country,
+      year = as.character(year),
+      pool = pool
+    ), silent = TRUE)
+    
+    if (inherits(mr_data, "try-error"))
+      message("Failed to fetch mortality data from WHO server.")
+  }
   
-  age_gho <- trans_age_gho(age)
+  if (local || inherits(mr_data, "try-error")) {
+    message("Fetching mortality data from package cached data.")
+    mr_data <- get_package_mr(
+      country = country,
+      year = as.character(year),
+      pool = pool
+    )
+  }
+  
   ref_data <- dplyr::data_frame(
-    AGEGROUP = as.character(age_gho)
+    AGEGROUP =  trans_age_gho(age)
   )
   
   if (! pool) {
-    sex_gho <- trans_sex_gho(sex)
-    ref_data$SEX <- as.character(sex_gho)
+    ref_data$SEX <- trans_sex_gho(sex)
   }
   
   suppressMessages({
@@ -90,46 +116,78 @@ get_gho_mr <- function(country, year, pool) {
   }
   
   if (pool) {
-    pop_data <- rgho::get_gho_data(
-      dimension = "GHO",
-      code = "LIFE_0000000031",
-      filter = list(
-        COUNTRY = country,
-        YEAR = study_year
-      )
-    )
-    
-    if (nrow(pop_data) == 0) {
-      stop("No population structure for the selected year, cannot pool rates.")
-    }
-    if (nrow(pop_data) != 44) {
-      stop("Strange population structure data.")
-    }
-    
-    mr_data_year <- suppressMessages({
-      pop_data %>% 
-        dplyr::select_(
-          "AGEGROUP", "SEX",
-          weight = ~ Numeric
-        ) %>% 
-        dplyr::left_join(mr_data_year) %>% 
-        dplyr::group_by_("AGEGROUP") %>% 
-        dplyr::summarise_(
-          Numeric = ~ sum(Numeric * weight) / sum(weight)
-        )
-    })
+    mr_data_year <- pool_data(mr_data_year,
+                              country, study_year)
   }
   
   mr_data_year
 }
 
+pool_data <- function(mr_data, country, year) {
+  pop_data <- rgho::get_gho_data(
+    dimension = "GHO",
+    code = "LIFE_0000000031",
+    filter = list(
+      COUNTRY = country,
+      YEAR = year
+    )
+  )
+  
+  if (nrow(pop_data) == 0) {
+    stop("No population structure for the selected year, cannot pool rates.")
+  }
+  if (nrow(pop_data) != 44) {
+    stop("Strange population structure data.")
+  }
+  
+  suppressMessages({
+    pop_data %>% 
+      dplyr::select_(
+        "AGEGROUP", "SEX",
+        weight = ~ Numeric
+      ) %>% 
+      dplyr::left_join(mr_data) %>% 
+      dplyr::group_by_("AGEGROUP") %>% 
+      dplyr::summarise_(
+        Numeric = ~ sum(Numeric * weight) / sum(weight)
+      )
+  })
+}
+
+get_package_mr <- function(country, year, pool) {
+  if (! country %in% names(list_morta)) {
+    stop(sprintf(
+      "No local data available for country '%s'.",
+      country
+    ))
+  }
+  
+  if (year != "latest" && year != list_morta[[country]]$year) {
+    stop(sprintf(
+      "No local data available for specified year (specified: %s, available: %s).",
+      year,
+      list_morta[[country]]$year
+    ))
+  }
+  message(sprintf(
+    "Using cached data from year %s.",
+    list_morta[[country]]$year
+  ))
+  
+  if (pool) {
+    list_morta[[country]]$pool
+  } else {
+    list_morta[[country]]$data
+  }
+}
+
 trans_age_gho <- function(age) {
+  stopifnot(! is.null(age))
   stopifnot(
     age >= 0,
     is.numeric(age),
     ! any(is.na(age)),
-    length(age) > 0,
-    ! is.null(age)
+    length(age) > 0
   )
   labs <- c(
     "AGELT1", "AGE1-4", "AGE5-9",
@@ -152,6 +210,7 @@ trans_age_gho <- function(age) {
 }
 
 trans_sex_gho <- function(sex) {
+  stopifnot(! is.null(sex))
   u_sex <- sort(unique(sex))
   
   if (length(u_sex) > 2)
@@ -162,8 +221,7 @@ trans_sex_gho <- function(sex) {
       all(u_sex %in% 0:1) ||
       all(u_sex %in% 1:2),
     ! any(is.na(sex)),
-    length(sex) > 0,
-    ! is.null(sex)
+    length(sex) > 0
   )
   
   if (all(u_sex == 1)) {

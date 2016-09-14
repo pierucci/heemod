@@ -2,24 +2,24 @@ context("GHO data")
 
 test_that(
   "GHO API", {
-    res_latest <- heemod:::get_who_mr_(
+    res_latest <- get_who_mr(
       age = 0:99,
       sex = rep(c("MLE", "FMLE"), 50),
       country = "FRA"
     )
-    res_2015 <- heemod:::get_who_mr_(
+    res_2015 <- get_who_mr(
       age = 0:99,
       sex = rep(c("MLE", "FMLE"), 50),
       country = "FRA",
       year = 2015
     )
-    res_pooled <- heemod:::get_who_mr_(
+    res_pooled <- get_who_mr(
       age = 0:99,
       sex = rep(c("MLE", "FMLE"), 50),
       country = "FRA",
       pool = TRUE
     )
-    res_pooled_nosex <- heemod:::get_who_mr_(
+    res_pooled_nosex <- get_who_mr(
       age = 0:99,
       country = "FRA",
       pool = TRUE
@@ -41,12 +41,30 @@ test_that(
       round(head(res_pooled), 5),
       c(0.00356, 2e-04, 2e-04, 2e-04, 2e-04, 7e-05)
     )
-    expect_error(get_who_mr(age = -2, sex = rep(c("MLE", "FMLE"), 50), country = "FRA"))
-    expect_error(get_who_mr(age = 0:99, sex = rep(c("ML1E", "FMLE"), 50), country = "FRA"))
-    expect_error(get_who_mr(age = "[00-15[", sex = rep(c("MLE", "FMLE"), 50), country = "FRA"))
-    expect_error(get_who_mr(age = c(1, NA), sex = rep(c("MLE", "FMLE"), 50), country = "FRA"))
-    expect_error(get_who_mr(age = 0:99, sex = rep(c("MLE", "FMLE"), 50), country = "XXXX"))
-    expect_error(get_who_mr(age = 0:99, sex = rep(c("MLE", "FMLE"), 50), country = "FRA", year = 2050))
+    expect_error(
+      get_who_mr(age = -2, sex = rep(c("MLE", "FMLE"), 50),
+                 country = "FRA"))
+    expect_error(
+      get_who_mr(age = 0:99, sex = rep(c("ML1E", "FMLE"), 50),
+                 country = "FRA"))
+    expect_error(
+      get_who_mr(age = "[00-15[", sex = rep(c("MLE", "FMLE"), 50),
+                 country = "FRA"))
+    expect_error(
+      get_who_mr(age = c(1, NA), sex = rep(c("MLE", "FMLE"), 50),
+                 country = "FRA"))
+    expect_error(
+      get_who_mr(age = 0:99, sex = rep(c("MLE", "FMLE"), 50),
+                 country = "XXXX"))
+    expect_error(
+      get_who_mr(age = 0:99, sex = rep(c("MLE", "FMLE"), 50),
+                 country = "FRA", year = 2050))
+    expect_error(
+      get_who_mr(
+        age = 0:99,
+        country = "FRA"
+      )
+    )
   })
 
 test_that(
@@ -122,6 +140,32 @@ test_that(
     )
     expect_error(
       heemod:::trans_age_gho(NULL)
+    )
+  }
+)
+
+test_that(
+  "Local data works", {
+    mr_aus_p <- get_who_mr(10, sex = "FMLE", country = "AUS",
+                         local = TRUE, pool = TRUE)
+    mr_aus <- get_who_mr(10, sex = "FMLE", country = "AUS",
+                           local = TRUE)
+    
+    expect_identical(
+      signif(mr_aus_p),
+      8.9996e-05
+    )
+    expect_identical(
+      signif(mr_aus),
+      8e-05
+    )
+    expect_error(
+      get_who_mr(10, sex = "FMLE", country = "AZE",
+                 local = TRUE)
+    )
+    expect_error(
+      get_who_mr(10, sex = "FMLE", country = "AUS",
+                 local = TRUE, year = 2014)
     )
   }
 )

@@ -6,6 +6,7 @@
   * New options `heemod.verbose` and `heemod.memotime`.
   * More informative messages, especially in verbose mode.
   * Added option to pool female and male mortality rates in WHO data.
+  * Use WHO data cached localy in case of connection problems.
   * New functions: `get_counts()` and `get_init()`.
   * Smart sex conversion for `get_who_mr()`.
 

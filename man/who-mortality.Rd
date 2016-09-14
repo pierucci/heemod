@@ -6,15 +6,17 @@
 \alias{who-mortality}
 \title{Use WHO Mortality Rate}
 \usage{
-get_who_mr_(age, sex, country, year = "latest", pool = FALSE)
+get_who_mr_(age, sex = NULL, country, year = "latest", pool = FALSE,
+  local = FALSE)
 
-get_who_mr(age, sex, country, year = "latest", pool = FALSE)
+get_who_mr(age, sex = NULL, country, year = "latest", pool = FALSE,
+  local = FALSE)
 }
 \arguments{
 \item{age}{age as a continuous variable.}
 
-\item{sex}{sex as \code{"FMLE"}-\code{"MLE"},
-\code{0}-\code{1} (male = 0, female = 1) or
+\item{sex}{sex as \code{"FMLE"}-\code{"MLE"}, 
+\code{0}-\code{1} (male = 0, female = 1) or 
 \code{1}-\code{2} (male = 1, female = 2).}
 
 \item{country}{Country code (see details).}
@@ -23,6 +25,9 @@ get_who_mr(age, sex, country, year = "latest", pool = FALSE)
 \code{"latest"}.}
 
 \item{pool}{Pool female and male mortality rates?}
+
+\item{local}{Fetch mortality data from package cached 
+data?}
 }
 \value{
 This function should be used within 
@@ -34,9 +39,14 @@ Returns age and sex-specific mortality probabilities for
 a given country.
 }
 \details{
-The results of \code{get_who_mr} are memoised for 1 hour 
-to increase resampling performance. \code{get_who_mr_} is
-not memoised.
+Locally cached data is used in case of connection 
+problems, of if \code{local = TRUE}. For memory space 
+reasons local data is only available for WHO high-income 
+countries, and only for the latest year.
+
+The results of \code{get_who_mr} are memoised for
+\code{options("heemod.memotime")} (default: 1 hour) to
+increase resampling performance.
 }
 \examples{
 
