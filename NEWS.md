@@ -6,6 +6,7 @@
   * `run_models_tabular()` to import models from tabular input, with vignette.
   * `look_up()` to look up values from external data.
   * Added option to pool female and male mortality rates in WHO data.
+  * Counting method now defaults to life-table.
   
 ## Enhancements
 

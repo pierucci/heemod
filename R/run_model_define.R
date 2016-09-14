@@ -51,8 +51,8 @@ run_models <- function(...,
                        parameters = define_parameters(),
                        init = c(1000L, rep(0L, get_state_number(get_states(list(...)[[1]])) - 1)),
                        cycles = 1,
-                       method = c("beginning", "end",
-                                  "half-cycle", "life-table"),
+                       method = c("life-table", "beginning", "end",
+                                  "half-cycle"),
                        cost = NULL, effect = NULL, base_model = NULL) {
   list_models <- list(...)
   
