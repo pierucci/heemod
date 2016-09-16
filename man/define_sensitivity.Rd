@@ -7,7 +7,7 @@
 \usage{
 define_sensitivity(...)
 
-define_sensitivity_(par_names, min_dots, max_dots)
+define_sensitivity_(par_names, low_dots, high_dots)
 }
 \arguments{
 \item{...}{A list of parameter names and min/max values 
@@ -16,7 +16,7 @@ min(var2), max(var2), ...}.}
 
 \item{par_names}{String vector of parameter names.}
 
-\item{min_dots, max_dots}{Used to work around
+\item{low_dots, high_dots}{Used to work around
 non-standard evaluation.}
 }
 \value{

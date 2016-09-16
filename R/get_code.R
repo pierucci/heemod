@@ -38,11 +38,12 @@ get_code <- function(x, ...) {
 to_text_dots <- function(x, name = TRUE) {
   n <- names(x)
   ex <- unlist(lapply(x, function(y) deparse(y$expr, width.cutoff = 500L)))
-  stopifnot(
-    length(n) == length(ex)
-  )
+  
   
   if (name) {
+    stopifnot(
+      length(n) == length(ex)
+    )
     paste(n, ex, sep = " = ")
   } else {
     ex

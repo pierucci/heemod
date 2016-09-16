@@ -7,7 +7,7 @@
 #'   of the form \code{var1, min(var1), max(var1), var2,
 #'   min(var2), max(var2), ...}.
 #' @param par_names String vector of parameter names.
-#' @param min_dots,max_dots Used to work around
+#' @param low_dots,high_dots Used to work around
 #'   non-standard evaluation.
 #'   
 #' @return A \code{sensitivity} object.
@@ -28,35 +28,35 @@ define_sensitivity <- function(...) {
   }
   
   par_names <- character()
-  min_dots <- lazyeval::lazy_dots()
-  max_dots <- lazyeval::lazy_dots()
+  low_dots <- lazyeval::lazy_dots()
+  high_dots <- lazyeval::lazy_dots()
   
   for (i in seq_along(.dots)) {
     if (i %% 3 == 1) {
       par_names <- c(par_names, deparse(.dots[[i]]$expr))
     } else if (i %% 3 == 2) {
-      min_dots <- c(min_dots, list(.dots[[i]]))
+      low_dots <- c(low_dots, list(.dots[[i]]))
     } else {
-      max_dots <- c(max_dots, list(.dots[[i]]))
+      high_dots <- c(high_dots, list(.dots[[i]]))
     }
   }
   
-  names(min_dots) <- par_names
-  names(max_dots) <- par_names
+  names(low_dots) <- par_names
+  names(high_dots) <- par_names
   
-  define_sensitivity_(par_names, min_dots, max_dots)
+  define_sensitivity_(par_names, low_dots, high_dots)
 }
 
 #' @rdname define_sensitivity
-define_sensitivity_ <- function(par_names, min_dots, max_dots) {
+define_sensitivity_ <- function(par_names, low_dots, high_dots) {
   
   check_names(par_names)
   
   stopifnot(
-    all(par_names == names(min_dots)),
-    all(par_names == names(max_dots))
+    all(par_names == names(low_dots)),
+    all(par_names == names(high_dots))
   )
-  dots <- c(min_dots, max_dots)
+  dots <- c(low_dots, high_dots)
   
   if (any(duplicated(par_names))) {
     stop("Some names are duplicated.")
@@ -66,7 +66,7 @@ define_sensitivity_ <- function(par_names, min_dots, max_dots) {
   for (i in seq_along(dots)) {
     tab <- dplyr::bind_rows(
       tab,
-      tibble::tibble_(dots[i])
+      stats::setNames(tibble::tibble(dots[i]), names(dots)[i])
     )
   }
   
