@@ -13,26 +13,30 @@ Description: Health Economic Evaluation Modelling.
   for health economic evaluation. Model comparison,
   sensitivity and probabilistic analysis.
 Depends: R (>= 3.2.2)
-Imports:  lazyeval,
+Imports:  diagram,
           dplyr,
-          diagram,
-          mvnfast,
-          logitnorm,
           ggplot2,
-          tidyr,
+          graphics,
+          grDevices,
+          Hmisc,
+          lazyeval,
+          logitnorm,
           memoise,
-          rgho,
+          mvnfast,
           pryr,
-          utils,
+          rgho,
+          stats,
           tibble,
-          Hmisc
+          tidyr,
+          tools,
+          utils
 License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
-Suggests: testthat,
-          knitr,
+Suggests: knitr,
+          readxl,
           rmarkdown,
-          readxl
+          testthat
 URL: https://github.com/pierucci/heemod, https://pierucci.github.io
 BugReports: https://github.com/pierucci/heemod/issues
