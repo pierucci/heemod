@@ -11,15 +11,15 @@
 ## Enhancements
 
   * `plot_sensitivity()` now plots by default the widest bar on top.
-  * convenience functions for converting rates to probabilities.
-  * models can be run without state values, to compute counts.
-  * much more informative error messages.
-  * objects can be converted to the `R` code to generate them (same idea as `dput()`, but easier to read).
+  * Convenience functions for converting rates to probabilities.
+  * Models can be run without state values, to compute counts only.
+  * Much more informative error messages.
+  * Objects can be converted to the `R` code to generate them (same idea as `dput()`, but easier to read).
   * New options `heemod.verbose` and `heemod.memotime`.
   * More informative messages, especially in verbose mode.
   * Use WHO data cached localy in case of connection problems.
   * New functions: `get_counts()` and `get_init()` to get state membership counts.
-  * Smart sex conversion for `get_who_mr()`.
+  * Smart sex code conversion for `get_who_mr()`.
 
 ## Bug fixes
 
@@ -28,6 +28,10 @@
 ## Changes
 
   * `eval_model_newdata()`, the function behind resampling and sensitivity analysis now returns list-variables.
+  
+## Acknowledments
+
+  * Thanks to [Matthew Wiener](https://github.com/MattWiener), [Zdenek Kabat](https://github.com/ZdenekKabat) and [Vojtech Filipec](https://github.com/vojtech-filipec) for their great contributions to this update.
 
 # heemod 0.3.3
 

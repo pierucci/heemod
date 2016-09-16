@@ -3,7 +3,11 @@ Title: Models for Health Economic Evaluation
 Version: 0.4.0
 Authors@R: c(
     person("Antoine", "Filipovic-Pierucci", email = "pierucci@gmail.com", role = c("aut", "cre")),
-    person("Kevin", "Zarca", email = "kevin.zarca@urc-eco.fr", role = "aut"))
+    person("Kevin", "Zarca", email = "kevin.zarca@urc-eco.fr", role = "aut"),
+    person("Matthew", "Wiener", role = "ctb"),
+    person("Zdenek", "Kabat", role = "ctb"),
+    person("Vojtech", "Filipec", role = "ctb")
+    )
 Description: Health Economic Evaluation Modelling.
   Markov models (homogeneous and non-homogeneous)
   for health economic evaluation. Model comparison,
