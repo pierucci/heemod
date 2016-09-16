@@ -46,7 +46,8 @@ test_that(
       init = 1:0,
       cycles = 10,
       cost = cost,
-      effect = ly
+      effect = ly,
+      method = "beginning"
     )
     
     rsp1 <- define_distrib(
@@ -156,7 +157,8 @@ test_that(
         age = age_init + markov_cycle
       ),
       init = 1:0,
-      cycles = 10
+      cycles = 10,
+      method = "beginning"
     ))
     expect_error(run_probabilistic(res3, resample = rsp2, N = 10))
     expect_error(

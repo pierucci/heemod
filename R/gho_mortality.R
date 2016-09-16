@@ -232,6 +232,7 @@ trans_sex_gho <- function(sex) {
     return(as.character(sex))
     
   } else if (all(u_sex %in% 0:1) || all(u_sex %in% 1:2)) {
+    message("Converting sex values (male = 0, female = 1) or (male = 1, female = 2).")
     sex %>% 
       factor(labels = c("MLE", "FMLE")) %>% 
       as.character() %>% 
