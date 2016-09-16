@@ -69,6 +69,7 @@
 #' @importFrom tidyr gather_
 #'   
 #' @importFrom memoise memoise
+#' @importFrom memoise timeout
 #'   
 #' @importFrom rgho get_gho_data
 #'   
@@ -82,7 +83,7 @@
 #' @importFrom Hmisc wtd.var
 #' 
 #' @importFrom grDevices dev.off
-#' @importFrom grDevices pdf
+#' @importFrom grDevices cairo_pdf
 #' @importFrom grDevices png
 #' 
 #' @importFrom graphics plot

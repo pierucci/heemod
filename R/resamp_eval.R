@@ -26,7 +26,7 @@ run_probabilistic <- function(model, resample, N) {
   list_res <- list()
   
   for (n in get_model_names(model)) {
-    message(sprintf("Running model '%s'...", n))
+    message(sprintf("Resampling model '%s'...", n))
     list_res <- c(
       list_res,
       list(

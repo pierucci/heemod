@@ -6,5 +6,5 @@ NEWS\.md
 ^README\.html$
 ^vignettes/.*\.html$
 ^vignettes/.*\.md$
-^.*\.Rproj$
 ^codecov\.yaml$
+^data-raw$

@@ -198,7 +198,8 @@ test_that(
     )
     expect_output(
       str(run_models(mod1, mod2,
-                     parameters = par1, cost = x, effect = y)),
+                     parameters = par1, cost = x, effect = y,
+                     method = "beginning")),
       '2 obs. of  5 variables:
  $ x           : num  309300 933900
  $ y           : num  283300 891300
@@ -207,18 +208,27 @@ test_that(
  $ .effect     : num  283300 891300',
       fixed = TRUE
     )
-    expect_output(
-      str(summary(run_models(mod1, mod2,
-                             parameters = par1, cost = x, effect = y))),
-      "List of 6
- $ res       :'data.frame':	2 obs. of  2 variables:
-  ..$ x: num [1:2] 309300 933900
-  ..$ y: num [1:2] 283300 891300",
-      fixed = TRUE
+    s_mod <- summary(
+      run_models(
+        mod1, mod2,
+        parameters = par1, cost = x, effect = y,
+        method = "beginning"))
+    expect_length(
+      s_mod, 6
+    )
+    expect_identical(
+      dim(s_mod$res), c(2L, 2L)
+    )
+    expect_identical(
+      round(s_mod$res$x), c(309300, 933900)
+    )
+    expect_identical(
+      round(s_mod$res$y), c(283300, 891300)
     )
     
     res_b <- run_models(mod1, mod2,
-                        parameters = par1, cost = x, effect = y)
+                        parameters = par1, cost = x, effect = y,
+                        method = "beginning")
     res_e <- run_models(mod1, mod2,
                         parameters = par1, cost = x, effect = y,
                         method = "end")
@@ -323,15 +333,18 @@ test_that("Discounting", {
     X2 = s4
   )
   res <- run_models(mod1, mod2, cycles = 10,
-                    parameters = par1, cost = x, effect = y)
+                    parameters = par1, cost = x, effect = y,
+                    method = "beginning")
   expect_output(
     print(res),
     "II 3292.352 4193.422 0.7851231"
   )
   res1 <- run_models(mod1, mod2, cycles = 10,
-                     parameters = par1, cost = x, effect = y)
+                     parameters = par1, cost = x, effect = y,
+                     method = "beginning")
   res2 <- run_models(mod3, mod2, cycles = 10,
-                     parameters = par1, cost = x, effect = y)
+                     parameters = par1, cost = x, effect = y,
+                     method = "beginning")
   expect_output(
     print(res1),
     "I  3144649 2942952

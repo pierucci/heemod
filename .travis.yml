@@ -8,12 +8,12 @@ r:
   - release
   - devel
 
-r_github_packages:
-  - HenrikBengtsson/devtools@hotfix/parse_deps
-
 branches:
   only:
     - master
+    - devel
+    - /^hotfix\/.*$/
+    - /^release\/.*$/
 
 r_packages:
   - covr

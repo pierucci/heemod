@@ -385,7 +385,8 @@ test_that(
 test_that(
   "Running model from files works.", {
     result <- run_models_tabular(
-      location = system.file("tabular/thr", package = "heemod")
+      location = system.file("tabular/thr", package = "heemod"),
+      save = TRUE, overwrite = TRUE
     )
     
     expect_identical(
@@ -396,7 +397,7 @@ test_that(
     
     expect_output(
       print(result$model_runs),
-      "new -223.5199 0.04497522 -4969.845",
+      "new -223.3065 0.04426563 -5044.693",
       fixed = TRUE
     )
     

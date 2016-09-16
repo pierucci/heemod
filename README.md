@@ -1,6 +1,6 @@
 # heemod - Health Economic Evaluation MODelling
 
-[![Travis-CI Build Status](https://travis-ci.org/pierucci/heemod.svg?branch=master)](https://travis-ci.org/pierucci/heemod) [![](http://www.r-pkg.org/badges/version/heemod)](http://www.r-pkg.org/pkg/heemod) [![Coverage Status](https://img.shields.io/codecov/c/github/pierucci/heemod/master.svg)](https://codecov.io/github/pierucci/heemod?branch=master)
+[![Travis-CI Build Status](https://travis-ci.org/pierucci/heemod.svg?branch=devel)](https://travis-ci.org/pierucci/heemod) [![](http://www.r-pkg.org/badges/version/heemod)](http://www.r-pkg.org/pkg/heemod) [![Coverage Status](https://img.shields.io/codecov/c/github/pierucci/heemod/devel.svg)](https://codecov.io/github/pierucci/heemod?branch=devel)
 
 `heemod` is an `R` toolset for health economic evaluation modelling. It aims to provide a simple and consistent interface for Markov models specification and comparison. Non-homogeneous Markov models (with time varying properties) are supported.
 
@@ -55,3 +55,9 @@ Specific analysis examples (mostly inspired from [Decision Modelling for Health 
 	<img width="220" src="./inst/media/logo.png" alt="">
 </a>
 </h1>
+
+## Contributors
+
+  * [Matthew Wiener](https://github.com/MattWiener)
+  * [Zdenek Kabat](https://github.com/ZdenekKabat)
+  * [Vojtech Filipec](https://github.com/vojtech-filipec)
