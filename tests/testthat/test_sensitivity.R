@@ -9,8 +9,8 @@ test_that(
     expect_output(
       str(se1),
       "4 obs. of  2 variables:
- $ a: num  10 45 NA NA
- $ b: num  NA NA 0.5 1.5",
+ $ a: num  10 NA 45 NA
+ $ b: num  NA 0.5 NA 1.5",
       fixed = TRUE
     )
     expect_error(
