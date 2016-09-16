@@ -3,8 +3,8 @@ context("Sensitivity analysis")
 test_that(
   "define sensitivity", {
     se1 <- define_sensitivity(
-      a = c(10, 45),
-      b = c(.5, 1.5)
+      a, 10, 45,
+      b, .5, 1.5
     )
     expect_output(
       str(se1),
@@ -15,26 +15,26 @@ test_that(
     )
     expect_error(
       define_sensitivity(
-        a = c(10, 45, 20),
-        b = c(.5, 1.5)
+        a, 10, 45, 20,
+        b, .5, 1.5
       )
     )
     expect_error(
       define_sensitivity(
-        c(10, 45),
-        b = c(.5, 1.5)
+        10, 45,
+        b, .5, 1.5
       )
     )
     expect_error(
       define_sensitivity(
-        b = c(10, 45),
-        b = c(.5, 1.5)
+        b, 10, 45,
+        b, .5, 1.5
       )
     )
     expect_error(
       define_sensitivity(
-        C = c(10, 45),
-        b = c(.5, 1.5)
+        C, 10, 45,
+        b, .5, 1.5
       )
     )
   })
@@ -93,8 +93,8 @@ test_that(
     ))
     
     ds <- define_sensitivity(
-      p1 = c(.1, .9),
-      p2 = c(.1, .3)
+      p1, .1, .9,
+      p2, .1, .3
     )
     
     x <- run_sensitivity(res2, ds)

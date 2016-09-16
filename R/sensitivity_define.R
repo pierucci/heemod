@@ -16,17 +16,30 @@
 #' @examples
 #' 
 #' define_sensitivity(
-#'   a = c(10, 45),
-#'   b = c(.5, 1.5)
+#'   a, 10, 45,
+#'   b, .5, 1.5
 #' )
 #' 
 define_sensitivity <- function(...) {
   .dots <- list(...)
-  define_sensitivity_(.dots)
+  
+  if (! length(.dots) %% 3 == 0) {
+    stop("Incorrect number of elements in correlation definition, the correct form is A, B, cor(A, B)...")
+  }
+  
+  function(i) {
+    if (i %% 3 == 0) {
+      lazyeval::lazy_eval(.dots[[i]])
+    } else {
+      deparse(.dots[[i]]$expr)
+    }
+  }
+  define_sensitivity_(par_names, min_dots, max_dots)
 }
 
 #' @rdname define_sensitivity
-define_sensitivity_ <- function(.dots) {
+define_sensitivity_ <- function(par_names, min_dots, max_dots) {
+  
   check_names(names(.dots))
   
   if (! all(unlist(lapply(.dots, function(x) length(x))) == 2)) {
