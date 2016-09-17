@@ -1,3 +1,9 @@
+# heemod devel
+
+## New features
+
+  * `define_sensitivity()` now accepts any expression as input, and can call references to model parameteres.
+
 # heemod 0.4.0
 
 ## New features
