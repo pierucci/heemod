@@ -24,7 +24,7 @@ define_sensitivity <- function(...) {
   .dots <- lazyeval::lazy_dots(...)
   
   if (! length(.dots) %% 3 == 0) {
-    stop("Incorrect number of elements in correlation definition, the correct form is A, B, cor(A, B)...")
+    stop("Incorrect number of elements in sensitivity definition, the correct form is A, min(A), max(A)...")
   }
   
   par_names <- character()
@@ -56,7 +56,7 @@ define_sensitivity_ <- function(par_names, low_dots, high_dots) {
     all(par_names == names(low_dots)),
     all(par_names == names(high_dots))
   )
-  dots <- c(low_dots, high_dots)
+  dots <- interleave(low_dots, high_dots)
   
   if (any(duplicated(par_names))) {
     stop("Some names are duplicated.")
@@ -70,9 +70,33 @@ define_sensitivity_ <- function(par_names, low_dots, high_dots) {
     )
   }
   
+  clean_null <- function(x) {
+    Map(
+      function(el) if (is.null(el)) NA else el,
+      x
+    )
+  }
+  
   structure(
-    tab,
+    tab %>% 
+      dplyr::mutate_all(dplyr::funs(clean_null)),
     class = c("sensitivity", class(tab)),
     variables = par_names
+  )
+}
+
+#' @export
+print.sensitivity <- function(x, ...) {
+  tab <- x %>% 
+    dplyr::mutate_all(
+      dplyr::funs(to_text_dots),
+      name = FALSE
+    ) %>% 
+    as.matrix
+  rownames(tab) <- seq_len(nrow(tab))
+  print(
+    tab,
+    na.print = "-",
+    quote = FALSE
   )
 }

@@ -6,12 +6,25 @@ test_that(
       a, 10, 45,
       b, .5, 1.5
     )
+    expect_identical(
+      dim(se1),
+      c(4L, 2L)
+    )
+    expect_is(
+      se1$a,
+      "list"
+    )
+    expect_s3_class(
+      se1$a[[1]],
+      "lazy"
+    )
     expect_output(
-      str(se1),
-      "4 obs. of  2 variables:
- $ a: num  10 NA 45 NA
- $ b: num  NA 0.5 NA 1.5",
-      fixed = TRUE
+      print(se1),
+      "  a  b  
+1 10 -  
+2 45 -  
+3 -  0.5
+4 -  1.5"
     )
     expect_error(
       define_sensitivity(
@@ -114,7 +127,7 @@ test_that(
       '8 obs. of  8 variables:
  $ .model_names: chr  "I" "II" "I" "II" ...
  $ .par_names  : chr  "p1" "p1" "p1" "p1" ...
- $ .par_value  : num  0.1 0.1 0.9 0.9 0.1 0.1 0.3 0.3
+ $ .par_value  : chr  "0.1" "0.1" "0.9" "0.9" ...
  $ .cost       : num  514389 703168 451356 514069 456666 ...
  $ .effect     : num  871 871 587 587 611 ...
  $ .dcost      : num  NA 188779 NA 62712 NA ...

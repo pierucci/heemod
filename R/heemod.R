@@ -23,6 +23,7 @@
 #' @importFrom dplyr desc
 #' @importFrom dplyr ungroup
 #' @importFrom dplyr mutate_if
+#' @importFrom dplyr funs
 #'   
 #' @importFrom lazyeval lazy
 #' @importFrom lazyeval lazy_dots
