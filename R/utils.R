@@ -234,3 +234,28 @@ clean_factors <- function(x) {
   }
   x
 }
+
+to_text_dots <- function(x, name = TRUE) {
+  n <- names(x)
+  ex <- unlist(lapply(
+    x,
+    function(y) if (any(is.na(y))) NA else
+      deparse(y$expr, width.cutoff = 500L)
+  ))
+  
+  
+  if (name) {
+    stopifnot(
+      length(n) == length(ex)
+    )
+    paste(n, ex, sep = " = ")
+  } else {
+    ex
+  }
+}
+
+interleave <- function(...) {
+  .dots <- list(...)
+  id <- unlist(lapply(.dots, seq_along))
+  c(...)[order(id)]
+}
