@@ -204,7 +204,8 @@ summary.eval_sensitivity <- function(object, ...) {
     dplyr::mutate_(.dots = attr(object, "model_ref") %>% attr("ce")) %>% 
     dplyr::do_(~ compute_icer(., model_order = order(attr(object, "model_ref")$.effect))) %>% 
     dplyr::select_(".model_names", ".par_names", ".par_value",
-                   ".cost", ".effect", ".dcost", ".deffect", ".icer")
+                   ".cost", ".effect", ".dcost", ".deffect", ".icer") %>% 
+    dplyr::ungroup()
   
   structure(res, class = c("summary_sensitivity", class(res)),
             sensitivity = object)

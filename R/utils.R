@@ -33,6 +33,7 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
 #' 
 #' @keywords internal
 discount <- function(x, r, first = FALSE) {
+  if (length(r) > 1) r <- r[1]
   stopifnot(
     r >= 0,
     r <= 1

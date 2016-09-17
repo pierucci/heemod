@@ -3,6 +3,7 @@
 ## New features
 
   * `define_sensitivity()` now accepts any expression as input, and can call references to model parameteres.
+  * Discount rates can now be specified as parameters (allows for rates to be modified in DSA & PSA).
 
 # heemod 0.4.0
 

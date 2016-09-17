@@ -154,3 +154,65 @@ test_that(
     plot(x, type = "difference", result = "icer", model = 2)
   })
 
+test_that(
+  "discount rate as a parameter works", {
+    param <- define_parameters(
+      p1 = .5,
+      p2 = .2,
+      r = .05
+    )
+    mod1 <- define_model(
+      transition_matrix = define_matrix(
+        C, p1,
+        p2, C
+      ),
+      define_state(
+        cost = discount(543, r),
+        ly = 1
+      ),
+      define_state(
+        cost = discount(432, r),
+        ly = .5
+      )
+    )
+    
+    mod2 <- define_model(
+      transition_matrix = define_matrix(
+        C, p1,
+        p2, C
+      ),
+      define_state(
+        cost = 789,
+        ly = 1
+      ),
+      define_state(
+        cost = 456,
+        ly = .8
+      )
+    )
+    
+    res2 <- run_models(
+      mod1, mod2,
+      parameters = param,
+      init = c(100, 0),
+      cycles = 10,
+      cost = cost,
+      effect = ly
+    )
+    
+    ds <- define_sensitivity(
+      p1, .1, .9,
+      p2, .1, .3,
+      r, .05, .1
+    )
+    
+    
+    x <- summary(run_sensitivity(res2, ds))
+    
+    .icer <- c(-Inf, 3988, -Inf, 668, -Inf, 761, -Inf, 1195,
+               -Inf, 978, -Inf, 
+               1300)
+    
+    expect_identical(round(x$.icer), .icer)
+  }
+)
