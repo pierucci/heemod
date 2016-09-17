@@ -1,11 +1,11 @@
 ---
-title: "Run models from tabular input"
+title: "Tabular Input"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{Run models from tabular input}
+  %\VignetteIndexEntry{Tabular Input}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---

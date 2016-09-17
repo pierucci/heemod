@@ -1,11 +1,11 @@
 ---
-title: "Deterministic sensitivity analysis"
+title: "Deterministic Sensitivity Analysis"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{Deterministic sensitivity analysis}
+  %\VignetteIndexEntry{Deterministic Sensitivity Analysis}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---

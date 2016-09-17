@@ -4,7 +4,7 @@
 
 `heemod` is an `R` toolset for health economic evaluation modelling. It aims to provide a simple and consistent interface for Markov models specification and comparison. Non-homogeneous Markov models (with time varying properties) are supported.
 
-Most of the analyses presented in [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do) can be performed with `heemod`. See `vignette("reproduction", "heemod")` for an exact reproduction of the analyses from the book.
+Most of the analyses presented in [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do) can be performed with `heemod`. See `vignette("i-reproduction", "heemod")` for an exact reproduction of the analyses from the book.
 
 This package is still a *beta* version.
 
@@ -36,15 +36,16 @@ devtools::install_github("pierucci/heemod@devel")
 
 ## Learning heemod
 
-To get started read the introduction in `vignette("introduction", "heemod")`.
+To get started read the introduction in `vignette("a-introduction", "heemod")`.
 
 Specific analysis examples (mostly inspired from [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do)) can be found in the following vignettes:
 
-  * Homogeneous Markov model in `vignette("homogeneous", "heemod")`.
-  * Non-homogeneous Markov model in `vignette("non-homogeneous", "heemod")`.
-  * Probabilistic uncertainty analysis in `vignette("probabilistic", "heemod")`.
-  * Deterministic sensitivity analysis in `vignette("sensitivity", "heemod")`.
-  * Heterogeneity & Demographic analysis in `vignette("heterogeneity", "heemod")`.
+  * Homogeneous Markov model in `vignette("b-homogeneous", "heemod")`.
+  * Non-homogeneous Markov model in `vignette("c-non-homogeneous", "heemod")`.
+  * Probabilistic uncertainty analysis in `vignette("d-probabilistic", "heemod")`.
+  * Deterministic sensitivity analysis in `vignette("e-sensitivity", "heemod")`.
+  * Heterogeneity & Demographic analysis in `vignette("g-heterogeneity", "heemod")`.
+  * Run the models from tabular inputs in `vignette("h-tabular", "heemod")`.
 
 ## Devs
 

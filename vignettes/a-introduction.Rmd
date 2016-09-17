@@ -1,5 +1,5 @@
 ---
-title: "An Introduction to heemod"
+title: "An Introduction to `heemod`"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
