@@ -68,8 +68,8 @@ res2 <- run_models(
 )
 
 ds <- define_sensitivity(
-  p1 = c(.1, .9),
-  p2 = c(.1, .3)
+  p1, .1, .9,
+  p2, .1, .3
 )
 print(ds)
 
@@ -77,5 +77,14 @@ x <- run_sensitivity(res2, ds)
 
 plot(x, value = "cost")
 plot(x, value = "icer", type = "difference", model = 2)
+
+# can be specified as a function of other parameters
+
+
+ds2 <- define_sensitivity(
+  p2, p1 - .1, p1 + .1
+)
+
+run_sensitivity(res2, ds2)
 }
 

@@ -22,7 +22,19 @@ run_sensitivity <- function(model, sensitivity) {
   
   list_res <- lapply(
     names_models,
-    function(n) eval_model_newdata(model, model = n, newdata = sensitivity)
+    function(n) {
+      tab <- eval_model_newdata(
+        model,
+        model = n,
+        newdata = sensitivity
+      ) 
+      tab %>% 
+        dplyr::mutate_if(
+          names(tab) %in% attr(sensitivity, "variables"),
+          dplyr::funs(to_text_dots),
+          name = FALSE
+        )
+    }
   )
   
   for (i in seq_along(names_models)) {

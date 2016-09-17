@@ -141,5 +141,5 @@ modify_.uneval_matrix <- function(.OBJECT, .dots){
     ))
   }
   
-  modifyList(.OBJECT, .dots)
+  utils::modifyList(.OBJECT, .dots)
 }

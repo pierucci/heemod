@@ -503,7 +503,7 @@ create_parameters_from_tabular <- function(param_defs,
   
   dsa <- psa <- NULL
   
-  if ("low" %in% names(param_defs) &
+  if ("low" %in% names(param_defs) &&
       "high" %in% names(param_defs)) {
     
     if (! all(is.na(param_defs$low) ==
@@ -520,12 +520,20 @@ create_parameters_from_tabular <- function(param_defs,
     high <- as_numeric_safe(stats::na.omit(param_defs$high))
     
     dsa <- define_sensitivity_(
-      setNames(
-        lapply(
-          seq_along(param_sens),
-          function(i) c(low[i], high[i])
+      par_names = param_sens,
+      low_dots = lazyeval::as.lazy_dots(
+        setNames(
+          lapply(low, function(x) x),
+          param_sens
         ),
-        param_sens
+        env = df_env
+      ),
+      high_dots = lazyeval::as.lazy_dots(
+        setNames(
+          lapply(high, function(x) x),
+          param_sens
+        ),
+        env = df_env
       )
     )
   }

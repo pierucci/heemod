@@ -3,12 +3,12 @@
 #' Define parameter variations for a Markov model 
 #' sensitivity analysis.
 #' 
-#' Parameter variations windows are given as length 2 vector
-#' of the form \code{c(min, max)}.
-#' 
-#' @param ... A named list of min and max values that 
-#'   parameters will take.
-#' @param .dots Used to work around non-standard evaluation.
+#' @param ... A list of parameter names and min/max values 
+#'   of the form \code{var1, min(var1), max(var1), var2,
+#'   min(var2), max(var2), ...}.
+#' @param par_names String vector of parameter names.
+#' @param low_dots,high_dots Used to work around
+#'   non-standard evaluation.
 #'   
 #' @return A \code{sensitivity} object.
 #' @export
@@ -16,38 +16,87 @@
 #' @examples
 #' 
 #' define_sensitivity(
-#'   a = c(10, 45),
-#'   b = c(.5, 1.5)
+#'   a, 10, 45,
+#'   b, .5, 1.5
 #' )
 #' 
 define_sensitivity <- function(...) {
-  .dots <- list(...)
-  define_sensitivity_(.dots)
+  .dots <- lazyeval::lazy_dots(...)
+  
+  if (! length(.dots) %% 3 == 0) {
+    stop("Incorrect number of elements in sensitivity definition, the correct form is A, min(A), max(A)...")
+  }
+  
+  par_names <- character()
+  low_dots <- lazyeval::lazy_dots()
+  high_dots <- lazyeval::lazy_dots()
+  
+  for (i in seq_along(.dots)) {
+    if (i %% 3 == 1) {
+      par_names <- c(par_names, deparse(.dots[[i]]$expr))
+    } else if (i %% 3 == 2) {
+      low_dots <- c(low_dots, list(.dots[[i]]))
+    } else {
+      high_dots <- c(high_dots, list(.dots[[i]]))
+    }
+  }
+  
+  names(low_dots) <- par_names
+  names(high_dots) <- par_names
+  
+  define_sensitivity_(par_names, low_dots, high_dots)
 }
 
 #' @rdname define_sensitivity
-define_sensitivity_ <- function(.dots) {
-  check_names(names(.dots))
+define_sensitivity_ <- function(par_names, low_dots, high_dots) {
   
-  if (! all(unlist(lapply(.dots, function(x) length(x))) == 2)) {
-    stop("Incorrect number of elements in sensitivity definition, the correct form is A = c(A_min, A_max)...")
-  }
+  check_names(par_names)
   
-  if (any(duplicated(names(.dots)))) {
+  stopifnot(
+    all(par_names == names(low_dots)),
+    all(par_names == names(high_dots))
+  )
+  dots <- interleave(low_dots, high_dots)
+  
+  if (any(duplicated(par_names))) {
     stop("Some names are duplicated.")
   }
   
-  f <- function(x, y) {
-    x <- dplyr::data_frame(x = x)
-    names(x) <- y
-    x
+  tab <- tibble::tibble()
+  for (i in seq_along(dots)) {
+    tab <- dplyr::bind_rows(
+      tab,
+      stats::setNames(tibble::tibble(dots[i]), names(dots)[i])
+    )
   }
   
-  list_df <- mapply(f , .dots, names(.dots), SIMPLIFY = FALSE)
+  clean_null <- function(x) {
+    Map(
+      function(el) if (is.null(el)) NA else el,
+      x
+    )
+  }
   
   structure(
-    Reduce(dplyr::bind_rows, list_df),
-    class = c("sensitivity", class(list_df[[1]])),
-    variables = names(.dots)
+    tab %>% 
+      dplyr::mutate_all(dplyr::funs(clean_null)),
+    class = c("sensitivity", class(tab)),
+    variables = par_names
+  )
+}
+
+#' @export
+print.sensitivity <- function(x, ...) {
+  tab <- x %>% 
+    dplyr::mutate_all(
+      dplyr::funs(to_text_dots),
+      name = FALSE
+    ) %>% 
+    as.matrix
+  rownames(tab) <- seq_len(nrow(tab))
+  print(
+    tab,
+    na.print = "-",
+    quote = FALSE
   )
 }

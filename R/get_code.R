@@ -35,20 +35,6 @@ get_code <- function(x, ...) {
   UseMethod("get_code")
 }
 
-to_text_dots <- function(x, name = TRUE) {
-  n <- names(x)
-  ex <- unlist(lapply(x, function(y) deparse(y$expr, width.cutoff = 500L)))
-  stopifnot(
-    length(n) == length(ex)
-  )
-  
-  if (name) {
-    paste(n, ex, sep = " = ")
-  } else {
-    ex
-  }
-}
-
 left_pad <- function(x, n_pad, prefix = FALSE) {
   pad <- paste(rep(" ", n_pad), collapse = "")
   pre <- if (prefix) pad else ""

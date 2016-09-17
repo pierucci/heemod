@@ -3,38 +3,51 @@ context("Sensitivity analysis")
 test_that(
   "define sensitivity", {
     se1 <- define_sensitivity(
-      a = c(10, 45),
-      b = c(.5, 1.5)
+      a, 10, 45,
+      b, .5, 1.5
+    )
+    expect_identical(
+      dim(se1),
+      c(4L, 2L)
+    )
+    expect_is(
+      se1$a,
+      "list"
+    )
+    expect_s3_class(
+      se1$a[[1]],
+      "lazy"
     )
     expect_output(
-      str(se1),
-      "4 obs. of  2 variables:
- $ a: num  10 45 NA NA
- $ b: num  NA NA 0.5 1.5",
-      fixed = TRUE
+      print(se1),
+      "  a  b  
+1 10 -  
+2 45 -  
+3 -  0.5
+4 -  1.5"
     )
     expect_error(
       define_sensitivity(
-        a = c(10, 45, 20),
-        b = c(.5, 1.5)
+        a, 10, 45, 20,
+        b, .5, 1.5
       )
     )
     expect_error(
       define_sensitivity(
-        c(10, 45),
-        b = c(.5, 1.5)
+        10, 45,
+        b, .5, 1.5
       )
     )
     expect_error(
       define_sensitivity(
-        b = c(10, 45),
-        b = c(.5, 1.5)
+        b, 10, 45,
+        b, .5, 1.5
       )
     )
     expect_error(
       define_sensitivity(
-        C = c(10, 45),
-        b = c(.5, 1.5)
+        C, 10, 45,
+        b, .5, 1.5
       )
     )
   })
@@ -94,8 +107,8 @@ test_that(
     ))
     
     ds <- define_sensitivity(
-      p1 = c(.1, .9),
-      p2 = c(.1, .3)
+      p1, .1, .9,
+      p2, .1, .3
     )
     
     x <- run_sensitivity(res2, ds)
@@ -114,7 +127,7 @@ test_that(
       '8 obs. of  8 variables:
  $ .model_names: chr  "I" "II" "I" "II" ...
  $ .par_names  : chr  "p1" "p1" "p1" "p1" ...
- $ .par_value  : num  0.1 0.1 0.9 0.9 0.1 0.1 0.3 0.3
+ $ .par_value  : chr  "0.1" "0.1" "0.9" "0.9" ...
  $ .cost       : num  514389 703168 451356 514069 456666 ...
  $ .effect     : num  871 871 587 587 611 ...
  $ .dcost      : num  NA 188779 NA 62712 NA ...

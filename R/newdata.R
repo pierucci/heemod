@@ -24,30 +24,11 @@
 eval_model_newdata <- function(x, model = 1, newdata) {
   check_model_index(x = x, i = model)
   
-  old_parameters <- attr(x, "parameters")
   cycles <- attr(x, "cycles")
   init <- attr(x, "init")
   method <- attr(x, "method")
+  old_parameters <- attr(x, "parameters")
   uneval_model <- attr(x, "uneval_model_list")[[model]]
-  
-  eval_newdata <- function(new_parameters, model, old_parameters) {
-    new_parameters <- Filter(function(x) !is.na(x), new_parameters)
-    
-    lazy_new_param <- do.call(lazyeval::lazy_dots, new_parameters)
-    
-    parameters <- modifyList(
-      old_parameters,
-      lazy_new_param
-    )
-    
-    eval_model(
-      model = model,
-      parameters = parameters,
-      cycles = cycles,
-      init = init,
-      method = method
-    )
-  }
   
   newdata %>% 
     dplyr::rowwise() %>% 
@@ -55,8 +36,38 @@ eval_model_newdata <- function(x, model = 1, newdata) {
       .mod = ~ eval_newdata(
         .,
         model = uneval_model,
-        old_parameters = old_parameters
+        old_parameters = old_parameters,
+        cycles = cycles,
+        init = init,
+        method = method
       )
     ) %>% 
-    dplyr::bind_cols(newdata)
+    dplyr::ungroup() %>% 
+    dplyr::bind_cols(
+      newdata
+    )
+}
+
+eval_newdata <- function(new_parameters, model, old_parameters,
+                         cycles, init, method) {
+  
+  new_parameters <- Filter(
+    function(x) all(! is.na(x)),
+    new_parameters
+  )
+  
+  lazy_new_param <- lazyeval::as.lazy_dots(new_parameters)
+  
+  parameters <- utils::modifyList(
+    old_parameters,
+    lazy_new_param
+  )
+  
+  eval_model(
+    model = model,
+    parameters = parameters,
+    cycles = cycles,
+    init = init,
+    method = method
+  )
 }
