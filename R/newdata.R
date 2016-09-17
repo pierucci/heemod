@@ -30,25 +30,6 @@ eval_model_newdata <- function(x, model = 1, newdata) {
   method <- attr(x, "method")
   uneval_model <- attr(x, "uneval_model_list")[[model]]
   
-  eval_newdata <- function(new_parameters, model, old_parameters) {
-    new_parameters <- Filter(function(x) all(!is.na(x)), new_parameters)
-    
-    lazy_new_param <- lazyeval::as.lazy_dots(new_parameters)
-    
-    parameters <- modifyList(
-      old_parameters,
-      lazy_new_param
-    )
-    
-    eval_model(
-      model = model,
-      parameters = parameters,
-      cycles = cycles,
-      init = init,
-      method = method
-    )
-  }
-  
   newdata %>% 
     dplyr::rowwise() %>% 
     dplyr::do_(
@@ -61,5 +42,26 @@ eval_model_newdata <- function(x, model = 1, newdata) {
     dplyr::ungroup() %>% 
     dplyr::bind_cols(
       lapply(newdata, to_text_dots, name = FALSE) %>%
-        tibble::as_tibble())
+        tibble::as_tibble()
+    )
+}
+
+eval_newdata <- function(new_parameters, model, old_parameters) {
+  
+  new_parameters <- Filter(function(x) all(!is.na(x)), new_parameters)
+  
+  lazy_new_param <- lazyeval::as.lazy_dots(new_parameters)
+  
+  parameters <- utils::modifyList(
+    old_parameters,
+    lazy_new_param
+  )
+  
+  eval_model(
+    model = model,
+    parameters = parameters,
+    cycles = cycles,
+    init = init,
+    method = method
+  )
 }
