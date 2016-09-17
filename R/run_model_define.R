@@ -51,8 +51,8 @@ run_models <- function(...,
                        parameters = define_parameters(),
                        init = c(1000L, rep(0L, get_state_number(get_states(list(...)[[1]])) - 1)),
                        cycles = 1,
-                       method = c("beginning", "end",
-                                  "half-cycle", "life-table"),
+                       method = c("life-table", "beginning", "end",
+                                  "half-cycle"),
                        cost = NULL, effect = NULL, base_model = NULL) {
   list_models <- list(...)
   
@@ -240,7 +240,7 @@ get_counts <- function(x, ...) {
 
 #' @rdname get_counts
 #' @export
-get_counts.run_models <- function(x, m, ...) {
+get_counts.run_models <- function(x, m = 1, ...) {
   check_model_index(x, m, ...)
   get_counts(attr(x, "eval_model_list")[[m]])
 }

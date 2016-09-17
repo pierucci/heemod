@@ -134,6 +134,12 @@ plot(res_mod_1) +
   )
 ```
 
+The state membership counts can be accessed with `get_counts()`.
+
+```{r}
+get_counts(res_mod_1)
+```
+
 # Convenience functions
 
 Convenience functions are available to easily compute transition probabilities from indidence rates, OR, RR, or probabilities estimated on a different timeframe.

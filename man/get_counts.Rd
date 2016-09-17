@@ -9,7 +9,7 @@
 \usage{
 get_counts(x, ...)
 
-\method{get_counts}{run_models}(x, m, ...)
+\method{get_counts}{run_models}(x, m = 1, ...)
 
 \method{get_counts}{eval_model}(x, ...)
 

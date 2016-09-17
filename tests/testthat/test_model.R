@@ -96,7 +96,8 @@ test_that(
       init = c(1, 0),
       cycles = 5,
       cost = x,
-      effect = y
+      effect = y,
+      method = "beginning"
     )
     expect_output(
       str(e_mod),
@@ -216,7 +217,8 @@ test_that(
       init = c(1, 0),
       cycles = 5,
       cost = x,
-      effect = y
+      effect = y,
+      method = "beginning"
     )
     expect_output(
       str(e_mod2),
@@ -302,7 +304,8 @@ I 422.5384 899.5074 0.4697442",
           init = c(1, 0),
           cycles = 5,
           cost = x,
-          effect = y
+          effect = y,
+          method = "beginning"
         )
       ),
       "2 Markov models run for 5 cycles.

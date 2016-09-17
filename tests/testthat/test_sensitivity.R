@@ -83,7 +83,8 @@ test_that(
       init = c(100, 0),
       cycles = 10,
       cost = cost,
-      effect = ly
+      effect = ly,
+      method = "beginning"
     )
     res3 <- suppressWarnings(run_models(
       mod1, mod2,

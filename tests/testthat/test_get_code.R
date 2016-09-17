@@ -45,7 +45,8 @@ test_that(
       init = 1:0,
       cycles = 10,
       cost = cost,
-      effect = ly
+      effect = ly,
+      method = "beginning"
     )
     
     expect_identical(
