@@ -777,16 +777,6 @@ parse_multi_spec <- function(multi_spec,
     dplyr::group_by_(.dots = group_vars) %>%
     dplyr::filter_(~ n() > 1)
   
-  if(! all(names(just_once) == names(more_than_once))) {
-    different_names <- names(just_once) != names(more_than_once)
-    cat("Differing names do not allow rbind:\n")
-    cat("Coliding name(s) in part 1:",
-        names(just_once)[different_names], "\n")
-    cat("Coliding name(s) in part 2:",
-        names(more_than_once)[different_names], "\n")
-    stop("After splitting the file with states into two, at least one variable name is different. This is sometimes caused by a trailing space in the variable name.")
-  }
-  
   multi_spec <- rbind(just_once, as.data.frame(more_than_once))
   
   rownames(multi_spec) <- NULL
