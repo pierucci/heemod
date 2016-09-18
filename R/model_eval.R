@@ -83,10 +83,8 @@ eval_model <- function(model, parameters, cycles,
 #' @return A \code{cycle_counts} object.
 #'   
 #' @keywords internal
-compute_counts <- function(
-  transition_matrix, init,
-  method
-) {
+compute_counts <- function(transition_matrix, init,
+                           method) {
   
   if (! length(init) == get_matrix_order(transition_matrix)) {
     stop(sprintf(
