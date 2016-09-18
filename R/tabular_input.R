@@ -727,14 +727,13 @@ create_df_from_tabular <- function(df_dir, df_envir) {
 parse_multi_spec <- function(multi_spec,
                              split_on = ".model",
                              group_vars) {
-  browser()
   
   if(! inherits(multi_spec, "data.frame"))
     stop("'multi_spec' must be a data frame.")
   
   if(length(split_on) != 1) stop("'split_on' must have a length of exactly 1.")
   if(any(names(multi_spec) == "")) stop("'multi_spec' can't have empty names.")
-
+  
   if(! all(c(split_on, group_vars) %in% names(multi_spec)))
     stop("'split_on' and 'group_vars' must be column names of the input 'multi_spec'.")
   
@@ -766,10 +765,10 @@ parse_multi_spec <- function(multi_spec,
     dplyr::select_(~ - dplyr::one_of(split_on))
   
   just_once <- data.frame(
-      temp = rep(unique_splits, nrow(just_once)),
-      just_once[rep(seq_len(nrow(just_once)), each = num_splits), ],
-      stringsAsFactors = FALSE
-    )
+    temp = rep(unique_splits, nrow(just_once)),
+    just_once[rep(seq_len(nrow(just_once)), each = num_splits), ],
+    stringsAsFactors = FALSE
+  )
   
   names(just_once)[1] <- split_on
   
@@ -815,7 +814,11 @@ parse_multi_spec <- function(multi_spec,
 create_demographic_table <- function(newdata,
                                      params) {
   weight_col <- which(names(newdata) == ".weights")
-  var_names <- names(newdata)[- weight_col]
+  if (length(weight_col)) {
+    var_names <- names(newdata)[- weight_col]
+  } else {
+    var_names <- names(newdata)
+  }
   valid_names <- var_names %in% names(params)
   
   if(! all(valid_names)) {
