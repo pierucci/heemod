@@ -92,15 +92,6 @@ test_that(
     )
     
     discount_problem_spec <- state_spec
-    discount_problem_spec$.discount.qaly[1] <- -0.02
-    
-    expect_error(
-      heemod:::create_states_from_tabular(discount_problem_spec),
-      "Discount values out of range [0 - 1].",
-      fixed = TRUE
-    )
-    
-    discount_problem_spec <- state_spec
     discount_problem_spec$.discount.qaly[1] <- NA
     expect_error(
       heemod:::create_states_from_tabular(discount_problem_spec),
