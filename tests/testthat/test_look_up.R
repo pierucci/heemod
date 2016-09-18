@@ -58,6 +58,51 @@ test_that(
     
     expect_error(
       look_up(
+        tempdf, arg1 = c("A", "B", "C", "B", "A"),
+        arg2 = c(1, 1, 3.2, 3.0, 5), 
+        arg3 = c(1, 1, 1, 2, 3),
+        bin  = c("arg2", "xxx")
+      )
+    )
+    expect_error(
+      look_up(
+        tempdf, arg1 = c("A", "B", "C", "B", "A"),
+        arg2 = c(1, 1, 3.2, 3.0, 5), 
+        arg3 = c(1, 1, 1, 2, 3),
+        bin  = c("arg2", "arg1")
+      )
+    )
+    tempdf2 <- tempdf
+    tempdf2$arg2 <- as.character(tempdf2$arg2)
+    expect_error(
+      look_up(
+        tempdf2, arg1 = c("A", "B", "C", "B", "A"),
+        arg2 = c(1, 1, 3.2, 3.0, 5), 
+        arg3 = c(1, 1, 1, 2, 3),
+        bin  = c("arg2", "arg3")
+      )
+    )
+    tempdf3 <- rbind(
+      tempdf, data.frame(
+        arg1 = "A", arg2 = 1, arg3 = 1, value = pi))
+    expect_error(
+      look_up(
+        tempdf3, arg1 = c("A", "B", "C", "B", "A"),
+        arg2 = c(1, 1, 3.2, 3.0, 5), 
+        arg3 = c(1, 1, 1, 2, 3),
+        bin  = c("arg2", "arg3")
+      )
+    )
+    expect_error(
+      look_up(
+        tempdf, arg1 = c("A", "B", "C", "B", "A"),
+        arg2 = c(1, 1, 3.2, 3.0, 5), 
+        c(1, 1, 1, 2, 3),
+        bin  = c("arg2", "arg3")
+      )
+    )
+    expect_error(
+      look_up(
         just_numeric, age = c(0, 30, 40)
       )
     )

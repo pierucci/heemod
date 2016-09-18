@@ -110,7 +110,7 @@ look_up <- function(data, ..., bin = FALSE, value = "value") {
   )
   
   if (length(res) != nrow(df_vars)) {
-    stop("Ooops, something unexpectedly went wrong...")
+    stop("Ooops, something went unexpectedly wrong...")
   }
   
   if (any(is.na(res))) {
