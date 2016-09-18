@@ -511,8 +511,8 @@ create_parameters_from_tabular <- function(param_defs,
     }
     
     param_sens <- param_defs$parameter[! is.na(param_defs$low)]
-    low <- as_numeric_safe(stats::na.omit(param_defs$low))
-    high <- as_numeric_safe(stats::na.omit(param_defs$high))
+    low <- stats::na.omit(param_defs$low)
+    high <- stats::na.omit(param_defs$high)
     
     dsa <- define_sensitivity_(
       par_names = param_sens,
