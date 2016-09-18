@@ -251,8 +251,11 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
     group_vars = c("from", "to")
   )
   
-  if(any(sort(names(state_info)) != sort(names(tm_info)))) {
-    stop("Mismatch between state names and transition matrix names.")
+  if (length(pb <- setdiff(names(state_info), names(tm_info)))) {
+    stop(sprintf(
+      "Mismatching model names between TM file and state file: %s.",
+      paste(pb, collapse = ", ")
+    ))
   }
   
   tm_info <- tm_info[names(state_info)]
