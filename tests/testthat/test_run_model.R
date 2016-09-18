@@ -361,3 +361,59 @@ II 6437001 7136374"
                parameters = par1, cost = x, effect = y)
   )
 })
+
+test_that(
+  "check_model_index works", {
+    
+    par1 <- define_parameters(
+      a = .1,
+      b = 1 / (markov_cycle + 1)
+    )
+    mat1 <- define_matrix(
+      state_names = c("X1", "X2"),
+      1-a, a,
+      1-b, b
+    )
+    s1 <- define_state(
+      x = 234,
+      y = 123
+    )
+    s2 <- define_state(
+      x = 987,
+      y = 1726
+    )
+    mod1 <- define_model(
+      transition_matrix = mat1,
+      X1 = s1,
+      X2 = s2
+    )
+    s3 <- define_state(
+      x = 987,
+      y = 876
+    )
+    s4 <- define_state(
+      x = 456,
+      y = 1029
+    )
+    mod2 <- define_model(
+      transition_matrix = mat1,
+      X1 = s3,
+      X2 = s4
+    )
+    
+    res <- run_models(
+      mod1, mod2,
+      parameters = par1, init = c(1000L, 0L),
+      cost = x, effect = y)
+    
+    expect_error(
+      heemod:::check_model_index(res, 1:2)
+    )
+    expect_error(
+      heemod:::check_model_index(res, as.factor("I"))
+    )
+    expect_error(
+      heemod:::check_model_index(res, "a")
+    )
+  }
+)
