@@ -662,3 +662,15 @@ test_that(
     )
   }
 )
+
+test_that(
+  "safe conversion works", {
+    
+    expect_error(
+      heemod:::as_integer_safe(c(1, 1.5, 2))
+    )
+    expect_error(
+      heemod:::as_numeric_safe(c(1, "a", 2))
+    )
+  }
+)
