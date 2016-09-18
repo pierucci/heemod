@@ -356,6 +356,14 @@ test_that(
       round(res[[2]], 2),
       structure(c(0.67, 0.2, 0.33, 0.8), .Dim = c(2L, 2L))
     )
+    
+    mat2 <- define_matrix(
+      C, C,
+      a, 1-a
+    )
+    expect_error(
+      heemod:::eval_matrix(mat2, par)
+    )
   }
 )
 
