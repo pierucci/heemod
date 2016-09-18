@@ -241,13 +241,13 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   
   if (options()$heemod.verbose) message("*** Reading states...")
   state_info <- parse_multi_spec(
-    ref$full_file[ref$data == "state"],
+    read_file(ref$full_file[ref$data == "state"]),
     group_vars = ".state"
   )
   
   if (options()$heemod.verbose) message("*** Reading TM...")
   tm_info <- parse_multi_spec(
-    ref$full_file[ref$data == "tm"],
+    read_file(ref$full_file[ref$data == "tm"]),
     group_vars = c("from", "to")
   )
   
@@ -307,6 +307,7 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
 #' @keywords internal
 create_states_from_tabular <- function(state_info,
                                        df_env = globalenv()) {
+  
   if(! inherits(state_info, "data.frame"))
     stop("'state_info' must be a data frame.")
   
@@ -316,7 +317,7 @@ create_states_from_tabular <- function(state_info,
   if (any(duplicated(state_info$.state))) {
     stop(sprintf(
       "Duplicated state names: %s.",
-      paste(unique(state_info$state[duplicated(state_info$state)]),
+      paste(unique(state_info$.state[duplicated(state_info$.state)]),
             sep = ", ")
     ))
   }
@@ -329,7 +330,7 @@ create_states_from_tabular <- function(state_info,
   
   if (! all(discounts_clean %in% values)) {
     stop(sprintf(
-      "Discounting rates defined for non-existing values:\n  %s",
+      "Discounting rates defined for non-existing values: %s.",
       paste(discounts[! discounts %in% values], collapse = ", ")
     ))
   }
@@ -340,17 +341,10 @@ create_states_from_tabular <- function(state_info,
         "No discount values found for '%s'.", n
       ))
       
-    } else if (! is.numeric(state_info[[n]])) {
-      stop("Discount values must be numeric.")
-      
     } else if (length(unique(stats::na.omit(state_info[[n]]))) > 1) {
       stop(sprintf(
         "Multiple discount values for '%s'.", n
       ))
-      
-    } else if (any(stats::na.omit(state_info[[n]]) < 0) ||
-               any(stats::na.omit(state_info[[n]]) > 1)) {
-      stop("Discount values out of range [0 - 1].")
       
     } else {
       state_info[[n]] <- stats::na.omit(state_info[[n]])[1]
@@ -422,9 +416,7 @@ create_matrix_from_tabular <- function(trans_probs, state_names,
   
   stopifnot(
     all(c("from", "to", "prob") %in% names(trans_probs)),
-    length(state_names) > 0,
-    all(trans_probs$from %in% state_names),
-    all(trans_probs$to %in% state_names)
+    length(state_names) > 0
   )
   
   unique_states <- unique(c(trans_probs$from, trans_probs$to))
@@ -491,7 +483,7 @@ create_parameters_from_tabular <- function(param_defs,
   
   if (xor("low" %in% names(param_defs),
           "high" %in% names(param_defs))) {
-    stop("Both 'low' and 'high' columns must be present in parameter tabular file to define DSA.")
+    stop("Both 'low' and 'high' columns must be present in parameter file to define DSA.")
   }
   
   parameters <- define_parameters_(
@@ -582,6 +574,7 @@ create_parameters_from_tabular <- function(param_defs,
 #'   
 #' @keywords internal
 create_options_from_tabular <- function(opt) {
+  
   allowed_opt <- c("cost", "effect", "init",
                    "method", "base", "cycles", "n")
   if(! inherits(opt, "data.frame"))
@@ -592,6 +585,10 @@ create_options_from_tabular <- function(opt) {
       "Unkmown options: %s.",
       paste(opt$option[ukn_opt], collapse = ", ")
     ))
+  }
+  
+  if (any(duplicated(opt$option))) {
+    stop("Some option names are duplicated.")
   }
   
   res <- list()
@@ -654,6 +651,7 @@ create_model_from_tabular <- function(state_file,
   states <- create_states_from_tabular(state_file,
                                        df_env = df_env)
   if (options()$heemod.verbose) message("**** Defining TM...")
+  
   TM <- create_matrix_from_tabular(tm_file, get_state_names(states),
                                    df_env = df_env)
   
@@ -714,9 +712,7 @@ create_df_from_tabular <- function(df_dir, df_envir) {
 #'\code{group_var} can be the state names, or from and to 
 #'lines for a matrix definition...
 #'
-#'@param multi_spec \code{data frame}, or, if of type 
-#'  \code{character}, the name of a file that contains the 
-#'  data frame.
+#'@param multi_spec \code{data frame}.
 #'@param split_on \code{character} of length 1, with the 
 #'  name of the variable in \code{multi_spec} to be split 
 #'  on.
@@ -731,19 +727,18 @@ create_df_from_tabular <- function(df_dir, df_envir) {
 parse_multi_spec <- function(multi_spec,
                              split_on = ".model",
                              group_vars) {
+  browser()
   
-  if(is.character(multi_spec)) multi_spec <- read_file(multi_spec)
+  if(! inherits(multi_spec, "data.frame"))
+    stop("'multi_spec' must be a data frame.")
   
   if(length(split_on) != 1) stop("'split_on' must have a length of exactly 1.")
   if(any(names(multi_spec) == "")) stop("'multi_spec' can't have empty names.")
-  # but they can have no names??
-  
+
   if(! all(c(split_on, group_vars) %in% names(multi_spec)))
     stop("'split_on' and 'group_vars' must be column names of the input 'multi_spec'.")
   
   remaining <- setdiff(names(multi_spec), c(split_on, group_vars))
-  
-  multi_spec <- filter_blanks(multi_spec)
   
   ## any line that exists for one split but not others
   ##   needs to be duplicated for all splits
@@ -770,8 +765,7 @@ parse_multi_spec <- function(multi_spec,
     dplyr::filter_(~ n() == 1) %>%
     dplyr::select_(~ - dplyr::one_of(split_on))
   
-  just_once <- 
-    data.frame(
+  just_once <- data.frame(
       temp = rep(unique_splits, nrow(just_once)),
       just_once[rep(seq_len(nrow(just_once)), each = num_splits), ],
       stringsAsFactors = FALSE
