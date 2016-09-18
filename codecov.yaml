@@ -5,3 +5,6 @@ coverage:
     patch: false
   round: nearest
   range: "70...99"
+codecov:
+  branch: devel
+  
