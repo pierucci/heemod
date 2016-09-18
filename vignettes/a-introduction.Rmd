@@ -14,7 +14,7 @@ vignette: >
 library(heemod)
 ```
 
-This document is an introduction to `heemod`'s basic steps to define and run a model.
+This document is an introduction to the basic steps to define and run a model in `heemod`. Note that even if this vignette uses the term *Markov model*, decision trees are actually a specific subset of such models, and thus can be specified easily with this package.
 
 When building a Markov model for health economic evaluation, the following steps must be performed:
 

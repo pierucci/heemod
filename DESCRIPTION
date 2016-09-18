@@ -9,7 +9,7 @@ Authors@R: c(
     person("Vojtech", "Filipec", role = "ctb")
     )
 Description: Health Economic Evaluation Modelling.
-  Markov models (homogeneous and non-homogeneous)
+  Markov models (decision trees, homogeneous and non-homogeneous)
   for health economic evaluation. Model comparison,
   sensitivity and probabilistic analysis.
 Depends: R (>= 3.2.2)

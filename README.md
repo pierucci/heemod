@@ -2,7 +2,7 @@
 
 [![Travis-CI Build Status](https://travis-ci.org/pierucci/heemod.svg?branch=devel)](https://travis-ci.org/pierucci/heemod) [![](http://www.r-pkg.org/badges/version/heemod)](http://www.r-pkg.org/pkg/heemod) [![Coverage Status](https://img.shields.io/codecov/c/github/pierucci/heemod/devel.svg)](https://codecov.io/github/pierucci/heemod?branch=devel)
 
-`heemod` is an `R` toolset for health economic evaluation modelling. It aims to provide a simple and consistent interface for Markov models specification and comparison. Non-homogeneous Markov models (with time varying properties) are supported.
+`heemod` is an `R` toolset for health economic evaluation modelling. It aims to provide a simple and consistent interface for Markov models specification and comparison (for applications such as decision trees or cohort simulation). Non-homogeneous Markov models (with time varying properties) are supported.
 
 Most of the analyses presented in [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do) can be performed with `heemod`. See `vignette("i-reproduction", "heemod")` for an exact reproduction of the analyses from the book.
 
