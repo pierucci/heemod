@@ -278,6 +278,11 @@ test_that(
       get_init(rm),
       c(1000, 0)
     )
+    
+    expect_error(plot(rm, include_states = "C"))
+    
+    plot(rm, panels = "by_model")
+    plot(rm, panels = "by_state")
   }
 )
 
