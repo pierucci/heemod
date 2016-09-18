@@ -263,6 +263,21 @@ test_that(
                  parameters = par1, cost = x, effect = y,
                  method = "testtest")
     )
+    rm <- run_models(mod1, mod2,
+                     parameters = par1, cost = x, effect = y,
+                     cycles = 5)
+    expect_equivalent(
+      round(unlist(get_counts(rm, 1))),
+      c(950, 888, 879, 885, 890, 50, 112, 121, 115, 110)
+    )
+    expect_identical(
+      get_counts(rm, 1),
+      get_counts(rm, "I")
+    )
+    expect_equivalent(
+      get_init(rm),
+      c(1000, 0)
+    )
   }
 )
 
