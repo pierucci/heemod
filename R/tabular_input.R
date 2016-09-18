@@ -310,7 +310,7 @@ create_states_from_tabular <- function(state_info,
   if(!(".state" %in% names(state_info)))
     stop("'.state' should be a column name.")
   
-  if (any(duplicated(state_info$state))) {
+  if (any(duplicated(state_info$.state))) {
     stop(sprintf(
       "Duplicated state names: %s.",
       paste(unique(state_info$state[duplicated(state_info$state)]),
