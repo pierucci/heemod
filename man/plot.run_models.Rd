@@ -4,7 +4,7 @@
 \alias{plot.run_models}
 \title{Plot Results of a Markov Model}
 \usage{
-\method{plot}{run_models}(x, type = c("counts", "ce"), model = 1,
+\method{plot}{run_models}(x, type = c("counts", "ce"), model = "all",
   include_states = character(0), panels = c("by_model", "by_state"), ...)
 }
 \arguments{
