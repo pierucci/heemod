@@ -215,7 +215,19 @@ as_numeric_safe <- function(x) {
 
 #' @rdname safe-conversion
 as_integer_safe <- function(x) {
-  safe_convert(x, as.integer)
+  res_int <- safe_convert(x, as.integer)
+  res_num <- safe_convert(x, as.numeric)
+  
+  if (! isTRUE(all.equal(res_int, res_num))) {
+    stop(sprintf(
+      "Floating point values coerced to integer: %s.",
+      paste(
+        res_num[abs(res_int - res_num) > sqrt(.Machine$double.eps)],
+        collapse = ", "
+      )
+    ))
+  }
+  res_int
 }
 
 #' Convert Data Frame Factor Variables to Character
