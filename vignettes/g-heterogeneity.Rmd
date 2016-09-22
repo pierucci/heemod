@@ -210,7 +210,7 @@ The results from the combined model can be plotted similarly to the results from
 plot(res_h, type = "counts", model = "np1")
 ```
 
-# Weigthed results
+# Weighted results
 
 Weights can be used in the analysis by including an optional column `.weights` in the new data to specify the respective weights of each strata in the target population.
 
