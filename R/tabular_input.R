@@ -171,21 +171,8 @@ eval_models_from_tabular <- function(inputs,
   
   if (options()$heemod.verbose) message("* Running files...")
   
-  cl <- NULL
-  num_cores <- as.integer(inputs$model_options$num_cores)
-  if(length(num_cores)){
-    stopifnot(is.integer(num_cores))
-    if(num_cores > 1){
-      if(!requireNamespace("parallel"))
-        stop("parallel package required to use a cluster")
-      cl <- parallel::makeCluster(num_cores)
-      if (options()$heemod.verbose) 
-        message(paste("Using a cluster with", length(cl), "cores"))
-      parallel::clusterEvalQ(cl, library(heemod))
-      parallel::clusterEvalQ(cl, library(dplyr))
-    }
-  }
-
+  cl <- cluster_for_heemod(inputs$model_options$num_cores)
+  
   list_args <- c(
     inputs$models,
     list(
