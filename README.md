@@ -60,5 +60,5 @@ Specific analysis examples (mostly inspired from [Decision Modelling for Health 
 ## Contributors
 
   * [Matthew Wiener](https://github.com/MattWiener)
-  * [Zdenek Kabat](https://github.com/ZdenekKabat)
+  * [Zdenek Kabat](https://github.com/zkabat)
   * [Vojtech Filipec](https://github.com/vojtech-filipec)
