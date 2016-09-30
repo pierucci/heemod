@@ -170,6 +170,9 @@ eval_models_from_tabular <- function(inputs,
                                      run_demo = TRUE) {
   
   if (options()$heemod.verbose) message("* Running files...")
+  
+  cl <- cluster_for_heemod(inputs$model_options$num_cores)
+  
   list_args <- c(
     inputs$models,
     list(
@@ -179,7 +182,8 @@ eval_models_from_tabular <- function(inputs,
       effect = inputs$model_options$effect,
       base_model = inputs$model_options$base_model,
       method = inputs$model_options$method,
-      cycles = inputs$model_options$cycles
+      cycles = inputs$model_options$cycles,
+      cl = cl
     )
   )
   
@@ -199,26 +203,29 @@ eval_models_from_tabular <- function(inputs,
     if (options()$heemod.verbose) message("** Running DSA...")
     model_dsa <- run_sensitivity(
       model_runs,
-      inputs$param_info$dsa_params
+      inputs$param_info$dsa_params,
+      cl = cl
     )
   }
-  
+
   model_psa <- NULL
   if (! is.null(inputs$param_info$psa_params) & run_psa) {
     if (options()$heemod.verbose) message("** Running PSA...")
     model_psa <- run_probabilistic(
       model_runs,
       resample = inputs$param_info$psa_params,
-      N = inputs$model_options$n
+      N = inputs$model_options$n,
+      cl = cl
     )
   }
-  
+
   demo_res <- NULL
   if (! is.null(inputs$demographic_file) & run_demo) {
     if (options()$heemod.verbose) message("** Running demographic analysis...")
-    demo_res <- stats::update(model_runs, inputs$demographic_file)
+    demo_res <- stats::update(model_runs, inputs$demographic_file,
+                              cl = cl)
   }
-  
+  if(!is.null(cl)) parallel::stopCluster(cl)
   list(
     models = inputs$models,
     model_runs = model_runs,
@@ -576,7 +583,8 @@ create_parameters_from_tabular <- function(param_defs,
 create_options_from_tabular <- function(opt) {
   
   allowed_opt <- c("cost", "effect", "init",
-                   "method", "base", "cycles", "n")
+                   "method", "base", "cycles", "n",
+                   "num_cores")
   if(! inherits(opt, "data.frame"))
     stop("'opt' must be a data frame.")
   
@@ -618,7 +626,10 @@ create_options_from_tabular <- function(opt) {
   if (! is.null(res$effect)) {
     res$effect <- parse(text = res$effect)[[1]]
   }
-  if (options()$heemod.verbose) message(paste(
+  if (! is.null(res$num_cores)){
+    res$num_cores <- parse(text = res$num_cores)[[1]]
+  }
+    if (options()$heemod.verbose) message(paste(
     names(res), unlist(res), sep = " = ", collapse = "\n"
   ))
   res

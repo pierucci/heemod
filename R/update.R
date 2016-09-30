@@ -26,6 +26,7 @@
 #'   one column per parameter and one row per parameter set.
 #'   An optional \code{.weights} column can be included for
 #'   a weighted analysis.
+#' @param cl a cluster on which to perform computations.
 #' @param x Updated model to plot.
 #' @param model A model index, character or numeric.
 #' @param type The type of plot to return (see details).
@@ -43,7 +44,9 @@
 #' 
 #' @example inst/examples/example_update.R
 #'   
-update.run_models <- function(object, newdata, ...) {
+update.run_models <- function(object, newdata, 
+                              cl = NULL, 
+                              ...) {
   
   if (! any(class(object) %in% "run_models")) {
     stop("'object' must be the result of 'run_models()'.")
@@ -67,7 +70,9 @@ update.run_models <- function(object, newdata, ...) {
     suppressMessages({
       list_res <- c(
         list_res,
-        list(eval_model_newdata(object, model = n, newdata = newdata))
+        list(eval_model_newdata(object, model = n, 
+                                newdata = newdata,
+                                cl = cl))
       )
     })
   }

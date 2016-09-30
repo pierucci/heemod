@@ -4,13 +4,14 @@
 #' @param resample Resampling distribution for parameters 
 #'   defined by \code{\link{define_distrib}}.
 #' @param N > 0. Number of simulation to run.
-#'   
+#' @param cl A cluster for computations.
 #' @return A list with one \code{data.frame} per model.
 #' @export
 #' 
 #' @example inst/examples/example_run_probabilistic.R
 #'   
-run_probabilistic <- function(model, resample, N) {
+run_probabilistic <- function(model, resample, N,
+                              cl = NULL) {
   
   stopifnot(
     N > 0,
@@ -33,7 +34,8 @@ run_probabilistic <- function(model, resample, N) {
         eval_model_newdata(
           x = model,
           model = n,
-          newdata = newdata) %>% 
+          newdata = newdata,
+          cl = cl) %>% 
           dplyr::rowwise() %>% 
           dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
           dplyr::bind_cols(newdata) %>% 

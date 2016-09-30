@@ -3,13 +3,14 @@
 #' @param model An evaluated Markov model
 #' @param sensitivity An object returned by 
 #'   \code{\link{define_sensitivity}}.
-#'   
+#' @param cl a cluster for computations.
 #' @return A \code{data.frame} with one row per model and 
 #'   parameter value.
 #' @export
 #' 
 #' @example inst/examples/example_run_sensitivity.R
-run_sensitivity <- function(model, sensitivity) {
+run_sensitivity <- function(model, sensitivity, 
+                            cl = NULL) {
   
   if (! all(c(".cost", ".effect") %in% names(model))) {
     stop("No cost and/or effect defined, sensitivity analysis unavailable.")
@@ -26,7 +27,8 @@ run_sensitivity <- function(model, sensitivity) {
       tab <- eval_model_newdata(
         model,
         model = n,
-        newdata = sensitivity
+        newdata = sensitivity,
+        cl = cl
       ) 
       tab %>% 
         dplyr::mutate_if(

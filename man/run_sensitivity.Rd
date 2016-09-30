@@ -4,13 +4,15 @@
 \alias{run_sensitivity}
 \title{Run Sensitivity Analysis}
 \usage{
-run_sensitivity(model, sensitivity)
+run_sensitivity(model, sensitivity, cl = NULL)
 }
 \arguments{
 \item{model}{An evaluated Markov model}
 
 \item{sensitivity}{An object returned by 
 \code{\link{define_sensitivity}}.}
+
+\item{cl}{a cluster for computations.}
 }
 \value{
 A \code{data.frame} with one row per model and 
