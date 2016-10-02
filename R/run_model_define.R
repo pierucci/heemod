@@ -51,8 +51,8 @@ run_models <- function(...,
                        parameters = define_parameters(),
                        init = c(1000L, rep(0L, get_state_number(get_states(list(...)[[1]])) - 1)),
                        cycles = 1,
-                       method = c("beginning", "end",
-                                  "half-cycle", "life-table"),
+                       method = c("life-table", "beginning", "end",
+                                  "half-cycle"),
                        cost = NULL, effect = NULL, base_model = NULL) {
   list_models <- list(...)
   
@@ -208,16 +208,47 @@ get_base_model.run_models <- function(x, ...) {
   attr(x, "base_model")
 }
 
-#' Get values from a specific model
+#' Get State Membership Counts
 #' 
-#' @param x A data.frame with results from several models.
-#' @param m Model name or position.
+#' Given a result from \code{\link{run_models}}, return 
+#' state membership counts for a specifiec model.
+#' 
+#' @param x Result from \code{\link{run_models}}.
+#' @param m Model name or index.
+#' @param ...	further arguments passed to or from other
+#'   methods.
 #'   
-#' @return A data.frame with results from only one model.
+#' @return A data frame of counts per state.
+#' @export
+get_counts <- function(x, ...) {
+  UseMethod("get_counts")
+}
+
+#' @rdname get_counts
+#' @export
+get_counts.run_models <- function(x, m = 1, ...) {
+  check_model_index(x, m, ...)
+  get_counts(attr(x, "eval_model_list")[[m]])
+}
+
+#' @rdname get_counts
+#' @export
+get_counts.eval_model <- function(x, ...) {
+  x$counts
+}
+
+#' @rdname get_counts
+#' @export
+get_counts.list <- function(x, ...) {
+  x$counts
+}
+
+#' Get Initial State Values
+#' 
+#' @param x x Result from \code{\link{run_models}}.
 #'   
-#' @keywords internal
-get_model <- function(x, m) {
-  model_names <- unique(x$.model_names)
-  names(model_names) <- model_names
-  x[x$.model_names == model_names[m], ]
+#' @return A vector of initial state values.
+#' @export
+get_init <- function(x) {
+  attr(x, "init")
 }

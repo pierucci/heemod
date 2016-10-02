@@ -154,7 +154,7 @@ For this example we will use the result from the assessment of a new total hip r
 
 # Population characteristics
 
-The characteristics of the population are input from a table, with one column per parameter and one row per individul. Those may be per example the characteristics of the indiviuals included in the original trial data.
+The characteristics of the population are input from a table, with one column per parameter and one row per individual. Those may be for example the characteristics of the indiviuals included in the original trial data.
 
 ```{r include = FALSE}
 N <- 100
@@ -182,7 +182,7 @@ ggplot(tab_indiv, aes(x = age)) +
 
 # Running the analysis
 
-`res_mod`, the result we obtained from `run_models()` in the *Time-varying Markov models* vignette, can be passed to `update()` to update the model woth the new data and perform the heterogeneity analysis.
+`res_mod`, the result we obtained from `run_models()` in the *Time-varying Markov models* vignette, can be passed to `update()` to update the model with the new data and perform the heterogeneity analysis.
 
 ```{r}
 res_h <- update(res_mod, newdata = tab_indiv)
@@ -210,7 +210,7 @@ The results from the combined model can be plotted similarly to the results from
 plot(res_h, type = "counts", model = "np1")
 ```
 
-# Weigthed results
+# Weighted results
 
 Weights can be used in the analysis by including an optional column `.weights` in the new data to specify the respective weights of each strata in the target population.
 

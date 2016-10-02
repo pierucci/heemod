@@ -1,5 +1,5 @@
 ---
-title: "An Introduction to heemod"
+title: "An Introduction to `heemod`"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
@@ -14,7 +14,7 @@ vignette: >
 library(heemod)
 ```
 
-This document is an introduction to `heemod`'s basic steps to define and run a model.
+This document is an introduction to the basic steps to define and run a model in `heemod`. Note that even if this vignette uses the term *Markov model*, decision trees are actually a specific subset of such models, and thus can be specified easily with this package.
 
 When building a Markov model for health economic evaluation, the following steps must be performed:
 
@@ -132,6 +132,12 @@ plot(res_mod_1) +
     name = "State",
     palette = "Set1"
   )
+```
+
+The state membership counts can be accessed with `get_counts()`.
+
+```{r}
+get_counts(res_mod_1)
 ```
 
 # Convenience functions

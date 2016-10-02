@@ -23,6 +23,7 @@
 #' @importFrom dplyr desc
 #' @importFrom dplyr ungroup
 #' @importFrom dplyr mutate_if
+#' @importFrom dplyr funs
 #'   
 #' @importFrom lazyeval lazy
 #' @importFrom lazyeval lazy_dots
@@ -69,6 +70,7 @@
 #' @importFrom tidyr gather_
 #'   
 #' @importFrom memoise memoise
+#' @importFrom memoise timeout
 #'   
 #' @importFrom rgho get_gho_data
 #'   
@@ -82,10 +84,11 @@
 #' @importFrom Hmisc wtd.var
 #' 
 #' @importFrom grDevices dev.off
-#' @importFrom grDevices pdf
+#' @importFrom grDevices cairo_pdf
 #' @importFrom grDevices png
 #' 
 #' @importFrom graphics plot
 #'   
 #' @importFrom tibble tibble
+#' @importFrom tibble tibble_
 NULL

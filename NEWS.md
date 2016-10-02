@@ -1,27 +1,48 @@
+# heemod devel
+
+## New features
+
+  * `define_sensitivity()` now accepts any expression as input, and can call references to model parameteres.
+  * Discount rates can now be specified as parameters (allows for rates to be modified in DSA & PSA).
+  
+## Bugfixes
+
+  * Edges where P=0 are not plotted anymore for transition matrices.
+
 # heemod 0.4.0
 
 ## New features
 
-  * `run_demographics()` to compute population-level values, with vignette.
-  * `run_heterogeneity()` for heterogeneity analysis, with vignette.
-  * `run_models_tabular()` to import models from tabular data, with vignette.
-  * `look_up()` to look up values in external data.
+  * `update()` for heterogeneity analysis and to compute population-level values, with vignette.
+  * `run_models_tabular()` to import models from tabular input, with vignette.
+  * `look_up()` to look up values from external data.
+  * Added option to pool female and male mortality rates in WHO data.
+  * Counting method now defaults to life-table.
   
 ## Enhancements
 
-  * `plot_sensitivity()` now plots by default the widest bar on top (thanks to @MattWiener).
-  * convenience functions for converting rates to probabilities.
-  * models can be run without state values, to compute counts.
-  * much more informative error messages.
-  * objects can be converted to the `R` code to generate them (same idea as `dput()`, but easier to read).
+  * `plot_sensitivity()` now plots by default the widest bar on top.
+  * Convenience functions for converting rates to probabilities.
+  * Models can be run without state values, to compute counts only.
+  * Much more informative error messages.
+  * Objects can be converted to the `R` code to generate them (same idea as `dput()`, but easier to read).
+  * New options `heemod.verbose` and `heemod.memotime`.
+  * More informative messages, especially in verbose mode.
+  * Use WHO data cached localy in case of connection problems.
+  * New functions: `get_counts()` and `get_init()` to get state membership counts.
+  * Smart sex code conversion for `get_who_mr()`.
 
 ## Bug fixes
 
-  * _really_ fixed problem when argument to `discount()` was not defined as a parameter.
+  * _really_ fixed problem when the argument to `discount()` was not defined as a parameter.
   
 ## Changes
 
-  * `eval_model_newdata()`, the function behind resampling and sensitivity analysis now returns list-variables in order to prepare the heterogeneity/demographic analysis update.
+  * `eval_model_newdata()`, the function behind resampling and sensitivity analysis now returns list-variables.
+  
+## Acknowledments
+
+  * Thanks to [Matthew Wiener](https://github.com/MattWiener), [Zdenek Kabat](https://github.com/ZdenekKabat) and [Vojtech Filipec](https://github.com/vojtech-filipec) for their great contributions to this update.
 
 # heemod 0.3.3
 

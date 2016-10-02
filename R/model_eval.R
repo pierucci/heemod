@@ -63,10 +63,6 @@ eval_model <- function(model, parameters, cycles,
     cycles = cycles)
 }
 
-get_counts <- function(x) {
-  x$counts
-}
-
 #' Compute Count of Individual in Each State per Cycle
 #' 
 #' Given an initial number of individual and an evaluated 
@@ -87,10 +83,8 @@ get_counts <- function(x) {
 #' @return A \code{cycle_counts} object.
 #'   
 #' @keywords internal
-compute_counts <- function(
-  transition_matrix, init,
-  method
-) {
+compute_counts <- function(transition_matrix, init,
+                           method) {
   
   if (! length(init) == get_matrix_order(transition_matrix)) {
     stop(sprintf(

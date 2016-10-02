@@ -1,11 +1,11 @@
 ---
-title: "Simple Markov models (homogeneous)"
+title: "Simple Markov Models (Homogeneous)"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{Simple Markov models (homogeneous)}
+  %\VignetteIndexEntry{Simple Markov Models (Homogeneous)}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---

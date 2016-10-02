@@ -33,6 +33,7 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
 #' 
 #' @keywords internal
 discount <- function(x, r, first = FALSE) {
+  if (length(r) > 1) r <- r[1]
   stopifnot(
     r >= 0,
     r <= 1
@@ -214,7 +215,19 @@ as_numeric_safe <- function(x) {
 
 #' @rdname safe-conversion
 as_integer_safe <- function(x) {
-  safe_convert(x, as.integer)
+  res_int <- safe_convert(x, as.integer)
+  res_num <- safe_convert(x, as.numeric)
+  
+  if (! isTRUE(all.equal(res_int, res_num))) {
+    stop(sprintf(
+      "Floating point values coerced to integer: %s.",
+      paste(
+        res_num[abs(res_int - res_num) > sqrt(.Machine$double.eps)],
+        collapse = ", "
+      )
+    ))
+  }
+  res_int
 }
 
 #' Convert Data Frame Factor Variables to Character
@@ -233,4 +246,29 @@ clean_factors <- function(x) {
     }
   }
   x
+}
+
+to_text_dots <- function(x, name = TRUE) {
+  n <- names(x)
+  ex <- unlist(lapply(
+    x,
+    function(y) if (any(is.na(y))) NA else
+      deparse(y$expr, width.cutoff = 500L)
+  ))
+  
+  
+  if (name) {
+    stopifnot(
+      length(n) == length(ex)
+    )
+    paste(n, ex, sep = " = ")
+  } else {
+    ex
+  }
+}
+
+interleave <- function(...) {
+  .dots <- list(...)
+  id <- unlist(lapply(.dots, seq_along))
+  c(...)[order(id)]
 }

@@ -1,33 +1,43 @@
 Package: heemod
 Title: Models for Health Economic Evaluation
 Version: 0.4.0
-Author: Kevin Zarca [aut], Antoine Filipovic-Pierucci [aut,cre]
-Maintainer: Antoine Filipovic-Pierucci <pierucci@gmail.com>
+Authors@R: c(
+    person("Antoine", "Filipovic-Pierucci", email = "pierucci@gmail.com", role = c("aut", "cre")),
+    person("Kevin", "Zarca", email = "kevin.zarca@urc-eco.fr", role = "aut"),
+    person("Matthew", "Wiener", role = "ctb"),
+    person("Zdenek", "Kabat", role = "ctb"),
+    person("Vojtech", "Filipec", role = "ctb")
+    )
 Description: Health Economic Evaluation Modelling.
-  Markov models (homogeneous and non-homogeneous)
+  Markov models (decision trees, homogeneous and non-homogeneous)
   for health economic evaluation. Model comparison,
   sensitivity and probabilistic analysis.
 Depends: R (>= 3.2.2)
-Imports:  lazyeval,
+Imports:  diagram,
           dplyr,
-          diagram,
-          mvnfast,
-          logitnorm,
           ggplot2,
-          tidyr,
+          graphics,
+          grDevices,
+          Hmisc,
+          lazyeval,
+          logitnorm,
           memoise,
-          rgho,
+          mvnfast,
           pryr,
-          utils,
+          readr,
+          rgho,
+          stats,
           tibble,
-          Hmisc
+          tidyr,
+          tools,
+          utils
 License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
-Suggests: testthat,
-          knitr,
+Suggests: knitr,
+          readxl,
           rmarkdown,
-          readxl
+          testthat
 URL: https://github.com/pierucci/heemod, https://pierucci.github.io
 BugReports: https://github.com/pierucci/heemod/issues

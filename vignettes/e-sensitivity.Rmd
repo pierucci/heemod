@@ -1,11 +1,11 @@
 ---
-title: "Deterministic sensitivity analysis"
+title: "Deterministic Sensitivity Analysis"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{Deterministic sensitivity analysis}
+  %\VignetteIndexEntry{Deterministic Sensitivity Analysis}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -158,12 +158,12 @@ Upper and lower values for the paramters are given to `define_sensitivity()`.
 
 ```{r}
 se <- define_sensitivity(
-  rr = c(.4, .6),
+  rr, .4, .6,
   
-  cost_zido = c(1500, 3000),
-  cost_lami = c(1500, 3000),
+  cost_zido, 1500, 3000,
+  cost_lami, 1500, 3000,
   
-  dr = c(.04, .08)
+  dr, .04, .08
 )
 ```
 

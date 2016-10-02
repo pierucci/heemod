@@ -46,7 +46,7 @@ print.uneval_model <- function(x, ...) {
 #' 
 #' @export
 plot.run_models <- function(x, type = c("counts", "ce"),
-                            model = 1, 
+                            model = "all", 
                             include_states = character(0), 
                             panels = c("by_model", "by_state"),
                             ...){
@@ -111,9 +111,11 @@ plot.run_models <- function(x, type = c("counts", "ce"),
         gather_cols = setdiff(names(tab_counts),
                               c(".model", "markov_cycle")))
       
+      if(panels == "by_model"){
       tab_counts <- dplyr::filter_(
         tab_counts, ~ .model %in% names(model_info)[model]
       )
+      }
       if(length(include_states) > 0)
         tab_counts <- dplyr::filter_(
           tab_counts, ~ key %in% include_states

@@ -92,15 +92,6 @@ test_that(
     )
     
     discount_problem_spec <- state_spec
-    discount_problem_spec$.discount.qaly[1] <- -0.02
-    
-    expect_error(
-      heemod:::create_states_from_tabular(discount_problem_spec),
-      "Discount values out of range [0 - 1].",
-      fixed = TRUE
-    )
-    
-    discount_problem_spec <- state_spec
     discount_problem_spec$.discount.qaly[1] <- NA
     expect_error(
       heemod:::create_states_from_tabular(discount_problem_spec),
@@ -129,6 +120,263 @@ test_that(
       "'.state' should be a column name.",
       fixed = TRUE
     )
+    
+    expect_error(
+      heemod:::gather_model_info(
+        system.file("tabular/test", package = "heemod"),
+        "bad_REFERENCE.csv")
+    )
+    expect_error(
+      heemod:::gather_model_info(
+        system.file("tabular/test/test_diff_mod_name", package = "heemod"),
+        "REFERENCE.csv"),
+      "newzzz"
+    )
+    dup_state <- structure(list(
+      .model = c("standard", "standard", "standard", 
+                 "standard", "standard"),
+      .state = c("PrimaryTHR", "PrimaryTHR", 
+                 "RevisionTHR", "SuccessfulRevision", "Death"),
+      cost = c(0L, 0L, 
+               5294L, 0L, 0L),
+      qaly = c(0, 0.85, 0.3, 0.75, 0),
+      .discount.qaly = c(0.015, 
+                         NA, NA, NA, NA)),
+      .Names = c(".model", ".state", "cost", "qaly", 
+                 ".discount.qaly"),
+      row.names = c(9L, 1L, 3L, 5L, 7L), class = "data.frame")
+    
+    expect_error(
+      heemod:::create_states_from_tabular(dup_state)
+    )
+    
+    pb_disc_state <- structure(list(
+      .model = c("standard", "standard", "standard", 
+                 "standard", "standard"),
+      .state = c("PrimaryTHR", "SuccessfulPrimary", 
+                 "RevisionTHR", "SuccessfulRevision", "Death"),
+      cost = c(0L, 0L, 
+               5294L, 0L, 0L),
+      qaly = c(0, 0.85, 0.3, 0.75, 0),
+      .discount.qaly = c(0.015, 
+                         NA, NA, NA, NA)),
+      .Names = c(".model", ".state", "cost", "qaly", 
+                 ".discount.qalyz"),
+      row.names = c(9L, 1L, 3L, 5L, 7L), class = "data.frame")
+    
+    expect_error(
+      heemod:::create_states_from_tabular(pb_disc_state)
+    )
+    
+    mult_disc_state <- structure(list(
+      .model = c("standard", "standard", "standard", 
+                 "standard", "standard"),
+      .state = c("PrimaryTHR", "SuccessfulPrimary", 
+                 "RevisionTHR", "SuccessfulRevision", "Death"),
+      cost = c(0L, 0L, 
+               5294L, 0L, 0L),
+      qaly = c(0, 0.85, 0.3, 0.75, 0),
+      .discount.qaly = c(0.015, 
+                         0.016, NA, NA, NA)),
+      .Names = c(".model", ".state", "cost", "qaly", 
+                 ".discount.qaly"),
+      row.names = c(9L, 1L, 3L, 5L, 7L), class = "data.frame")
+    
+    expect_error(
+      heemod:::create_states_from_tabular(mult_disc_state)
+    )
+    
+    bad_tm <- structure(list(
+      .model = c("standard", "standard", "standard", 
+                 "standard", "standard", "standard", "standard", "standard", "standard", 
+                 "standard", "standard"),
+      from = c("PrimaryTHR", "PrimaryTHR", 
+               "SuccessfulPrimary", "SuccessfulPrimary", "SuccessfulPrimary", 
+               "RevisionTHR", "RevisionTHR", "SuccessfulRevision", "SuccessfulRevision", 
+               "SuccessfulRevision", "Death"),
+      to = c("SuccessfulPrimary", "Death", 
+             "SuccessfulPrimary", "Death", "RevisionTHR", "Death", "SuccessfulRevision", 
+             "Death", "RevisionTHR", "SuccessfulRevision", "Death"),
+      prob = c("C", 
+               "0.02", "C", "mr", "pHRFailStandard", "0.02+mr", "C", "mr", "0.04", 
+               "C", "1")),
+      .Names = c(".model", "from", "to", "prob"),
+      row.names = c(1L, 
+                    3L, 5L, 7L, 21L, 11L, 9L, 17L, 15L, 13L, 19L),
+      class = "data.frame")
+    
+    expect_error(
+      heemod:::create_matrix_from_tabular(
+        bad_tm, 
+        c("Death", "PrimaryTHR", "RevisionTHR", "SuccessfulPrimary", 
+          "SuccessfulRevisionzzz")
+      )
+    )
+    
+    pb_par <- structure(list(
+      parameter = c("lngamma", "gamma"),
+      value = c("0.3740968", 
+                "exp(lngamma)"),
+      low = c(0.2791966, NA),
+      high = c(0.468997, 1),
+      psa = c("normal(0.27, 0.001)", NA)),
+      .Names = c("parameter", 
+                 "value", "low", "high", "psa"),
+      row.names = 1:2,
+      class = "data.frame")
+    
+    expect_error(
+      heemod:::create_parameters_from_tabular(pb_par)
+    )
+    
+    pb_par <- structure(list(
+      parameter = c("lngamma", "gamma"),
+      value = c("0.3740968", 
+                "exp(lngamma)"),
+      low = c(0.2791966, NA),
+      psa = c("normal(0.27, 0.001)", NA)),
+      .Names = c("parameter", 
+                 "value", "low", "psa"),
+      row.names = 1:2,
+      class = "data.frame")
+    
+    expect_error(
+      heemod:::create_parameters_from_tabular(pb_par)
+    )
+    
+    pb_par <- structure(list(
+      parameter = c("lngamma", "gamma"),
+      value = c("0.3740968", 
+                "exp(lngamma)"),
+      low = c(NA, NA),
+      high = c(NA, NA),
+      psa = c("normal(0.27, 0.001)", NA)),
+      .Names = c("parameter", 
+                 "value", "low", "high", "psa"),
+      row.names = 1:2,
+      class = "data.frame")
+    
+    expect_error(
+      heemod:::create_parameters_from_tabular(pb_par)
+    )
+    
+    pb_par <- structure(list(
+      parameter = c("lngamma", "gamma"),
+      value = c("0.3740968", 
+                "exp(lngamma)"),
+      low = c(1, NA),
+      high = c(2, NA),
+      psa = c(NA, NA)),
+      .Names = c("parameter", 
+                 "value", "low", "high", "psa"),
+      row.names = 1:2,
+      class = "data.frame")
+    
+    expect_error(
+      heemod:::create_parameters_from_tabular(pb_par)
+    )
+    
+    opt_pb <- structure(list(
+      option = c("cost", "effect", "method", "method", 
+                 "n"),
+      value = c("cost", "qaly", "end", "50", "100")),
+      .Names = c("option", 
+                 "value"),
+      row.names = c(1L, 2L, 4L, 5L, 6L),
+      class = "data.frame")
+    
+    expect_error(
+      heemod:::create_options_from_tabular(opt_pb)
+    )
+    
+    opt_pb <- structure(list(
+      option = c("cost", "effect", "method", "cycleszzz", 
+                 "n"),
+      value = c("cost", "qaly", "end", "50", "100")),
+      .Names = c("option", 
+                 "value"),
+      row.names = c(1L, 2L, 4L, 5L, 6L),
+      class = "data.frame")
+    
+    expect_error(
+      heemod:::create_options_from_tabular(opt_pb)
+    )
+    
+    test_par <- define_parameters(
+      a = 2,
+      b = 3
+    )
+    ndt <- data.frame(
+      a = 2,
+      c = 4
+    )
+    expect_error(
+      heemod:::create_demographic_table(ndt, test_par)
+    )
+    ndt <- data.frame(
+      a = 2,
+      c = 4,
+      .weights = 3
+    )
+    expect_error(
+      heemod:::create_demographic_table(ndt, test_par)
+    )
+    
+    expect_error(
+      heemod:::read_file(
+        system.file("tabular/test/wrong_ext.tab", package = "heemod")
+      )
+    )
+  }
+)
+
+test_that(
+  "problems with output generate warnings", {
+    
+    expect_warning(
+      run_models_tabular(
+        system.file("tabular/test/test_no_overwrite", package = "heemod"),
+        save = TRUE, overwrite = FALSE, run_psa = FALSE, run_demo = FALSE
+      )
+    )
+    expect_warning(
+      run_models_tabular(
+        system.file("tabular/test/test_no_output_dir", package = "heemod"),
+        save = TRUE, overwrite = TRUE, run_psa = FALSE, run_demo = FALSE
+      )
+    )
+  }
+)
+
+test_that(
+  "absolute path works", {
+    
+    ref_edit <- heemod:::read_file(
+      system.file("tabular/thr/REFERENCE.csv", package = "heemod")
+    )
+    ref_edit$absolute_path <- c(rep(1, nrow(ref_edit) - 1), NA)
+    for (i in seq_len(nrow(ref_edit) - 1))
+      ref_edit$file[i] <-
+      system.file(sprintf(
+        "tabular/thr/%s", ref_edit$file[i]),
+        package = "heemod")
+    
+    write.csv(
+      ref_edit,
+      paste(system.file("tabular/test", package = "heemod"),
+            "edited_ref.csv", sep = "/"),
+      row.names = FALSE
+    )
+    
+    op <- options(heemod.verbose = TRUE)
+    expect_message(
+      heemod:::gather_model_info(
+        system.file("tabular/test", package = "heemod"),
+        "edited_ref.csv"
+      ),
+      "Using absolute path for state, tm, parameters, demographics, data, output"
+    )
+    options(op)
   }
 )
 
@@ -385,7 +633,8 @@ test_that(
 test_that(
   "Running model from files works.", {
     result <- run_models_tabular(
-      location = system.file("tabular/thr", package = "heemod")
+      location = system.file("tabular/thr", package = "heemod"),
+      save = TRUE, overwrite = TRUE
     )
     
     expect_identical(
@@ -396,7 +645,7 @@ test_that(
     
     expect_output(
       print(result$model_runs),
-      "new -223.5199 0.04497522 -4969.845",
+      "new -223.3065 0.04426563 -5044.693",
       fixed = TRUE
     )
     
@@ -410,6 +659,18 @@ test_that(
       print(result$demographics),
       "An analysis re-run on 62 parameter sets.",
       fixed = TRUE
+    )
+  }
+)
+
+test_that(
+  "safe conversion works", {
+    
+    expect_error(
+      heemod:::as_integer_safe(c(1, 1.5, 2))
+    )
+    expect_error(
+      heemod:::as_numeric_safe(c(1, "a", 2))
     )
   }
 )

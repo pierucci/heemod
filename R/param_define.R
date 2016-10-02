@@ -114,5 +114,5 @@ modify_.uneval_parameters <- function(.OBJECT, .dots) {
     all(names(.dots) %in% names(.OBJECT))
   )
   
-  modifyList(.OBJECT, .dots)
+  utils::modifyList(.OBJECT, .dots)
 }
