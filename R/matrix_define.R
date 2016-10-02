@@ -45,10 +45,7 @@
 #' 
 #' @example inst/examples/example_define_matrix.R
 #'   
-define_matrix <- function(
-  ...,
-  state_names
-) {
+define_matrix <- function(..., state_names) {
   .dots <- lazyeval::lazy_dots(...)
   
   if (missing(state_names)) {
@@ -60,10 +57,7 @@ define_matrix <- function(
 }
 
 #' @rdname define_matrix
-define_matrix_ <- function(
-  .dots,
-  state_names
-) {
+define_matrix_ <- function(.dots, state_names) {
   
   n <- sqrt(length(.dots))
   

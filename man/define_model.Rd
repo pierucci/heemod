@@ -33,6 +33,10 @@ states defined through \code{\link{define_parameters}},
 \details{
 This function checks whether the objects are compatible 
 in the same model (same state names...).
+
+State values and transition probabilities referencing
+\code{state_cycle} are automatically expanded to implicit
+tunnel states.
 }
 \examples{
 mat <- define_matrix(
