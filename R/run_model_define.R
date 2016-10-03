@@ -38,6 +38,7 @@
 #'   the cost-effectiveness plane.
 #' @param base_model Name of base model used as reference. 
 #'   By default the model with the lowest effectiveness.
+#' @param cl A cluster for computations.
 #' @param method Counting method.
 #' @param list_models List of models, only used by 
 #'   \code{run_models_} to avoid using \code{...}.
@@ -53,7 +54,8 @@ run_models <- function(...,
                        cycles = 1,
                        method = c("life-table", "beginning", "end",
                                   "half-cycle"),
-                       cost = NULL, effect = NULL, base_model = NULL) {
+                       cost = NULL, effect = NULL, base_model = NULL,
+                       cl = NULL) {
   list_models <- list(...)
   
   method <- match.arg(method)
@@ -66,7 +68,8 @@ run_models <- function(...,
     method = method,
     cost = lazyeval::lazy_(substitute(cost), env = parent.frame()),
     effect = lazyeval::lazy_(substitute(effect), env = parent.frame()),
-    base_model = base_model
+    base_model = base_model,
+    cl = cl
   )
 }
 
@@ -77,7 +80,7 @@ run_models_ <- function(list_models,
                         init,
                         cycles,
                         method,
-                        cost, effect, base_model) {
+                        cost, effect, base_model, cl) {
   
   if (! all(unlist(lapply(list_models,
                           function(x) "uneval_model" %in% class(x))))) {

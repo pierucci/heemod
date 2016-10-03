@@ -6,7 +6,7 @@
 \alias{update.run_models}
 \title{Run Model on New Data}
 \usage{
-\method{update}{run_models}(object, newdata, ...)
+\method{update}{run_models}(object, newdata, cl = NULL, ...)
 
 \method{plot}{updated_models}(x, model, type = c("cost", "effect", "icer",
   "counts", "ce"), ...)
@@ -18,6 +18,8 @@
 one column per parameter and one row per parameter set.
 An optional \code{.weights} column can be included for
 a weighted analysis.}
+
+\item{cl}{a cluster on which to perform computations.}
 
 \item{...}{Additional arguments passed to
 \code{geom_histogram}. Especially usefull to specify

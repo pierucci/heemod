@@ -4,7 +4,7 @@
 \alias{run_probabilistic}
 \title{Run Probabilistic Uncertainty Analysis}
 \usage{
-run_probabilistic(model, resample, N)
+run_probabilistic(model, resample, N, cl = NULL)
 }
 \arguments{
 \item{model}{The result of \code{\link{run_models}}.}
@@ -13,6 +13,8 @@ run_probabilistic(model, resample, N)
 defined by \code{\link{define_distrib}}.}
 
 \item{N}{> 0. Number of simulation to run.}
+
+\item{cl}{A cluster for computations.}
 }
 \value{
 A list with one \code{data.frame} per model.

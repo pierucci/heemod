@@ -8,10 +8,10 @@
 run_models(..., parameters = define_parameters(), init = c(1000L, rep(0L,
   get_state_number(get_states(list(...)[[1]])) - 1)), cycles = 1,
   method = c("life-table", "beginning", "end", "half-cycle"), cost = NULL,
-  effect = NULL, base_model = NULL)
+  effect = NULL, base_model = NULL, cl = NULL)
 
 run_models_(list_models, parameters, init, cycles, method, cost, effect,
-  base_model)
+  base_model, cl)
 }
 \arguments{
 \item{...}{One or more \code{uneval_model} object.}
@@ -36,6 +36,8 @@ the cost-effectiveness plane.}
 
 \item{base_model}{Name of base model used as reference. 
 By default the model with the lowest effectiveness.}
+
+\item{cl}{A cluster for computations.}
 
 \item{list_models}{List of models, only used by 
 \code{run_models_} to avoid using \code{...}.}
