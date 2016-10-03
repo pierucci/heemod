@@ -4,8 +4,9 @@
 \alias{plot.run_models}
 \title{Plot Results of a Markov Model}
 \usage{
-\method{plot}{run_models}(x, type = c("counts", "ce"), model = "all",
-  include_states = character(0), panels = c("by_model", "by_state"), ...)
+\method{plot}{run_models}(x, type = c("counts", "ce", "values"),
+  model = "all", include_states = character(0), panels = c("by_model",
+  "by_state", "by_value"), value = NULL, ...)
 }
 \arguments{
 \item{x}{Result from \code{\link{run_models}}.}
@@ -18,7 +19,10 @@
 the plot.}
 
 \item{panels}{Should plots be faceted by model or by
-state?}
+value or by state (state for counts only)?}
+
+\item{value}{Names of values to be plotted.  These can be
+any of the costs or effects defined in state files.}
 
 \item{...}{Additional arguments passed to \code{plot}.}
 }
