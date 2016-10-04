@@ -660,6 +660,12 @@ test_that(
       "An analysis re-run on 62 parameter sets.",
       fixed = TRUE
     )
+    
+    plot(result$demographics, type = "counts")
+    plot(result$demographics, type = "values", value = "cost")
+    plot(result$demographics, type = "values", 
+         value = c("cost", "qaly"), panels = "by_value")
+    
   }
 )
 
