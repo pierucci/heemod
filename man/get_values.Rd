@@ -2,9 +2,11 @@
 % Please edit documentation in R/run_model_define.R
 \name{get_values}
 \alias{get_values}
+\alias{get_values.combined_models}
 \alias{get_values.eval_model}
 \alias{get_values.list}
 \alias{get_values.run_models}
+\alias{get_values.updated_models}
 \title{Get Model Values}
 \usage{
 get_values(x, ...)
@@ -14,6 +16,10 @@ get_values(x, ...)
 \method{get_values}{eval_model}(x, ...)
 
 \method{get_values}{list}(x, ...)
+
+\method{get_values}{updated_models}(x, m, ...)
+
+\method{get_values}{combined_models}(x, m, ...)
 }
 \arguments{
 \item{x}{Result from \code{\link{run_models}}.}

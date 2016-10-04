@@ -243,6 +243,21 @@ get_values.list <- function(x, ...) {
   x$values
 }
 
+#' @rdname get_values
+#' @export
+get_values.updated_models <- function(x, m, ...) {
+  get_values(attributes(x)$combined_models, m, ...)
+}
+
+#' @rdname get_values
+#' @export
+get_values.combined_models <- function(x, m, ...){
+  x <- attributes(x)$eval_model_list
+  x$.model_names <- names(x)
+  check_model_index(x, m)
+  get_values(x[[m]])
+}
+
 #' Get State Membership Counts
 #' 
 #' Given a result from \code{\link{run_models}}, return 
