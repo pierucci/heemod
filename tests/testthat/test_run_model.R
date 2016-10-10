@@ -240,6 +240,7 @@ test_that(
                         method = "life-table")
     
     plot(res_b, type = "counts")
+    plot(res_b, type = "values", value = c("x", "y"))
     plot(res_b, type = "ce")
     
     expect_output(

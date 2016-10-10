@@ -124,13 +124,16 @@ print.updated_models <- function(x, ...) {
 #' @rdname update-model
 plot.updated_models <- function(x, model,
                                 type = c("cost", "effect", "icer",
-                                         "counts", "ce"),
+                                         "counts", "ce", "values"),
                                 ...) {
   type <- match.arg(type)
   
-  if (type %in% c("counts", "ce")) {
+  if (type %in% c("counts", "ce", "values")) {
+    if(missing(model)) model <- "all"
     return(graphics::plot(attr(x, "combined_models"),
-                          type = type, model = model))
+                          type = type, model = model,
+                          ...) 
+           )
   }
   
   check_model_index(

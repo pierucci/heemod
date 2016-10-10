@@ -2,9 +2,11 @@
 % Please edit documentation in R/run_model_define.R
 \name{get_counts}
 \alias{get_counts}
+\alias{get_counts.combined_models}
 \alias{get_counts.eval_model}
 \alias{get_counts.list}
 \alias{get_counts.run_models}
+\alias{get_counts.updated_models}
 \title{Get State Membership Counts}
 \usage{
 get_counts(x, ...)
@@ -14,6 +16,10 @@ get_counts(x, ...)
 \method{get_counts}{eval_model}(x, ...)
 
 \method{get_counts}{list}(x, ...)
+
+\method{get_counts}{updated_models}(x, m, ...)
+
+\method{get_counts}{combined_models}(x, m, ...)
 }
 \arguments{
 \item{x}{Result from \code{\link{run_models}}.}
@@ -28,6 +34,6 @@ A data frame of counts per state.
 }
 \description{
 Given a result from \code{\link{run_models}}, return 
-state membership counts for a specifiec model.
+state membership counts for a specific model.
 }
 
