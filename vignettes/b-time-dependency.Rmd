@@ -1,0 +1,52 @@
+---
+title: "Time-varying values"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Time-varying values}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r, echo=FALSE, include=FALSE}
+library(heemod)
+```
+
+In more complex Markov models transition probabilities between states and state values can vary with time. These models are called *non-homogeneous* or *time-inhomogeneous* Markov models. A further distinction can be made depending on whether:
+
+  1. transition probabilities depend on how long __the entire model__ has been running (model-time variation);
+  2. transition probabilities depend on how long __an individual__ has been in a state (individual-time variation).
+  
+These situations can be modelled using the `markov_cycle` and `state_cycle` variables, respectively.
+
+# How to use these variables
+
+Both variables can be used in parameters, states and transition matrices:
+
+```{r}
+define_parameters(
+  mr = exp(- state_cycle * lambda),
+  age = 50 + markov_cycle
+)
+
+define_state(
+  cost = 100 - state_cycle,
+  effect = 10
+)
+```
+
+# Consequences
+
+Using `markov_cycle` in a model does not change the execution speed of the analysis. On the other hand adding `state_cycle` may slow down the analysis, especially if the model is run for  more that 100 cycles and the time-varying value is a a transition probability.
+```{r}
+test <- define_parameters(
+  f = 1,
+  a = 2,
+  b = f(a + f)
+)
+
+heemod:::interp_heemod(test)
+```
+
