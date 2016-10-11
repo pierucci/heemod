@@ -1,4 +1,3 @@
-#' @export
 has_state_cycle <- function(x, ...) {
   UseMethod("has_state_cycle")
 }
@@ -114,7 +113,7 @@ expand_state.uneval_state_list <- function(x, state_name, cycles) {
 
 #' Convert Lazy Dots to Expression List
 #' 
-#' This function is used by \code{\link{interp_dots}}.
+#' This function is used by \code{\link{interp_heemod}}.
 #'
 #' @param .dots A lazy dots object.
 #'

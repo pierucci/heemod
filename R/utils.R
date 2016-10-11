@@ -293,7 +293,7 @@ interleave <- function(...) {
 #'   
 #' @examples
 #' 
-#' insert(letters, c(0, 5, 26), c("xxx", "yyy"))
+#' heemod:::insert(letters, c(0, 5, 26), c("xxx", "yyy"))
 #' 
 #' @keywords internal
 insert <- function(x, pos, what) {
