@@ -939,18 +939,73 @@ save_outputs <- function(outputs, output_dir, overwrite) {
     return(NULL)
     
   } else {
-    delete_succes <- 0
+    delete_success <- 0
     if(dir.exists(output_dir)) {
-      delete_succes <- unlink(output_dir, recursive = TRUE)
+      delete_success <- unlink(output_dir, recursive = TRUE)
     }
     
-    if (delete_succes == 1) {
+    if (delete_success == 1) {
       warning("Failed to delete output directory.")
       return(NULL)
     }
     
     dir.create(output_dir)
   }
+  
+  ## some csv files
+  if (options()$heemod.verbose) message("** Writing tabular outputs to files ...")
+  utils::write.csv(
+    outputs$demographics,
+    file = file.path(output_dir, "icer_by_group.csv"),
+    row.names = FALSE
+  )
+  
+  all_counts <- 
+    do.call("rbind",
+            lapply(get_model_names(outputs$model_runs),
+                   function(this_name){
+                     data.frame(.model = this_name,
+                                get_counts(outputs$model_runs, m = this_name))
+                   }
+            )
+    )
+  
+  utils::write.csv(
+    all_counts,
+    file = file.path(output_dir, "state_counts.csv"),
+    row.names = FALSE
+  )
+  
+  all_values <- 
+    do.call("rbind",
+            lapply(get_model_names(outputs$model_runs),
+                   function(this_name){
+                     data.frame(.model = this_name,
+                                get_values(outputs$model_runs, m = this_name))
+                   }
+            )
+    )
+  
+  utils::write.csv(
+    all_values,
+    file = file.path(output_dir, "cycle_values.csv"),
+    row.names = FALSE
+  )
+  
+  utils::write.csv(
+    as.data.frame(summary(outputs$dsa)),
+    file = file.path(output_dir, "dsa.csv"),
+    row.names = FALSE
+  )
+  
+  
+  utils::write.csv(
+    outputs$psa,
+    file = file.path(output_dir, "psa_values.csv"),
+    row.names = FALSE
+  )
+  
+    
   
   ## plots about individual models
   model_names <- names(outputs$models)
@@ -975,23 +1030,19 @@ save_outputs <- function(outputs, output_dir, overwrite) {
     this_file <- paste("dsa", this_model, "vs", base_model, sep = "_")
     save_graph(this_plot, output_dir, this_file)
     
-    this_plot <- plot(outputs$psa, model = this_model)
-    this_file <- paste("psa", this_model, "vs", base_model, sep = "_")
-    save_graph(this_plot, output_dir, this_file)
+    if(!is.null(outputs$psa)){
+      this_plot <- plot(outputs$psa, model = this_model)
+      this_file <- paste("psa", this_model, "vs", base_model, sep = "_")
+      save_graph(this_plot, output_dir, this_file)
+    }
   }
-  
-  ## acceptability curve
-  if (options()$heemod.verbose) message("** Generating acceptability curve...")
-  this_plot <- plot(outputs$psa, type = "ac")
-  save_graph(this_plot,
-             output_dir, "acceptability")
-  
-  if (options()$heemod.verbose) message("** Writing ICER by group to a file...")
-  utils::write.csv(
-    outputs$demographics,
-    file = file.path(output_dir, "icer_by_group.csv"),
-    row.names = FALSE
-  )
+  if(!is.null(outputs$psa)){
+    ## acceptability curve
+    if (options()$heemod.verbose) message("** Generating acceptability curve...")
+    this_plot <- plot(outputs$psa, type = "ac")
+    save_graph(this_plot,
+               output_dir, "acceptability")
+  }
   invisible(NULL)
 }
 

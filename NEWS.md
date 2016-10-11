@@ -5,10 +5,12 @@
   * `define_sensitivity()` now accepts any expression as input, and can call references to model parameteres.
   * Discount rates can now be specified as parameters (allows for rates to be modified in DSA & PSA).
   * Any state value can be plotted.
+  * Additional output: csv files for many of the tabular results.
   
 ## Bugfixes
 
   * Edges where P=0 are not plotted anymore for transition matrices.
+  * There used to be a potential error when you wanted to save output but there had been no psa.
 
 # heemod 0.4.0
 
