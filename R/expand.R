@@ -201,9 +201,11 @@ interp_heemod.uneval_state_list <- function(x, ...) {
 }
 
 all.funs <- function(expr) {
-  with_funs <- all.names(expr)
-  without_funs <- all.names(expr, functions = FALSE)
+  with_funs <- table(all.names(expr))
+  without_funs <- table(all.names(expr, functions = FALSE))
   
-  pos_nofuns <- match(without_funs, with_funs)
-  with_funs[- pos_nofuns]
+  with_funs[names(without_funs)] <-
+    with_funs[names(without_funs)] -
+    without_funs
+  names(with_funs)[with_funs > 0]
 }
