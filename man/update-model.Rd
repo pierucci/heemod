@@ -9,7 +9,7 @@
 \method{update}{run_models}(object, newdata, ...)
 
 \method{plot}{updated_models}(x, model, type = c("cost", "effect", "icer",
-  "counts", "ce"), ...)
+  "counts", "ce", "values"), ...)
 }
 \arguments{
 \item{object}{The result of \code{\link{run_models}}.}

@@ -208,10 +208,60 @@ get_base_model.run_models <- function(x, ...) {
   attr(x, "base_model")
 }
 
+#' Get Model Values
+#' 
+#' Given a result from \code{\link{run_models}}, return 
+#' cost and effect values for a specific model.
+#' 
+#' @param x Result from \code{\link{run_models}}.
+#' @param m Model name or index.
+#' @param ...	further arguments passed to or from other
+#'   methods.
+#'   
+#' @return A data frame of values per state.
+#' @export
+get_values <- function(x, ...) {
+  UseMethod("get_values")
+}
+
+#' @rdname get_values
+#' @export
+get_values.run_models <- function(x, m = 1, ...) {
+  check_model_index(x, m, ...)
+  get_values(attr(x, "eval_model_list")[[m]])
+}
+
+#' @rdname get_values
+#' @export
+get_values.eval_model <- function(x, ...) {
+  x$values
+}
+
+#' @rdname get_values
+#' @export
+get_values.list <- function(x, ...) {
+  x$values
+}
+
+#' @rdname get_values
+#' @export
+get_values.updated_models <- function(x, m, ...) {
+  get_values(attributes(x)$combined_models, m, ...)
+}
+
+#' @rdname get_values
+#' @export
+get_values.combined_models <- function(x, m, ...){
+  x <- attributes(x)$eval_model_list
+  x$.model_names <- names(x)
+  check_model_index(x, m)
+  get_values(x[[m]])
+}
+
 #' Get State Membership Counts
 #' 
 #' Given a result from \code{\link{run_models}}, return 
-#' state membership counts for a specifiec model.
+#' state membership counts for a specific model.
 #' 
 #' @param x Result from \code{\link{run_models}}.
 #' @param m Model name or index.
@@ -241,6 +291,21 @@ get_counts.eval_model <- function(x, ...) {
 #' @export
 get_counts.list <- function(x, ...) {
   x$counts
+}
+
+#' @rdname get_counts
+#' @export
+get_counts.updated_models <- function(x, m, ...) {
+  get_counts(attributes(x)$combined_models, m, ...)
+}
+
+#' @rdname get_counts
+#' @export
+get_counts.combined_models <- function(x, m, ...){
+  x <- attributes(x)$eval_model_list
+  x$.model_names <- names(x)
+  check_model_index(x, m)
+  get_counts(x[[m]])
 }
 
 #' Get Initial State Values
