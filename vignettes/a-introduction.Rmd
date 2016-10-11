@@ -162,6 +162,8 @@ External data contained in user-defined data frames can be referenced in a model
 
 In order to compare different strategies it is possible to run several models in parallel, examples are provided in `vignette("homogeneous", package = "heemod")` or `vignette("non-homogeneous", package = "heemod")`.
 
+Time varying transition probabilities and state values are available through the `markov_cycle` and `state_cycle` variables.
+
 Uncertainty analysis `vignette("probabilistic", package = "heemod")` and sensitivity analysis `vignette("sensitivity", package = "heemod")` can be performed.
 
 See vignette `vignette("reproduction", package = "heemod")` for an exact reproduction of the analyses from Decision Modelling for Health Economic Evaluation.

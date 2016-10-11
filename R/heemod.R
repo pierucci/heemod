@@ -29,6 +29,7 @@
 #' @importFrom lazyeval lazy_dots
 #' @importFrom lazyeval as.lazy_dots
 #' @importFrom lazyeval lazy_eval
+#' @importFrom lazyeval interp
 #'   
 #' @importFrom pryr standardise_call
 #'   

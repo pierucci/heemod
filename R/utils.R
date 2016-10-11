@@ -93,6 +93,9 @@ check_names <- function(x) {
   if (any("markov_cycle" %in% x)) {
     stop("'markov_cycle' is a reserved name.")
   }
+  if (any("state_cycle" %in% x)) {
+    stop("'state_cycle' is a reserved name.")
+  }
   if (any("C" %in% x)) {
     stop("'C' is a reserved name.")
   }
@@ -271,4 +274,46 @@ interleave <- function(...) {
   .dots <- list(...)
   id <- unlist(lapply(.dots, seq_along))
   c(...)[order(id)]
+}
+
+#' Insert Elements in Vector
+#' 
+#' Insert a vector in another vector.
+#' 
+#' To insert an element at the beginning use a \code{pos} 
+#' value of 0.
+#' 
+#' Duplicated positions are not allowed.
+#' 
+#' @param x A vector (or a list).
+#' @param pos Integer. Insert after which elements?
+#' @param what Vector of elements to insert.
+#'   
+#' @return A vector.
+#'   
+#' @examples
+#' 
+#' insert(letters, c(0, 5, 26), c("xxx", "yyy"))
+#' 
+#' @keywords internal
+insert <- function(x, pos, what) {
+  
+  stopifnot(
+    all(pos >= 0),
+    all(pos <= length(x)),
+    ! any(duplicated(pos))
+  )
+  
+  res <- c(x, rep(what, length(pos)))
+  
+  id  <- c(
+    seq_along(x),
+    rep(pos, each = length(what)) +
+      seq(0, .9, length.out = length(what))
+  )
+  res[order(id)]
+}
+
+get_tm_pos <- function(row, col, n) {
+  (row - 1) * n + col
 }

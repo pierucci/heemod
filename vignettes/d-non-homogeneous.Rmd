@@ -14,15 +14,6 @@ vignette: >
 library(heemod)
 ```
 
-In more complex Markov models in health economic evaluation, transition probabilities between states can vary with time. These models are called *non-homogeneous* or *time-inhomogeneous* Markov models. A further distinction can be made depending on whether:
-
-  1. transition probabilities depend on how long __the entire model__ has been running (model-time variation): this situation can be modelled with a non-homogeneous Markov model;
-  2. transition probabilities depend on how long __an individual__ has been in a state (individual-time variation): this situation usually needs to be modelled with a microsimulation.
-
-However in some special cases non-homogeneous Markov models can be used in situation 2, when the state with transition probabilities depending on individual-time is the starting state __and__ it is not possible to go back to that state after having left it. In this situation individual-time is equivalent to model-time. This is the case in the following example.
-
-If you are not familiar with `heemod`, first consult the introduction vignette `vignette("introduction", package = "heemod")`.
-
 # Model description
 
 This example is an implementation of the assessment of a new total hip replacement (THR) technology described in chapter 3.5 of [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do). A more detailed report is available [at this location](https://www.york.ac.uk/media/che/documents/papers/technicalpapers/CHE%20Technical%20Paper%2028.pdf), event though this reports goes a bit further in the analysis. For the sake of simplicity we will not reproduce exactly the analysis from the book. See vignette `vignette("reproduction", package = "heemod")` for an exact reproduction of the analysis.

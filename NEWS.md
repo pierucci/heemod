@@ -2,6 +2,7 @@
 
 ## New features
 
+  * Values and probabilities can depend on state time with `state_cycle`, allowing to reproduce the results of microsimulations.
   * `define_sensitivity()` now accepts any expression as input, and can call references to model parameteres.
   * Discount rates can now be specified as parameters (allows for rates to be modified in DSA & PSA).
   * Any state value can be plotted.
