@@ -1,5 +1,5 @@
 to_char_uneval_matrix <- function(x) {
-  ex <- unlist(lapply(x, function(y) deparse(y$expr)))
+  ex <- unlist(lapply(x, function(y) deparse(y$expr, width.cutoff = 500)))
   ex[ex == "0"] <- ""
   matrix(ex,
          byrow = TRUE,

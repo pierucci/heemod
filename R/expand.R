@@ -24,11 +24,27 @@ substitute_dots <- function(.dots, .values) {
   )
 }
 
+#' Expand Time-Dependant States into Tunnel States
+#' 
+#' This function for transition matrices and state values 
+#' expands states relying on \code{state_cycle} in a serie
+#' of tunnels states.
+#' 
+#' @param x A transition matrix or a state list.
+#' @param state_pos Position of the state to expand.
+#' @param state_name Original name of the sate to expand.
+#' @param cycles Number of cycle of the model.
+#' @param n Postition in the expansion process.
+#' @param ... Addition parameters passed to methods.
+#'   
+#' @return The same object type as the input.
+#' @keywords internal
 expand_state <- function(x, ...) {
   UseMethod("expand_state")
 }
 
 #' @export
+#' @rdname expand_state
 expand_state.uneval_matrix <- function(x, state_pos,
                                        state_name, cycles, n = 1) {
   L <- length(x)
@@ -76,6 +92,7 @@ expand_state.uneval_matrix <- function(x, state_pos,
 }
 
 #' @export
+#' @rdname expand_state
 expand_state.uneval_state_list <- function(x, state_name, cycles) {
   
   st <- x[[state_name]]
@@ -92,4 +109,101 @@ expand_state.uneval_state_list <- function(x, state_name, cycles) {
     c(x, res),
     class = class(x)
   )
+}
+
+
+#' Convert Lazy Dots to Expression List
+#' 
+#' This function is used by \code{\link{interp_dots}}.
+#'
+#' @param .dots A lazy dots object.
+#'
+#' @return A list of expression.
+#' @keywords internal
+as_expr_list <- function(.dots) {
+  setNames(
+    lapply(.dots, function(x) x$expr),
+    names(.dots)
+  )
+}
+
+#' Interpolate Lazy Dots
+#' 
+#' Sequencially interpolates lazy dots, optionnaly using 
+#' external references.
+#' 
+#' The interpolation is sequencial: the second dot is 
+#' interpolated using the first, the third using the 
+#' interpolated first two, and so on.
+#' 
+#' @param x A parameter, transition matrix or state list
+#'   object.
+#' @param more A list of expressions.
+#' @param ... Addition parameters passed to methods.
+#'   
+#' @return An interpolated lazy dots object.
+#' @keywords internal
+interp_heemod <- function(x, ...) {
+  UseMethod("interp_heemod")
+}
+
+#' @export
+#' @rdname interp_heemod
+interp_heemod.default <- function(x, more = NULL, ...) {
+  
+  res <- NULL
+  
+  for (i in seq_along(x)) {
+    to_interp <- x[[i]]
+    for_interp <- c(more, as_expr_list(res))
+    funs <- all.funs(to_interp$expr)
+    
+    if (any(pb <- funs %in% names(for_interp))) {
+      stop(sprintf(
+        "Some parameters are named like a function, this is incompatible with the use of 'state_cycle': %s.",
+        paste(funs[pb], collapse = ", ")
+      ))
+    }
+    
+    new <- setNames(list(lazyeval::interp(
+      to_interp,
+      .values = for_interp
+    )
+    ), names(x)[i])
+    res <- c(res, new)
+    
+  }
+  lazyeval::as.lazy_dots(res)
+}
+
+
+#' @export
+#' @rdname interp_heemod
+interp_heemod.uneval_matrix <- function(x, ...) {
+  res <- interp_heemod.default(x, ...)
+  define_matrix_(res, get_state_names(x))
+}
+
+#' @export
+#' @rdname interp_heemod
+interp_heemod.state <- function(x, ...) {
+  res <- interp_heemod.default(x, ...)
+  define_state_(res)
+}
+
+#' @export
+#' @rdname interp_heemod
+interp_heemod.uneval_state_list <- function(x, ...) {
+  for (i in seq_along(x)) {
+    x[[i]] <- interp_heemod(x[[i]], ...)
+  }
+  x
+}
+
+all.funs <- function(expr) {
+  with_funs <- all.names(expr)
+  without_funs <- all.names(expr, functions = FALSE)
+  
+  pos_nofuns <- match(without_funs, with_funs)
+  with_funs[- pos_nofuns]
 }

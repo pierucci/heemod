@@ -82,13 +82,31 @@ get_matrix.default <- function(x){
   x$transition_matrix
 }
 
+set_matrix <- function(x, m) {
+  UseMethod("set_matrix")
+}
+
+set_matrix.default <- function(x, m) {
+  x$transition_matrix <- m
+}
+
+
 get_states <- function(x){
   UseMethod("get_states")
 }
 
-get_states.default <- function(x){
+get_states.default <- function(x) {
   x$states
 }
+
+set_states <- function(x, s) {
+  UseMethod("set_states")
+}
+
+set_states.default <- function(x, s) {
+  x$states <- s
+}
+
 
 get_state_value_names.uneval_model <- function(x) {
   get_state_value_names(get_states(x))

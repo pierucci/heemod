@@ -34,7 +34,7 @@ individual per state per model cycle.
 }
 \details{
 \code{init} need not be integer. E.g. specifying a vector
-of type c(Q = 1, B = 0, C = 0, ...) returns the 
+of type \code{c(A = 1, B = 0, C = 0, ...)} returns the 
 probabilities for an individual starting in state A to be
 in each state, per cycle.
 }

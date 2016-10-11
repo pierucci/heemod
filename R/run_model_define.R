@@ -79,10 +79,14 @@ run_models_ <- function(list_models,
                         method,
                         cost, effect, base_model) {
   
-  if (! all(unlist(lapply(list_models,
-                          function(x) "uneval_model" %in% class(x))))) {
-    .x <- names(list_models[! unlist(lapply(list_models,
-                                            function(x) "uneval_model" %in% class(x)))])
+  if (! all(unlist(lapply(
+    list_models,
+    function(x) "uneval_model" %in% class(x))))) {
+    
+    .x <- names(list_models[! unlist(lapply(
+      list_models,
+      function(x) "uneval_model" %in% class(x)))])
+    
     stop(sprintf(
       "Incorrect model object%s: %s.",
       plur(length(.x)),

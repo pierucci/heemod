@@ -6,7 +6,7 @@
 #' individual per state per model cycle.
 #' 
 #' \code{init} need not be integer. E.g. specifying a vector
-#' of type c(Q = 1, B = 0, C = 0, ...) returns the 
+#' of type \code{c(A = 1, B = 0, C = 0, ...)} returns the 
 #' probabilities for an individual starting in state A to be
 #' in each state, per cycle.
 #' 
@@ -38,12 +38,29 @@ eval_model <- function(model, parameters, cycles,
   uneval_matrix <- get_matrix(model)
   uneval_states <- get_states(model)
   
-  td_tm <- has_state_cycle(uneval_matrix)
-  td_st <- has_state_cycle(uneval_states)
+  i_parameters <- interp_heemod(parameters)
+  
+  i_uneval_matrix <- interp_heemod(
+    uneval_matrix,
+    more = as_expr_list(i_parameters)
+  )
+  
+  i_uneval_states <- interp_heemod(
+    uneval_states,
+    more = as_expr_list(i_parameters)
+  )
+  
+  td_tm <- has_state_cycle(i_uneval_matrix)
+  td_st <- has_state_cycle(i_uneval_states)
   
   expand <- any(c(td_tm, td_st))
   
   if (expand) {
+    uneval_matrix <- i_uneval_matrix
+    uneval_states <- i_uneval_states
+    
+    # parameters not needed anymore because of interp
+    parameters <- define_parameters()
     
     # from cells to cols
     td_tm <- td_tm %>% 
@@ -59,7 +76,7 @@ eval_model <- function(model, parameters, cycles,
     )))
     
     message(sprintf(
-      "Detected use of 'state_cycle', implicitely expanding states: %s.",
+      "Detected use of 'state_cycle', expanding states: %s.",
       paste(to_expand, collapse = ", ")
     ))
     
@@ -83,9 +100,7 @@ eval_model <- function(model, parameters, cycles,
         cycles = cycles
       )
     }
-    
   }
-  
   parameters <- eval_parameters(parameters,
                                 cycles = cycles)
   transition_matrix <- eval_matrix(uneval_matrix,
