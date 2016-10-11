@@ -40,13 +40,3 @@ define_state(
 # Consequences
 
 Using `markov_cycle` in a model does not change the execution speed of the analysis. On the other hand adding `state_cycle` may slow down the analysis, especially if the model is run for  more that 100 cycles and the time-varying value is a a transition probability.
-```{r}
-test <- define_parameters(
-  f = 1,
-  a = 2,
-  b = f(a + f)
-)
-
-heemod:::interp_heemod(test)
-```
-
