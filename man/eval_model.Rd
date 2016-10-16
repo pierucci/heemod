@@ -4,7 +4,7 @@
 \alias{eval_model}
 \title{Evaluate Markov Model}
 \usage{
-eval_model(model, parameters, cycles, init, method)
+eval_model(model, parameters, cycles, init, method, expand_limit)
 }
 \arguments{
 \item{model}{An \code{uneval_model} object.}
@@ -20,6 +20,9 @@ model states. Number of individuals in each model state
 at the beginning.}
 
 \item{method}{Counting method.}
+
+\item{expand_limit}{A named vector of state expansion
+limits.}
 }
 \value{
 An \code{eval_model} object (actually a list of 

@@ -19,6 +19,8 @@
 #'   model states. Number of individuals in each model state
 #'   at the beginning.
 #' @param method Counting method.
+#' @param expand_limit A named vector of state expansion
+#'   limits.
 #'   
 #' @return An \code{eval_model} object (actually a list of 
 #'   evaluated parameters, matrix, states and cycles 
@@ -28,7 +30,7 @@
 #'   
 #' @keywords internal
 eval_model <- function(model, parameters, cycles, 
-                       init, method) {
+                       init, method, expand_limit) {
   stopifnot(
     cycles > 0,
     length(cycles) == 1,
@@ -91,13 +93,13 @@ eval_model <- function(model, parameters, cycles,
         x = uneval_matrix,
         state_pos = which(get_state_names(uneval_matrix) == st),
         state_name = st,
-        cycles = cycles
+        cycles = expand_limit[st]
       )
       
       uneval_states <- expand_state(
         x = uneval_states,
         state_name = st,
-        cycles = cycles
+        cycles = expand_limit[st]
       )
     }
   }

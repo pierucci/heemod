@@ -37,6 +37,22 @@ define_state(
 )
 ```
 
-# Consequences
+# Options
 
 Using `markov_cycle` in a model does not change the execution speed of the analysis. On the other hand adding `state_cycle` may slow down the analysis, especially if the model is run for  more that 100 cycles and the time-varying value is a a transition probability.
+
+To mitigate this drawback it is possible to limit the number of state expansion with `state_cycle_limit`. Because most time-varying values reach an asymptotic value quite fast, it is unnecessary to expand the states any further. The limit cycle value is repeated until the end.
+
+The limit can be defined globally, per state, or per model and state.
+
+```r
+run_models(
+  I = mod1,
+  II = mod2,
+  cycles = 100,
+  state_cycle_limit = list(
+    I = c(B = 10, D = 20),
+    II = c(B = 15)
+  )
+)
+```

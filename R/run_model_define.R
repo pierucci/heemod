@@ -17,6 +17,14 @@
 #' The initial number of individuals in each state and the 
 #' number of cycle will be the same for all models.
 #' 
+#' \code{state_cycle_limit} can be specified in 3 different
+#' ways: 1. As a single value: the limit is applied to all
+#' states in all models. 2. As a named vector (where names
+#' are state names): the limits are applied to the given
+#' state names, for all models. 3. As a named list of named
+#' vectors: the limits are applied to the given state names
+#' for the given models.
+#' 
 #' Internally this function does 2 operations: first 
 #' evaluating parameters, transition matrix, state values 
 #' and computing individual counts through 
@@ -41,6 +49,8 @@
 #' @param method Counting method.
 #' @param list_models List of models, only used by 
 #'   \code{run_models_} to avoid using \code{...}.
+#' @param state_cycle_limit Optional expansion limit for 
+#'   \code{state_cycle}, see details.
 #'   
 #' @return A list of evaluated models with computed values.
 #' @export
@@ -53,7 +63,9 @@ run_models <- function(...,
                        cycles = 1,
                        method = c("life-table", "beginning", "end",
                                   "half-cycle"),
-                       cost = NULL, effect = NULL, base_model = NULL) {
+                       cost = NULL, effect = NULL,
+                       base_model = NULL,
+                       state_cycle_limit = NULL) {
   list_models <- list(...)
   
   method <- match.arg(method)
@@ -66,7 +78,8 @@ run_models <- function(...,
     method = method,
     cost = lazyeval::lazy_(substitute(cost), env = parent.frame()),
     effect = lazyeval::lazy_(substitute(effect), env = parent.frame()),
-    base_model = base_model
+    base_model = base_model,
+    state_cycle_limit = state_cycle_limit
   )
 }
 
@@ -77,7 +90,12 @@ run_models_ <- function(list_models,
                         init,
                         cycles,
                         method,
-                        cost, effect, base_model) {
+                        cost, effect, base_model,
+                        state_cycle_limit) {
+  
+  if (! is.wholenumber(cycles)) {
+    stop("'cycles' must be a whole number.")
+  }
   
   if (! all(unlist(lapply(
     list_models,
@@ -147,11 +165,25 @@ run_models_ <- function(list_models,
     stop("Names of 'init' vector differ from state names.")
   }
   
-  eval_model_list <- lapply(list_models, eval_model, 
-                            parameters = parameters,
-                            init = init, 
-                            cycles = cycles,
-                            method = method)
+  state_cycle_limit <- complete_scl(
+    state_cycle_limit,
+    state_names = get_state_names(list_models[[1]]),
+    model_names = names(list_models),
+    cycles = cycles
+  )
+  
+  eval_model_list <- list()
+  
+  for (n in names(list_models)) {
+    eval_model_list[[n]] <- eval_model(
+      list_models[[n]], 
+      parameters = parameters,
+      init = init, 
+      cycles = cycles,
+      method = method,
+      expand_limit = state_cycle_limit[[n]]
+    )
+  }
   
   list_res <- lapply(eval_model_list, get_total_state_values)
   

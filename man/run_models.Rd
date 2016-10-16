@@ -8,10 +8,10 @@
 run_models(..., parameters = define_parameters(), init = c(1000L, rep(0L,
   get_state_number(get_states(list(...)[[1]])) - 1)), cycles = 1,
   method = c("life-table", "beginning", "end", "half-cycle"), cost = NULL,
-  effect = NULL, base_model = NULL)
+  effect = NULL, base_model = NULL, state_cycle_limit = NULL)
 
 run_models_(list_models, parameters, init, cycles, method, cost, effect,
-  base_model)
+  base_model, state_cycle_limit)
 }
 \arguments{
 \item{...}{One or more \code{uneval_model} object.}
@@ -37,6 +37,9 @@ the cost-effectiveness plane.}
 \item{base_model}{Name of base model used as reference. 
 By default the model with the lowest effectiveness.}
 
+\item{state_cycle_limit}{Optional expansion limit for 
+\code{state_cycle}, see details.}
+
 \item{list_models}{List of models, only used by 
 \code{run_models_} to avoid using \code{...}.}
 }
@@ -60,6 +63,14 @@ value names).
 
 The initial number of individuals in each state and the 
 number of cycle will be the same for all models.
+
+\code{state_cycle_limit} can be specified in 3 different
+ways: 1. As a single value: the limit is applied to all
+states in all models. 2. As a named vector (where names
+are state names): the limits are applied to the given
+state names, for all models. 3. As a named list of named
+vectors: the limits are applied to the given state names
+for the given models.
 
 Internally this function does 2 operations: first 
 evaluating parameters, transition matrix, state values 

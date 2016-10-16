@@ -101,6 +101,13 @@ test_that(
     )
     expect_error(
       run_models(
+        mod1, mod2,
+        parameters = par1,
+        cycles = 11.5
+      )
+    )
+    expect_error(
+      run_models(
         mod1,
         parameters = par1, list()
       )

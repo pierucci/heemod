@@ -208,3 +208,76 @@ all.funs <- function(expr) {
     without_funs
   names(with_funs)[with_funs > 0]
 }
+
+complete_scl <- function(scl, state_names,
+                         model_names, cycles) {
+  uni <- FALSE
+  if (is.numeric(scl) && length(scl) == 1 && is.null(names(scl))) {
+    uni <- TRUE
+    stopifnot(
+      scl <= cycles,
+      scl > 0,
+      ! is.na(scl),
+      is.wholenumber(scl)
+    )
+    cycles <- scl
+  }
+  
+  res <- lapply(
+    model_names,
+    function(x) rep(cycles, length(state_names)) %>% 
+      setNames(state_names)
+  ) %>% 
+    setNames(model_names)
+  
+  if (is.null(scl) || uni) {
+    return(res)
+  }
+  
+  check_scl <- function(scl, cycles) {
+    if (is.null(names(scl))) {
+      stop("'state_cycle_limit' must be named.")
+    }
+    if (any(duplicated(names(scl)))) {
+      stop("'state_cycle_limit' names must be unique.")
+    }
+    if (any(pb <- ! names(scl) %in% state_names)) {
+      stop(sprintf(
+        "Some 'state_cycle_limit' names are not state names: %s.",
+        paste(names(scl)[pb], collapse = ", ")
+      ))
+    }
+    
+    stopifnot(
+      ! is.na(scl),
+      scl > 0,
+      scl <= cycles,
+      is.wholenumber(scl)
+    )
+  }
+  
+  if (is.numeric(scl)) {
+    check_scl(scl, cycles)
+    for (i in seq_along(res)) {
+      res[[i]][names(scl)] <- scl
+    }
+    return(res)
+  }
+  
+  if (is.list(scl)) {
+    if (any(pb <- ! names(scl) %in% model_names)) {
+      stop(sprintf(
+        "Some 'state_limit_cycle' names are not model names: %s.",
+        paste(names(scl)[pb], collapse = ", ")
+      ))
+    }
+    for (n in names(scl)) {
+      check_scl(scl[[n]], cycles)
+      
+      res[[n]][names(scl[[n]])] <- scl[[n]]
+    }
+    return(res)
+  }
+  
+  stop("'Incorrect 'state_cycle_limit' type.")
+}
