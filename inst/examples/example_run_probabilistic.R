@@ -33,7 +33,7 @@ mod2 <-
     
   )
 
-res2 <- run_models(
+res2 <- run_model(
   mod1, mod2,
   parameters = define_parameters(
     age_init = 60,

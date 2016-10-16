@@ -126,7 +126,7 @@ mod_comb <- define_strategy(
   D_comb
 )
 
-res_mod <- run_models(
+res_mod <- run_model(
   mono = mod_mono,
   comb = mod_comb,
   parameters = param,
@@ -167,7 +167,7 @@ se <- define_sensitivity(
 )
 ```
 
-We then run the sensitivity analysis with `run_sensitivity()`, using `res_mod` the result from `run_models()` as input.
+We then run the sensitivity analysis with `run_sensitivity()`, using `res_mod` the result from `run_model()` as input.
 
 ```{r}
 res <- run_sensitivity(

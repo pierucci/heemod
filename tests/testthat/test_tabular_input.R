@@ -334,13 +334,13 @@ test_that(
   "problems with output generate warnings", {
     
     expect_warning(
-      run_models_tabular(
+      run_model_tabular(
         system.file("tabular/test/test_no_overwrite", package = "heemod"),
         save = TRUE, overwrite = FALSE, run_psa = FALSE, run_demo = FALSE
       )
     )
     expect_warning(
-      run_models_tabular(
+      run_model_tabular(
         system.file("tabular/test/test_no_output_dir", package = "heemod"),
         save = TRUE, overwrite = TRUE, run_psa = FALSE, run_demo = FALSE
       )
@@ -632,7 +632,7 @@ test_that(
 
 test_that(
   "Running model from files works.", {
-    result <- run_models_tabular(
+    result <- run_model_tabular(
       location = system.file("tabular/thr", package = "heemod"),
       save = TRUE, overwrite = TRUE
     )

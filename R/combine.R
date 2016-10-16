@@ -11,7 +11,7 @@
 #' @param oldmodel The original model.
 #'   
 #' @return A \code{combined_models} object, mostly similar
-#'   to a result from \code{\link{run_models}}. \code{plot}
+#'   to a result from \code{\link{run_model}}. \code{plot}
 #'   and \code{summary} methods are available.
 #'   
 #' @keywords internal
@@ -99,14 +99,14 @@ print.combined_models <- function(x, ...) {
 
 #' @export
 plot.combined_models <- function(x, ...) {
-  plot.run_models(x, ...)
+  plot.run_model(x, ...)
 }
 
 #' @export
 summary.combined_models <- function(object, ...) {
-  summary.run_models(object, ...)
+  summary.run_model(object, ...)
 }
 
 normalize_ce.combined_models <- function(x, ...) {
-  normalize_ce.run_models(x, ...)
+  normalize_ce.run_model(x, ...)
 }

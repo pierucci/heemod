@@ -36,7 +36,7 @@ test_that(
         
       )
     
-    res2 <- run_models(
+    res2 <- run_model(
       mod1, mod2,
       parameters = define_parameters(
         age_init = 60,
@@ -149,7 +149,7 @@ test_that(
 1 64.82732  1105.112    0.56 0.4842654
 2 77.79468  1164.304    0.57 0.6539179"
     )
-    res2 <- suppressWarnings(run_models(
+    res2 <- suppressWarnings(run_model(
       mod1, mod2,
       parameters = define_parameters(
         age_init = 60,

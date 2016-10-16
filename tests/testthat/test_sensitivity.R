@@ -90,7 +90,7 @@ test_that(
         )
       )
     
-    res2 <- run_models(
+    res2 <- run_model(
       mod1, mod2,
       parameters = param,
       init = c(100, 0),
@@ -99,7 +99,7 @@ test_that(
       effect = ly,
       method = "beginning"
     )
-    res3 <- suppressWarnings(run_models(
+    res3 <- suppressWarnings(run_model(
       mod1, mod2,
       parameters = param,
       init = c(100, 0),
@@ -191,7 +191,7 @@ test_that(
       )
     )
     
-    res2 <- run_models(
+    res2 <- run_model(
       mod1, mod2,
       parameters = param,
       init = c(100, 0),

@@ -215,7 +215,7 @@ mod_np1 <- define_strategy(
 Both models can now be run for 60 years. By default models are computed for 1000 person starting in `PrimaryTHR`. To replicate results from the original study we assume transitions occur at the end of each cycles. This is necessary because THR cost defined in state `PrimaryTHR` need to be accounted for all 1000 individuals.
 
 ```{r}
-res_mod <- run_models(
+res_mod <- run_model(
   standard = mod_standard,
   np1 = mod_np1,
   parameters = param,

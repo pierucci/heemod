@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_code.R
 \name{get_code}
 \alias{get_code}
-\alias{get_code.run_models}
+\alias{get_code.run_model}
 \alias{get_code.state}
 \alias{get_code.uneval_matrix}
 \alias{get_code.uneval_model}
@@ -25,7 +25,7 @@ get_code(x, ...)
 \method{get_code}{uneval_model}(x, name = NULL, sub = FALSE, depth = 0,
   n_space = 2, ...)
 
-\method{get_code}{run_models}(x, name = NULL, sub = FALSE, depth = 0,
+\method{get_code}{run_model}(x, name = NULL, sub = FALSE, depth = 0,
   n_space = 2, ...)
 }
 \arguments{

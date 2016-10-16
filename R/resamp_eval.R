@@ -1,6 +1,6 @@
 #' Run Probabilistic Uncertainty Analysis
 #' 
-#' @param model The result of \code{\link{run_models}}.
+#' @param model The result of \code{\link{run_model}}.
 #' @param resample Resampling distribution for parameters 
 #'   defined by \code{\link{define_distrib}}.
 #' @param N > 0. Number of simulation to run.

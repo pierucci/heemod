@@ -19,7 +19,7 @@ print.uneval_model <- function(x, ...) {
 #' 
 #' Various plots for Markov models.
 #' 
-#' @param x Result from \code{\link{run_models}}.
+#' @param x Result from \code{\link{run_model}}.
 #' @param type Type of plot, see details.
 #' @param model Name or position of model of interest.
 #' @param include_states Names of states to be included in
@@ -44,10 +44,10 @@ print.uneval_model <- function(x, ...) {
 #' 
 #' @return A \code{ggplot2} object.
 #' 
-#' @example inst/examples/example_plot.run_models.R
+#' @example inst/examples/example_plot.run_model.R
 #' 
 #' @export
-plot.run_models <- function(x, type = c("counts", "ce", "values"),
+plot.run_model <- function(x, type = c("counts", "ce", "values"),
                             model = "all", 
                             include_states = character(0), 
                             panels = c("by_model", "by_state", "by_value"),
@@ -61,7 +61,7 @@ plot.run_models <- function(x, type = c("counts", "ce", "values"),
     type,
     counts = {
       ## for backwards compatibility
-      plot.run_models(x, type = "values", model = model,
+      plot.run_model(x, type = "values", model = model,
                       include_states = include_states,
                       panels = panels,
                       value = "count", 

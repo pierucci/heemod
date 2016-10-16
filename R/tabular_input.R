@@ -28,7 +28,7 @@
 #'   demographic groups).
 #'   
 #' @export
-run_models_tabular <- function(location, reference = "REFERENCE.csv",
+run_model_tabular <- function(location, reference = "REFERENCE.csv",
                                run_psa = TRUE, run_demo = TRUE,
                                save = FALSE, overwrite = FALSE) {
   
@@ -190,7 +190,7 @@ eval_models_from_tabular <- function(inputs,
   
   if (options()$heemod.verbose) message("** Running models...")
   model_runs <- do.call(
-    run_models,
+    run_model,
     list_args
   )
   
@@ -920,7 +920,7 @@ is_xls <- function(x) {
 #' Save Model Outputs
 #' 
 #' @param outputs Result from
-#'   \code{\link{run_models_tabular}}.
+#'   \code{\link{run_model_tabular}}.
 #' @param output_dir Subdirectory in which to write output.
 #' @param overwrite Should the outputs be overwritten?
 #'   

@@ -266,7 +266,7 @@ test_that(
       X1 = s3,
       X2 = s4
     )
-    res <- run_models(
+    res <- run_model(
       mod1, mod2,
       parameters = par1, cost = x, effect = y
     )

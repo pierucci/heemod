@@ -55,7 +55,7 @@ mod2 <- define_strategy(
     )
   )
 
-res2 <- run_models(
+res2 <- run_model(
   mod1, mod2,
   parameters = param,
   init = c(100, 0),

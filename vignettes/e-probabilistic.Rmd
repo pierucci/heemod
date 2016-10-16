@@ -152,7 +152,7 @@ mod_comb <- define_strategy(
   D_comb
 )
 
-res_mod <- run_models(
+res_mod <- run_model(
   mono = mod_mono,
   comb = mod_comb,
   parameters = param,

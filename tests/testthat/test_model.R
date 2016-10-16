@@ -90,7 +90,7 @@ test_that(
       X1 = s1,
       X2 = s2
     )
-    e_mod <- run_models(
+    e_mod <- run_model(
       mod1,
       parameters = par1,
       init = c(1, 0),
@@ -156,21 +156,21 @@ I 1592.538 1514.507",
       fixed = TRUE
     )
     expect_error(
-      run_models(
+      run_model(
         mod1,
         init = c(1, 0, 0),
         cycles = 5
       )
     )
     expect_error(
-      run_models(
+      run_model(
         mod1,
         init = c(-1, 0),
         cycles = 5
       )
     )
     expect_error(
-      run_models(
+      run_model(
         mod1,
         init = c(-1, 0),
         cycles = -5
@@ -211,7 +211,7 @@ test_that(
       X2 = s1
     )
     
-    e_mod2 <- run_models(
+    e_mod2 <- run_model(
       mod1, mod2,
       parameters = par1,
       init = c(1, 0),
@@ -298,7 +298,7 @@ I 422.5384 899.5074 0.4697442",
     )
     expect_output(
       print(
-        run_models(
+        run_model(
           mod1 = mod1, mod2 = mod2,
           parameters = par1,
           init = c(1, 0),

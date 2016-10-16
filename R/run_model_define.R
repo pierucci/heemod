@@ -48,16 +48,16 @@
 #'   By default the model with the lowest effectiveness.
 #' @param method Counting method.
 #' @param list_models List of models, only used by 
-#'   \code{run_models_} to avoid using \code{...}.
+#'   \code{run_model_} to avoid using \code{...}.
 #' @param state_cycle_limit Optional expansion limit for 
 #'   \code{state_cycle}, see details.
 #'   
 #' @return A list of evaluated models with computed values.
 #' @export
 #' 
-#' @example inst/examples/example_run_models.R
+#' @example inst/examples/example_run_model.R
 #'   
-run_models <- function(...,
+run_model <- function(...,
                        parameters = define_parameters(),
                        init = c(1000L, rep(0L, get_state_number(get_states(list(...)[[1]])) - 1)),
                        cycles = 1,
@@ -70,7 +70,7 @@ run_models <- function(...,
   
   method <- match.arg(method)
   
-  run_models_(
+  run_model_(
     list_models = list_models,
     parameters = parameters,
     init = init,
@@ -84,8 +84,8 @@ run_models <- function(...,
 }
 
 #' @export
-#' @rdname run_models
-run_models_ <- function(list_models,
+#' @rdname run_model
+run_model_ <- function(list_models,
                         parameters,
                         init,
                         cycles,
@@ -202,7 +202,7 @@ run_models_ <- function(list_models,
     res,
     eval_model_list = eval_model_list,
     uneval_model_list = list_models,
-    class = c("run_models", class(res)),
+    class = c("run_model", class(res)),
     parameters = parameters,
     init = init,
     cycles = cycles,
@@ -240,16 +240,16 @@ get_base_model.default <- function(x, ...) {
   x$.model_names[x$.effect == min(x$.effect)][1]
 }
 
-get_base_model.run_models <- function(x, ...) {
+get_base_model.run_model <- function(x, ...) {
   attr(x, "base_model")
 }
 
 #' Get Model Values
 #' 
-#' Given a result from \code{\link{run_models}}, return 
+#' Given a result from \code{\link{run_model}}, return 
 #' cost and effect values for a specific model.
 #' 
-#' @param x Result from \code{\link{run_models}}.
+#' @param x Result from \code{\link{run_model}}.
 #' @param m Model name or index.
 #' @param ...	further arguments passed to or from other
 #'   methods.
@@ -262,7 +262,7 @@ get_values <- function(x, ...) {
 
 #' @rdname get_values
 #' @export
-get_values.run_models <- function(x, m = 1, ...) {
+get_values.run_model <- function(x, m = 1, ...) {
   check_model_index(x, m, ...)
   get_values(attr(x, "eval_model_list")[[m]])
 }
@@ -296,10 +296,10 @@ get_values.combined_models <- function(x, m, ...){
 
 #' Get State Membership Counts
 #' 
-#' Given a result from \code{\link{run_models}}, return 
+#' Given a result from \code{\link{run_model}}, return 
 #' state membership counts for a specific model.
 #' 
-#' @param x Result from \code{\link{run_models}}.
+#' @param x Result from \code{\link{run_model}}.
 #' @param m Model name or index.
 #' @param ...	further arguments passed to or from other
 #'   methods.
@@ -312,7 +312,7 @@ get_counts <- function(x, ...) {
 
 #' @rdname get_counts
 #' @export
-get_counts.run_models <- function(x, m = 1, ...) {
+get_counts.run_model <- function(x, m = 1, ...) {
   check_model_index(x, m, ...)
   get_counts(attr(x, "eval_model_list")[[m]])
 }
@@ -346,7 +346,7 @@ get_counts.combined_models <- function(x, m, ...){
 
 #' Get Initial State Values
 #' 
-#' @param x x Result from \code{\link{run_models}}.
+#' @param x x Result from \code{\link{run_model}}.
 #'   
 #' @return A vector of initial state values.
 #' @export

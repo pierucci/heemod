@@ -58,85 +58,85 @@ test_that(
       X2 = s5
     )
     expect_error(
-      run_models(
+      run_model(
         mod1, mod2,
         parameters = par1,
         init = c(1, 2, 3)
       )
     )
     expect_error(
-      run_models(
+      run_model(
         mod1, mod2,
         parameters = par1,
         init = c(X3 = 1, X4 = 2)
       )
     )
     expect_error(
-      run_models(
+      run_model(
         mod1, mod2,
         parameters = par1,
         init = c(-1, 0)
       )
     )
     expect_error(
-      run_models(
+      run_model(
         mod1, mod2,
         parameters = par1,
         init = c(1, 0, 0)
       )
     )
     expect_error(
-      run_models(
+      run_model(
         mod1, mod2,
         parameters = par1,
         init = c(NA, 1)
       )
     )
     expect_error(
-      run_models(
+      run_model(
         mod1, mod2,
         parameters = par1,
         cycles = 0
       )
     )
     expect_error(
-      run_models(
+      run_model(
         mod1, mod2,
         parameters = par1,
         cycles = 11.5
       )
     )
     expect_error(
-      run_models(
+      run_model(
         mod1,
         parameters = par1, list()
       )
     )
     expect_error(
-      run_models(
+      run_model(
         mod1, mod2,
         parameters = par1,
         method = "zzz"
       )
     )
     expect_error(
-      run_models(
+      run_model(
         mod1, mod3, parameters = par1
       )
     )
     expect_error(
-      run_models(
+      run_model(
         mod1, mod4, parameters = par1
       )
     )
     expect_warning(
-      run_models(
+      run_model(
         mod1, mod2,
         parameters = par1
       )
     )
     expect_warning(
-      run_models(
+      run_model(
         mod1, mod2,
         parameters = par1,
         cost = x
@@ -146,7 +146,7 @@ test_that(
 )
 
 test_that(
-  "run_models behaves as expected", {
+  "run_model behaves as expected", {
     par1 <- define_parameters(
       a = .1,
       b = 1 / (markov_cycle + 1)
@@ -184,27 +184,27 @@ test_that(
     )
     
     expect_identical(
-      run_models(mod1, mod2,
+      run_model(mod1, mod2,
                  parameters = par1, init = c(1000L, 0L), cost = x, effect = y),
-      run_models(mod1, mod2,
+      run_model(mod1, mod2,
                  parameters = par1, cost = x, effect = y)
     )
     expect_identical(
-      run_models(mod1, mod2,
+      run_model(mod1, mod2,
                  parameters = par1, cost = x, effect = y),
-      run_models(I = mod1, II = mod2,
+      run_model(I = mod1, II = mod2,
                  parameters = par1, cost = x, effect = y)
     )
     expect_warning(
-      run_models(I = mod1, mod2,
+      run_model(I = mod1, mod2,
                  parameters = par1, cost = x, effect = y)
     )
     expect_warning(
-      summary(run_models(mod1, mod2,
+      summary(run_model(mod1, mod2,
                          parameters = par1))
     )
     expect_output(
-      str(run_models(mod1, mod2,
+      str(run_model(mod1, mod2,
                      parameters = par1, cost = x, effect = y,
                      method = "beginning")),
       '2 obs. of  5 variables:
@@ -216,7 +216,7 @@ test_that(
       fixed = TRUE
     )
     s_mod <- summary(
-      run_models(
+      run_model(
         mod1, mod2,
         parameters = par1, cost = x, effect = y,
         method = "beginning"))
@@ -233,16 +233,16 @@ test_that(
       round(s_mod$res$y), c(283300, 891300)
     )
     
-    res_b <- run_models(mod1, mod2,
+    res_b <- run_model(mod1, mod2,
                         parameters = par1, cost = x, effect = y,
                         method = "beginning")
-    res_e <- run_models(mod1, mod2,
+    res_e <- run_model(mod1, mod2,
                         parameters = par1, cost = x, effect = y,
                         method = "end")
-    res_h <- run_models(mod1, mod2,
+    res_h <- run_model(mod1, mod2,
                         parameters = par1, cost = x, effect = y,
                         method = "half-cycle")
-    res_l <- run_models(mod1, mod2,
+    res_l <- run_model(mod1, mod2,
                         parameters = par1, cost = x, effect = y,
                         method = "life-table")
     
@@ -267,11 +267,11 @@ test_that(
       "II 688.8  680.5 1.012197"
     )
     expect_error(
-      run_models(mod1, mod2,
+      run_model(mod1, mod2,
                  parameters = par1, cost = x, effect = y,
                  method = "testtest")
     )
-    rm <- run_models(mod1, mod2,
+    rm <- run_model(mod1, mod2,
                      parameters = par1, cost = x, effect = y,
                      cycles = 5)
     expect_equivalent(
@@ -360,17 +360,17 @@ test_that("Discounting", {
     X1 = s6,
     X2 = s4
   )
-  res <- run_models(mod1, mod2, cycles = 10,
+  res <- run_model(mod1, mod2, cycles = 10,
                     parameters = par1, cost = x, effect = y,
                     method = "beginning")
   expect_output(
     print(res),
     "II 3292.352 4193.422 0.7851231"
   )
-  res1 <- run_models(mod1, mod2, cycles = 10,
+  res1 <- run_model(mod1, mod2, cycles = 10,
                      parameters = par1, cost = x, effect = y,
                      method = "beginning")
-  res2 <- run_models(mod3, mod2, cycles = 10,
+  res2 <- run_model(mod3, mod2, cycles = 10,
                      parameters = par1, cost = x, effect = y,
                      method = "beginning")
   expect_output(
@@ -385,7 +385,7 @@ II 6437001 7136374"
   )
   
   expect_error(
-    run_models(mod1, mod4, cycles = 10,
+    run_model(mod1, mod4, cycles = 10,
                parameters = par1, cost = x, effect = y)
   )
 })
@@ -429,7 +429,7 @@ test_that(
       X2 = s4
     )
     
-    res <- run_models(
+    res <- run_model(
       mod1, mod2,
       parameters = par1, init = c(1000L, 0L),
       cost = x, effect = y)

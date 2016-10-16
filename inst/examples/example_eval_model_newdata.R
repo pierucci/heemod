@@ -13,7 +13,7 @@ mod1 <- define_strategy(
   define_state(var = a * markov_cycle)
 )
 
-res1 <- run_models(
+res1 <- run_model(
   mod1,
   parameters = par1,
   cycles = 5,

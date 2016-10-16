@@ -195,7 +195,7 @@ mod_comb <- define_strategy(
 Both models can then be run for 20 years with `run_model`. Models are given simple names (`mono` and `comb`) in order to facilitate result interpretation.
 
 ```{r}
-res_mod <- run_models(
+res_mod <- run_model(
   mono = mod_mono,
   comb = mod_comb,
   cycles = 20,

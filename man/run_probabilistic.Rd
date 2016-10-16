@@ -7,7 +7,7 @@
 run_probabilistic(model, resample, N)
 }
 \arguments{
-\item{model}{The result of \code{\link{run_models}}.}
+\item{model}{The result of \code{\link{run_model}}.}
 
 \item{resample}{Resampling distribution for parameters 
 defined by \code{\link{define_distrib}}.}
@@ -56,7 +56,7 @@ mod2 <-
     
   )
 
-res2 <- run_models(
+res2 <- run_model(
   mod1, mod2,
   parameters = define_parameters(
     age_init = 60,

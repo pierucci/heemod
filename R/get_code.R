@@ -164,7 +164,7 @@ get_code.uneval_model <- function(x, name = NULL, sub = FALSE,
 
 #' @export
 #' @rdname get_code
-get_code.run_models <- function(x, name = NULL, sub = FALSE,
+get_code.run_model <- function(x, name = NULL, sub = FALSE,
                                 depth = 0, n_space = 2,
                                 ...) {
   if (! is.null(name)) {
@@ -192,7 +192,7 @@ get_code.run_models <- function(x, name = NULL, sub = FALSE,
   structure(
     left_pad(paste0(
       name,
-      "run_models(\n  ",
+      "run_model(\n  ",
       md,
       ",\n  ",
       "parameters = ",

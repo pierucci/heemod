@@ -39,7 +39,7 @@ test_that(
       age_init = 60,
       age = age_init + markov_cycle
     )
-    res <- run_models(
+    res <- run_model(
       mod1, mod2,
       parameters = p1,
       init = 1:0,
@@ -54,7 +54,7 @@ test_that(
         text = get_code(res),
         width.cutoff = 57,
         output = FALSE)$text.tidy,
-      'run_models(I = define_strategy(transition_matrix = define_matrix(state_names = c("A", 
+      'run_model(I = define_strategy(transition_matrix = define_matrix(state_names = c("A", 
     "B"), 0.4, 0.6, 0.1, 0.9), A = define_state(cost = 543 + 
     age * 5, ly = 1), B = define_state(cost = 432 + age, ly = 1 * 
     age/100)), II = define_strategy(transition_matrix = define_matrix(state_names = c("A", 
@@ -69,7 +69,7 @@ test_that(
       formatR::tidy_source(
         text = get_code(res, name = "res"), width.cutoff = 57,
         output = FALSE)$text.tidy,
-      'res <- run_models(I = define_strategy(transition_matrix = define_matrix(state_names = c("A", 
+      'res <- run_model(I = define_strategy(transition_matrix = define_matrix(state_names = c("A", 
     "B"), 0.4, 0.6, 0.1, 0.9), A = define_state(cost = 543 + 
     age * 5, ly = 1), B = define_state(cost = 432 + age, ly = 1 * 
     age/100)), II = define_strategy(transition_matrix = define_matrix(state_names = c("A", 
@@ -84,7 +84,7 @@ test_that(
       formatR::tidy_source(
         text = get_code(res, sub = TRUE), width.cutoff = 57,
         output = FALSE)$text.tidy,
-      'run_models(I = m_i, II = m_ii, parameters = define_parameters(age_init = 60, 
+      'run_model(I = m_i, II = m_ii, parameters = define_parameters(age_init = 60, 
     age = age_init + markov_cycle), init = c(1, 0), cycles = 10, 
     method = "beginning", base_model = "II", cost = cost, 
     effect = ly)'
