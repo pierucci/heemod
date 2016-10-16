@@ -12,7 +12,7 @@ plot(mat_1)
 
 # referencing parameters
 # rr must be present in a parameter object
-# that must later be linked with define_model
+# that must later be linked with define_strategy
 
 define_matrix(
   .5 - rr, rr,

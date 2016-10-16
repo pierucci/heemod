@@ -160,7 +160,7 @@ Utilities and costs are then associated to states. In this model costs are disco
 Now that parameters, transition matrix and states are defined we can define the models for the control group and the NP1 treatment.
 
 ```{r}
-mod_standard <- define_model(
+mod_standard <- define_strategy(
   transition_matrix = mat_standard,
   PrimaryTHR = define_state(
     utility = 0,
@@ -185,7 +185,7 @@ mod_standard <- define_model(
 )
 mod_standard
 
-mod_np1 <- define_model(
+mod_np1 <- define_strategy(
   transition_matrix = mat_np1,
   PrimaryTHR = define_state(
     utility = 0,

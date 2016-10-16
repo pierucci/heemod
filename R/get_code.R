@@ -7,7 +7,7 @@
 #' @param name character. Optional argument giving the name
 #'   to assign to the object.
 #' @param sub logical. Should states or models be referenced
-#'   by name in \code{define_model} and \code{run_model}
+#'   by name in \code{define_strategy} and \code{run_model}
 #'   instead of including the entire code?
 #' @param depth Depth of the function call.
 #' @param n_space Number of space used for indentation.
@@ -151,7 +151,7 @@ get_code.uneval_model <- function(x, name = NULL, sub = FALSE,
   structure(
     left_pad(paste0(
       name,
-      "define_model(\n  ",
+      "define_strategy(\n  ",
       "transition_matrix = ",
       get_code(x$transition_matrix, depth = depth),
       ",\n",

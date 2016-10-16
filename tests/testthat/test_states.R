@@ -248,7 +248,7 @@ test_that(
       x = f(discount(987, .2)),
       y = discount(r = .1, 1726)
     )
-    mod1 <- define_model(
+    mod1 <- define_strategy(
       transition_matrix = mat1,
       X1 = s1,
       X2 = s2
@@ -261,7 +261,7 @@ test_that(
       x = discount(cte3, .2),
       y = discount(cte4, .1)
     )
-    mod2 <- define_model(
+    mod2 <- define_strategy(
       transition_matrix = mat1,
       X1 = s3,
       X2 = s4

@@ -40,7 +40,7 @@ mat1 <- define_matrix(
   1-b, b,
   0, 1
 )
-mod1 <- define_model(
+mod1 <- define_strategy(
   transition_matrix = mat1,
   define_state(var = a),
   define_state(var = a * markov_cycle)

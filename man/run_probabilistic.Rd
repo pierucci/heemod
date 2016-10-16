@@ -24,7 +24,7 @@ Run Probabilistic Uncertainty Analysis
 # example for run_probabilistic
 
 mod1 <-
-  define_model(
+  define_strategy(
     transition_matrix = define_matrix(
       .5, .5,
       .1, .9
@@ -40,7 +40,7 @@ mod1 <-
   )
 
 mod2 <-
-  define_model(
+  define_strategy(
     transition_matrix = define_matrix(
       p_trans, C,
       .1, .9

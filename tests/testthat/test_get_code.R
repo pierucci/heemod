@@ -11,7 +11,7 @@ test_that(
       .1, .9
     )
     mod1 <-
-      define_model(
+      define_strategy(
         transition_matrix =  mat1,
         s1,
         define_state(
@@ -21,7 +21,7 @@ test_that(
       )
     
     mod2 <-
-      define_model(
+      define_strategy(
         transition_matrix = define_matrix(
           .5, .5,
           .1, .9
@@ -54,10 +54,10 @@ test_that(
         text = get_code(res),
         width.cutoff = 57,
         output = FALSE)$text.tidy,
-      'run_models(I = define_model(transition_matrix = define_matrix(state_names = c("A", 
+      'run_models(I = define_strategy(transition_matrix = define_matrix(state_names = c("A", 
     "B"), 0.4, 0.6, 0.1, 0.9), A = define_state(cost = 543 + 
     age * 5, ly = 1), B = define_state(cost = 432 + age, ly = 1 * 
-    age/100)), II = define_model(transition_matrix = define_matrix(state_names = c("A", 
+    age/100)), II = define_strategy(transition_matrix = define_matrix(state_names = c("A", 
     "B"), 0.5, 0.5, 0.1, 0.9), A = define_state(cost = 789 * 
     age/10, ly = 1), B = define_state(cost = 456 * age/10, 
     ly = 1 * age/200)), parameters = define_parameters(age_init = 60, 
@@ -69,10 +69,10 @@ test_that(
       formatR::tidy_source(
         text = get_code(res, name = "res"), width.cutoff = 57,
         output = FALSE)$text.tidy,
-      'res <- run_models(I = define_model(transition_matrix = define_matrix(state_names = c("A", 
+      'res <- run_models(I = define_strategy(transition_matrix = define_matrix(state_names = c("A", 
     "B"), 0.4, 0.6, 0.1, 0.9), A = define_state(cost = 543 + 
     age * 5, ly = 1), B = define_state(cost = 432 + age, ly = 1 * 
-    age/100)), II = define_model(transition_matrix = define_matrix(state_names = c("A", 
+    age/100)), II = define_strategy(transition_matrix = define_matrix(state_names = c("A", 
     "B"), 0.5, 0.5, 0.1, 0.9), A = define_state(cost = 789 * 
     age/10, ly = 1), B = define_state(cost = 456 * age/10, 
     ly = 1 * age/200)), parameters = define_parameters(age_init = 60, 
@@ -94,7 +94,7 @@ test_that(
         text = get_code(mod1, sub = TRUE, name = "m1"),
         width.cutoff = 57,
         output = FALSE)$text.tidy,
-      'm1 <- define_model(transition_matrix = define_matrix(state_names = c("A", 
+      'm1 <- define_strategy(transition_matrix = define_matrix(state_names = c("A", 
     "B"), 0.4, 0.6, 0.1, 0.9), A = s_a, B = s_b)'
     )
     expect_identical(

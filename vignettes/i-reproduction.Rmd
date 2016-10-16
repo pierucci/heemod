@@ -110,14 +110,14 @@ D_comb <- define_state(
   life_year = 0
 )
 
-mod_mono <- define_model(
+mod_mono <- define_strategy(
   transition_matrix = mat_mono,
   A_mono,
   B_mono,
   C_mono,
   D_mono
 )
-mod_comb <- define_model(
+mod_comb <- define_strategy(
   transition_matrix = mat_comb,
   A_comb,
   B_comb,
@@ -233,7 +233,7 @@ mat_np1 <- define_matrix(
     0, 0, 0,     0, 1
 )
 
-mod_standard <- define_model(
+mod_standard <- define_strategy(
   transition_matrix = mat_standard,
   PrimaryTHR = define_state(
     utility = 0,
@@ -257,7 +257,7 @@ mod_standard <- define_model(
   )
 )
 
-mod_np1 <- define_model(
+mod_np1 <- define_strategy(
   transition_matrix = mat_np1,
   PrimaryTHR = define_state(
     utility = 0,

@@ -51,7 +51,7 @@ time-dependent.
 \details{
 Parameters names are searched first in a parameter object
 defined with \code{\link{define_parameters}} and linked 
-with the matrix through \code{\link{define_model}}; then 
+with the matrix through \code{\link{define_strategy}}; then 
 in the environment where the matrix was defined.
 
 Matric cells are listed by row.
@@ -84,7 +84,7 @@ plot(mat_1)
 
 # referencing parameters
 # rr must be present in a parameter object
-# that must later be linked with define_model
+# that must later be linked with define_strategy
 
 define_matrix(
   .5 - rr, rr,

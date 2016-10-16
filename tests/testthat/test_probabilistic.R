@@ -4,7 +4,7 @@ context("Probabilistic analysis")
 test_that(
   "Probabilistic analysis works", {
     mod1 <-
-      define_model(
+      define_strategy(
         transition_matrix = define_matrix(
           .5, .5,
           .1, .9
@@ -20,7 +20,7 @@ test_that(
         
       )
     mod2 <-
-      define_model(
+      define_strategy(
         transition_matrix = define_matrix(
           .5, .5,
           .1, .9

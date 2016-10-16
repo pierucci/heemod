@@ -85,7 +85,7 @@ mat_np1 <- define_matrix(
     0, 0, 0,          0, 1
 )
 
-mod_standard <- define_model(
+mod_standard <- define_strategy(
   transition_matrix = mat_standard,
   PrimaryTHR = define_state(
     utility = 0,
@@ -109,7 +109,7 @@ mod_standard <- define_model(
   )
 )
 
-mod_np1 <- define_model(
+mod_np1 <- define_strategy(
   transition_matrix = mat_np1,
   PrimaryTHR = define_state(
     utility = 0,

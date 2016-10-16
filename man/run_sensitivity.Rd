@@ -25,7 +25,7 @@ param <- define_parameters(
   p2 = .2,
   r = .05
 )
-mod1 <- define_model(
+mod1 <- define_strategy(
     transition_matrix = define_matrix(
       C, p1,
       p2, C
@@ -40,7 +40,7 @@ mod1 <- define_model(
     )
   )
 
-mod2 <- define_model(
+mod2 <- define_strategy(
     transition_matrix = define_matrix(
       C, p1,
       p2, C

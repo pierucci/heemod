@@ -84,10 +84,10 @@ state_B
 
 # Combine information in a model
 
-Now that the transition matrix and the state values are defined, we can combine them to create a Markov model with `define_model`:
+Now that the transition matrix and the state values are defined, we can combine them to create a Markov model with `define_strategy`:
 
 ```{r}
-mod_1 <- define_model(
+mod_1 <- define_strategy(
   transition_matrix = mat_trans,
   state_A,
   state_B

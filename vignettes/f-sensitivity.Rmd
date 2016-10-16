@@ -110,7 +110,7 @@ D_comb <- define_state(
   life_year = 0
 )
 
-mod_mono <- define_model(
+mod_mono <- define_strategy(
   transition_matrix = mat_trans_mono,
   A_mono,
   B_mono,
@@ -118,7 +118,7 @@ mod_mono <- define_model(
   D_mono
 )
 
-mod_comb <- define_model(
+mod_comb <- define_strategy(
   transition_matrix = mat_trans_comb,
   A_comb,
   B_comb,

@@ -15,7 +15,7 @@ test_that(
       x = 987,
       y = 1726
     )
-    mod1 <- define_model(
+    mod1 <- define_strategy(
       transition_matrix = mat1,
       X1 = s1,
       X2 = s2
@@ -24,7 +24,7 @@ test_that(
       1-a, a,
       1-b, b
     )
-    mod2 <- define_model(
+    mod2 <- define_strategy(
       transition_matrix = mat2,
       s1,
       s2
@@ -49,7 +49,7 @@ test_that(
       fixed = TRUE
     )
     expect_error(
-      define_model(
+      define_strategy(
         transition_matrix = mat2,
         s1,
         s2,
@@ -57,7 +57,7 @@ test_that(
       )
     )
     expect_error(
-      define_model(
+      define_strategy(
         transition_matrix = mat1,
         X1 = s1,
         X3 = s2
@@ -85,7 +85,7 @@ test_that(
       x = 987,
       y = 1726
     )
-    mod1 <- define_model(
+    mod1 <- define_strategy(
       transition_matrix = mat1,
       X1 = s1,
       X2 = s2
@@ -200,12 +200,12 @@ test_that(
       x = 987,
       y = 1726
     )
-    mod1 <- define_model(
+    mod1 <- define_strategy(
       transition_matrix = mat1,
       X1 = s1,
       X2 = s2
     )
-    mod2 <- define_model(
+    mod2 <- define_strategy(
       transition_matrix = mat1,
       X1 = s1,
       X2 = s1

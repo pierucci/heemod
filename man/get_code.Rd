@@ -41,7 +41,7 @@ to assign to the object.}
 \item{n_space}{Number of space used for indentation.}
 
 \item{sub}{logical. Should states or models be referenced
-by name in \code{define_model} and \code{run_model}
+by name in \code{define_strategy} and \code{run_model}
 instead of including the entire code?}
 }
 \value{

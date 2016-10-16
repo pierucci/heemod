@@ -7,7 +7,7 @@
 #' 
 #' Parameters names are searched first in a parameter object
 #' defined with \code{\link{define_parameters}} and linked 
-#' with the matrix through \code{\link{define_model}}; then 
+#' with the matrix through \code{\link{define_strategy}}; then 
 #' in the environment where the matrix was defined.
 #' 
 #' Matric cells are listed by row.

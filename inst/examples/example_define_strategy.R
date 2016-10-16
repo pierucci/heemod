@@ -13,7 +13,7 @@ s2 <- define_state(
   utility = .5
   )
 
-define_model(
+define_strategy(
   transition_matrix = mat,
   s1 = s1,
   s2 = s2

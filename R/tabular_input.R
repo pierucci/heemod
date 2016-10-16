@@ -636,7 +636,7 @@ create_options_from_tabular <- function(opt) {
 #' @param df_env An environment containing external data.
 #' 
 #' @return A \code{heemod} model as returned by 
-#'   \code{\link{define_model}}.
+#'   \code{\link{define_strategy}}.
 #'   
 #' @keywords internal
 create_model_from_tabular <- function(state_file,
@@ -655,7 +655,7 @@ create_model_from_tabular <- function(state_file,
   TM <- create_matrix_from_tabular(tm_file, get_state_names(states),
                                    df_env = df_env)
   
-  define_model_(transition_matrix = TM, states = states)
+  define_strategy_(transition_matrix = TM, states = states)
 }
 
 #' Load Data From a Folder Into an Environment

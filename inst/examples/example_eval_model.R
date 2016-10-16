@@ -7,7 +7,7 @@ mat <- define_matrix(
   .1,    .9
 )
 
-mod <- define_model(
+mod <- define_strategy(
   transition_matrix = mat,
   A = define_state(cost = 10),
   B = define_state(cost = 2)

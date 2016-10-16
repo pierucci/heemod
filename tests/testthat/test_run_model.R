@@ -25,7 +25,7 @@ test_that(
       y = 1726
     )
     
-    mod1 <- define_model(
+    mod1 <- define_strategy(
       transition_matrix = mat1,
       X1 = s1,
       X2 = s2
@@ -42,17 +42,17 @@ test_that(
       a = 456,
       b = 1029
     )
-    mod2 <- define_model(
+    mod2 <- define_strategy(
       transition_matrix = mat1,
       X1 = s3,
       X2 = s4
     )
-    mod3 <- define_model(
+    mod3 <- define_strategy(
       transition_matrix = mat2,
       X1 = s3,
       X3 = s4
     )
-    mod4 <- define_model(
+    mod4 <- define_strategy(
       transition_matrix = mat1,
       X1 = s5,
       X2 = s5
@@ -164,7 +164,7 @@ test_that(
       x = 987,
       y = 1726
     )
-    mod1 <- define_model(
+    mod1 <- define_strategy(
       transition_matrix = mat1,
       X1 = s1,
       X2 = s2
@@ -177,7 +177,7 @@ test_that(
       x = 456,
       y = 1029
     )
-    mod2 <- define_model(
+    mod2 <- define_strategy(
       transition_matrix = mat1,
       X1 = s3,
       X2 = s4
@@ -317,7 +317,7 @@ test_that("Discounting", {
     x = 987,
     y = 1726
   )
-  mod1 <- define_model(
+  mod1 <- define_strategy(
     transition_matrix = mat1,
     X1 = s1,
     X2 = s2
@@ -331,7 +331,7 @@ test_that("Discounting", {
     x = 456,
     y = 1029
   )
-  mod2 <- define_model(
+  mod2 <- define_strategy(
     transition_matrix = mat1,
     X1 = s3,
     X2 = s4
@@ -341,7 +341,7 @@ test_that("Discounting", {
     x = discount(c1, 0),
     y = discount(c3, 0)
   )
-  mod3 <- define_model(
+  mod3 <- define_strategy(
     transition_matrix = mat1,
     X1 = s1,
     X2 = s5
@@ -355,7 +355,7 @@ test_that("Discounting", {
     x = 456,
     y = 1029
   )
-  mod4 <- define_model(
+  mod4 <- define_strategy(
     transition_matrix = mat1,
     X1 = s6,
     X2 = s4
@@ -410,7 +410,7 @@ test_that(
       x = 987,
       y = 1726
     )
-    mod1 <- define_model(
+    mod1 <- define_strategy(
       transition_matrix = mat1,
       X1 = s1,
       X2 = s2
@@ -423,7 +423,7 @@ test_that(
       x = 456,
       y = 1029
     )
-    mod2 <- define_model(
+    mod2 <- define_strategy(
       transition_matrix = mat1,
       X1 = s3,
       X2 = s4
