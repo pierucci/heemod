@@ -29,8 +29,8 @@ plot.probabilistic <- function(x, type = c("ce", "ac"),
                         colour = ".model_names")) +
         ggplot2::geom_point() +
         ggplot2::scale_colour_hue(name = "Model") +
-        ggplot2::xlab("Effect") +
-        ggplot2::ylab("Cost")
+        ggplot2::xlab("Incremental effect") +
+        ggplot2::ylab("Incremental cost")
     },
     ac = {
       tab <- acceptability_curve(x, values)
@@ -51,10 +51,12 @@ plot.probabilistic <- function(x, type = c("ce", "ac"),
 normalize_ce.probabilistic <- function(x) {
   .bm <- get_base_model(x)
   
+  n_ind <- sum(get_init(attr(x, "model")))
+  
   x %>% 
     dplyr::group_by_(".index") %>% 
     dplyr::mutate_(
-      .cost = ~ .cost - sum(.cost * (.model_names == .bm)),
-      .effect = ~ .effect - sum(.effect * (.model_names == .bm))
+      .cost = ~ (.cost - sum(.cost * (.model_names == .bm))) / n_ind,
+      .effect = ~ (.effect - sum(.effect * (.model_names == .bm))) / n_ind
     )
 }
