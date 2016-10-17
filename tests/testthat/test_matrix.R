@@ -58,7 +58,7 @@ test_that(
     )
     expect_output(
       print(mat1),
-      'An unevaluated matrix, 2 states.
+      'A transition matrix, 2 states.
 
    X1  X2 
 X1 0.3 0.7
