@@ -14,7 +14,7 @@ vignette: >
 library(heemod)
 ```
 
-The purpose of this vignette is to present how to reproduce exactly the results from [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do). While other vignettes such as `vignette("homogeneous", package = "heemod")`, `vignette("non-homogeneous", package = "heemod")` or `vignette("probabilistic", package = "heemod")` are greatly inspired from this book, key elements differ (mostly for the sake of clarity) and thus results differ, sometimes significantly, from the book. Here we show how to exactly reproduce the results with the `heemod` package.
+The purpose of this vignette is to present how to reproduce exactly the results from [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do). While other vignettes such as `vignette("c-homogeneous", "heemod")`, `vignette("d-non-homogeneous", "heemod")` or `vignette("e-probabilistic", "heemod")` are greatly inspired from this book, key elements differ (mostly for the sake of clarity) and thus results differ, sometimes significantly, from the book. Here we show how to exactly reproduce the results with the `heemod` package.
 
 # HIV model
 
