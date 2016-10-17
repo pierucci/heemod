@@ -11,7 +11,7 @@ to_char_uneval_matrix <- function(x) {
 #' @export
 print.uneval_matrix <- function(x, ...) {
   cat(sprintf(
-    "An unevaluated matrix, %i states.\n\n",
+    "A transition matrix, %i states.\n\n",
     get_matrix_order(x)
   ))
   
@@ -25,7 +25,7 @@ print.uneval_matrix <- function(x, ...) {
 #' @export
 print.eval_matrix <- function(x, ...) {
   cat(sprintf(
-    "An evaluated matrix, %i states, %i markov cycles.\n\n",
+    "An evaluated transition matrix, %i states, %i markov cycles.\n\n",
     get_matrix_order(x),
     length(x)
   ))

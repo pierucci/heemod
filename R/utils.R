@@ -66,6 +66,10 @@ list_all_same <- function(x) {
 plur <- function(x) {
   if (x > 1) "s" else ""
 }
+#' @rdname plur
+plur_y <- function(x) {
+  if (x > 1) "ies" else "y"
+}
 
 #' Check Names
 #' 

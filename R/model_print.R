@@ -4,7 +4,7 @@ print.uneval_model <- function(x, ...) {
   n_state_values <- length(get_state_value_names(get_states(x)))
   
   cat(sprintf(
-    "An unevaluated Markov model:
+    "A Markov model strategy:
 
     %i state%s,
     %i state value%s\n",

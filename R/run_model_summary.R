@@ -105,13 +105,13 @@ compute_icer <- function(x, model_order = order(x$.effect)) {
 #' @export
 print.summary_run_model <- function(x, ...) {
   cat(sprintf(
-    "%i Markov model%s run for %i cycle%s.\n\n",
+    "%i strateg%s run for %i cycle%s.\n\n",
     nrow(x$res),
-    plur(nrow(x$res)),
+    plur_y(nrow(x$res)),
     x$cycles,
     plur(x$cycles)
   ))
-  cat("Initial states:\n\n")
+  cat("Initial state counts:\n\n")
   print(matrix(
     x$init,
     dimnames = list(
@@ -132,7 +132,7 @@ print.summary_run_model <- function(x, ...) {
   
   if (nrow(x$res) > 1) {
     cat("\nEfficiency frontier:\n\n")
-    cat(x$frontier)
+    cat(paste(x$frontier, collapse = " -> "))
     cat("\n\nModel difference:\n\n")
     print(res_comp)
   }
