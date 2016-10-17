@@ -7,8 +7,8 @@
 #' 
 #' Parameters names are searched first in a parameter object
 #' defined with \code{\link{define_parameters}} and linked 
-#' with the matrix through \code{\link{define_strategy}}; then 
-#' in the environment where the matrix was defined.
+#' with the matrix through \code{\link{define_strategy}};
+#' then in the environment where the matrix was defined.
 #' 
 #' Matric cells are listed by row.
 #' 
@@ -16,7 +16,7 @@
 #' can be conveniently reffered as \code{C}.
 #' 
 #' Only matrix size is checked during this step (the matrix 
-#' must be square). Other conditions (such as rowsums being 
+#' must be square). Other conditions (such as row sums being
 #' equal to 1) are tested later, during model evaluation.
 #' 
 #' For the \code{modify} function existing matrix cells are 
@@ -34,7 +34,7 @@
 #' @param .OBJECT An object of class \code{uneval_matrix}.
 #' @param x An \code{uneval_matrix} to plot.
 #' @param relsize Argument passed to \code{\link{plotmat}}.
-#' @param shadow.size Argument passed to
+#' @param shadow.size Argument passed to 
 #'   \code{\link{plotmat}}.
 #' @param latex Argument passed to \code{\link{plotmat}}.
 #' @param .dots Used to work around non-standard evaluation.

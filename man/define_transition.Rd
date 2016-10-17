@@ -33,7 +33,7 @@ names.}
 
 \item{relsize}{Argument passed to \code{\link{plotmat}}.}
 
-\item{shadow.size}{Argument passed to
+\item{shadow.size}{Argument passed to 
 \code{\link{plotmat}}.}
 
 \item{latex}{Argument passed to \code{\link{plotmat}}.}
@@ -51,8 +51,8 @@ time-dependent.
 \details{
 Parameters names are searched first in a parameter object
 defined with \code{\link{define_parameters}} and linked 
-with the matrix through \code{\link{define_strategy}}; then 
-in the environment where the matrix was defined.
+with the matrix through \code{\link{define_strategy}};
+then in the environment where the matrix was defined.
 
 Matric cells are listed by row.
 
@@ -60,7 +60,7 @@ The completary probability of all other row probabilities
 can be conveniently reffered as \code{C}.
 
 Only matrix size is checked during this step (the matrix 
-must be square). Other conditions (such as rowsums being 
+must be square). Other conditions (such as row sums being
 equal to 1) are tested later, during model evaluation.
 
 For the \code{modify} function existing matrix cells are 
