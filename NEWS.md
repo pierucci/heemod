@@ -57,7 +57,7 @@
   
 ## Acknowledments
 
-  * Thanks to [Matthew Wiener](https://github.com/MattWiener), [Zdenek Kabat](https://github.com/ZdenekKabat) and [Vojtech Filipec](https://github.com/vojtech-filipec) for their great contributions to this update.
+  * Thanks to [Matthew Wiener](https://github.com/MattWiener), [Zdenek Kabat](https://github.com/zkabat) and [Vojtech Filipec](https://github.com/vojtech-filipec) for their great contributions to this update.
 
 # heemod 0.3.3
 
