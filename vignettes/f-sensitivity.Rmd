@@ -136,17 +136,15 @@ res_mod <- run_model(
 )
 ```
 
-# Introduction
+## Introduction
 
-The objective of deterministic sensitivity analysis is to assess how cost is sensitive to parameter values. Parameter values are changed individually (usually through upper and lower bounds) and the results on cost are reported.
+The objective of deterministic sensitivity analysis is to assess how model results are sensitive to parameter values. Parameter values are changed through upper and lower bounds, and the results are reported.
 
-Sensitivity analysis is distinct from probabilistic uncertainty analysis: whereas in uncertainty analysis the objective is to account for uncertainty on parameter values in estimating model results, in sensitivity analysis the objective is to assess the sensitivity of results to variations of individual parameters.
+Sensitivity analysis is distinct from probabilistic uncertainty analysis: whereas in PSA the objective is to estimate the effect of global uncertainty on model results, in DSA the objective is to assess the sensitivity of results to variations of individual parameters. Both analyses are complementary.
 
-Both analyses are complementary. Uncertainty analysis is essential to decision making, while sensitivity analysis is useful to better understand model behaviour.
+## Define the analysis
 
-# Define the analysis
-
-This example uses the HIV drug model defined in `vignette("homogeneous", package = "heemod")`. Read this vignette for an explanation of the model.
+This example uses the HIV drug model defined in `vignette("e-probabilistic", "heemod")`. See this vignette for an explanation of the model. Note that as in PSA, parameters need to be defined in `define_parameters()` in order to be modified in a DSA.
 
 In this example we will study the sensitivity of cost to 4 parameters:
 
@@ -176,7 +174,7 @@ res <- run_dsa(
 )
 ```
 
-# Interpretation
+## Interpretation
 
 All the results can be displayed in a table.
 

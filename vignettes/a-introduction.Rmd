@@ -14,35 +14,30 @@ vignette: >
 library(heemod)
 ```
 
-This document is an introduction to the basic steps to define and run a model in `heemod`. Note that even if this vignette uses the term *Markov model*, decision trees are actually a specific subset of such models, and thus can be specified easily with this package.
+This document is a presentation of the basic steps to define and run a model in `heemod`. Note that decision trees are actually a subset even of *Markov model*, and thus can be specified easily with this package.
 
-When building a Markov model for health economic evaluation, the following steps must be performed:
+When building a Markov model the following steps must be performed:
 
   * Specify transition probabilities between states.
-  * Specify values attached to states (costs, utilities...).
+  * Specify values attached to states (costs, utilities, etc.).
   * Combine this information and run the model.
-  
-Other vignettes provide more details and examples on specific topics:
 
-  * Simple Markov models: `vignette("homogeneous", package = "heemod")`: How to specify, run and interpret a simple Markov model with no time-varying elements.
-  * Time-varying Markov models: `vignette("non-homogeneous", package = "heemod")`: Example analysis of a more complex Markov model with time-varying transition probabilities.
+## Transition probabilities
 
-# Transition probabilities
+The probability to transition from one state to another during a time period is called a *transition probability*. Said time period is called a *cycle*.
 
-The probability to change from one state to another during a time period is called a *transition probability*. The time period is called a *cycle*.
-
-Transition probabilities between states can be specified through a 2-way table where the lines correspond to the states at the beginning of a cycle and the columns to the states at the end of a cycle. For example consider a model with 2 states `A` and `B`:
+Transition probabilities between states can be described through a 2-way table where the lines correspond to the states at the beginning of a cycle and the columns to the states at the end of a cycle. Consider a model with 2 states `A` and `B`:
 
 |       | A | B |
 |-------|---|---|
 | **A** | 1 | 2 |
 | **B** | 3 | 4 |
 
-When starting a cycle in state `A` (row `A`), the probability to still be in state `A` at the end of the cycle is found in colunm `A` (cell `1`) and the probability to change to state `B` is found in column `B` (cell `2`).
+When starting a cycle in state **A** (row **A**), the probability to still be in state **A** at the end of the cycle is found in colunm **A** (cell **1**) and the probability to change to state **B** is found in column **B** (cell **2**).
 
-Similarly, when starting a cycle from state `B` (row `B`), the probability to be in state `A` or `B` at the end of the cycle are found in cells `3` or `4` respectively.
+Similarly, when starting a cycle from state **B** (row **B**), the probability to be in state **A** or **B** at the end of the cycle are found in cells **3** or **4** respectively.
 
-In the context of Markov models, this 2-way table is called a *transition matrix*. A transition matrix can be defined easily in `heemod` with the `define_transition` function. If we consider the previous example, where cell values have been replaced by actual probabilities:
+In the context of Markov models, this 2-way table is called a *transition matrix*. A transition matrix can be defined easily in `heemod` with the `define_transition()` function. If we consider the previous example, where cell values have been replaced by actual probabilities:
 
 |       |  A  |  B  |
 |-------|-----|-----|
@@ -59,14 +54,14 @@ mat_trans <- define_transition(
 mat_trans
 ```
 
-# Attach values to states
+## Attach values to states
 
-In health economic evaluation, values are attached to states. Cost and utility are classical examples of such values. To continue with the previous example, the following values can be attachd to state `A` and `B`:
+Values are attached to states. Cost and utility are classical examples of such values. To continue with the previous example, the following values can be attachd to state **A** and **B**:
 
-  * State `A` has a cost of 1234 per cycle and an utility of 0.85.
-  * State `B` has a cost of 4321 per cycle and an utility of 0.50.
+  * State **A** has a cost of *1234* per cycle and an utility of *0.85*.
+  * State **B** has a cost of *4321* per cycle and an utility of *0.50*.
   
-A state and its values can be defined with `define_state`:
+A state and its values can be defined with `define_state()`:
 
 ```{r}
 state_A <- define_state(
@@ -82,26 +77,26 @@ state_B <- define_state(
 state_B
 ```
 
-# Combine information in a model
+## Combine information in a model
 
-Now that the transition matrix and the state values are defined, we can combine them to create a Markov model with `define_strategy`:
+Now that the transition matrix and the state values are defined for a given strategy, we can combine them with `define_strategy()`:
 
 ```{r}
-mod_1 <- define_strategy(
+strat_1 <- define_strategy(
   transition_matrix = mat_trans,
   state_A,
   state_B
 )
-mod_1
+strat_1
 ```
 
-# Run a model
+## Run the model
 
-The model can then be run with `run_model` for a given number of cycles. The variables corresponding to valuation of cost and effect must be given at that point.
+A model is a made of one or more strategy, run with `run_model()` for a given number of cycles. Here we run only one strategy, so no comparison of the cost-effectiveness of the different strategies will be made. The variables corresponding to valuation of cost and effect must be given at that point.
 
 ```{r}
 res_mod_1 <- run_model(
-  mod_1,
+  strat_1,
   cycles = 10,
   cost = cost,
   effect = utility
@@ -109,9 +104,9 @@ res_mod_1 <- run_model(
 res_mod_1
 ```
 
-By default the model is run for 1000 persons starting in the first state (here state `A`).
+By default the model is run for *1000* persons starting in the first state (here state **A**).
 
-# Analyse results
+## Analyse results
 
 We can plot the state membership counts over time. Other plot types are available.
 
@@ -134,38 +129,39 @@ plot(res_mod_1) +
   )
 ```
 
-The state membership counts can be accessed with `get_counts()`.
+The state membership counts and the values can be accessed with `get_counts()` and `get_values()` respectively.
 
 ```{r}
 get_counts(res_mod_1)
+get_values(res_mod_1)
 ```
 
-# Convenience functions
+## Convenience functions
 
 Convenience functions are available to easily compute transition probabilities from indidence rates, OR, RR, or probabilities estimated on a different timeframe.
 
-Example : convert an incidence rate of 162 cases per 1,000 person-years to a 5-year probability.
+Example : convert an incidence rate of *162* cases per *1,000* person-years to a 5-year probability.
 
 ```{r}
 rate_to_prob(r = 162, per = 1000, to = 5)
 ```
 
-Type `?probability` to see a list of the convenience functions available.
+See `?probability` to see a list of the convenience functions available.
 
-# External data
+## External data
 
-Age and sex-specific mortality rates can be downloaded from the WHO online database with the function `get_who_mr()`.
+Mortality rates by age and sex (often used as transition probabilities) can be downloaded from the WHO online database with the function `get_who_mr()`.
 
 External data contained in user-defined data frames can be referenced in a model with the function `look_up()`.
 
-# Going futher
+## Compare strategies
 
-In order to compare different strategies it is possible to run several models in parallel, examples are provided in `vignette("homogeneous", package = "heemod")` or `vignette("non-homogeneous", package = "heemod")`.
+In order to compare different strategies it is possible to run a model with multiple strategies in parallel, examples are provided in `vignette("c-homogeneous", "heemod")` or `vignette("d-non-homogeneous", "heemod")`.
 
-Time varying transition probabilities and state values are available through the `markov_cycle` and `state_cycle` variables.
+## Time-variability
 
-Uncertainty analysis `vignette("probabilistic", package = "heemod")` and sensitivity analysis `vignette("sensitivity", package = "heemod")` can be performed.
+Time varying transition probabilities and state values are available through the `markov_cycle` and `state_cycle` variables. Time-varying probabilities and values are explained in `vignette("b-time-dependency", "heemod")`.
 
-See vignette `vignette("reproduction", package = "heemod")` for an exact reproduction of the analyses from Decision Modelling for Health Economic Evaluation.
+## Going further
 
-Population-level country-specific mortality rates by age and sex (often used as transition probabilities in Markov models) can be downloaded from WHO databases with the `get_who_mr()` function.
+Probabilistic uncertainty analysis `vignette("e-probabilistic", "heemod")` and deterministic sensitivity analysis `vignette("f-sensitivity", "heemod")` can be performed. Population-level estimates and heterogeneity can be computed : `vignette("g-heterogeneity", "heemod")`.
