@@ -8,9 +8,9 @@
 #' @return A list with one \code{data.frame} per model.
 #' @export
 #' 
-#' @example inst/examples/example_run_probabilistic.R
+#' @example inst/examples/example_run_psa.R
 #'   
-run_probabilistic <- function(model, resample, N) {
+run_psa <- function(model, resample, N) {
   
   stopifnot(
     N > 0,

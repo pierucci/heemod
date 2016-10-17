@@ -209,7 +209,7 @@ rsp <- define_psa(
 Now that the distributions of parameters are set we can simply run the probabilistic model as follow:
 
 ```{r}
-pm <- run_probabilistic(
+pm <- run_psa(
   model = res_mod,
   resample = rsp,
   N = 100

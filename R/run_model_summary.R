@@ -53,7 +53,7 @@ summary.run_model <- function(object, ...) {
 #' reference.
 #' 
 #' @param x Result of \code{\link{run_model}} or 
-#'   \code{\link{run_probabilistic}}.
+#'   \code{\link{run_psa}}.
 #'   
 #' @return Input with normalized \code{.cost} and 
 #'   \code{.effect}, ordered by \code{.effect}.

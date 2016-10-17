@@ -206,7 +206,7 @@ eval_models_from_tabular <- function(inputs,
   model_psa <- NULL
   if (! is.null(inputs$param_info$psa_params) & run_psa) {
     if (options()$heemod.verbose) message("** Running PSA...")
-    model_psa <- run_probabilistic(
+    model_psa <- run_psa(
       model_runs,
       resample = inputs$param_info$psa_params,
       N = inputs$model_options$n
