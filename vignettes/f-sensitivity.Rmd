@@ -154,10 +154,10 @@ In this example we will study the sensitivity of cost to 4 parameters:
   * `cost_zido` and `cost_lami`, the drug costs.
   * `dr`, the discount rate.
 
-Upper and lower values for the paramters are given to `define_sensitivity()`.
+Upper and lower values for the paramters are given to `define_dsa()`.
 
 ```{r}
-se <- define_sensitivity(
+se <- define_dsa(
   rr, .4, .6,
   
   cost_zido, 1500, 3000,

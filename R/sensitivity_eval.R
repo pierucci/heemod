@@ -2,7 +2,7 @@
 #' 
 #' @param model An evaluated Markov model
 #' @param sensitivity An object returned by 
-#'   \code{\link{define_sensitivity}}.
+#'   \code{\link{define_dsa}}.
 #'   
 #' @return A \code{data.frame} with one row per model and 
 #'   parameter value.

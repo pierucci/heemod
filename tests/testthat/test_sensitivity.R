@@ -2,7 +2,7 @@ context("Sensitivity analysis")
 
 test_that(
   "define sensitivity", {
-    se1 <- define_sensitivity(
+    se1 <- define_dsa(
       a, 10, 45,
       b, .5, 1.5
     )
@@ -27,25 +27,25 @@ test_that(
 4 -  1.5"
     )
     expect_error(
-      define_sensitivity(
+      define_dsa(
         a, 10, 45, 20,
         b, .5, 1.5
       )
     )
     expect_error(
-      define_sensitivity(
+      define_dsa(
         10, 45,
         b, .5, 1.5
       )
     )
     expect_error(
-      define_sensitivity(
+      define_dsa(
         b, 10, 45,
         b, .5, 1.5
       )
     )
     expect_error(
-      define_sensitivity(
+      define_dsa(
         C, 10, 45,
         b, .5, 1.5
       )
@@ -106,7 +106,7 @@ test_that(
       cycles = 10
     ))
     
-    ds <- define_sensitivity(
+    ds <- define_dsa(
       p1, .1, .9,
       p2, .1, .3
     )
@@ -200,7 +200,7 @@ test_that(
       effect = ly
     )
     
-    ds <- define_sensitivity(
+    ds <- define_dsa(
       p1, .1, .9,
       p2, .1, .3,
       r, .05, .1

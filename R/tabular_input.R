@@ -514,7 +514,7 @@ create_parameters_from_tabular <- function(param_defs,
     low <- stats::na.omit(param_defs$low)
     high <- stats::na.omit(param_defs$high)
     
-    dsa <- define_sensitivity_(
+    dsa <- define_dsa_(
       par_names = param_sens,
       low_dots = lazyeval::as.lazy_dots(
         setNames(

@@ -42,7 +42,7 @@ res2 <- run_model(
   effect = ly
 )
 
-ds <- define_sensitivity(
+ds <- define_dsa(
   p1, .1, .9,
   p2, .1, .3,
   r, .05, .1
@@ -57,7 +57,7 @@ plot(x, value = "icer", type = "difference", model = 2)
 # can be specified as a function of other parameters
 
 
-ds2 <- define_sensitivity(
+ds2 <- define_dsa(
   p2, p1 - .1, p1 + .1
 )
 
