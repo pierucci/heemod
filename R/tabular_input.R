@@ -197,7 +197,7 @@ eval_models_from_tabular <- function(inputs,
   model_dsa <- NULL
   if (! is.null(inputs$param_info$dsa)) {
     if (options()$heemod.verbose) message("** Running DSA...")
-    model_dsa <- run_sensitivity(
+    model_dsa <- run_dsa(
       model_runs,
       inputs$param_info$dsa_params
     )

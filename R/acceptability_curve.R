@@ -1,7 +1,7 @@
 #' Acceptability Curve from Probabilistic Analysis
 #' 
 #' 
-#' @param x Result from \code{\link{run_sensitivity}}.
+#' @param x Result from \code{\link{run_dsa}}.
 #' @param wtp_thresholds willingness to pay thresholds
 #'   
 #' @return A data frame with columns \code{.ceac} (the 

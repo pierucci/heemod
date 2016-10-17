@@ -167,10 +167,10 @@ se <- define_dsa(
 )
 ```
 
-We then run the sensitivity analysis with `run_sensitivity()`, using `res_mod` the result from `run_model()` as input.
+We then run the sensitivity analysis with `run_dsa()`, using `res_mod` the result from `run_model()` as input.
 
 ```{r}
-res <- run_sensitivity(
+res <- run_dsa(
   model = res_mod,
   sensitivity = se
 )

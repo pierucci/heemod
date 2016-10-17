@@ -111,7 +111,7 @@ test_that(
       p2, .1, .3
     )
     
-    x <- run_sensitivity(res2, ds)
+    x <- run_dsa(res2, ds)
     
     expect_output(
       str(head(as.data.frame(x))),
@@ -120,7 +120,7 @@ test_that(
       fixed = TRUE
     )
     
-    expect_error(run_sensitivity(res3, ds))
+    expect_error(run_dsa(res3, ds))
     
     expect_output(
       str(summary(x)),
@@ -207,7 +207,7 @@ test_that(
     )
     
     
-    x <- summary(run_sensitivity(res2, ds))
+    x <- summary(run_dsa(res2, ds))
     
     .icer <- c(-Inf, 3988, -Inf, 668, -Inf, 761, -Inf, 1195,
                -Inf, 978, -Inf, 
