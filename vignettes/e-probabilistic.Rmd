@@ -188,7 +188,7 @@ Finally multinomial distributions are declared with the number of individuals in
   * `p_AA + p_AB + p_AC + p_AD ~ multinom(721, 202, 67, 10)`
 
 ```{r}
-rsp <- define_distrib(
+rsp <- define_psa(
   rr ~ lognormal(mean = .509, sdlog = .173),
   
   cost_A ~ make_gamma(mean = 2756, sd = sqrt(2756)),

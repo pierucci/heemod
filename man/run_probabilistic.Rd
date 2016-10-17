@@ -10,7 +10,7 @@ run_probabilistic(model, resample, N)
 \item{model}{The result of \code{\link{run_model}}.}
 
 \item{resample}{Resampling distribution for parameters 
-defined by \code{\link{define_distrib}}.}
+defined by \code{\link{define_psa}}.}
 
 \item{N}{> 0. Number of simulation to run.}
 }
@@ -70,7 +70,7 @@ res2 <- run_model(
   effect = ly
 )
 
-rsp <- define_distrib(
+rsp <- define_psa(
   age_init ~ normal(60, 10),
   cost_init ~ normal(1000, 100),
   p_trans ~ prop(.7, 100),

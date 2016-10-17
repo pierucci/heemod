@@ -47,7 +47,7 @@ res2 <- run_model(
   effect = ly
 )
 
-rsp <- define_distrib(
+rsp <- define_psa(
   age_init ~ normal(60, 10),
   cost_init ~ normal(1000, 100),
   p_trans ~ prop(.7, 100),

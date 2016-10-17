@@ -50,7 +50,7 @@ test_that(
       method = "beginning"
     )
     
-    rsp1 <- define_distrib(
+    rsp1 <- define_psa(
       age_init ~ normal(60, 10),
       cost_init ~ normal(1000, 100),
       
@@ -59,7 +59,7 @@ test_that(
         .4, 1
       ), byrow = TRUE, ncol = 2)
     )
-    rsp2 <- define_distrib(
+    rsp2 <- define_psa(
       age_init ~ normal(60, 10),
       cost_init ~ normal(1000, 100),
       
@@ -81,7 +81,7 @@ test_that(
     set.seed(1)
     ndt3 <- run_probabilistic(res2, resample = rsp2, N = 10)
     
-    x <- define_distrib(
+    x <- define_psa(
       rate1 + rate2 + rate3 ~ multinom(10, 50, 40),
       a + b ~ multinom(15, 30)
     )
@@ -133,7 +133,7 @@ test_that(
       fixed = TRUE
     )
     
-    rsp3 <- define_distrib(
+    rsp3 <- define_psa(
       age_init ~ lognormal(60, 10),
       cost_init ~ make_gamma (1000, 100),
       p_trans ~ prop(.5, 100),
@@ -162,7 +162,7 @@ test_that(
     ))
     expect_error(run_probabilistic(res3, resample = rsp2, N = 10))
     expect_error(
-      define_distrib(
+      define_psa(
         age_init ~ normal(60, 10),
         age_init ~ normal(1000, 100),
         

@@ -543,7 +543,7 @@ create_parameters_from_tabular <- function(param_defs,
     distrib_psa <- stats::na.omit(param_defs$psa)
     
     psa <- do.call(
-      define_distrib,
+      define_psa,
       lapply(
         seq_along(param_psa),
         function(i) {
