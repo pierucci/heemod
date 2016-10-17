@@ -1,5 +1,16 @@
 # heemod devel
 
+## Breaking changes
+
+  * Some functions were renamed for clarification:
+    * `define_strategy()` <- `define_model()`
+    * `run_model()` <- `run_models()`
+    * `define_transition()` <- `define_matrix()`
+    * `define_dsa()` <- `define_sensitivity()`
+    * `define_psa()` <- `define_distrib()`
+    * `run_dsa()` <- `run_sensitivity()`
+    * `run_psa()` <- `run_probabilistic()`
+
 ## New features
 
   * Values and probabilities can depend on state time with `state_cycle`, allowing to reproduce the results of microsimulations.

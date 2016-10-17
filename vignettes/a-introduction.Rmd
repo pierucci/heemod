@@ -42,7 +42,7 @@ When starting a cycle in state `A` (row `A`), the probability to still be in sta
 
 Similarly, when starting a cycle from state `B` (row `B`), the probability to be in state `A` or `B` at the end of the cycle are found in cells `3` or `4` respectively.
 
-In the context of Markov models, this 2-way table is called a *transition matrix*. A transition matrix can be defined easily in `heemod` with the `define_matrix` function. If we consider the previous example, where cell values have been replaced by actual probabilities:
+In the context of Markov models, this 2-way table is called a *transition matrix*. A transition matrix can be defined easily in `heemod` with the `define_transition` function. If we consider the previous example, where cell values have been replaced by actual probabilities:
 
 |       |  A  |  B  |
 |-------|-----|-----|
@@ -52,7 +52,7 @@ In the context of Markov models, this 2-way table is called a *transition matrix
 That transition matrix can be defined with the following command:
 
 ```{r}
-mat_trans <- define_matrix(
+mat_trans <- define_transition(
   .9, .1,
   .2, .8
 )
@@ -84,10 +84,10 @@ state_B
 
 # Combine information in a model
 
-Now that the transition matrix and the state values are defined, we can combine them to create a Markov model with `define_model`:
+Now that the transition matrix and the state values are defined, we can combine them to create a Markov model with `define_strategy`:
 
 ```{r}
-mod_1 <- define_model(
+mod_1 <- define_strategy(
   transition_matrix = mat_trans,
   state_A,
   state_B
@@ -100,7 +100,7 @@ mod_1
 The model can then be run with `run_model` for a given number of cycles. The variables corresponding to valuation of cost and effect must be given at that point.
 
 ```{r}
-res_mod_1 <- run_models(
+res_mod_1 <- run_model(
   mod_1,
   cycles = 10,
   cost = cost,

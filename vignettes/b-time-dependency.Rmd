@@ -46,7 +46,7 @@ To mitigate this drawback it is possible to limit the number of state expansion 
 The limit can be defined globally, per state, or per model and state.
 
 ```r
-run_models(
+run_model(
   I = mod1,
   II = mod2,
   cycles = 100,

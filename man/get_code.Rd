@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_code.R
 \name{get_code}
 \alias{get_code}
-\alias{get_code.run_models}
+\alias{get_code.run_model}
 \alias{get_code.state}
 \alias{get_code.uneval_matrix}
 \alias{get_code.uneval_model}
@@ -25,7 +25,7 @@ get_code(x, ...)
 \method{get_code}{uneval_model}(x, name = NULL, sub = FALSE, depth = 0,
   n_space = 2, ...)
 
-\method{get_code}{run_models}(x, name = NULL, sub = FALSE, depth = 0,
+\method{get_code}{run_model}(x, name = NULL, sub = FALSE, depth = 0,
   n_space = 2, ...)
 }
 \arguments{
@@ -41,7 +41,7 @@ to assign to the object.}
 \item{n_space}{Number of space used for indentation.}
 
 \item{sub}{logical. Should states or models be referenced
-by name in \code{define_model} and \code{run_model}
+by name in \code{define_strategy} and \code{run_model}
 instead of including the entire code?}
 }
 \value{
@@ -60,7 +60,7 @@ p <- define_parameters(
 
 get_code(p)
 
-m <- define_matrix(
+m <- define_transition(
   C, .1,
   0, 1 
 )

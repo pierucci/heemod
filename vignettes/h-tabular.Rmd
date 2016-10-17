@@ -129,10 +129,10 @@ heemod:::read_file(system.file("tabular/thr/THR_options.csv", package = "heemod"
 
 # Run the analysis
 
-The entire set of analysis specified in the tabular files can be run by the function `run_models_from_tabular()`.
+The entire set of analysis specified in the tabular files can be run by the function `run_model_from_tabular()`.
 
 ```{r}
-result <- run_models_tabular(
+result <- run_model_tabular(
   location = system.file("tabular/thr", package = "heemod")
 )
 ```

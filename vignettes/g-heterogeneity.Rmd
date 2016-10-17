@@ -55,7 +55,7 @@ param <- define_parameters(
     c_RevisionTHR = 5294
 )
 
-mat_standard <- define_matrix(
+mat_standard <- define_transition(
     state_names = c(
       "PrimaryTHR",
       "SuccessP",
@@ -70,7 +70,7 @@ mat_standard <- define_matrix(
     0, 0, 0,          0, 1
 )
 
-mat_np1 <- define_matrix(
+mat_np1 <- define_transition(
     state_names = c(
       "PrimaryTHR",
       "SuccessP",
@@ -85,7 +85,7 @@ mat_np1 <- define_matrix(
     0, 0, 0,          0, 1
 )
 
-mod_standard <- define_model(
+mod_standard <- define_strategy(
   transition_matrix = mat_standard,
   PrimaryTHR = define_state(
     utility = 0,
@@ -109,7 +109,7 @@ mod_standard <- define_model(
   )
 )
 
-mod_np1 <- define_model(
+mod_np1 <- define_strategy(
   transition_matrix = mat_np1,
   PrimaryTHR = define_state(
     utility = 0,
@@ -133,7 +133,7 @@ mod_np1 <- define_model(
   )
 )
 
-res_mod <- run_models(
+res_mod <- run_model(
   standard = mod_standard,
   np1 = mod_np1,
   parameters = param,
@@ -182,7 +182,7 @@ ggplot(tab_indiv, aes(x = age)) +
 
 # Running the analysis
 
-`res_mod`, the result we obtained from `run_models()` in the *Time-varying Markov models* vignette, can be passed to `update()` to update the model with the new data and perform the heterogeneity analysis.
+`res_mod`, the result we obtained from `run_model()` in the *Time-varying Markov models* vignette, can be passed to `update()` to update the model with the new data and perform the heterogeneity analysis.
 
 ```{r}
 res_h <- update(res_mod, newdata = tab_indiv)
@@ -204,7 +204,7 @@ plot(res_h, type = "effect", model = "np1", binwidth = 50)
 plot(res_h, type = "cost", model = "np1", binwidth = 25000)
 ```
 
-The results from the combined model can be plotted similarly to the results from `run_models()`.
+The results from the combined model can be plotted similarly to the results from `run_model()`.
 
 ```{r, fig.align='center', fig.height=4, fig.width=6}
 plot(res_h, type = "counts", model = "np1")

@@ -38,7 +38,7 @@ Transition probabilities for the monotherapy study group are rather simple to im
 
 ```{r}
 mat_mono <-
-  define_matrix(
+  define_transition(
     .721, .202, .067, .010,
     .000, .581, .407, .012,
     .000, .000, .750, .250,
@@ -57,7 +57,7 @@ We use the alias `C` as a convenient way to specify the probability complement, 
 rr <- .509
 
 mat_comb <-
-  define_matrix(
+  define_transition(
     C,    .202*rr, .067*rr, .010*rr,
     .000, C,       .407*rr, .012*rr,
     .000, .000,    C,       .250*rr,
@@ -165,10 +165,10 @@ D_comb <-
 
 # Model definition
 
-Models can now be defined by combining a transition matrix and a state list with `define_model`:
+Models can now be defined by combining a transition matrix and a state list with `define_strategy`:
 
 ```{r}
-mod_mono <- define_model(
+mod_mono <- define_strategy(
   transition_matrix = mat_mono,
   A_mono,
   B_mono,
@@ -181,7 +181,7 @@ mod_mono
 For the combined therapy model:
 
 ```{r}
-mod_comb <- define_model(
+mod_comb <- define_strategy(
   transition_matrix = mat_comb,
   A_comb,
   B_comb,
@@ -195,7 +195,7 @@ mod_comb <- define_model(
 Both models can then be run for 20 years with `run_model`. Models are given simple names (`mono` and `comb`) in order to facilitate result interpretation.
 
 ```{r}
-res_mod <- run_models(
+res_mod <- run_model(
   mono = mod_mono,
   comb = mod_comb,
   cycles = 20,

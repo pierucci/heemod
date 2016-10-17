@@ -6,7 +6,7 @@
 #' curves, \code{type = "ce"} plots results on the 
 #' cost-efficiency plane.
 #' 
-#' @param x Result from \code{\link{run_models}}.
+#' @param x Result from \code{\link{run_model}}.
 #' @param type Type of plot, see details.
 #' @param values Values for CEAC.
 #' @param ... Additional arguments passed to \code{plot}.

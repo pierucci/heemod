@@ -5,13 +5,13 @@
 \alias{get_counts.combined_models}
 \alias{get_counts.eval_model}
 \alias{get_counts.list}
-\alias{get_counts.run_models}
+\alias{get_counts.run_model}
 \alias{get_counts.updated_models}
 \title{Get State Membership Counts}
 \usage{
 get_counts(x, ...)
 
-\method{get_counts}{run_models}(x, m = 1, ...)
+\method{get_counts}{run_model}(x, m = 1, ...)
 
 \method{get_counts}{eval_model}(x, ...)
 
@@ -22,7 +22,7 @@ get_counts(x, ...)
 \method{get_counts}{combined_models}(x, m, ...)
 }
 \arguments{
-\item{x}{Result from \code{\link{run_models}}.}
+\item{x}{Result from \code{\link{run_model}}.}
 
 \item{...}{further arguments passed to or from other
 methods.}
@@ -33,7 +33,7 @@ methods.}
 A data frame of counts per state.
 }
 \description{
-Given a result from \code{\link{run_models}}, return 
+Given a result from \code{\link{run_model}}, return 
 state membership counts for a specific model.
 }
 

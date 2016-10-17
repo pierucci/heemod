@@ -20,7 +20,7 @@ This vignette shows how to transform the deterministic Markov model presented in
 
 We will start by re-specifying the deterministic models of HIV therapy described previously (a model for monotherapy `mono` and a model for combined therapy `comb`).
 
-But instead of defining transition probabilities and state values directly in `define_matrix()` or `define_state()` (as in the previous vignette), parameters will be defined first in a `define_parameters()` step. This is because only parameters defined this way can be resampled in a probabilistic analysis.
+But instead of defining transition probabilities and state values directly in `define_transition()` or `define_state()` (as in the previous vignette), parameters will be defined first in a `define_parameters()` step. This is because only parameters defined this way can be resampled in a probabilistic analysis.
 
 We have to define common parameters in both models because during probabilistic analysis resampled parameters are replaced for both models. So we cannot have `p_AB = 0.202` in model `mono` and `p_AB = 0.202 * rr` in model `comb`, because if we resample the base transition rate to a new value `p_AB'` we will have `p_AB = p_AB'` in both models, instead of what we expect (`p_AB = p_AB' * rr` in model `comb`).
 
@@ -65,13 +65,13 @@ param <- define_parameters(
 We cannot use the complement alias `C` to specify `p_AA_base` because we will need to resample that value. Only parameters defined with `define_parameters()` can be resampled.
 
 ```{r}
-mat_trans_mono <- define_matrix(
+mat_trans_mono <- define_transition(
   p_AA_base, p_AB_base, p_AC_base, p_AD_base,
   .000, C,    p_BC_base, p_BD_base,
   .000, .000, C,    p_CD_base,
   .000, .000, .000, 1.00
 )
-mat_trans_comb <- define_matrix(
+mat_trans_comb <- define_transition(
   p_AA_comb, p_AB_comb, p_AC_comb, p_AD_comb,
   .000, C,    p_BC_comb, p_BD_comb,
   .000, .000, C,    p_CD_comb,
@@ -136,7 +136,7 @@ D_comb <- define_state(
 Models must be first defined and run as in a standard deterministic analysis.
 
 ```{r}
-mod_mono <- define_model(
+mod_mono <- define_strategy(
   transition_matrix = mat_trans_mono,
   A_mono,
   B_mono,
@@ -144,7 +144,7 @@ mod_mono <- define_model(
   D_mono
 )
 
-mod_comb <- define_model(
+mod_comb <- define_strategy(
   transition_matrix = mat_trans_comb,
   A_comb,
   B_comb,
@@ -152,7 +152,7 @@ mod_comb <- define_model(
   D_comb
 )
 
-res_mod <- run_models(
+res_mod <- run_model(
   mono = mod_mono,
   comb = mod_comb,
   parameters = param,
@@ -188,7 +188,7 @@ Finally multinomial distributions are declared with the number of individuals in
   * `p_AA + p_AB + p_AC + p_AD ~ multinom(721, 202, 67, 10)`
 
 ```{r}
-rsp <- define_distrib(
+rsp <- define_psa(
   rr ~ lognormal(mean = .509, sdlog = .173),
   
   cost_A ~ make_gamma(mean = 2756, sd = sqrt(2756)),
@@ -209,7 +209,7 @@ rsp <- define_distrib(
 Now that the distributions of parameters are set we can simply run the probabilistic model as follow:
 
 ```{r}
-pm <- run_probabilistic(
+pm <- run_psa(
   model = res_mod,
   resample = rsp,
   N = 100

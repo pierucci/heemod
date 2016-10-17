@@ -41,7 +41,7 @@ print.eval_matrix <- function(x, ...) {
 }
 
 #' @export
-#' @rdname define_matrix
+#' @rdname define_transition
 plot.uneval_matrix <- function(x, relsize = .75,
                                shadow.size = 0,
                                latex = TRUE, ...) {

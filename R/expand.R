@@ -71,7 +71,7 @@ expand_state.uneval_matrix <- function(x, state_pos,
     sn[state_pos] <- sprintf(".%s_%i", state_name, n)
     sn <- insert(sn, state_pos, sprintf(".%s_%i", state_name, n + 1))
     
-    tm_ext <- define_matrix_(res, sn)
+    tm_ext <- define_transition_(res, sn)
     
     expand_state(
       x = tm_ext,
@@ -180,7 +180,7 @@ interp_heemod.default <- function(x, more = NULL, ...) {
 #' @rdname interp_heemod
 interp_heemod.uneval_matrix <- function(x, ...) {
   res <- interp_heemod.default(x, ...)
-  define_matrix_(res, get_state_names(x))
+  define_transition_(res, get_state_names(x))
 }
 
 #' @export

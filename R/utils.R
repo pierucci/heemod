@@ -121,7 +121,7 @@ make_names <- function(x) {
 
 #' Check Model Index
 #' 
-#' @param x A result from \code{\link{run_models}}.
+#' @param x A result from \code{\link{run_model}}.
 #' @param i A model index, character or numeric.
 #' @param allow_multiple logical. Allow multiple model
 #'   index?

@@ -1,8 +1,8 @@
-# example for run_probabilistic
+# example for run_psa
 
 mod1 <-
-  define_model(
-    transition_matrix = define_matrix(
+  define_strategy(
+    transition_matrix = define_transition(
       .5, .5,
       .1, .9
     ),
@@ -17,8 +17,8 @@ mod1 <-
   )
 
 mod2 <-
-  define_model(
-    transition_matrix = define_matrix(
+  define_strategy(
+    transition_matrix = define_transition(
       p_trans, C,
       .1, .9
     ),
@@ -33,7 +33,7 @@ mod2 <-
     
   )
 
-res2 <- run_models(
+res2 <- run_model(
   mod1, mod2,
   parameters = define_parameters(
     age_init = 60,
@@ -47,7 +47,7 @@ res2 <- run_models(
   effect = ly
 )
 
-rsp <- define_distrib(
+rsp <- define_psa(
   age_init ~ normal(60, 10),
   cost_init ~ normal(1000, 100),
   p_trans ~ prop(.7, 100),
@@ -61,4 +61,4 @@ rsp <- define_distrib(
 
 # with run_model result
 # (only 10 resample for speed)
-ndt1 <- run_probabilistic(res2, resample = rsp, N = 10)
+ndt1 <- run_psa(res2, resample = rsp, N = 10)
