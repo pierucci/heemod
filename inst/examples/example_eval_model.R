@@ -2,7 +2,7 @@ param <- define_parameters(
   a = markov_cycle + 1 * 2
 )
 
-mat <- define_matrix(
+mat <- define_transition(
   1-1/a, 1/a,
   .1,    .9
 )

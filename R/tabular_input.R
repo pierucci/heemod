@@ -391,7 +391,7 @@ create_states_from_tabular <- function(state_info,
 #' \code{prob} is the probability of a transition from the 
 #' \code{from} state to the \code{to} state. Prob can be 
 #' defined in terms of parameters, just as when using 
-#' \code{define_matrix} at the keyboard. Probabilities of 0 
+#' \code{define_transition} at the keyboard. Probabilities of 0 
 #' need not be specified - they will be automatically 
 #' inserted.
 #' 
@@ -449,7 +449,7 @@ create_matrix_from_tabular <- function(trans_probs, state_names,
                      dimnames = list(state_names, state_names))
   prob_mat[as.matrix(trans_probs[, c("to", "from")])] <- trans_probs$prob
   
-  res <- define_matrix_(
+  res <- define_transition_(
     lazyeval::as.lazy_dots(prob_mat, env = df_env),
     state_names = state_names
   )

@@ -6,12 +6,12 @@ test_that(
       a = .1,
       b = 1 / (markov_cycle + 1)
     )
-    mat1 <- define_matrix(
+    mat1 <- define_transition(
       state_names = c("X1", "X2"),
       1-a, a,
       1-b, b
     )
-    mat2 <- define_matrix(
+    mat2 <- define_transition(
       state_names = c("X1", "X3"),
       1-a, a,
       1-b, b
@@ -151,7 +151,7 @@ test_that(
       a = .1,
       b = 1 / (markov_cycle + 1)
     )
-    mat1 <- define_matrix(
+    mat1 <- define_transition(
       state_names = c("X1", "X2"),
       1-a, a,
       1-b, b
@@ -303,7 +303,7 @@ test_that("Discounting", {
     c2 = 876,
     c3 = 1726
   )
-  mat1 <- define_matrix(
+  mat1 <- define_transition(
     state_names = c("X1", "X2"),
     1-a, a,
     1-b, b
@@ -397,7 +397,7 @@ test_that(
       a = .1,
       b = 1 / (markov_cycle + 1)
     )
-    mat1 <- define_matrix(
+    mat1 <- define_transition(
       state_names = c("X1", "X2"),
       1-a, a,
       1-b, b

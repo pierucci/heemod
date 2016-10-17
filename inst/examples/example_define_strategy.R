@@ -1,4 +1,4 @@
-mat <- define_matrix(
+mat <- define_transition(
   state_names = c("s1", "s2"),
   1 / c, 1 - 1/ c,
   0, 1

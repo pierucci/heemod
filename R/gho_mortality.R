@@ -25,12 +25,12 @@
 #'   data?
 #'   
 #' @return This function should be used within 
-#'   \code{\link{define_matrix}} or 
+#'   \code{\link{define_transition}} or 
 #'   \code{\link{define_parameters}}.
 #'   
 #' @examples 
 #' 
-#' define_matrix(
+#' define_transition(
 #'   C, get_who_mr(age = 50 + markov_cycle, sex = "FMLE", country = "FRA"),
 #'   0, 1
 #' )

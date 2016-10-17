@@ -38,7 +38,7 @@ Transition probabilities for the monotherapy study group are rather simple to im
 
 ```{r}
 mat_mono <-
-  define_matrix(
+  define_transition(
     .721, .202, .067, .010,
     .000, .581, .407, .012,
     .000, .000, .750, .250,
@@ -57,7 +57,7 @@ We use the alias `C` as a convenient way to specify the probability complement, 
 rr <- .509
 
 mat_comb <-
-  define_matrix(
+  define_transition(
     C,    .202*rr, .067*rr, .010*rr,
     .000, C,       .407*rr, .012*rr,
     .000, .000,    C,       .250*rr,

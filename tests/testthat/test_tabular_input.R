@@ -370,10 +370,10 @@ test_that(
     
     op <- options(heemod.verbose = TRUE)
     expect_message(
-      heemod:::gather_model_info(
+      capture.output(heemod:::gather_model_info(
         system.file("tabular/test", package = "heemod"),
         "edited_ref.csv"
-      ),
+      )),
       "Using absolute path for state, tm, parameters, demographics, data, output"
     )
     options(op)
@@ -657,7 +657,7 @@ test_that(
     
     expect_output(
       print(result$demographics),
-      "An analysis re-run on 62 parameter sets.",
+      "An analysis re-run on 8 parameter sets.",
       fixed = TRUE
     )
     

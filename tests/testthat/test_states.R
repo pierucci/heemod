@@ -234,7 +234,7 @@ test_that(
       cte3 = 987,
       cte4 = 1726
     )
-    mat1 <- define_matrix(
+    mat1 <- define_transition(
       state_names = c("X1", "X2"),
       1-a, a,
       1-b, b

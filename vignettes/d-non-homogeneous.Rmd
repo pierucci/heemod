@@ -114,7 +114,7 @@ param
 Now that parameters are defined, the probability transitions can be easily written:
 
 ```{r}
-mat_standard <- define_matrix(
+mat_standard <- define_transition(
     state_names = c(
       "PrimaryTHR",
       "SuccessP",
@@ -130,7 +130,7 @@ mat_standard <- define_matrix(
 )
 mat_standard
 
-mat_np1 <- define_matrix(
+mat_np1 <- define_transition(
     state_names = c(
       "PrimaryTHR",
       "SuccessP",

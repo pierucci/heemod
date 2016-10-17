@@ -25,7 +25,7 @@
 #' 
 #' get_code(p)
 #' 
-#' m <- define_matrix(
+#' m <- define_transition(
 #'   C, .1,
 #'   0, 1 
 #' )
@@ -76,7 +76,7 @@ get_code.uneval_matrix <- function(x, name = NULL,
   structure(
     left_pad(paste0(
       name,
-      "define_matrix(\n  ",
+      "define_transition(\n  ",
       "state_names = ",
       paste0("c(\"", paste(sn, collapse = "\", \""), "\"),\n  "),
       paste(

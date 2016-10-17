@@ -25,7 +25,7 @@ Run Probabilistic Uncertainty Analysis
 
 mod1 <-
   define_strategy(
-    transition_matrix = define_matrix(
+    transition_matrix = define_transition(
       .5, .5,
       .1, .9
     ),
@@ -41,7 +41,7 @@ mod1 <-
 
 mod2 <-
   define_strategy(
-    transition_matrix = define_matrix(
+    transition_matrix = define_transition(
       p_trans, C,
       .1, .9
     ),

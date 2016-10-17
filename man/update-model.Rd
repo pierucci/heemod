@@ -63,7 +63,7 @@ similar to those of \code{\link{run_model}}.
 \examples{
 mod1 <-
   define_strategy(
-    transition_matrix = define_matrix(
+    transition_matrix = define_transition(
       .5, .5,
       .1, .9
     ),
@@ -79,7 +79,7 @@ mod1 <-
 
 mod2 <-
   define_strategy(
-    transition_matrix = define_matrix(
+    transition_matrix = define_transition(
       .5, .5,
       .1, .9
     ),

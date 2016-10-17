@@ -60,7 +60,7 @@ p <- define_parameters(
 
 get_code(p)
 
-m <- define_matrix(
+m <- define_transition(
   C, .1,
   0, 1 
 )

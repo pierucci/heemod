@@ -42,7 +42,7 @@ When starting a cycle in state `A` (row `A`), the probability to still be in sta
 
 Similarly, when starting a cycle from state `B` (row `B`), the probability to be in state `A` or `B` at the end of the cycle are found in cells `3` or `4` respectively.
 
-In the context of Markov models, this 2-way table is called a *transition matrix*. A transition matrix can be defined easily in `heemod` with the `define_matrix` function. If we consider the previous example, where cell values have been replaced by actual probabilities:
+In the context of Markov models, this 2-way table is called a *transition matrix*. A transition matrix can be defined easily in `heemod` with the `define_transition` function. If we consider the previous example, where cell values have been replaced by actual probabilities:
 
 |       |  A  |  B  |
 |-------|-----|-----|
@@ -52,7 +52,7 @@ In the context of Markov models, this 2-way table is called a *transition matrix
 That transition matrix can be defined with the following command:
 
 ```{r}
-mat_trans <- define_matrix(
+mat_trans <- define_transition(
   .9, .1,
   .2, .8
 )

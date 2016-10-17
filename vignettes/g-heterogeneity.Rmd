@@ -55,7 +55,7 @@ param <- define_parameters(
     c_RevisionTHR = 5294
 )
 
-mat_standard <- define_matrix(
+mat_standard <- define_transition(
     state_names = c(
       "PrimaryTHR",
       "SuccessP",
@@ -70,7 +70,7 @@ mat_standard <- define_matrix(
     0, 0, 0,          0, 1
 )
 
-mat_np1 <- define_matrix(
+mat_np1 <- define_transition(
     state_names = c(
       "PrimaryTHR",
       "SuccessP",

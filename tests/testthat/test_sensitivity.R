@@ -60,7 +60,7 @@ test_that(
     )
     mod1 <-
       define_strategy(
-        transition_matrix = define_matrix(
+        transition_matrix = define_transition(
           C, p1,
           p2, C
         ),
@@ -76,7 +76,7 @@ test_that(
     
     mod2 <-
       define_strategy(
-        transition_matrix = define_matrix(
+        transition_matrix = define_transition(
           C, p1,
           p2, C
         ),
@@ -162,7 +162,7 @@ test_that(
       r = .05
     )
     mod1 <- define_strategy(
-      transition_matrix = define_matrix(
+      transition_matrix = define_transition(
         C, p1,
         p2, C
       ),
@@ -177,7 +177,7 @@ test_that(
     )
     
     mod2 <- define_strategy(
-      transition_matrix = define_matrix(
+      transition_matrix = define_transition(
         C, p1,
         p2, C
       ),

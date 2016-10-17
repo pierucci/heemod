@@ -20,7 +20,7 @@ This vignette shows how to transform the deterministic Markov model presented in
 
 We will start by re-specifying the deterministic models of HIV therapy described previously (a model for monotherapy `mono` and a model for combined therapy `comb`).
 
-But instead of defining transition probabilities and state values directly in `define_matrix()` or `define_state()` (as in the previous vignette), parameters will be defined first in a `define_parameters()` step. This is because only parameters defined this way can be resampled in a probabilistic analysis.
+But instead of defining transition probabilities and state values directly in `define_transition()` or `define_state()` (as in the previous vignette), parameters will be defined first in a `define_parameters()` step. This is because only parameters defined this way can be resampled in a probabilistic analysis.
 
 We have to define common parameters in both models because during probabilistic analysis resampled parameters are replaced for both models. So we cannot have `p_AB = 0.202` in model `mono` and `p_AB = 0.202 * rr` in model `comb`, because if we resample the base transition rate to a new value `p_AB'` we will have `p_AB = p_AB'` in both models, instead of what we expect (`p_AB = p_AB' * rr` in model `comb`).
 
@@ -65,13 +65,13 @@ param <- define_parameters(
 We cannot use the complement alias `C` to specify `p_AA_base` because we will need to resample that value. Only parameters defined with `define_parameters()` can be resampled.
 
 ```{r}
-mat_trans_mono <- define_matrix(
+mat_trans_mono <- define_transition(
   p_AA_base, p_AB_base, p_AC_base, p_AD_base,
   .000, C,    p_BC_base, p_BD_base,
   .000, .000, C,    p_CD_base,
   .000, .000, .000, 1.00
 )
-mat_trans_comb <- define_matrix(
+mat_trans_comb <- define_transition(
   p_AA_comb, p_AB_comb, p_AC_comb, p_AD_comb,
   .000, C,    p_BC_comb, p_BD_comb,
   .000, .000, C,    p_CD_comb,

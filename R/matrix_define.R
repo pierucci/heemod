@@ -43,9 +43,9 @@
 #'   a named list of \code{lazy} expressions).
 #' @export
 #' 
-#' @example inst/examples/example_define_matrix.R
+#' @example inst/examples/example_define_transition.R
 #'   
-define_matrix <- function(..., state_names) {
+define_transition <- function(..., state_names) {
   .dots <- lazyeval::lazy_dots(...)
   
   if (missing(state_names)) {
@@ -53,11 +53,11 @@ define_matrix <- function(..., state_names) {
     state_names <- LETTERS[seq_len(sqrt(length(lazyeval::lazy_dots(...))))]
   }
   
-  define_matrix_(.dots = .dots, state_names = state_names)
+  define_transition_(.dots = .dots, state_names = state_names)
 }
 
-#' @rdname define_matrix
-define_matrix_ <- function(.dots, state_names) {
+#' @rdname define_transition
+define_transition_ <- function(.dots, state_names) {
   
   n <- sqrt(length(.dots))
   
@@ -112,7 +112,7 @@ get_matrix_order.uneval_matrix <- function(x){
 }
 
 #' @export
-#' @rdname define_matrix
+#' @rdname define_transition
 modify.uneval_matrix <- function(.OBJECT, ...){
   
   # !mod!

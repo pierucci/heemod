@@ -38,14 +38,14 @@ par_mod <- define_parameters(
   cost_zido = 2278
 )
 
-mat_mono <- define_matrix(
+mat_mono <- define_transition(
   1251/1734, 350/1734, 116/1734,  17/1734,
   0,         731/1258, 512/1258,  15/1258,
   0,         0,        1312/1749, 437/1749,
   0,         0,        0,         1.00
 )
 
-mat_comb <- define_matrix(
+mat_comb <- define_transition(
   C, 350/1734*rr, 116/1734*rr, 17/1734*rr,
   0, C,           512/1258*rr, 15/1258*rr,
   0, 0,           C,           437/1749*rr,
@@ -203,7 +203,7 @@ param <- define_parameters(
     c_revisionTHR = 5294
 )
 
-mat_standard <- define_matrix(
+mat_standard <- define_transition(
     state_names = c(
       "PrimaryTHR",
       "SuccessP",
@@ -218,7 +218,7 @@ mat_standard <- define_matrix(
     0, 0, 0,          0, 1
 )
 
-mat_np1 <- define_matrix(
+mat_np1 <- define_transition(
     state_names = c(
       "PrimaryTHR",
       "SuccessP",

@@ -46,14 +46,14 @@ param <- define_parameters(
   dr = .06
 )
 
-mat_trans_mono <- define_matrix(
+mat_trans_mono <- define_transition(
   C,    p_AB, p_AC, p_AD,
   .000, C,    p_BC, p_BD,
   .000, .000, C,    p_CD,
   .000, .000, .000, 1.00
 )
 
-mat_trans_comb <- define_matrix(
+mat_trans_comb <- define_transition(
   C,    p_AB * rr, p_AC * rr, p_AD * rr,
   .000, C,    p_BC * rr, p_BD * rr,
   .000, .000, C,    p_CD * rr,

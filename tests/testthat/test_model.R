@@ -2,7 +2,7 @@ context("Test model")
 
 test_that(
   "Model definition", {
-    mat1 <- define_matrix(
+    mat1 <- define_transition(
       state_names = c("X1", "X2"),
       1-a, a,
       1-b, b
@@ -20,7 +20,7 @@ test_that(
       X1 = s1,
       X2 = s2
     )
-    mat2 <- define_matrix(
+    mat2 <- define_transition(
       1-a, a,
       1-b, b
     )
@@ -72,7 +72,7 @@ test_that(
       a = .1,
       b = 1 / (markov_cycle + 1)
     )
-    mat1 <- define_matrix(
+    mat1 <- define_transition(
       state_names = c("X1", "X2"),
       1-a, a,
       1-b, b
@@ -187,7 +187,7 @@ test_that(
       a = .1,
       b = 1 / (markov_cycle + 1)
     )
-    mat1 <- define_matrix(
+    mat1 <- define_transition(
       state_names = c("X1", "X2"),
       1-a, a,
       1-b, b
@@ -341,7 +341,7 @@ test_that(
       markov_cycle = 2:3,
       a = c(.1, .2)
     )
-    mat <- define_matrix(
+    mat <- define_transition(
       C, 1/markov_cycle,
       a, 1-a
     )
@@ -357,7 +357,7 @@ test_that(
       structure(c(0.67, 0.2, 0.33, 0.8), .Dim = c(2L, 2L))
     )
     
-    mat2 <- define_matrix(
+    mat2 <- define_transition(
       C, C,
       a, 1-a
     )
