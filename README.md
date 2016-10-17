@@ -2,11 +2,9 @@
 
 [![Travis-CI Build Status](https://travis-ci.org/pierucci/heemod.svg?branch=devel)](https://travis-ci.org/pierucci/heemod) [![](http://www.r-pkg.org/badges/version/heemod)](http://www.r-pkg.org/pkg/heemod) [![Coverage Status](https://img.shields.io/codecov/c/github/pierucci/heemod/devel.svg)](https://codecov.io/github/pierucci/heemod?branch=devel)
 
-`heemod` is an `R` toolset for health economic evaluation modelling. It aims to provide a simple and consistent interface for Markov models specification and comparison (for applications such as decision trees or cohort simulation). Non-homogeneous Markov models (with time varying properties) are supported.
+`heemod` is an `R` toolset for health economic evaluation modelling. It aims to provide a simple and consistent interface for Markov models specification and comparison (for decision trees or cohort simulation). Non-homogeneous Markov models (with time varying properties) are supported.
 
 Most of the analyses presented in [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do) can be performed with `heemod`. See `vignette("i-reproduction", "heemod")` for an exact reproduction of the analyses from the book.
-
-This package is still a *beta* version.
 
 You can install:
 
@@ -27,25 +25,25 @@ devtools::install_github("pierucci/heemod@devel")
   * Graphical user interface with `shiny`.
   * Time-varying transition probabilities.
   * Time-varying values attached to states.
-  * Heterogeneity analysis.
+  * Microsimulation-like models.
   * Probabilistic uncertainty analysis.
   * Deterministic sensitivity analysis.
-  * Multiple state membership correction methods (life-table, half-cycle...).
+  * Multiple state membership correction methods (life-table, half-cycle, etc.).
   * Demographic analysis to compute population-level results.
   * Heterogeneity analysis.
 
 ## Learning heemod
 
-To get started read the introduction in `vignette("a-introduction", "heemod")`.
+To get started read the introduction in `vignette("a-introduction", "heemod")`. Time-varying probabilities and values are explained in `vignette("b-time-dependency", "heemod")`.
 
 Specific analysis examples (mostly inspired from [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do)) can be found in the following vignettes:
 
-  * Homogeneous Markov model in `vignette("b-homogeneous", "heemod")`.
-  * Non-homogeneous Markov model in `vignette("c-non-homogeneous", "heemod")`.
-  * Probabilistic uncertainty analysis in `vignette("d-probabilistic", "heemod")`.
-  * Deterministic sensitivity analysis in `vignette("e-sensitivity", "heemod")`.
+  * Homogeneous Markov model in `vignette("c-homogeneous", "heemod")`.
+  * Non-homogeneous Markov model in `vignette("d-non-homogeneous", "heemod")`.
+  * Probabilistic uncertainty analysis in `vignette("e-probabilistic", "heemod")`.
+  * Deterministic sensitivity analysis in `vignette("f-sensitivity", "heemod")`.
   * Heterogeneity & Demographic analysis in `vignette("g-heterogeneity", "heemod")`.
-  * Run the models from tabular inputs in `vignette("h-tabular", "heemod")`.
+  * Running the models from tabular inputs in `vignette("h-tabular", "heemod")`.
 
 ## Devs
 
