@@ -31,7 +31,7 @@ test_that(
     )
     expect_output(
       print(mod1),
-      "An unevaluated Markov model:
+      "A Markov model strategy:
 
     2 states,
     2 state values",
@@ -111,11 +111,7 @@ test_that(
     )
     expect_output(
       print(e_mod),
-      "1 Markov model run for 5 cycles.
-
-Initial states:
-
-   N
+      "   N
 X1 1
 X2 0
 
@@ -141,11 +137,7 @@ I 1592.538 1514.507",
     )
     expect_output(
       print(summary(e_mod)),
-      "1 Markov model run for 5 cycles.
-
-Initial states:
-
-   N
+      "   N
 X1 1
 X2 0
 
@@ -232,11 +224,7 @@ test_that(
     )
     expect_output(
       print(e_mod2),
-      "2 Markov models run for 5 cycles.
-
-Initial states:
-
-   N
+      "   N
 X1 1
 X2 0
 
@@ -248,7 +236,7 @@ I  1592.538 1514.507
 
 Efficiency frontier:
 
-II I
+II -> I
 
 Model difference:
 
@@ -272,11 +260,7 @@ I 422.5384 899.5074 0.4697442",
     
     expect_output(
       print(summary(e_mod2)),
-      "2 Markov models run for 5 cycles.
-
-Initial states:
-
-   N
+      "   N
 X1 1
 X2 0
 
@@ -288,7 +272,7 @@ I  1592.538 1514.507
 
 Efficiency frontier:
 
-II I
+II -> I
 
 Model difference:
 
@@ -308,11 +292,7 @@ I 422.5384 899.5074 0.4697442",
           method = "beginning"
         )
       ),
-      "2 Markov models run for 5 cycles.
-
-Initial states:
-
-   N
+      "   N
 X1 1
 X2 0
 
@@ -324,7 +304,7 @@ mod1 1592.538 1514.507
 
 Efficiency frontier:
 
-mod2 mod1
+mod2 -> mod1
 
 Model difference:
 

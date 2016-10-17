@@ -127,13 +127,13 @@ test_that(
       C, a,
       C, b
     )
-    e_par1 <- eval_parameters(
+    e_par1 <- heemod:::eval_parameters(
       par1, 10
     )
-    e_mat <- eval_matrix(
+    e_mat <- heemod:::eval_matrix(
       mat1, e_par1
     )
-    e_matC <- eval_matrix(
+    e_matC <- heemod:::eval_matrix(
       matC, e_par1
     )
     expect_output(
@@ -155,7 +155,7 @@ test_that(
     )
     expect_output(
       print(e_mat),
-      'An evaluated matrix, 2 states, 10 markov cycles.
+      'An evaluated transition matrix, 2 states, 10 markov cycles.
 
 State names:
 
@@ -193,9 +193,9 @@ test_that(
     
     expect_output(
       print(res),
-      "1 Markov model run for 1 cycle.
+      "1 strategy run for 1 cycle.
 
-Initial states:
+Initial state counts:
 
      N
 A 1000
