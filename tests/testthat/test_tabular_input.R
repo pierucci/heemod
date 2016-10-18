@@ -405,7 +405,7 @@ test_that(
     
     expect_output(
       print(tm),
-      "An unevaluated matrix, 5 states\\.
+      "A transition matrix, 5 states\\.
 
                    PrimaryTHR SuccessfulPrimary.*
 PrimaryTHR                    C                .*

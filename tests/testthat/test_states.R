@@ -19,7 +19,7 @@ test_that(
     )
     expect_output(
       print(s1),
-      'An unevaluated state with 2 values.
+      'A state with 2 values.
 
 x = 234
 y = 123',
