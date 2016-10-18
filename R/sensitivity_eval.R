@@ -2,14 +2,14 @@
 #' 
 #' @param model An evaluated Markov model
 #' @param sensitivity An object returned by 
-#'   \code{\link{define_sensitivity}}.
+#'   \code{\link{define_dsa}}.
 #'   
 #' @return A \code{data.frame} with one row per model and 
 #'   parameter value.
 #' @export
 #' 
-#' @example inst/examples/example_run_sensitivity.R
-run_sensitivity <- function(model, sensitivity) {
+#' @example inst/examples/example_run_dsa.R
+run_dsa <- function(model, sensitivity) {
   
   if (! all(c(".cost", ".effect") %in% names(model))) {
     stop("No cost and/or effect defined, sensitivity analysis unavailable.")
@@ -22,7 +22,19 @@ run_sensitivity <- function(model, sensitivity) {
   
   list_res <- lapply(
     names_models,
-    function(n) eval_model_newdata(model, model = n, newdata = sensitivity)
+    function(n) {
+      tab <- eval_model_newdata(
+        model,
+        model = n,
+        newdata = sensitivity
+      ) 
+      tab %>% 
+        dplyr::mutate_if(
+          names(tab) %in% attr(sensitivity, "variables"),
+          dplyr::funs(to_text_dots),
+          name = FALSE
+        )
+    }
   )
   
   for (i in seq_along(names_models)) {

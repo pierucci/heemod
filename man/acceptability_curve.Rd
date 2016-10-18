@@ -7,7 +7,7 @@
 acceptability_curve(x, wtp_thresholds)
 }
 \arguments{
-\item{x}{Result from \code{\link{run_sensitivity}}.}
+\item{x}{Result from \code{\link{run_dsa}}.}
 
 \item{wtp_thresholds}{willingness to pay thresholds}
 }

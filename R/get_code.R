@@ -7,7 +7,7 @@
 #' @param name character. Optional argument giving the name
 #'   to assign to the object.
 #' @param sub logical. Should states or models be referenced
-#'   by name in \code{define_model} and \code{run_model}
+#'   by name in \code{define_strategy} and \code{run_model}
 #'   instead of including the entire code?
 #' @param depth Depth of the function call.
 #' @param n_space Number of space used for indentation.
@@ -25,7 +25,7 @@
 #' 
 #' get_code(p)
 #' 
-#' m <- define_matrix(
+#' m <- define_transition(
 #'   C, .1,
 #'   0, 1 
 #' )
@@ -33,20 +33,6 @@
 #' get_code(m)
 get_code <- function(x, ...) {
   UseMethod("get_code")
-}
-
-to_text_dots <- function(x, name = TRUE) {
-  n <- names(x)
-  ex <- unlist(lapply(x, function(y) deparse(y$expr, width.cutoff = 500L)))
-  stopifnot(
-    length(n) == length(ex)
-  )
-  
-  if (name) {
-    paste(n, ex, sep = " = ")
-  } else {
-    ex
-  }
 }
 
 left_pad <- function(x, n_pad, prefix = FALSE) {
@@ -90,7 +76,7 @@ get_code.uneval_matrix <- function(x, name = NULL,
   structure(
     left_pad(paste0(
       name,
-      "define_matrix(\n  ",
+      "define_transition(\n  ",
       "state_names = ",
       paste0("c(\"", paste(sn, collapse = "\", \""), "\"),\n  "),
       paste(
@@ -165,7 +151,7 @@ get_code.uneval_model <- function(x, name = NULL, sub = FALSE,
   structure(
     left_pad(paste0(
       name,
-      "define_model(\n  ",
+      "define_strategy(\n  ",
       "transition_matrix = ",
       get_code(x$transition_matrix, depth = depth),
       ",\n",
@@ -178,7 +164,7 @@ get_code.uneval_model <- function(x, name = NULL, sub = FALSE,
 
 #' @export
 #' @rdname get_code
-get_code.run_models <- function(x, name = NULL, sub = FALSE,
+get_code.run_model <- function(x, name = NULL, sub = FALSE,
                                 depth = 0, n_space = 2,
                                 ...) {
   if (! is.null(name)) {
@@ -206,7 +192,7 @@ get_code.run_models <- function(x, name = NULL, sub = FALSE,
   structure(
     left_pad(paste0(
       name,
-      "run_models(\n  ",
+      "run_model(\n  ",
       md,
       ",\n  ",
       "parameters = ",

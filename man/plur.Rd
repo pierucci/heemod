@@ -2,9 +2,12 @@
 % Please edit documentation in R/utils.R
 \name{plur}
 \alias{plur}
+\alias{plur_y}
 \title{Returns "s" if x > 1}
 \usage{
 plur(x)
+
+plur_y(x)
 }
 \arguments{
 \item{x}{integer.}

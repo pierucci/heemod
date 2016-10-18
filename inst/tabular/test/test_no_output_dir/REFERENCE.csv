@@ -1,0 +1,7 @@
+"data","file",".comment",".comment2"
+"state","THR_states.csv","list of states and their costs and effects",
+"tm","THR_transition_probs.csv","transition probabilities",
+"parameters","THR_parameters.csv","parameters of the models",
+"demographics","THR_demographic_table.csv","demographic file",
+"data","input_dataframes","folder that stores the dataframes to be input","input_dataframes"
+"options","THR_options.csv","model options",

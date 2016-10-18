@@ -9,7 +9,7 @@
   ...)
 }
 \arguments{
-\item{x}{A result of \code{\link{run_sensitivity}}.}
+\item{x}{A result of \code{\link{run_dsa}}.}
 
 \item{type}{Type of plot (see details).}
 

@@ -58,7 +58,7 @@ modify_.state <- function(.OBJECT, .dots) {
     ))
   }
   
-  modifyList(.OBJECT, .dots)
+  utils::modifyList(.OBJECT, .dots)
 }
 
 #' Define Markov Model State List
@@ -67,7 +67,7 @@ modify_.state <- function(.OBJECT, .dots) {
 #' \code{state} objects.
 #' 
 #' State names have to correspond to those specified through
-#' \code{\link{define_matrix}}.
+#' \code{\link{define_transition}}.
 #' 
 #' All states should have the same value names.
 #' 
@@ -163,7 +163,7 @@ modify.uneval_state_list <- function(.OBJECT, ...) {
 }
 
 modify_.uneval_state_list <- function(.OBJECT, .dots) {
-  res <- modifyList(.OBJECT, .dots)
+  res <- utils::modifyList(.OBJECT, .dots)
   check_states(res)
   
   res

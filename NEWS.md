@@ -1,3 +1,29 @@
+# heemod 0.5.0
+
+## Breaking changes
+
+  * Some functions were renamed for clarification:
+    * `define_strategy()` <- `define_model()`
+    * `run_model()` <- `run_models()`
+    * `define_transition()` <- `define_matrix()`
+    * `define_dsa()` <- `define_sensitivity()`
+    * `define_psa()` <- `define_distrib()`
+    * `run_dsa()` <- `run_sensitivity()`
+    * `run_psa()` <- `run_probabilistic()`
+
+## New features
+
+  * Values and probabilities can depend on state time with `state_cycle`, allowing to reproduce the results of microsimulations.
+  * `define_sensitivity()` now accepts any expression as input, and can call references to model parameteres.
+  * Discount rates can now be specified as parameters (allows for rates to be modified in DSA & PSA).
+  * Any state value can be plotted.
+  * Additional output: csv files for many of the tabular results.
+  
+## Bugfixes
+
+  * Edges where P=0 are not plotted anymore for transition matrices.
+  * There used to be a potential error when you wanted to save output but there had been no psa.
+
 # heemod 0.4.0
 
 ## New features
@@ -31,7 +57,7 @@
   
 ## Acknowledments
 
-  * Thanks to [Matthew Wiener](https://github.com/MattWiener), [Zdenek Kabat](https://github.com/ZdenekKabat) and [Vojtech Filipec](https://github.com/vojtech-filipec) for their great contributions to this update.
+  * Thanks to [Matthew Wiener](https://github.com/MattWiener), [Zdenek Kabat](https://github.com/zkabat) and [Vojtech Filipec](https://github.com/vojtech-filipec) for their great contributions to this update.
 
 # heemod 0.3.3
 

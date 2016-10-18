@@ -7,7 +7,7 @@
 #' costs, while \code{difference} plots cost difference
 #' between the specified model and the reference model.
 #' 
-#' @param x A result of \code{\link{run_sensitivity}}.
+#' @param x A result of \code{\link{run_dsa}}.
 #' @param model Name or index of model to plot.
 #' @param type Type of plot (see details).
 #' @param result Plot cost, effect, or ICER.
@@ -204,7 +204,8 @@ summary.eval_sensitivity <- function(object, ...) {
     dplyr::mutate_(.dots = attr(object, "model_ref") %>% attr("ce")) %>% 
     dplyr::do_(~ compute_icer(., model_order = order(attr(object, "model_ref")$.effect))) %>% 
     dplyr::select_(".model_names", ".par_names", ".par_value",
-                   ".cost", ".effect", ".dcost", ".deffect", ".icer")
+                   ".cost", ".effect", ".dcost", ".deffect", ".icer") %>% 
+    dplyr::ungroup()
   
   structure(res, class = c("summary_sensitivity", class(res)),
             sensitivity = object)

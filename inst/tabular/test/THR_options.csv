@@ -1,0 +1,7 @@
+option,value
+cost,cost
+effect,qaly
+,
+method,end
+cycles,50
+n,100

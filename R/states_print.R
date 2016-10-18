@@ -1,7 +1,7 @@
 #' @export
 print.state <- function(x, ...) {
   cat(sprintf(
-    "An unevaluated state with %i value%s.\n\n",
+    "A state with %i value%s.\n\n",
     length(x), plur(length(x))))
   
   nv <- names(x)

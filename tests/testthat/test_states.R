@@ -19,7 +19,7 @@ test_that(
     )
     expect_output(
       print(s1),
-      'An unevaluated state with 2 values.
+      'A state with 2 values.
 
 x = 234
 y = 123',
@@ -234,7 +234,7 @@ test_that(
       cte3 = 987,
       cte4 = 1726
     )
-    mat1 <- define_matrix(
+    mat1 <- define_transition(
       state_names = c("X1", "X2"),
       1-a, a,
       1-b, b
@@ -248,7 +248,7 @@ test_that(
       x = f(discount(987, .2)),
       y = discount(r = .1, 1726)
     )
-    mod1 <- define_model(
+    mod1 <- define_strategy(
       transition_matrix = mat1,
       X1 = s1,
       X2 = s2
@@ -261,12 +261,12 @@ test_that(
       x = discount(cte3, .2),
       y = discount(cte4, .1)
     )
-    mod2 <- define_model(
+    mod2 <- define_strategy(
       transition_matrix = mat1,
       X1 = s3,
       X2 = s4
     )
-    res <- run_models(
+    res <- run_model(
       mod1, mod2,
       parameters = par1, cost = x, effect = y
     )

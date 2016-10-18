@@ -75,6 +75,14 @@ look_up <- function(data, ..., bin = FALSE, value = "value") {
   }
   
   if (length(bin)) {
+    pb_bin_src <- bin[unlist(Map(
+      function(x) ! is.numeric(x), data[bin]))]
+    if (length(pb_bin_src)) {
+      stop(sprintf(
+        "Some variables in 'bin' are not numeric in the source data: %s.",
+        paste(pb_bin_src, collapse = ", ")
+      ))
+    }
     for (n in bin) {
       bin_values <- c(sort(unique(data[[n]])), +Inf)
       data[[n]] <- cut(data[[n]], bin_values,
@@ -102,7 +110,7 @@ look_up <- function(data, ..., bin = FALSE, value = "value") {
   )
   
   if (length(res) != nrow(df_vars)) {
-    stop("Ooops, something unexpectedly went wrong...")
+    stop("Ooops, something went unexpectedly wrong...")
   }
   
   if (any(is.na(res))) {

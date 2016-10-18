@@ -7,7 +7,7 @@
 check_model_index(x, i, allow_multiple = FALSE)
 }
 \arguments{
-\item{x}{A result from \code{\link{run_models}}.}
+\item{x}{A result from \code{\link{run_model}}.}
 
 \item{i}{A model index, character or numeric.}
 

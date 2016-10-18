@@ -28,7 +28,7 @@
 #'   demographic groups).
 #'   
 #' @export
-run_models_tabular <- function(location, reference = "REFERENCE.csv",
+run_model_tabular <- function(location, reference = "REFERENCE.csv",
                                run_psa = TRUE, run_demo = TRUE,
                                save = FALSE, overwrite = FALSE) {
   
@@ -190,14 +190,14 @@ eval_models_from_tabular <- function(inputs,
   
   if (options()$heemod.verbose) message("** Running models...")
   model_runs <- do.call(
-    run_models,
+    run_model,
     list_args
   )
   
   model_dsa <- NULL
   if (! is.null(inputs$param_info$dsa)) {
     if (options()$heemod.verbose) message("** Running DSA...")
-    model_dsa <- run_sensitivity(
+    model_dsa <- run_dsa(
       model_runs,
       inputs$param_info$dsa_params
     )
@@ -206,7 +206,7 @@ eval_models_from_tabular <- function(inputs,
   model_psa <- NULL
   if (! is.null(inputs$param_info$psa_params) & run_psa) {
     if (options()$heemod.verbose) message("** Running PSA...")
-    model_psa <- run_probabilistic(
+    model_psa <- run_psa(
       model_runs,
       resample = inputs$param_info$psa_params,
       N = inputs$model_options$n
@@ -241,18 +241,21 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   
   if (options()$heemod.verbose) message("*** Reading states...")
   state_info <- parse_multi_spec(
-    ref$full_file[ref$data == "state"],
+    read_file(ref$full_file[ref$data == "state"]),
     group_vars = ".state"
   )
   
   if (options()$heemod.verbose) message("*** Reading TM...")
   tm_info <- parse_multi_spec(
-    ref$full_file[ref$data == "tm"],
+    read_file(ref$full_file[ref$data == "tm"]),
     group_vars = c("from", "to")
   )
   
-  if(any(sort(names(state_info)) != sort(names(tm_info)))) {
-    stop("Mismatch between state names and transition matrix names.")
+  if (length(pb <- setdiff(names(state_info), names(tm_info)))) {
+    stop(sprintf(
+      "Mismatching model names between TM file and state file: %s.",
+      paste(pb, collapse = ", ")
+    ))
   }
   
   tm_info <- tm_info[names(state_info)]
@@ -304,16 +307,17 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
 #' @keywords internal
 create_states_from_tabular <- function(state_info,
                                        df_env = globalenv()) {
+  
   if(! inherits(state_info, "data.frame"))
     stop("'state_info' must be a data frame.")
   
   if(!(".state" %in% names(state_info)))
     stop("'.state' should be a column name.")
   
-  if (any(duplicated(state_info$state))) {
+  if (any(duplicated(state_info$.state))) {
     stop(sprintf(
       "Duplicated state names: %s.",
-      paste(unique(state_info$state[duplicated(state_info$state)]),
+      paste(unique(state_info$.state[duplicated(state_info$.state)]),
             sep = ", ")
     ))
   }
@@ -326,7 +330,7 @@ create_states_from_tabular <- function(state_info,
   
   if (! all(discounts_clean %in% values)) {
     stop(sprintf(
-      "Discounting rates defined for non-existing values:\n  %s",
+      "Discounting rates defined for non-existing values: %s.",
       paste(discounts[! discounts %in% values], collapse = ", ")
     ))
   }
@@ -337,17 +341,10 @@ create_states_from_tabular <- function(state_info,
         "No discount values found for '%s'.", n
       ))
       
-    } else if (! is.numeric(state_info[[n]])) {
-      stop("Discount values must be numeric.")
-      
     } else if (length(unique(stats::na.omit(state_info[[n]]))) > 1) {
       stop(sprintf(
         "Multiple discount values for '%s'.", n
       ))
-      
-    } else if (any(stats::na.omit(state_info[[n]]) < 0) ||
-               any(stats::na.omit(state_info[[n]]) > 1)) {
-      stop("Discount values out of range [0 - 1].")
       
     } else {
       state_info[[n]] <- stats::na.omit(state_info[[n]])[1]
@@ -394,7 +391,7 @@ create_states_from_tabular <- function(state_info,
 #' \code{prob} is the probability of a transition from the 
 #' \code{from} state to the \code{to} state. Prob can be 
 #' defined in terms of parameters, just as when using 
-#' \code{define_matrix} at the keyboard. Probabilities of 0 
+#' \code{define_transition} at the keyboard. Probabilities of 0 
 #' need not be specified - they will be automatically 
 #' inserted.
 #' 
@@ -419,9 +416,7 @@ create_matrix_from_tabular <- function(trans_probs, state_names,
   
   stopifnot(
     all(c("from", "to", "prob") %in% names(trans_probs)),
-    length(state_names) > 0,
-    all(trans_probs$from %in% state_names),
-    all(trans_probs$to %in% state_names)
+    length(state_names) > 0
   )
   
   unique_states <- unique(c(trans_probs$from, trans_probs$to))
@@ -454,7 +449,7 @@ create_matrix_from_tabular <- function(trans_probs, state_names,
                      dimnames = list(state_names, state_names))
   prob_mat[as.matrix(trans_probs[, c("to", "from")])] <- trans_probs$prob
   
-  res <- define_matrix_(
+  res <- define_transition_(
     lazyeval::as.lazy_dots(prob_mat, env = df_env),
     state_names = state_names
   )
@@ -488,7 +483,7 @@ create_parameters_from_tabular <- function(param_defs,
   
   if (xor("low" %in% names(param_defs),
           "high" %in% names(param_defs))) {
-    stop("Both 'low' and 'high' columns must be present in parameter tabular file to define DSA.")
+    stop("Both 'low' and 'high' columns must be present in parameter file to define DSA.")
   }
   
   parameters <- define_parameters_(
@@ -503,7 +498,7 @@ create_parameters_from_tabular <- function(param_defs,
   
   dsa <- psa <- NULL
   
-  if ("low" %in% names(param_defs) &
+  if ("low" %in% names(param_defs) &&
       "high" %in% names(param_defs)) {
     
     if (! all(is.na(param_defs$low) ==
@@ -516,16 +511,24 @@ create_parameters_from_tabular <- function(param_defs,
     }
     
     param_sens <- param_defs$parameter[! is.na(param_defs$low)]
-    low <- as_numeric_safe(stats::na.omit(param_defs$low))
-    high <- as_numeric_safe(stats::na.omit(param_defs$high))
+    low <- stats::na.omit(param_defs$low)
+    high <- stats::na.omit(param_defs$high)
     
-    dsa <- define_sensitivity_(
-      setNames(
-        lapply(
-          seq_along(param_sens),
-          function(i) c(low[i], high[i])
+    dsa <- define_dsa_(
+      par_names = param_sens,
+      low_dots = lazyeval::as.lazy_dots(
+        setNames(
+          lapply(low, function(x) x),
+          param_sens
         ),
-        param_sens
+        env = df_env
+      ),
+      high_dots = lazyeval::as.lazy_dots(
+        setNames(
+          lapply(high, function(x) x),
+          param_sens
+        ),
+        env = df_env
       )
     )
   }
@@ -540,7 +543,7 @@ create_parameters_from_tabular <- function(param_defs,
     distrib_psa <- stats::na.omit(param_defs$psa)
     
     psa <- do.call(
-      define_distrib,
+      define_psa,
       lapply(
         seq_along(param_psa),
         function(i) {
@@ -571,6 +574,7 @@ create_parameters_from_tabular <- function(param_defs,
 #'   
 #' @keywords internal
 create_options_from_tabular <- function(opt) {
+  
   allowed_opt <- c("cost", "effect", "init",
                    "method", "base", "cycles", "n")
   if(! inherits(opt, "data.frame"))
@@ -581,6 +585,10 @@ create_options_from_tabular <- function(opt) {
       "Unkmown options: %s.",
       paste(opt$option[ukn_opt], collapse = ", ")
     ))
+  }
+  
+  if (any(duplicated(opt$option))) {
+    stop("Some option names are duplicated.")
   }
   
   res <- list()
@@ -628,7 +636,7 @@ create_options_from_tabular <- function(opt) {
 #' @param df_env An environment containing external data.
 #' 
 #' @return A \code{heemod} model as returned by 
-#'   \code{\link{define_model}}.
+#'   \code{\link{define_strategy}}.
 #'   
 #' @keywords internal
 create_model_from_tabular <- function(state_file,
@@ -643,10 +651,11 @@ create_model_from_tabular <- function(state_file,
   states <- create_states_from_tabular(state_file,
                                        df_env = df_env)
   if (options()$heemod.verbose) message("**** Defining TM...")
+  
   TM <- create_matrix_from_tabular(tm_file, get_state_names(states),
                                    df_env = df_env)
   
-  define_model_(transition_matrix = TM, states = states)
+  define_strategy_(transition_matrix = TM, states = states)
 }
 
 #' Load Data From a Folder Into an Environment
@@ -703,9 +712,7 @@ create_df_from_tabular <- function(df_dir, df_envir) {
 #'\code{group_var} can be the state names, or from and to 
 #'lines for a matrix definition...
 #'
-#'@param multi_spec \code{data frame}, or, if of type 
-#'  \code{character}, the name of a file that contains the 
-#'  data frame.
+#'@param multi_spec \code{data frame}.
 #'@param split_on \code{character} of length 1, with the 
 #'  name of the variable in \code{multi_spec} to be split 
 #'  on.
@@ -721,18 +728,16 @@ parse_multi_spec <- function(multi_spec,
                              split_on = ".model",
                              group_vars) {
   
-  if(is.character(multi_spec)) multi_spec <- read_file(multi_spec)
+  if(! inherits(multi_spec, "data.frame"))
+    stop("'multi_spec' must be a data frame.")
   
   if(length(split_on) != 1) stop("'split_on' must have a length of exactly 1.")
   if(any(names(multi_spec) == "")) stop("'multi_spec' can't have empty names.")
-  # but they can have no names??
   
   if(! all(c(split_on, group_vars) %in% names(multi_spec)))
     stop("'split_on' and 'group_vars' must be column names of the input 'multi_spec'.")
   
   remaining <- setdiff(names(multi_spec), c(split_on, group_vars))
-  
-  multi_spec <- filter_blanks(multi_spec)
   
   ## any line that exists for one split but not others
   ##   needs to be duplicated for all splits
@@ -759,28 +764,17 @@ parse_multi_spec <- function(multi_spec,
     dplyr::filter_(~ n() == 1) %>%
     dplyr::select_(~ - dplyr::one_of(split_on))
   
-  just_once <- 
-    data.frame(
-      temp = rep(unique_splits, nrow(just_once)),
-      just_once[rep(seq_len(nrow(just_once)), each = num_splits), ],
-      stringsAsFactors = FALSE
-    )
+  just_once <- data.frame(
+    temp = rep(unique_splits, nrow(just_once)),
+    just_once[rep(seq_len(nrow(just_once)), each = num_splits), ],
+    stringsAsFactors = FALSE
+  )
   
   names(just_once)[1] <- split_on
   
   more_than_once <- multi_spec %>% 
     dplyr::group_by_(.dots = group_vars) %>%
     dplyr::filter_(~ n() > 1)
-  
-  if(! all(names(just_once) == names(more_than_once))) {
-    different_names <- names(just_once) != names(more_than_once)
-    cat("Differing names do not allow rbind:\n")
-    cat("Coliding name(s) in part 1:",
-        names(just_once)[different_names], "\n")
-    cat("Coliding name(s) in part 2:",
-        names(more_than_once)[different_names], "\n")
-    stop("After splitting the file with states into two, at least one variable name is different. This is sometimes caused by a trailing space in the variable name.")
-  }
   
   multi_spec <- rbind(just_once, as.data.frame(more_than_once))
   
@@ -820,7 +814,11 @@ parse_multi_spec <- function(multi_spec,
 create_demographic_table <- function(newdata,
                                      params) {
   weight_col <- which(names(newdata) == ".weights")
-  var_names <- names(newdata)[- weight_col]
+  if (length(weight_col)) {
+    var_names <- names(newdata)[- weight_col]
+  } else {
+    var_names <- names(newdata)
+  }
   valid_names <- var_names %in% names(params)
   
   if(! all(valid_names)) {
@@ -922,7 +920,7 @@ is_xls <- function(x) {
 #' Save Model Outputs
 #' 
 #' @param outputs Result from
-#'   \code{\link{run_models_tabular}}.
+#'   \code{\link{run_model_tabular}}.
 #' @param output_dir Subdirectory in which to write output.
 #' @param overwrite Should the outputs be overwritten?
 #'   
@@ -941,18 +939,73 @@ save_outputs <- function(outputs, output_dir, overwrite) {
     return(NULL)
     
   } else {
-    delete_succes <- 0
+    delete_success <- 0
     if(dir.exists(output_dir)) {
-      delete_succes <- unlink(output_dir, recursive = TRUE)
+      delete_success <- unlink(output_dir, recursive = TRUE)
     }
     
-    if (delete_succes == 1) {
+    if (delete_success == 1) {
       warning("Failed to delete output directory.")
       return(NULL)
     }
     
     dir.create(output_dir)
   }
+  
+  ## some csv files
+  if (options()$heemod.verbose) message("** Writing tabular outputs to files ...")
+  utils::write.csv(
+    outputs$demographics,
+    file = file.path(output_dir, "icer_by_group.csv"),
+    row.names = FALSE
+  )
+  
+  all_counts <- 
+    do.call("rbind",
+            lapply(get_model_names(outputs$model_runs),
+                   function(this_name){
+                     data.frame(.model = this_name,
+                                get_counts(outputs$model_runs, m = this_name))
+                   }
+            )
+    )
+  
+  utils::write.csv(
+    all_counts,
+    file = file.path(output_dir, "state_counts.csv"),
+    row.names = FALSE
+  )
+  
+  all_values <- 
+    do.call("rbind",
+            lapply(get_model_names(outputs$model_runs),
+                   function(this_name){
+                     data.frame(.model = this_name,
+                                get_values(outputs$model_runs, m = this_name))
+                   }
+            )
+    )
+  
+  utils::write.csv(
+    all_values,
+    file = file.path(output_dir, "cycle_values.csv"),
+    row.names = FALSE
+  )
+  
+  utils::write.csv(
+    as.data.frame(summary(outputs$dsa)),
+    file = file.path(output_dir, "dsa.csv"),
+    row.names = FALSE
+  )
+  
+  
+  utils::write.csv(
+    outputs$psa,
+    file = file.path(output_dir, "psa_values.csv"),
+    row.names = FALSE
+  )
+  
+    
   
   ## plots about individual models
   model_names <- names(outputs$models)
@@ -977,23 +1030,19 @@ save_outputs <- function(outputs, output_dir, overwrite) {
     this_file <- paste("dsa", this_model, "vs", base_model, sep = "_")
     save_graph(this_plot, output_dir, this_file)
     
-    this_plot <- plot(outputs$psa, model = this_model)
-    this_file <- paste("psa", this_model, "vs", base_model, sep = "_")
-    save_graph(this_plot, output_dir, this_file)
+    if(!is.null(outputs$psa)){
+      this_plot <- plot(outputs$psa, model = this_model)
+      this_file <- paste("psa", this_model, "vs", base_model, sep = "_")
+      save_graph(this_plot, output_dir, this_file)
+    }
   }
-  
-  ## acceptability curve
-  if (options()$heemod.verbose) message("** Generating acceptability curve...")
-  this_plot <- plot(outputs$psa, type = "ac")
-  save_graph(this_plot,
-             output_dir, "acceptability")
-  
-  if (options()$heemod.verbose) message("** Writing ICER by group to a file...")
-  utils::write.csv(
-    outputs$demographics,
-    file = file.path(output_dir, "icer_by_group.csv"),
-    row.names = FALSE
-  )
+  if(!is.null(outputs$psa)){
+    ## acceptability curve
+    if (options()$heemod.verbose) message("** Generating acceptability curve...")
+    this_plot <- plot(outputs$psa, type = "ac")
+    save_graph(this_plot,
+               output_dir, "acceptability")
+  }
   invisible(NULL)
 }
 

@@ -33,6 +33,7 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
 #' 
 #' @keywords internal
 discount <- function(x, r, first = FALSE) {
+  if (length(r) > 1) r <- r[1]
   stopifnot(
     r >= 0,
     r <= 1
@@ -65,6 +66,10 @@ list_all_same <- function(x) {
 plur <- function(x) {
   if (x > 1) "s" else ""
 }
+#' @rdname plur
+plur_y <- function(x) {
+  if (x > 1) "ies" else "y"
+}
 
 #' Check Names
 #' 
@@ -92,6 +97,9 @@ check_names <- function(x) {
   if (any("markov_cycle" %in% x)) {
     stop("'markov_cycle' is a reserved name.")
   }
+  if (any("state_cycle" %in% x)) {
+    stop("'state_cycle' is a reserved name.")
+  }
   if (any("C" %in% x)) {
     stop("'C' is a reserved name.")
   }
@@ -117,7 +125,7 @@ make_names <- function(x) {
 
 #' Check Model Index
 #' 
-#' @param x A result from \code{\link{run_models}}.
+#' @param x A result from \code{\link{run_model}}.
 #' @param i A model index, character or numeric.
 #' @param allow_multiple logical. Allow multiple model
 #'   index?
@@ -214,7 +222,19 @@ as_numeric_safe <- function(x) {
 
 #' @rdname safe-conversion
 as_integer_safe <- function(x) {
-  safe_convert(x, as.integer)
+  res_int <- safe_convert(x, as.integer)
+  res_num <- safe_convert(x, as.numeric)
+  
+  if (! isTRUE(all.equal(res_int, res_num))) {
+    stop(sprintf(
+      "Floating point values coerced to integer: %s.",
+      paste(
+        res_num[abs(res_int - res_num) > sqrt(.Machine$double.eps)],
+        collapse = ", "
+      )
+    ))
+  }
+  res_int
 }
 
 #' Convert Data Frame Factor Variables to Character
@@ -233,4 +253,71 @@ clean_factors <- function(x) {
     }
   }
   x
+}
+
+to_text_dots <- function(x, name = TRUE) {
+  n <- names(x)
+  ex <- unlist(lapply(
+    x,
+    function(y) if (any(is.na(y))) NA else
+      deparse(y$expr, width.cutoff = 500L)
+  ))
+  
+  
+  if (name) {
+    stopifnot(
+      length(n) == length(ex)
+    )
+    paste(n, ex, sep = " = ")
+  } else {
+    ex
+  }
+}
+
+interleave <- function(...) {
+  .dots <- list(...)
+  id <- unlist(lapply(.dots, seq_along))
+  c(...)[order(id)]
+}
+
+#' Insert Elements in Vector
+#' 
+#' Insert a vector in another vector.
+#' 
+#' To insert an element at the beginning use a \code{pos} 
+#' value of 0.
+#' 
+#' Duplicated positions are not allowed.
+#' 
+#' @param x A vector (or a list).
+#' @param pos Integer. Insert after which elements?
+#' @param what Vector of elements to insert.
+#'   
+#' @return A vector.
+#'   
+#' @examples
+#' 
+#' heemod:::insert(letters, c(0, 5, 26), c("xxx", "yyy"))
+#' 
+#' @keywords internal
+insert <- function(x, pos, what) {
+  
+  stopifnot(
+    all(pos >= 0),
+    all(pos <= length(x)),
+    ! any(duplicated(pos))
+  )
+  
+  res <- c(x, rep(what, length(pos)))
+  
+  id  <- c(
+    seq_along(x),
+    rep(pos, each = length(what)) +
+      seq(0, .9, length.out = length(what))
+  )
+  res[order(id)]
+}
+
+get_tm_pos <- function(row, col, n) {
+  (row - 1) * n + col
 }

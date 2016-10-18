@@ -3,7 +3,7 @@ context("Matrix objects")
 
 test_that(
   "Matrix definition", {
-    mat1 <- define_matrix(
+    mat1 <- define_transition(
       state_names = c("X1", "X2"),
       .3, .7,
       .6, .4
@@ -16,21 +16,21 @@ test_that(
       fixed = TRUE
     )
     expect_error(
-      define_matrix(
+      define_transition(
         state_names = c("X1", "X1"),
         .3, .7,
         .6, .4
       )
     )
     expect_error(
-      define_matrix(
+      define_transition(
         state_names = c("X1", "X2", "X3"),
         .3, .7,
         .6, .4
       )
     )
     expect_error(
-      define_matrix(
+      define_transition(
         state_names = c("X1", "X2"),
         .3, .7,
         .6, .4, .4
@@ -58,7 +58,7 @@ test_that(
     )
     expect_output(
       print(mat1),
-      'An unevaluated matrix, 2 states.
+      'A transition matrix, 2 states.
 
    X1  X2 
 X1 0.3 0.7
@@ -70,7 +70,7 @@ X2 0.6 0.4',
 
 test_that(
   "Functions on matrix objects", {
-    mat1 <- define_matrix(
+    mat1 <- define_transition(
       state_names = c("X1", "X2"),
       .3, .7,
       .6, .4
@@ -117,23 +117,23 @@ test_that(
       a = .1,
       b = 1 / (markov_cycle + 1)
     )
-    mat1 <- define_matrix(
+    mat1 <- define_transition(
       state_names = c("X1", "X2"),
       1-a, a,
       1-b, b
     )
-    matC <- define_matrix(
+    matC <- define_transition(
       state_names = c("X1", "X2"),
       C, a,
       C, b
     )
-    e_par1 <- eval_parameters(
+    e_par1 <- heemod:::eval_parameters(
       par1, 10
     )
-    e_mat <- eval_matrix(
+    e_mat <- heemod:::eval_matrix(
       mat1, e_par1
     )
-    e_matC <- eval_matrix(
+    e_matC <- heemod:::eval_matrix(
       matC, e_par1
     )
     expect_output(
@@ -155,7 +155,7 @@ test_that(
     )
     expect_output(
       print(e_mat),
-      'An evaluated matrix, 2 states, 10 markov cycles.
+      'An evaluated transition matrix, 2 states, 10 markov cycles.
 
 State names:
 
@@ -182,20 +182,20 @@ X2
 
 test_that(
   "C bug #82 doesnt come back", {
-    sampleTM <- define_matrix(0.1, 0.1, C, C, 0.3, 0.25, C, 0, 0.5)
+    sampleTM <- define_transition(0.1, 0.1, C, C, 0.3, 0.25, C, 0, 0.5)
     A <- define_state(cost = 1, utility = 2)
     B <- define_state(cost = 5, utility = 7)
     C <- define_state(cost = 4, utility = 4)
-    sample_mod <- define_model(transition_matrix = sampleTM, A = A, B = B, C = C)
-    res <- run_models(sample_mod, cost = cost, effect = utility,
+    sample_mod <- define_strategy(transition_matrix = sampleTM, A = A, B = B, C = C)
+    res <- run_model(sample_mod, cost = cost, effect = utility,
                       method = "beginning")
     
     
     expect_output(
       print(res),
-      "1 Markov model run for 1 cycle.
+      "1 strategy run for 1 cycle.
 
-Initial states:
+Initial state counts:
 
      N
 A 1000

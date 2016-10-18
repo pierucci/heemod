@@ -4,13 +4,10 @@
 \alias{check_matrix}
 \title{Check Markov Model Transition Matrix}
 \usage{
-check_matrix(x, ...)
+check_matrix(x)
 }
 \arguments{
 \item{x}{a matrix.}
-
-\item{...}{A list of informations to print when checks 
-fail, for debugging purposes.}
 }
 \value{
 \code{NULL}

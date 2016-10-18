@@ -1,11 +1,11 @@
 ---
-title: "Run models from tabular input"
+title: "Tabular Input"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{Run models from tabular input}
+  %\VignetteIndexEntry{Tabular Input}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -21,9 +21,9 @@ format_na <- function(x, char = " ") {
 
 In most of the `heemod` vignettes models are defined through `R` code. But models with large numbers of states and transition probabilities might be unwieldy to input at the keyboard, and could be conveniently specified by file inputs.
 
-This vignette demonstrates how to make and use files to input models to heemod. The files can then be used to run a suite of analyses (including deterministic and probabilistic sensitivity analyses, acceptability curve calculation, etc.) and optionally save results to a folder.
+This vignette demonstrates how to make and use files to input models to `heemod`. The files can then be used to run a suite of analyses (including deterministic and probabilistic sensitivity analyses, acceptability curve calculation, etc.) and optionally save results to a folder.
 
-# Introduction
+## Introduction
 
 The inputs for state definition, transition matrices, model options, etc. (referenced as *tabular inputs*) must be provided via `csv`, `xls` or `xlsx` files.^[French `csv` (with `;` separator) are not supported.] Columns starting by `.comment` are ignored, as well as blank rows.
 
@@ -31,8 +31,6 @@ These inputs must be provided in separate files. The path to these files is spec
 
 *Warning for users of the `xls` format:*  
 The `xls` files are read with the `readxl` package. As of version 0.1.1 if a column contains strings and numeric values the numeric values are rounded to 6 decimal places. We therefore recommend to use solely the `csv` or `xlsx` format.
-
-# File content
 
 ## Reference file
 
@@ -59,9 +57,11 @@ All the files and directories must be in the reference file directory. Files or 
 
 ## States file
 
-A state file contains 2 mandatory columns: `.model` and `.state`, corresponding to model and state names respectively. The other columns correspond to the state values.
+A state file contains 2 mandatory columns: `.model` and `.state`, corresponding to strategy and state names respectively. The other columns correspond to the state values.
 
 Discounting rates can be specified in `.discount.*` columns, where `*` stands for the name of the value to discount. Values are always discounted at the same rate in all states.^[A single discount rate can be duplicated across states, or specified in one state and left blank elsewhere. Specifying two different discount rates for a single variable in different states will cause an error.]
+
+Values specified for only one strategy will be carried over to others. Only values that differ from one strategy to another must be specified separately for each strategy.
 
 ```{r echo = FALSE}
 heemod:::read_file(system.file("tabular/thr/THR_states.csv", package = "heemod")) %>% 
@@ -75,7 +75,7 @@ State values that do not change between models need only be specified once (such
 
 A transition probabilities file contains 4 columns:
 
-  * `.model`: model name.
+  * `.model`: strategy name.
   * `from`: initial state.
   * `to`: end state.
   * `prob`: transition probability from initial state to end state.
@@ -88,7 +88,7 @@ heemod:::read_file(system.file("tabular/thr/THR_transition_probs.csv", package =
 
 A probability can be defined by any expression: a number, `C`, a different parameter name (specified in the parameter file), or a function call.
 
-As with the state file above probabilities specified for only one model will be carried over to others. Only probabilities that differ from one model to another must be specified separately for each model. Unspecified transition probabilities are assumed to be 0.
+As with the state file above probabilities specified for only one strategy will be carried over to others. Only probabilities that differ from one strategy to another must be specified separately for each strategy. Unspecified transition probabilities are assumed to be 0.
 
 ## Parameters
 
@@ -127,12 +127,12 @@ heemod:::read_file(system.file("tabular/thr/THR_options.csv", package = "heemod"
   knitr::kable(row.names = FALSE)
 ```
 
-# Run the analysis
+## Run the analysis
 
-The entire set of analysis specified in the tabular files can be run by the function `run_models_from_tabular()`.
+The entire set of analysis specified in the tabular files can be run by the function `run_model_from_tabular()`.
 
 ```{r}
-result <- run_models_tabular(
+result <- run_model_tabular(
   location = system.file("tabular/thr", package = "heemod")
 )
 ```
@@ -142,7 +142,7 @@ The results can then be interpreted as usual.
 ```{r, fig.width = 6, fig.align='center'}
 result$model_runs
 plot(result$psa,
-     type = "ac")
+     type = "ce")
 plot(result$dsa,
      type = "difference",
      result = "icer",
