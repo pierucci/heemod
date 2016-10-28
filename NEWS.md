@@ -1,3 +1,9 @@
+# heemod 0.5.1
+
+## Bugfixes
+
+  * Added `formatR` to suggest list.
+
 # heemod 0.5.0
 
 ## Breaking changes
