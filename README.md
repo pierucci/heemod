@@ -47,7 +47,7 @@ Specific analysis examples (mostly inspired from [Decision Modelling for Health 
 
 ## Devs
 
-[Kevin Zarca](http://www.urc-eco.fr/Kevin-ZARCA,402) and [Antoine Filipović-Pierucci](https://pierucci.github.io/).
+[Kevin Zarca](http://www.urc-eco.fr/Kevin-ZARCA,402) and [Antoine Filipović-Pierucci](https://pierucci.org).
 
 <h1 align="center">
 <a href="http://www.urc-eco.fr">
