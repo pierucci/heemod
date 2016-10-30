@@ -61,6 +61,7 @@ use_cluster <- function(num_cores, cluster = NULL) {
   
   if (! is.null(cluster)) {
     set_cluster(cluster)
+    message(paste("Using a cluster with", length(cluster), "cores."))
     
   } else {
     if (! requireNamespace("parallel"))
