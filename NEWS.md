@@ -91,7 +91,7 @@
 
 ## Bug fixes
 
-  * fix mishandling of matrix index with `C` in `eval_matrix()` (thanks to @MattWiener).
+  * fix mishandling of matrix index with `C` in `eval_matrix()` (thanks to [Matthew Wiener](https://github.com/MattWiener)).
   * fix problem with upcoming version of `tidyr`.
 
 # heemod 0.3.1
