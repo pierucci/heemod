@@ -321,3 +321,23 @@ insert <- function(x, pos, what) {
 get_tm_pos <- function(row, col, n) {
   (row - 1) * n + col
 }
+
+pretty_names <- function(x) {
+  n <- names(x)
+  names(n) <- n
+  
+  ref <- tibble::tibble(
+    from = c(".cost", ".effect",
+             ".dcost", ".deffect",
+             ".icer", ".dref",
+             ".model_names"),
+    to = c("Cost", "Effect",
+           "\u0394 Cost", "\u0394 Effect",
+           "ICER", "Ref.",
+           "Strategy")
+  ) %>% 
+    dplyr::filter_(~ from %in% n)
+  
+  n[ref$from] <- ref$to
+  stats::setNames(x, n)
+}
