@@ -273,8 +273,7 @@ test_that(
     
     expect_output(
       print(res),
-      "   Cost Effect ICER
-II    0      0    -"
+      "0        0    -"
     )
   }
 )

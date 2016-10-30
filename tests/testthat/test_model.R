@@ -224,24 +224,7 @@ test_that(
     )
     expect_output(
       print(e_mod2),
-      "   N
-X1 1
-X2 0
-
-Counting method: 'beginning'.
-
-          x        y
-II 1170.000  615.000
-I  1592.538 1514.507
-
-Efficiency frontier:
-
-II -> I
-
-Model difference:
-
-      Cost   Effect      ICER
-I 422.5384 899.5074 0.4697442",
+      "422.5384 899.5074 0.4697442",
       fixed = TRUE
     )
     s_mod2 <- summary(e_mod2)
@@ -260,24 +243,7 @@ I 422.5384 899.5074 0.4697442",
     
     expect_output(
       print(summary(e_mod2)),
-      "   N
-X1 1
-X2 0
-
-Counting method: 'beginning'.
-
-          x        y
-II 1170.000  615.000
-I  1592.538 1514.507
-
-Efficiency frontier:
-
-II -> I
-
-Model difference:
-
-      Cost   Effect      ICER
-I 422.5384 899.5074 0.4697442",
+      "422.5384 899.5074 0.4697442",
       fixed = TRUE
     )
     expect_output(
@@ -292,24 +258,7 @@ I 422.5384 899.5074 0.4697442",
           method = "beginning"
         )
       ),
-      "   N
-X1 1
-X2 0
-
-Counting method: 'beginning'.
-
-            x        y
-mod2 1170.000  615.000
-mod1 1592.538 1514.507
-
-Efficiency frontier:
-
-mod2 -> mod1
-
-Model difference:
-
-         Cost   Effect      ICER
-mod1 422.5384 899.5074 0.4697442",
+      "422.5384 899.5074 0.4697442",
       fixed = TRUE
     )
   }
