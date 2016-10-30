@@ -228,7 +228,7 @@ get_base_model <- function(x, ...) {
 }
 
 get_base_model.default <- function(x, ...) {
-  if (! all(".cost", ".effect") %in% names(x)) {
+  if (! all(c(".cost", ".effect") %in% names(x))) {
     warning("No effect defined, cannot find base model.")
     return(NULL)
   }
