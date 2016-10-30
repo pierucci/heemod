@@ -92,17 +92,20 @@ compute_icer <- function(x, model_order = order(x$.effect)) {
   tab$.dcost <- NA
   tab$.deffect <- NA
   tab$.dref <- NA
+  
   for (i in seq_len(nrow(tab))) {
     if (i == 1) {
       tab$.icer[i] <- NA
       ref_cost <- tab$.cost[i]
       ref_effect <- tab$.effect[i]
       ref_name <- tab$.model_names[i]
+      
     } else {
       tab$.dcost[i] <- tab$.cost[i] - ref_cost
       tab$.deffect[i] <- tab$.effect[i] - ref_effect
       tab$.icer[i] <- tab$.dcost[i] / tab$.deffect[i]
       tab$.dref[i] <- ref_name
+      
       if (tab$.model_names[i] %in% ef) {
         ref_cost <- tab$.cost[i]
         ref_effect <- tab$.effect[i]
