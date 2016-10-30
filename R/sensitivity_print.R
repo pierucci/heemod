@@ -165,27 +165,20 @@ print.summary_sensitivity <- function(x, ...) {
   print(model_ref)
   cat("\nSensitivity analysis:\n\n")
   
-  rn <- paste0(
-    x$.par_names,
-    " = ",
-    x$.par_value,
-    " (",
-    x$.model_names,
-    ")"
-  )
+  rn <- paste0(x$.par_names, " = ", x$.par_value,
+               " (", x$.model_names, ")")
   
   x$.dcost <- x$.dcost / sum(attr(model_ref, "init"))
   x$.deffect <- x$.deffect / sum(attr(model_ref, "init"))
+  x <- dplyr::select_(x, ~ - .par_names,
+                      ~ - .par_value,
+                      ~ - .model_names)
+  x <- pretty_names(x)
   
-  res <- as.matrix(x[, c(".cost", ".effect",
-                         ".dcost", ".deffect", ".icer")])
+  res <- as.matrix(x)
   
   rownames(res) <- rn
-  colnames(res) <- c("Cost", "Effect", "\u0394 Cost",
-                     "\u0394 Effect", "ICER")
-  
-  is.na(res) <- ! is.finite(res)
-  print(res, na.print = "-")
+  print(res, na.print = "-", quote = FALSE)
 }
 
 #' @export
@@ -203,8 +196,6 @@ summary.eval_sensitivity <- function(object, ...) {
     dplyr::group_by_(~ .par_names, ~ .par_value) %>% 
     dplyr::mutate_(.dots = attr(object, "model_ref") %>% attr("ce")) %>% 
     dplyr::do_(~ compute_icer(.)) %>% 
-    dplyr::select_(".model_names", ".par_names", ".par_value",
-                   ".cost", ".effect", ".dcost", ".deffect", ".icer") %>% 
     dplyr::ungroup()
   
   structure(res, class = c("summary_sensitivity", class(res)),
