@@ -202,7 +202,7 @@ wtd_summary <- function(x, weights = NULL) {
 #' @keywords internal
 safe_convert <- function(x, f) {
   na1 <- is.na(x)
-  res <- f(x)
+  res <- suppressWarnings(f(x))
   na2 <- is.na(res)
   
   if (any(pb <- na1 != na2)) {
