@@ -228,11 +228,13 @@ get_base_model <- function(x, ...) {
 }
 
 get_base_model.default <- function(x, ...) {
-  if (! ".effect" %in% names(x)) {
+  if (! all(".cost", ".effect") %in% names(x)) {
     warning("No effect defined, cannot find base model.")
     return(NULL)
   }
-  x$.model_names[x$.effect == min(x$.effect)][1]
+  (x %>% 
+    dplyr::arrange_(.dots = list(~ .cost, ~ desc(.effect))) %>% 
+    dplyr::slice(1))$.model_names
 }
 
 get_base_model.run_model <- function(x, ...) {
