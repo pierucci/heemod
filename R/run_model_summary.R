@@ -94,7 +94,7 @@ compute_icer <- function(x, model_order = order(x$.effect)) {
   tab$.dref <- NA
   for (i in seq_len(nrow(tab))) {
     if (i == 1) {
-      tab$.icer[i] <- -Inf
+      tab$.icer[i] <- NA
       ref_cost <- tab$.cost[i]
       ref_effect <- tab$.effect[i]
       ref_name <- tab$.model_names[i]
