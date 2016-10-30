@@ -252,19 +252,19 @@ test_that(
     
     expect_output(
       print(res_b),
-      "II 624.6    608 1.027303"
+      "1.027303"
     )
     expect_output(
       print(res_e),
-      "II  753    753    1"
+      "753"
     )
     expect_output(
       print(res_h),
-      "II 1501.65 1476.75 1.016861"
+      "1.016861"
     )
     expect_output(
       print(res_l),
-      "II 688.8  680.5 1.012197"
+      "1.012197"
     )
     expect_error(
       run_model(mod1, mod2,

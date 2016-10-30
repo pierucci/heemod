@@ -1,3 +1,9 @@
+# heemod devel
+
+## Bugfixes
+
+  * Base model cannot be specified anymore: it is always the least costly model.
+
 # heemod 0.6.0
 
 ## New features

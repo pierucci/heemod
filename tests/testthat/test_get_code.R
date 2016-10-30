@@ -62,9 +62,7 @@ test_that(
     age/10, ly = 1), B = define_state(cost = 456 * age/10, 
     ly = 1 * age/200)), parameters = define_parameters(age_init = 60, 
     age = age_init + markov_cycle), init = c(1, 0), cycles = 10, 
-    method = "beginning", base_model = "II", cost = cost, 
-    effect = ly)'
-    )
+    method = "beginning", cost = cost, effect = ly)')
     expect_identical(
       formatR::tidy_source(
         text = get_code(res, name = "res"), width.cutoff = 57,
@@ -77,8 +75,7 @@ test_that(
     age/10, ly = 1), B = define_state(cost = 456 * age/10, 
     ly = 1 * age/200)), parameters = define_parameters(age_init = 60, 
     age = age_init + markov_cycle), init = c(1, 0), cycles = 10, 
-    method = "beginning", base_model = "II", cost = cost, 
-    effect = ly)'
+    method = "beginning", cost = cost, effect = ly)'
     )
     expect_identical(
       formatR::tidy_source(
@@ -86,8 +83,7 @@ test_that(
         output = FALSE)$text.tidy,
       'run_model(I = m_i, II = m_ii, parameters = define_parameters(age_init = 60, 
     age = age_init + markov_cycle), init = c(1, 0), cycles = 10, 
-    method = "beginning", base_model = "II", cost = cost, 
-    effect = ly)'
+    method = "beginning", cost = cost, effect = ly)'
     )
     expect_identical(
       formatR::tidy_source(
