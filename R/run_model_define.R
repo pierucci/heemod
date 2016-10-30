@@ -66,6 +66,7 @@ run_model <- function(...,
                        cost = NULL, effect = NULL,
                        base_model = NULL,
                        state_cycle_limit = NULL) {
+  
   list_models <- list(...)
   
   method <- match.arg(method)

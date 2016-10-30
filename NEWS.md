@@ -1,3 +1,9 @@
+# heemod devel
+
+## New features
+
+  * Parallel computing with `use_cluster()`.
+
 # heemod 0.5.1
 
 ## Bugfixes
@@ -9,7 +15,7 @@
 ## Breaking changes
 
   * Some functions were renamed for clarification:
-    * `define_strategy()` <- `define_model()`
+    * `define_strategy()` <= `define_model()`
     * `run_model()` <- `run_models()`
     * `define_transition()` <- `define_matrix()`
     * `define_dsa()` <- `define_sensitivity()`

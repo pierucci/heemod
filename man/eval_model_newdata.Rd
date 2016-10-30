@@ -14,7 +14,7 @@ eval_model_newdata(x, model = 1, newdata)
 
 \item{newdata}{a data.frame whose names match parameters 
 names. \code{model} will be evaluated iteratively, 
-taking successivel values from each row.}
+taking successive values from each row.}
 }
 \value{
 A data.frame containing the values of 
