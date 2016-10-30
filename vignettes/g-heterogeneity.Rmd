@@ -171,7 +171,7 @@ tab_indiv_w <- tibble::tibble(
 )
 ```
 
-For this example we will use the characteristics of `r N` individuals, with varying sex and age:
+For this example we will use the characteristics of `r N` individuals, with varying sex and age, specified in the data frame `tab_indiv`:
 
 ```{r, fig.align='center', fig.height=4, fig.width=6}
 tab_indiv
