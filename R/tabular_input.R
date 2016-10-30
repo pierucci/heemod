@@ -1035,18 +1035,19 @@ save_outputs <- function(outputs, output_dir, overwrite) {
     save_graph(this_plot, output_dir, this_file)
   }
   
-  base_model <- get_base_model(outputs$model_runs)
+  lowest_model <- get_lowest_model(outputs$model_runs)
   
   ## plots about differences between models
   if (options()$heemod.verbose) message("** Generating plots with model differences...")
-  for(this_model in setdiff(model_names, base_model)){
+  for(this_model in setdiff(model_names, lowest_model)){
     this_plot <- plot(outputs$dsa, type = "diff", model = this_model)
-    this_file <- paste("dsa", this_model, "vs", base_model, sep = "_")
+    this_file <- paste("dsa", this_model, "vs", lowest_model, sep = "_")
+
     save_graph(this_plot, output_dir, this_file)
     
     if(!is.null(outputs$psa)){
       this_plot <- plot(outputs$psa, model = this_model)
-      this_file <- paste("psa", this_model, "vs", base_model, sep = "_")
+      this_file <- paste("psa", this_model, "vs", lowest_model, sep = "_")
       save_graph(this_plot, output_dir, this_file)
     }
   }
