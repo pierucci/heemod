@@ -22,7 +22,7 @@ summary.run_model <- function(object, ...) {
   res <- dplyr::select_(res, ~ - .model_names)
   
   
-  res_comp <- res[c(".dcost", ".deffect", ".icer")]
+  res_comp <- res[c(".dcost", ".deffect", ".icer", ".dref")]
   is.na(res_comp$.icer) <- ! is.finite(res_comp$.icer)
   res_comp$.dcost <- res_comp$.dcost / sum(attr(object, "init"))
   res_comp$.deffect <- res_comp$.deffect / sum(attr(object, "init"))
@@ -84,19 +84,29 @@ normalize_ce.run_model <- function(x) {
 #'   
 #' @keywords internal
 compute_icer <- function(x, model_order = order(x$.effect)) {
-  
+  ef <- get_frontier(x)
   tab <- x[model_order, ]
   
   tab$.icer <- NA
   tab$.dcost <- NA
   tab$.deffect <- NA
+  tab$.dref <- NA
   for (i in seq_len(nrow(tab))) {
     if (i == 1) {
       tab$.icer[i] <- -Inf
+      ref_cost <- tab$.cost[i]
+      ref_effect <- tab$.effect[i]
+      ref_name <- tab$.model_names[i]
     } else {
-      tab$.dcost[i] <- tab$.cost[i] - tab$.cost[i-1]
-      tab$.deffect[i] <- tab$.effect[i] - tab$.effect[i-1]
+      tab$.dcost[i] <- tab$.cost[i] - ref_cost
+      tab$.deffect[i] <- tab$.effect[i] - ref_effect
       tab$.icer[i] <- tab$.dcost[i] / tab$.deffect[i]
+      tab$.dref[i] <- ref_name
+      if (tab$.model_names[i] %in% ef) {
+        ref_cost <- tab$.cost[i]
+        ref_effect <- tab$.effect[i]
+        ref_name <- tab$.model_names[i]
+      }
     }
   }
   tab
@@ -128,7 +138,7 @@ print.summary_run_model <- function(x, ...) {
   res_comp$.icer <- format(res_comp$.icer)
   res_comp$.icer[res_comp$.icer == "NA"] <- "-"
   res_comp <- res_comp[-1, ]
-  names(res_comp) <- c("Cost", "Effect", "ICER")
+  names(res_comp) <- c("Cost", "Effect", "ICER", "Ref.")
   
   if (nrow(x$res) > 1) {
     cat("\nEfficiency frontier:\n\n")
