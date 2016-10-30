@@ -4,14 +4,13 @@
 #' @param resample Resampling distribution for parameters 
 #'   defined by \code{\link{define_psa}}.
 #' @param N > 0. Number of simulation to run.
-#' @param cl A cluster for computations.
+#' 
 #' @return A list with one \code{data.frame} per model.
 #' @export
 #' 
 #' @example inst/examples/example_run_psa.R
 #'   
-run_psa <- function(model, resample, N,
-                    cl = NULL) {
+run_psa <- function(model, resample, N) {
   stopifnot(
     N > 0,
     ! is.null(N)
@@ -33,8 +32,7 @@ run_psa <- function(model, resample, N,
         eval_model_newdata(
           x = model,
           model = n,
-          newdata = newdata,
-          cl = cl) %>% 
+          newdata = newdata) %>% 
           dplyr::rowwise() %>% 
           dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
           dplyr::bind_cols(newdata) %>% 

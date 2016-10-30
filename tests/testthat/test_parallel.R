@@ -1,15 +1,15 @@
-context("running with multiple cores")
+context("Multiple cores")
 library(parallel)
 
 test_that(
   "Same results using 1 core or 2.", {
 
-    result_1core <- run_models_tabular(
+    result_1core <- run_model_tabular(
       location = system.file("tabular/thr", package = "heemod"),
       save = FALSE, overwrite = FALSE, run_psa = FALSE 
     )
   
-    result_2core <- run_models_tabular(
+    result_2core <- run_model_tabular(
       location = system.file("tabular/thr", package = "heemod"),
       reference = "REFERENCE_2core.csv",
       save = FALSE, overwrite = FALSE, run_psa = FALSE

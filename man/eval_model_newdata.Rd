@@ -5,7 +5,7 @@
 \title{Iteratively Evaluate a Markov Model With New Parameter 
 Values}
 \usage{
-eval_model_newdata(x, model = 1, newdata, cl = NULL)
+eval_model_newdata(x, model = 1, newdata)
 }
 \arguments{
 \item{x}{Result from \code{\link{run_model}}.}
@@ -15,8 +15,6 @@ eval_model_newdata(x, model = 1, newdata, cl = NULL)
 \item{newdata}{a data.frame whose names match parameters 
 names. \code{model} will be evaluated iteratively, 
 taking successive values from each row.}
-
-\item{cl}{A cluster for computations.}
 }
 \value{
 A data.frame containing the values of 

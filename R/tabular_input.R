@@ -171,8 +171,6 @@ eval_models_from_tabular <- function(inputs,
   
   if (options()$heemod.verbose) message("* Running files...")
   
-  cl <- cluster_for_heemod(inputs$model_options$num_cores)
-  
   list_args <- c(
     inputs$models,
     list(
@@ -182,8 +180,7 @@ eval_models_from_tabular <- function(inputs,
       effect = inputs$model_options$effect,
       base_model = inputs$model_options$base_model,
       method = inputs$model_options$method,
-      cycles = inputs$model_options$cycles,
-      cl = cl
+      cycles = inputs$model_options$cycles
     )
   )
   
@@ -191,6 +188,11 @@ eval_models_from_tabular <- function(inputs,
     function(x) ! is.null(x),
     list_args
   )
+  
+  
+  if (! is.null(inputs$model_options$num_cores)) {
+    use_cluster(inputs$model_options$num_cores)
+  }
   
   if (options()$heemod.verbose) message("** Running models...")
   model_runs <- do.call(
@@ -203,8 +205,7 @@ eval_models_from_tabular <- function(inputs,
     if (options()$heemod.verbose) message("** Running DSA...")
     model_dsa <- run_dsa(
       model_runs,
-      inputs$param_info$dsa_params,
-      cl = cl
+      inputs$param_info$dsa_params
     )
   }
 
@@ -214,18 +215,20 @@ eval_models_from_tabular <- function(inputs,
     model_psa <- run_psa(
       model_runs,
       resample = inputs$param_info$psa_params,
-      N = inputs$model_options$n,
-      cl = cl
+      N = inputs$model_options$n
     )
   }
 
   demo_res <- NULL
   if (! is.null(inputs$demographic_file) & run_demo) {
     if (options()$heemod.verbose) message("** Running demographic analysis...")
-    demo_res <- stats::update(model_runs, inputs$demographic_file,
-                              cl = cl)
+    demo_res <- stats::update(model_runs, inputs$demographic_file)
   }
-  if(!is.null(cl)) parallel::stopCluster(cl)
+  
+  if(! is.null(inputs$model_options$num_cores)) {
+    close_cluster()
+  }
+  
   list(
     models = inputs$models,
     model_runs = model_runs,

@@ -7,7 +7,7 @@
 \usage{
 run_sensitivity(model, sensitivity)
 
-run_dsa(model, sensitivity, cl = NULL)
+run_dsa(model, sensitivity)
 }
 \arguments{
 \item{model}{An evaluated Markov model}

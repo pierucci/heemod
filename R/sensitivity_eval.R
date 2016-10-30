@@ -9,8 +9,7 @@
 #' @export
 #' 
 #' @example inst/examples/example_run_dsa.R
-run_dsa <- function(model, sensitivity, 
-                            cl = NULL) {
+run_dsa <- function(model, sensitivity) {
   
   if (! all(c(".cost", ".effect") %in% names(model))) {
     stop("No cost and/or effect defined, sensitivity analysis unavailable.")
@@ -27,8 +26,7 @@ run_dsa <- function(model, sensitivity,
       tab <- eval_model_newdata(
         model,
         model = n,
-        newdata = sensitivity,
-        cl = cl
+        newdata = sensitivity
       ) 
       tab %>% 
         dplyr::mutate_if(

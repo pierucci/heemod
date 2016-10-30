@@ -13,7 +13,6 @@
 #' @param newdata a data.frame whose names match parameters 
 #'   names. \code{model} will be evaluated iteratively, 
 #'   taking successive values from each row.
-#' @param cl A cluster for computations.
 #'   
 #' @return A data.frame containing the values of 
 #'   \code{newdata} and each Markov Model evaluation in 
@@ -22,9 +21,7 @@
 #' @example inst/examples/example_eval_model_newdata.R
 #'   
 #' @keywords internal
-eval_model_newdata <- function(x, model = 1, newdata,
-                               cl = NULL) {
-  num_cores <- length(cl)
+eval_model_newdata <- function(x, model = 1, newdata) {
   check_model_index(x = x, i = model)
   
   cycles <- attr(x, "cycles")
@@ -32,41 +29,47 @@ eval_model_newdata <- function(x, model = 1, newdata,
   method <- attr(x, "method")
   old_parameters <- attr(x, "parameters")
   uneval_model <- attr(x, "uneval_model_list")[[model]]
-
-
-  if(!is.null(cl)){
+  
+  if (status_cluster(verbose = FALSE)) {
+    cl <- get_cluster()
+    
+    num_cores <- length(cl)
+    
+    message(paste("Using a cluster with", num_cores, "cores."))
+    
     split_vec <- rep(1:num_cores, each = nrow(newdata) %/% num_cores)
     split_vec <- c(split_vec, rep(num_cores, nrow(newdata) %% num_cores))
-  
+    
     pnewdata <- split(newdata, split_vec)
-    parallel::clusterExport(cl, 
-                  c("uneval_model", "old_parameters", "pnewdata", 
-                    "cycles", "init", "method"),
-                  env = environment())
+    parallel::clusterExport(
+      cl, 
+      c("uneval_model", "old_parameters", "pnewdata", 
+        "cycles", "init", "method"),
+      envir = environment()
+    )
     
     pieces <- parallel::parLapply(cl, pnewdata, function(newdata){
-  
+      
       newdata %>% 
         dplyr::rowwise() %>% 
-          dplyr::do_(
-            .mod = ~ eval_newdata(
-              .,
-              model = uneval_model,
-              old_parameters = old_parameters,
-              cycles = cycles,
-              init = init,
-              method = method
-            )
-          ) %>% 
+        dplyr::do_(
+          .mod = ~ eval_newdata(
+            .,
+            model = uneval_model,
+            old_parameters = old_parameters,
+            cycles = cycles,
+            init = init,
+            method = method
+          )
+        ) %>% 
         dplyr::ungroup() %>% 
         dplyr::bind_cols(
           newdata
         )
-      })
+    })
     res <- do.call("rbind", pieces)
     rownames(res) <- NULL
-  }
-  else{
+  } else {
     res <- newdata %>% 
       dplyr::rowwise() %>% 
       dplyr::do_(
@@ -86,7 +89,7 @@ eval_model_newdata <- function(x, model = 1, newdata,
     
   }
   res
-  }
+}
 
 eval_newdata <- function(new_parameters, model, old_parameters,
                          cycles, init, method) {

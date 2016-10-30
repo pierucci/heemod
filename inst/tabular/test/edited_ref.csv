@@ -1,8 +1,0 @@
-"data","file","absolute_path"
-"state","C:/Users/aa0113/Documents/github-heemod/inst/tabular/thr/THR_states.csv",1
-"tm","C:/Users/aa0113/Documents/github-heemod/inst/tabular/thr/THR_transition_probs.csv",1
-"parameters","C:/Users/aa0113/Documents/github-heemod/inst/tabular/thr/THR_parameters.csv",1
-"demographics","C:/Users/aa0113/Documents/github-heemod/inst/tabular/thr/THR_demographic_table.csv",1
-"data","C:/Users/aa0113/Documents/github-heemod/inst/tabular/thr/input_dataframes",1
-"output","C:/Users/aa0113/Documents/github-heemod/inst/tabular/thr/output",1
-"options","THR_options.csv",NA

@@ -7,7 +7,7 @@
 \usage{
 run_probabilistic(model, resample, N)
 
-run_psa(model, resample, N, cl = NULL)
+run_psa(model, resample, N)
 }
 \arguments{
 \item{model}{The result of \code{\link{run_model}}.}
@@ -16,8 +16,6 @@ run_psa(model, resample, N, cl = NULL)
 defined by \code{\link{define_psa}}.}
 
 \item{N}{> 0. Number of simulation to run.}
-
-\item{cl}{A cluster for computations.}
 }
 \value{
 A list with one \code{data.frame} per model.

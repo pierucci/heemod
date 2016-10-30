@@ -162,6 +162,14 @@ In order to compare different strategies it is possible to run a model with mult
 
 Time varying transition probabilities and state values are available through the `markov_cycle` and `state_cycle` variables. Time-varying probabilities and values are explained in `vignette("b-time-dependency", "heemod")`.
 
+## Parallel computing
+
+Some operation such as PSA can be significantly sped up using parallel computing. This can be done in the folowwing way:
+
+  * Define a cluster with the `use_cluster()` functions (i.e. `use_cluster(4)` to use 4 cores).
+  * Run the analysis as usual.
+  * To stop using parallel computing use the `close_cluster()` function.
+
 ## Going further
 
 Probabilistic uncertainty analysis `vignette("e-probabilistic", "heemod")` and deterministic sensitivity analysis `vignette("f-sensitivity", "heemod")` can be performed. Population-level estimates and heterogeneity can be computed : `vignette("g-heterogeneity", "heemod")`.

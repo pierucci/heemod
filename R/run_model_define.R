@@ -46,7 +46,6 @@
 #'   the cost-effectiveness plane.
 #' @param base_model Name of base model used as reference. 
 #'   By default the model with the lowest effectiveness.
-#' @param cl A cluster for computations.
 #' @param method Counting method.
 #' @param list_models List of models, only used by 
 #'   \code{run_model_} to avoid using \code{...}.
@@ -66,7 +65,6 @@ run_model <- function(...,
                                   "half-cycle"),
                        cost = NULL, effect = NULL,
                        base_model = NULL,
-                       cl = NULL,
                        state_cycle_limit = NULL) {
   
   list_models <- list(...)
@@ -82,7 +80,6 @@ run_model <- function(...,
     cost = lazyeval::lazy_(substitute(cost), env = parent.frame()),
     effect = lazyeval::lazy_(substitute(effect), env = parent.frame()),
     base_model = base_model,
-    cl = cl,
     state_cycle_limit = state_cycle_limit
   )
 }
@@ -94,7 +91,7 @@ run_model_ <- function(list_models,
                         init,
                         cycles,
                         method,
-                        cost, effect, base_model, cl,
+                        cost, effect, base_model,
                         state_cycle_limit) {
   
   if (! is.wholenumber(cycles)) {
