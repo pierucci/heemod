@@ -35,7 +35,8 @@ summary.run_model <- function(object, ...) {
         ~ - .effect,
         ~ - .icer,
         ~ - .dcost,
-        ~ - .deffect
+        ~ - .deffect,
+        ~ - .dref
       ),
       res_comp = res_comp,
       cycles = attr(object, "cycles"),
