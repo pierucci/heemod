@@ -46,7 +46,8 @@ param <- define_parameters(
     
     # age-related mortality rate
     sex_cat = ifelse(sex == 0, "FMLE", "MLE"),
-    mr = get_who_mr(age, sex_cat, country = "GBR"),
+    mr = get_who_mr(age, sex_cat,
+                    country = "GBR", local = TRUE),
     
     # state values
     u_SuccessP = .85,
@@ -220,3 +221,12 @@ res_w <- update(res_mod, newdata = tab_indiv_w)
 res_w
 ```
 
+## Parallel computing
+
+Updating can be significantly sped up by using parallel computing. This can be done in the folowwing way:
+
+  * Define a cluster with the `use_cluster()` functions (i.e. `use_cluster(4)` to use 4 cores).
+  * Run the analysis as usual.
+  * To stop using parallel computing use the `close_cluster()` function.
+  
+Results may vary depending on the machine, but we found speed gains to be quite limited beyond 4 cores.
