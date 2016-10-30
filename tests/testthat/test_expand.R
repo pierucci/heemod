@@ -1,4 +1,4 @@
-context("Test state cycle expansion.")
+context("Test state cycle expansion")
 
 
 sn <- LETTERS[1:5]
