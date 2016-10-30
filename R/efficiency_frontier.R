@@ -7,8 +7,6 @@
 #'   
 #' @keywords internal
 get_frontier <- function(x) {
-  base_model <- get_base_model(x)
-  
   # recursive function
   # gets strategy with lowest icer -> next on frontier
   # filters strat <= next on frontier
@@ -20,14 +18,23 @@ get_frontier <- function(x) {
       x <- dplyr::mutate_(x, .icer = ~ .cost / .effect) %>% 
         dplyr::arrange_(.dots = list(~.icer, ~ .effect))
       
-      res <- (dplyr::slice(x, 1))$.model_names
-      effect_res <- x$.effect[x$.model_names == res]
-      x_res <- x %>% dplyr::filter_(~ .effect > effect_res)
+      bm <- (dplyr::slice(x, 1))$.model_names
+      ebm <- x$.effect[x$.model_names == bm]
       
-      c(res, f(x_res))
+      x_res <- x %>% dplyr::filter_(
+        substitute(.effect > ebm,
+                   list(ebm = ebm)))
+      
+      c((dplyr::slice(x, 1))$.model_names, f(x_res))
     }
   }
   
-  c(base_model,
-    f(x %>% dplyr::filter_(~ .model_names != base_model)))
+  bm <- get_base_model(x)
+  ebm <- x$.effect[x$.model_names == bm]
+  
+  c(bm, f(x %>% dplyr::filter_(
+    substitute(
+      .model_names != bm & .effect > ebm,
+      env = list(bm = bm, ebm = ebm)
+    ))))
 }
