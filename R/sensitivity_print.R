@@ -202,7 +202,7 @@ summary.eval_sensitivity <- function(object, ...) {
     dplyr::ungroup() %>% 
     dplyr::group_by_(~ .par_names, ~ .par_value) %>% 
     dplyr::mutate_(.dots = attr(object, "model_ref") %>% attr("ce")) %>% 
-    dplyr::do_(~ compute_icer(., model_order = order(attr(object, "model_ref")$.effect))) %>% 
+    dplyr::do_(~ compute_icer(.)) %>% 
     dplyr::select_(".model_names", ".par_names", ".par_value",
                    ".cost", ".effect", ".dcost", ".deffect", ".icer") %>% 
     dplyr::ungroup()
