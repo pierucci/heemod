@@ -11,7 +11,7 @@ get_frontier <- function(x) {
   
   # recursive function
   # gets strategy with lowest icer -> next on frontier
-  # filters strat less effective than next on frontier
+  # filters strat <= next on frontier
   # re-apply function on remaining
   f <- function(x) {
     if (nrow(x) == 0) {
