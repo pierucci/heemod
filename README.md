@@ -31,6 +31,7 @@ devtools::install_github("pierucci/heemod@devel")
   * Multiple state membership correction methods (life-table, half-cycle, etc.).
   * Demographic analysis to compute population-level results.
   * Heterogeneity analysis.
+  * Parallel computing support.
 
 ## Learning heemod
 

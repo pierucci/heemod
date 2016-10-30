@@ -1,8 +1,12 @@
-# heemod devel
+# heemod 0.6.0
 
 ## New features
 
   * Parallel computing with `use_cluster()`.
+  
+## Acknowledments
+
+  * Thanks to [Matthew Wiener](https://github.com/MattWiener), [Zdenek Kabat](https://github.com/zkabat) and [Vojtech Filipec](https://github.com/vojtech-filipec) for their great contributions to this update.
 
 # heemod 0.5.1
 
