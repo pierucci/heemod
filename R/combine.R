@@ -11,7 +11,7 @@
 #' @param oldmodel The original model.
 #'   
 #' @return A \code{combined_models} object, mostly similar
-#'   to a result from \code{\link{run_models}}. \code{plot}
+#'   to a result from \code{\link{run_model}}. \code{plot}
 #'   and \code{summary} methods are available.
 #'   
 #' @keywords internal
@@ -27,8 +27,8 @@ combine_models <- function(list_newmodels, weights, oldmodel) {
   # collapse each new model values and counts
   
   list_res <- list()
-  list_counts <- list()
-  for (i in seq_along(list_newmodels)) {
+  list_eval_models <- list()
+    for (i in seq_along(list_newmodels)) {
     collapsed_values <- (list_newmodels[[i]]) %>% 
       dplyr::rowwise() %>% 
       dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
@@ -38,23 +38,38 @@ combine_models <- function(list_newmodels, weights, oldmodel) {
     tab_counts <- (list_newmodels[[i]]) %>% 
       dplyr::rowwise() %>% 
       dplyr::do_(.counts = ~ get_counts(.$.mod))
-    
+
+    tab_vals <- (list_newmodels[[i]]) %>% 
+      dplyr::rowwise() %>% 
+      dplyr::do_(.vals = ~ get_values(.$.mod))
+        
     counts <- tab_counts$.counts %>% 
       mapply(
         weights,
         FUN = function(x, y) x * y / total_weights,
         SIMPLIFY = FALSE) %>% 
       Reduce(f = "+")
+
+    vals <- tab_vals$.vals %>% 
+      mapply(
+        weights,
+        FUN = function(x, y) x * y / total_weights,
+        SIMPLIFY = FALSE) %>% 
+      Reduce(f = "+")
     
+        
     list_res <- c(
       list_res,
       list(collapsed_values)
     )
     
-    list_counts <- c(
-      list_counts,
-      setNames(list(list(counts = counts)), model_names[i])
-    )
+    list_eval_models <- 
+      c(
+        list_eval_models,
+        setNames(list(list(counts = counts,
+                           values = vals)),
+                 model_names[i])
+      )
   }
   
   for (i in seq_along(model_names)){
@@ -67,7 +82,7 @@ combine_models <- function(list_newmodels, weights, oldmodel) {
     res,
     class = c("combined_models", class(res)),
     base_model = get_base_model(oldmodel),
-    eval_model_list = list_counts,
+    eval_model_list = list_eval_models, 
     parameters = attr(oldmodel, "parameters"),
     init = attr(oldmodel, "init"),
     cycles = attr(oldmodel, "cycles"),
@@ -84,14 +99,14 @@ print.combined_models <- function(x, ...) {
 
 #' @export
 plot.combined_models <- function(x, ...) {
-  plot.run_models(x, ...)
+  plot.run_model(x, ...)
 }
 
 #' @export
 summary.combined_models <- function(object, ...) {
-  summary.run_models(object, ...)
+  summary.run_model(object, ...)
 }
 
 normalize_ce.combined_models <- function(x, ...) {
-  normalize_ce.run_models(x, ...)
+  normalize_ce.run_model(x, ...)
 }

@@ -8,7 +8,7 @@ Values}
 eval_model_newdata(x, model = 1, newdata, cl = NULL)
 }
 \arguments{
-\item{x}{Result from \code{\link{run_models}}.}
+\item{x}{Result from \code{\link{run_model}}.}
 
 \item{model}{Name or index of model to recompute.}
 
@@ -38,17 +38,17 @@ par1 <- define_parameters(
   b = 1 / (markov_cycle + a)
 )
 
-mat1 <- define_matrix(
+mat1 <- define_transition(
   1-b, b,
   0, 1
 )
-mod1 <- define_model(
+mod1 <- define_strategy(
   transition_matrix = mat1,
   define_state(var = a),
   define_state(var = a * markov_cycle)
 )
 
-res1 <- run_models(
+res1 <- run_model(
   mod1,
   parameters = par1,
   cycles = 5,

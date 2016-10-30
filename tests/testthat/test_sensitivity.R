@@ -2,7 +2,7 @@ context("Sensitivity analysis")
 
 test_that(
   "define sensitivity", {
-    se1 <- define_sensitivity(
+    se1 <- define_dsa(
       a, 10, 45,
       b, .5, 1.5
     )
@@ -27,25 +27,25 @@ test_that(
 4 -  1.5"
     )
     expect_error(
-      define_sensitivity(
+      define_dsa(
         a, 10, 45, 20,
         b, .5, 1.5
       )
     )
     expect_error(
-      define_sensitivity(
+      define_dsa(
         10, 45,
         b, .5, 1.5
       )
     )
     expect_error(
-      define_sensitivity(
+      define_dsa(
         b, 10, 45,
         b, .5, 1.5
       )
     )
     expect_error(
-      define_sensitivity(
+      define_dsa(
         C, 10, 45,
         b, .5, 1.5
       )
@@ -59,8 +59,8 @@ test_that(
       p2 = .2
     )
     mod1 <-
-      define_model(
-        transition_matrix = define_matrix(
+      define_strategy(
+        transition_matrix = define_transition(
           C, p1,
           p2, C
         ),
@@ -75,8 +75,8 @@ test_that(
       )
     
     mod2 <-
-      define_model(
-        transition_matrix = define_matrix(
+      define_strategy(
+        transition_matrix = define_transition(
           C, p1,
           p2, C
         ),
@@ -90,7 +90,7 @@ test_that(
         )
       )
     
-    res2 <- run_models(
+    res2 <- run_model(
       mod1, mod2,
       parameters = param,
       init = c(100, 0),
@@ -99,19 +99,19 @@ test_that(
       effect = ly,
       method = "beginning"
     )
-    res3 <- suppressWarnings(run_models(
+    res3 <- suppressWarnings(run_model(
       mod1, mod2,
       parameters = param,
       init = c(100, 0),
       cycles = 10
     ))
     
-    ds <- define_sensitivity(
+    ds <- define_dsa(
       p1, .1, .9,
       p2, .1, .3
     )
     
-    x <- run_sensitivity(res2, ds)
+    x <- run_dsa(res2, ds)
     
     expect_output(
       str(head(as.data.frame(x))),
@@ -120,7 +120,7 @@ test_that(
       fixed = TRUE
     )
     
-    expect_error(run_sensitivity(res3, ds))
+    expect_error(run_dsa(res3, ds))
     
     expect_output(
       str(summary(x)),
@@ -161,8 +161,8 @@ test_that(
       p2 = .2,
       r = .05
     )
-    mod1 <- define_model(
-      transition_matrix = define_matrix(
+    mod1 <- define_strategy(
+      transition_matrix = define_transition(
         C, p1,
         p2, C
       ),
@@ -176,8 +176,8 @@ test_that(
       )
     )
     
-    mod2 <- define_model(
-      transition_matrix = define_matrix(
+    mod2 <- define_strategy(
+      transition_matrix = define_transition(
         C, p1,
         p2, C
       ),
@@ -191,7 +191,7 @@ test_that(
       )
     )
     
-    res2 <- run_models(
+    res2 <- run_model(
       mod1, mod2,
       parameters = param,
       init = c(100, 0),
@@ -200,14 +200,14 @@ test_that(
       effect = ly
     )
     
-    ds <- define_sensitivity(
+    ds <- define_dsa(
       p1, .1, .9,
       p2, .1, .3,
       r, .05, .1
     )
     
     
-    x <- summary(run_sensitivity(res2, ds))
+    x <- summary(run_dsa(res2, ds))
     
     .icer <- c(-Inf, 3988, -Inf, 668, -Inf, 761, -Inf, 1195,
                -Inf, 978, -Inf, 

@@ -1,12 +1,11 @@
 #' Prepare a cluster to use with heemod
-#'
+#' 
 #' @param num_cores The number of cores desired
-#'
-#' @return If num_cores is 1 or 0, NULL.   If num_cores is
-#'   a larger integer, a cluster loaded with the appropriate packages.
+#'   
+#' @return If num_cores is 1 or 0, NULL.   If num_cores is a
+#'   larger integer, a cluster loaded with the appropriate
+#'   packages.
 #' @export
-#'
-#' @examples
 cluster_for_heemod <- function(num_cores) {
   cl <- NULL
   if (length(num_cores)) {

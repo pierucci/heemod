@@ -14,41 +14,37 @@ vignette: >
 library(heemod)
 ```
 
-This vignette shows how to transform the deterministic Markov model presented in `vignette("homogeneous", "heemod")` in a probabilistic model.
+This vignette shows how to transform the deterministic Markov model presented in `vignette("c-homogeneous", "heemod")` in a probabilistic model.
 
-# Model definition
+## Model definition
 
-We will start by re-specifying the deterministic models of HIV therapy described previously (a model for monotherapy `mono` and a model for combined therapy `comb`).
+We will start by re-specifying the deterministic model of HIV therapy described previously (a monotherapy strategy `mono` and combined therapy strategy `comb`).
 
-But instead of defining transition probabilities and state values directly in `define_matrix()` or `define_state()` (as in the previous vignette), parameters will be defined first in a `define_parameters()` step. This is because only parameters defined this way can be resampled in a probabilistic analysis.
-
-We have to define common parameters in both models because during probabilistic analysis resampled parameters are replaced for both models. So we cannot have `p_AB = 0.202` in model `mono` and `p_AB = 0.202 * rr` in model `comb`, because if we resample the base transition rate to a new value `p_AB'` we will have `p_AB = p_AB'` in both models, instead of what we expect (`p_AB = p_AB' * rr` in model `comb`).
-
-To avoid that problem we use `p_XX_base` parameters that are the ones that will be resampled.
+But instead of defining transition probabilities and state values directly in `define_transition()` or `define_state()` (as in the previous vignette), parameters will be defined first in a `define_parameters()` step. This is because only parameters defined this way can be resampled in a probabilistic analysis.
 
 ```{r}
 param <- define_parameters(
   rr = .509,
   
-  p_AA_base = .721,
-  p_AB_base = .202,
-  p_AC_base = .067,
-  p_AD_base = .010,
+  p_AA_mono = .721,
+  p_AB_mono = .202,
+  p_AC_mono = .067,
+  p_AD_mono = .010,
   
-  p_BC_base = .407,
-  p_BD_base = .012,
+  p_BC_mono = .407,
+  p_BD_mono = .012,
   
-  p_CD_base = .250,
+  p_CD_mono = .250,
   
   
-  p_AB_comb = p_AB_base * rr,
-  p_AC_comb = p_AC_base * rr,
-  p_AD_comb = p_AD_base * rr,
+  p_AB_comb = p_AB_mono * rr,
+  p_AC_comb = p_AC_mono * rr,
+  p_AD_comb = p_AD_mono * rr,
   
-  p_BC_comb = p_BC_base * rr,
-  p_BD_comb = p_BD_base * rr,
+  p_BC_comb = p_BC_mono * rr,
+  p_BD_comb = p_BD_mono * rr,
   
-  p_CD_comb = p_CD_base * rr,
+  p_CD_comb = p_CD_mono * rr,
   
   p_AA_comb = 1 - (p_AB_comb + p_AC_comb + p_AD_comb),
   
@@ -62,24 +58,24 @@ param <- define_parameters(
 )
 ```
 
-We cannot use the complement alias `C` to specify `p_AA_base` because we will need to resample that value. Only parameters defined with `define_parameters()` can be resampled.
+We need to define `p_AA_mono` and `p_AA_comb` in `define_parameters()` because we will need to resample that value. Only values defined with `define_parameters()` can be resampled. So we cannot use the complement alias `C` to specify `p_AA_comb` in `define_transition()`, as we did before.
 
 ```{r}
-mat_trans_mono <- define_matrix(
-  p_AA_base, p_AB_base, p_AC_base, p_AD_base,
-  .000, C,    p_BC_base, p_BD_base,
-  .000, .000, C,    p_CD_base,
-  .000, .000, .000, 1.00
+mat_trans_mono <- define_transition(
+  p_AA_mono, p_AB_mono, p_AC_mono, p_AD_mono,
+  0,         C,         p_BC_mono, p_BD_mono,
+  0,         0,         C,         p_CD_mono,
+  0,         0,         0,         1
 )
-mat_trans_comb <- define_matrix(
+mat_trans_comb <- define_transition(
   p_AA_comb, p_AB_comb, p_AC_comb, p_AD_comb,
-  .000, C,    p_BC_comb, p_BD_comb,
-  .000, .000, C,    p_CD_comb,
-  .000, .000, .000, 1.00
+  0,         C,         p_BC_comb, p_BD_comb,
+  0,         0,         C,         p_CD_comb,
+  0,         0,         0,         1
 )
 ```
 
-State definition remains the same. in this example.
+State definition remains the same in this example.
 
 ```{r}
 A_mono <- define_state(
@@ -133,10 +129,10 @@ D_comb <- define_state(
 )
 ```
 
-Models must be first defined and run as in a standard deterministic analysis.
+Strategies must be first defined and run as in a standard deterministic analysis.
 
 ```{r}
-mod_mono <- define_model(
+strat_mono <- define_strategy(
   transition_matrix = mat_trans_mono,
   A_mono,
   B_mono,
@@ -144,7 +140,7 @@ mod_mono <- define_model(
   D_mono
 )
 
-mod_comb <- define_model(
+strat_comb <- define_strategy(
   transition_matrix = mat_trans_comb,
   A_comb,
   B_comb,
@@ -152,17 +148,17 @@ mod_comb <- define_model(
   D_comb
 )
 
-res_mod <- run_models(
-  mono = mod_mono,
-  comb = mod_comb,
+res_mod <- run_model(
+  mono = strat_mono,
+  comb = strat_comb,
   parameters = param,
-  cycles = 20,
+  cycles = 50,
   cost = cost_total,
   effect = life_year
 )
 ```
 
-# Define resampling distributions
+## Resampling distributions
 
 Now we can define the resampling distributions. The following parameters will be resampled:
 
@@ -173,22 +169,32 @@ Now we can define the resampling distributions. The following parameters will be
 
 Since the log of a relative risk follows a lognormal distribution, relative risk follows a lognormal distribution whose mean is `rr` and standard deviation on the log scale can be deduced from the relative risk confidence interval.
 
-  * `rr ~ lognormal(mean = .509, sdlog = .173)`
+$$rr \sim lognormal(\mu = .509, \sigma = .173)$$
 
-Usually costs are resampled on a gamma distribution, which has the property of being always positive. Shape and scale parameters of the gamma distribution can be calculated from the mean and standard deviation desired in the distribution. Here we assume that mean = variance.
+Programmed as:
 
-  * `cost_A ~ make_gamma(mean = 2756, sd = sqrt(2756))`
+```r
+rr ~ lognormal(mean = .509, sdlog = .173)
+```
 
-Proportions follow a binomial distribution that can be estimated by giving the mean proportion and the size of the sample used to estimate that proportion.
+Usually costs are resampled on a gamma distribution, which has the property of being always positive. Shape and scale parameters of the gamma distribution can be calculated from the mean and standard deviation desired in the distribution. Here we assume that *mean = variance*.
 
-  * `p_CD ~ prop(prob = .25, size = 40)`
+$$cost_A \sim \Gamma(\mu = 2756, \sigma = \sqrt{2756})$$
 
-Finally multinomial distributions are declared with the number of individuals in each group in the sample used to estimate the proportions. These proportions follow a Dirichlet distribution.
+This can be programmed as:
+
+```r
+cost_A ~ make_gamma(mean = 2756, sd = sqrt(2756))
+```
+
+Proportions follow a binomial distribution that can be estimated by giving the mean proportion and the size of the sample used to estimate that proportion with `p_CD ~ prop(prob = .25, size = 40)`.
+
+Finally multinomial distributions are declared with the number of individuals in each group in the sample used to estimate the proportions. These proportions follow a Dirichlet distribution:
 
   * `p_AA + p_AB + p_AC + p_AD ~ multinom(721, 202, 67, 10)`
 
 ```{r}
-rsp <- define_distrib(
+rsp <- define_psa(
   rr ~ lognormal(mean = .509, sdlog = .173),
   
   cost_A ~ make_gamma(mean = 2756, sd = sqrt(2756)),
@@ -197,26 +203,23 @@ rsp <- define_distrib(
   
   p_CD_base ~ prop(prob = .25, size = 40),
   
-  p_AA_base +
-    p_AB_base +
-    p_AC_base + 
-    p_AD_base ~ multinom(721, 202, 67, 10)
+  p_AA_base + p_AB_base + p_AC_base + p_AD_base ~ multinom(721, 202, 67, 10)
 )
 ```
 
-# Run probabilistic model
+## Run probabilistic model
 
 Now that the distributions of parameters are set we can simply run the probabilistic model as follow:
 
 ```{r}
-pm <- run_probabilistic(
+pm <- run_psa(
   model = res_mod,
   resample = rsp,
   N = 100
 )
 ```
 
-The results of the analysis can be plotted on the cost-effectiveness plane:
+The results of the analysis can be plotted on the cost-effectiveness plane. We can see there seem to be little uncertainty on the costs compared to the uncertainty on the effects, resulting in an uncertainty cloud that looks like a line.
 
 ```{r, fig.width = 6, fig.height=4, fig.align='center'}
 plot(pm, type = "ce")

@@ -15,12 +15,12 @@
 #' 
 #' @examples
 #' 
-#' define_sensitivity(
+#' define_dsa(
 #'   a, 10, 45,
 #'   b, .5, 1.5
 #' )
 #' 
-define_sensitivity <- function(...) {
+define_dsa <- function(...) {
   .dots <- lazyeval::lazy_dots(...)
   
   if (! length(.dots) %% 3 == 0) {
@@ -44,11 +44,11 @@ define_sensitivity <- function(...) {
   names(low_dots) <- par_names
   names(high_dots) <- par_names
   
-  define_sensitivity_(par_names, low_dots, high_dots)
+  define_dsa_(par_names, low_dots, high_dots)
 }
 
-#' @rdname define_sensitivity
-define_sensitivity_ <- function(par_names, low_dots, high_dots) {
+#' @rdname define_dsa
+define_dsa_ <- function(par_names, low_dots, high_dots) {
   
   check_names(par_names)
   

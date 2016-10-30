@@ -8,7 +8,7 @@
 #' New parameters with a missing value (\code{NA}) do not 
 #' replace existing parameters.
 #' 
-#' @param x Result from \code{\link{run_models}}.
+#' @param x Result from \code{\link{run_model}}.
 #' @param model Name or index of model to recompute.
 #' @param newdata a data.frame whose names match parameters 
 #'   names. \code{model} will be evaluated iteratively, 

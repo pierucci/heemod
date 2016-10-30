@@ -10,8 +10,9 @@ cluster_for_heemod(num_cores)
 \item{num_cores}{The number of cores desired}
 }
 \value{
-If num_cores is 1 or 0, NULL.   If num_cores is
-  a larger integer, a cluster loaded with the appropriate packages.
+If num_cores is 1 or 0, NULL.   If num_cores is a
+  larger integer, a cluster loaded with the appropriate
+  packages.
 }
 \description{
 Prepare a cluster to use with heemod

@@ -17,6 +17,14 @@
 #' The initial number of individuals in each state and the 
 #' number of cycle will be the same for all models.
 #' 
+#' \code{state_cycle_limit} can be specified in 3 different
+#' ways: 1. As a single value: the limit is applied to all
+#' states in all models. 2. As a named vector (where names
+#' are state names): the limits are applied to the given
+#' state names, for all models. 3. As a named list of named
+#' vectors: the limits are applied to the given state names
+#' for the given models.
+#' 
 #' Internally this function does 2 operations: first 
 #' evaluating parameters, transition matrix, state values 
 #' and computing individual counts through 
@@ -41,26 +49,31 @@
 #' @param cl A cluster for computations.
 #' @param method Counting method.
 #' @param list_models List of models, only used by 
-#'   \code{run_models_} to avoid using \code{...}.
+#'   \code{run_model_} to avoid using \code{...}.
+#' @param state_cycle_limit Optional expansion limit for 
+#'   \code{state_cycle}, see details.
 #'   
 #' @return A list of evaluated models with computed values.
 #' @export
 #' 
-#' @example inst/examples/example_run_models.R
+#' @example inst/examples/example_run_model.R
 #'   
-run_models <- function(...,
+run_model <- function(...,
                        parameters = define_parameters(),
                        init = c(1000L, rep(0L, get_state_number(get_states(list(...)[[1]])) - 1)),
                        cycles = 1,
                        method = c("life-table", "beginning", "end",
                                   "half-cycle"),
-                       cost = NULL, effect = NULL, base_model = NULL,
-                       cl = NULL) {
+                       cost = NULL, effect = NULL,
+                       base_model = NULL,
+                       cl = NULL,
+                       state_cycle_limit = NULL) {
+  
   list_models <- list(...)
   
   method <- match.arg(method)
   
-  run_models_(
+  run_model_(
     list_models = list_models,
     parameters = parameters,
     init = init,
@@ -69,23 +82,33 @@ run_models <- function(...,
     cost = lazyeval::lazy_(substitute(cost), env = parent.frame()),
     effect = lazyeval::lazy_(substitute(effect), env = parent.frame()),
     base_model = base_model,
-    cl = cl
+    cl = cl,
+    state_cycle_limit = state_cycle_limit
   )
 }
 
 #' @export
-#' @rdname run_models
-run_models_ <- function(list_models,
+#' @rdname run_model
+run_model_ <- function(list_models,
                         parameters,
                         init,
                         cycles,
                         method,
-                        cost, effect, base_model, cl) {
+                        cost, effect, base_model, cl,
+                        state_cycle_limit) {
   
-  if (! all(unlist(lapply(list_models,
-                          function(x) "uneval_model" %in% class(x))))) {
-    .x <- names(list_models[! unlist(lapply(list_models,
-                                            function(x) "uneval_model" %in% class(x)))])
+  if (! is.wholenumber(cycles)) {
+    stop("'cycles' must be a whole number.")
+  }
+  
+  if (! all(unlist(lapply(
+    list_models,
+    function(x) "uneval_model" %in% class(x))))) {
+    
+    .x <- names(list_models[! unlist(lapply(
+      list_models,
+      function(x) "uneval_model" %in% class(x)))])
+    
     stop(sprintf(
       "Incorrect model object%s: %s.",
       plur(length(.x)),
@@ -146,11 +169,25 @@ run_models_ <- function(list_models,
     stop("Names of 'init' vector differ from state names.")
   }
   
-  eval_model_list <- lapply(list_models, eval_model, 
-                            parameters = parameters,
-                            init = init, 
-                            cycles = cycles,
-                            method = method)
+  state_cycle_limit <- complete_scl(
+    state_cycle_limit,
+    state_names = get_state_names(list_models[[1]]),
+    model_names = names(list_models),
+    cycles = cycles
+  )
+  
+  eval_model_list <- list()
+  
+  for (n in names(list_models)) {
+    eval_model_list[[n]] <- eval_model(
+      list_models[[n]], 
+      parameters = parameters,
+      init = init, 
+      cycles = cycles,
+      method = method,
+      expand_limit = state_cycle_limit[[n]]
+    )
+  }
   
   list_res <- lapply(eval_model_list, get_total_state_values)
   
@@ -169,7 +206,7 @@ run_models_ <- function(list_models,
     res,
     eval_model_list = eval_model_list,
     uneval_model_list = list_models,
-    class = c("run_models", class(res)),
+    class = c("run_model", class(res)),
     parameters = parameters,
     init = init,
     cycles = cycles,
@@ -207,16 +244,66 @@ get_base_model.default <- function(x, ...) {
   x$.model_names[x$.effect == min(x$.effect)][1]
 }
 
-get_base_model.run_models <- function(x, ...) {
+get_base_model.run_model <- function(x, ...) {
   attr(x, "base_model")
+}
+
+#' Get Model Values
+#' 
+#' Given a result from \code{\link{run_model}}, return 
+#' cost and effect values for a specific model.
+#' 
+#' @param x Result from \code{\link{run_model}}.
+#' @param m Model name or index.
+#' @param ...	further arguments passed to or from other
+#'   methods.
+#'   
+#' @return A data frame of values per state.
+#' @export
+get_values <- function(x, ...) {
+  UseMethod("get_values")
+}
+
+#' @rdname get_values
+#' @export
+get_values.run_model <- function(x, m = 1, ...) {
+  check_model_index(x, m, ...)
+  get_values(attr(x, "eval_model_list")[[m]])
+}
+
+#' @rdname get_values
+#' @export
+get_values.eval_model <- function(x, ...) {
+  x$values
+}
+
+#' @rdname get_values
+#' @export
+get_values.list <- function(x, ...) {
+  x$values
+}
+
+#' @rdname get_values
+#' @export
+get_values.updated_models <- function(x, m, ...) {
+  get_values(attributes(x)$combined_models, m, ...)
+}
+
+#' @rdname get_values
+#' @export
+get_values.combined_models <- function(x, m, ...){
+  x <- attributes(x)$eval_model_list
+  x$.model_names <- names(x)
+  check_model_index(x, m)
+  get_values(x[[m]])
 }
 
 #' Get State Membership Counts
 #' 
-#' Given a result from \code{\link{run_models}}, return 
-#' state membership counts for a specifiec model.
+#' Given a result from \code{\link{run_model}}, return 
+#' state membership counts for a specific model.
 #' 
-#' @param x Result from \code{\link{run_models}}.
+#' @param x Result from \code{\link{run_model}}.
 #' @param m Model name or index.
 #' @param ...	further arguments passed to or from other
 #'   methods.
@@ -229,7 +316,7 @@ get_counts <- function(x, ...) {
 
 #' @rdname get_counts
 #' @export
-get_counts.run_models <- function(x, m = 1, ...) {
+get_counts.run_model <- function(x, m = 1, ...) {
   check_model_index(x, m, ...)
   get_counts(attr(x, "eval_model_list")[[m]])
 }
@@ -246,9 +333,24 @@ get_counts.list <- function(x, ...) {
   x$counts
 }
 
+#' @rdname get_counts
+#' @export
+get_counts.updated_models <- function(x, m, ...) {
+  get_counts(attributes(x)$combined_models, m, ...)
+}
+
+#' @rdname get_counts
+#' @export
+get_counts.combined_models <- function(x, m, ...){
+  x <- attributes(x)$eval_model_list
+  x$.model_names <- names(x)
+  check_model_index(x, m)
+  get_counts(x[[m]])
+}
+
 #' Get Initial State Values
 #' 
-#' @param x x Result from \code{\link{run_models}}.
+#' @param x x Result from \code{\link{run_model}}.
 #'   
 #' @return A vector of initial state values.
 #' @export

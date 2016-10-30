@@ -1,0 +1,67 @@
+---
+title: "Time-varying values"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Time-varying values}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r, echo=FALSE, include=FALSE}
+library(heemod)
+```
+
+In more complex Markov models state values or transition probabilities can vary with time. These models are called *non-homogeneous* or *time-inhomogeneous* Markov models. A further distinction can be made depending on whether state values or transition probabilities:
+
+  1. depend on how long __the entire model__ has been running (model-time dependency);
+  2. depend on how long __an individual__ has been in a given  __state__ (state-time dependency).
+  
+These two situations can be modelled using the `markov_cycle` and `state_cycle` variables, respectively.
+
+## How to specifiy time-dependency
+
+These variables takes increasing values with each cycles, starting from 1. For example the age of individuals at any moment can be defined as `Initial age + markov_cycle`. The time an individual spends in a state is equal to `state_cucle`.
+
+Both variables can be used in `define_parameters()`, `define_state()`, or `define_transition()`:
+
+```{r}
+define_parameters(
+  mr = exp(- state_cycle * lambda),
+  age = 50 + markov_cycle
+)
+
+define_state(
+  cost = 100 - state_cycle,
+  effect = 10
+)
+
+f <- function(x) abs(sin(x))
+
+define_transition(
+  C,  f(state_cycle),
+  .1, .9
+)
+```
+
+## Details
+
+Using `markov_cycle` in a model does not change the execution speed of the analysis. On the other hand adding `state_cycle` may slow down the analysis, especially if the model is run for many cycles **and** a transition probability depends on `state_cycle`.^[In this situation the complexity is proportional to the square of the number of cycles.]
+
+To mitigate this drawback it is possible to limit the number of state expansion with `state_cycle_limit`. Because most time-varying values reach an asymptotic value quite fast, it is unnecessary to expand the states any further. The last cycle value is repeated until the end.
+
+The limit can be defined globally, per state, or per model and state. In the following example probabilities are kept constant after *10* cycles for state **B** and *20* cycles for state **D** in strategy **I**, and *15* cycles in state **B** in strategy **II**.
+
+```r
+run_model(
+  I =  strat_1,
+  II = strat_2,
+  cycles = 100,
+  state_cycle_limit = list(
+    I = c(B = 10, D = 20),
+    II = c(B = 15)
+  )
+)
+```

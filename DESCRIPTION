@@ -1,6 +1,6 @@
 Package: heemod
 Title: Models for Health Economic Evaluation
-Version: 0.4.0
+Version: 0.5.1
 Authors@R: c(
     person("Antoine", "Filipovic-Pierucci", email = "pierucci@gmail.com", role = c("aut", "cre")),
     person("Kevin", "Zarca", email = "kevin.zarca@urc-eco.fr", role = "aut"),
@@ -37,8 +37,9 @@ VignetteBuilder: knitr
 RoxygenNote: 5.0.1
 Suggests: knitr,
           parallel,
+          formatR,
           readxl,
           rmarkdown,
           testthat
-URL: https://github.com/pierucci/heemod, https://pierucci.github.io
+URL: https://github.com/pierucci/heemod, http://pierucci.org
 BugReports: https://github.com/pierucci/heemod/issues

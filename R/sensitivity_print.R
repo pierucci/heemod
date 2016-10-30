@@ -7,7 +7,7 @@
 #' costs, while \code{difference} plots cost difference
 #' between the specified model and the reference model.
 #' 
-#' @param x A result of \code{\link{run_sensitivity}}.
+#' @param x A result of \code{\link{run_dsa}}.
 #' @param model Name or index of model to plot.
 #' @param type Type of plot (see details).
 #' @param result Plot cost, effect, or ICER.
