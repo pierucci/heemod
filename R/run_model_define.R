@@ -241,6 +241,10 @@ get_base_model.run_model <- function(x, ...) {
   attr(x, "base_model")
 }
 
+get_lowest_model <- function(x) {
+  x$.model_names[x$.effect == min(x$.effect)][1]
+}
+
 #' Get Model Values
 #' 
 #' Given a result from \code{\link{run_model}}, return 
