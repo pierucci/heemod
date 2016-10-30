@@ -38,7 +38,7 @@ plot.eval_sensitivity <- function(x, type = c("simple", "difference"),
     stop("Result ICER can conly be computed with type = 'difference'.")
   }
   
-  if (type == "difference" & model == get_base_model(model_ref)) {
+  if (type == "difference" & model == get_lowest_model(model_ref)) {
     stop("type = 'difference' cannot be computed for base model.")
   }
   
