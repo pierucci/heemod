@@ -28,7 +28,7 @@ combine_models <- function(list_newmodels, weights, oldmodel) {
   
   list_res <- list()
   list_eval_models <- list()
-    for (i in seq_along(list_newmodels)) {
+  for (i in seq_along(list_newmodels)) {
     collapsed_values <- (list_newmodels[[i]]) %>% 
       dplyr::rowwise() %>% 
       dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
@@ -38,18 +38,18 @@ combine_models <- function(list_newmodels, weights, oldmodel) {
     tab_counts <- (list_newmodels[[i]]) %>% 
       dplyr::rowwise() %>% 
       dplyr::do_(.counts = ~ get_counts(.$.mod))
-
+    
     tab_vals <- (list_newmodels[[i]]) %>% 
       dplyr::rowwise() %>% 
       dplyr::do_(.vals = ~ get_values(.$.mod))
-        
+    
     counts <- tab_counts$.counts %>% 
       mapply(
         weights,
         FUN = function(x, y) x * y / total_weights,
         SIMPLIFY = FALSE) %>% 
       Reduce(f = "+")
-
+    
     vals <- tab_vals$.vals %>% 
       mapply(
         weights,
@@ -57,19 +57,17 @@ combine_models <- function(list_newmodels, weights, oldmodel) {
         SIMPLIFY = FALSE) %>% 
       Reduce(f = "+")
     
-        
+    
     list_res <- c(
       list_res,
       list(collapsed_values)
     )
     
     list_eval_models <- 
-      c(
-        list_eval_models,
+      c(list_eval_models,
         setNames(list(list(counts = counts,
                            values = vals)),
-                 model_names[i])
-      )
+                 model_names[i]))
   }
   
   for (i in seq_along(model_names)){
