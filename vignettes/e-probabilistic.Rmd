@@ -248,7 +248,7 @@ plot(pm, type = "ce") +
 
 ## Parallel computing
 
-Resampling can be significantly sped up by using parallel computing. This can be done in the folowwing way:
+Resampling can be significantly sped up by using parallel computing. This can be done in the following way:
 
   * Define a cluster with the `use_cluster()` functions (i.e. `use_cluster(4)` to use 4 cores).
   * Run the analysis as usual.
