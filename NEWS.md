@@ -3,6 +3,7 @@
 ## Breaking changes
 
   * Base model cannot be specified anymore: it is always the least costly model.
+  * Renamed arguement `transition_matrix` => `transition` in `define_strategy()`.
   
 ## Bugfixes
   

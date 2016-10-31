@@ -2,7 +2,7 @@
 
 mod1 <-
   define_strategy(
-    transition_matrix = define_transition(
+    transition = define_transition(
       .5, .5,
       .1, .9
     ),
@@ -28,7 +28,7 @@ res <- run_model(
 # running several models
 mod2 <-
   define_strategy(
-    transition_matrix = define_transition(
+    transition = define_transition(
       .5, .5,
       .1, .9
     ),

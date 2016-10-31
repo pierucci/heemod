@@ -669,7 +669,7 @@ create_model_from_tabular <- function(state_file,
   TM <- create_matrix_from_tabular(tm_file, get_state_names(states),
                                    df_env = df_env)
   
-  define_strategy_(transition_matrix = TM, states = states)
+  define_strategy_(transition = TM, states = states)
 }
 
 #' Load Data From a Folder Into an Environment

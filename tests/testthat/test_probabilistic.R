@@ -5,7 +5,7 @@ test_that(
   "Probabilistic analysis works", {
     mod1 <-
       define_strategy(
-        transition_matrix = define_transition(
+        transition = define_transition(
           .5, .5,
           .1, .9
         ),
@@ -21,7 +21,7 @@ test_that(
       )
     mod2 <-
       define_strategy(
-        transition_matrix = define_transition(
+        transition = define_transition(
           .5, .5,
           .1, .9
         ),

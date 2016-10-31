@@ -186,7 +186,7 @@ test_that(
     A <- define_state(cost = 1, utility = 2)
     B <- define_state(cost = 5, utility = 7)
     C <- define_state(cost = 4, utility = 4)
-    sample_mod <- define_strategy(transition_matrix = sampleTM, A = A, B = B, C = C)
+    sample_mod <- define_strategy(transition = sampleTM, A = A, B = B, C = C)
     res <- run_model(sample_mod, cost = cost, effect = utility,
                       method = "beginning")
     

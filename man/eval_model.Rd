@@ -52,7 +52,7 @@ mat <- define_transition(
 )
 
 mod <- define_strategy(
-  transition_matrix = mat,
+  transition = mat,
   A = define_state(cost = 10),
   B = define_state(cost = 2)
 )

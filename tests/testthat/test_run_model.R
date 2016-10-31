@@ -26,7 +26,7 @@ test_that(
     )
     
     mod1 <- define_strategy(
-      transition_matrix = mat1,
+      transition = mat1,
       X1 = s1,
       X2 = s2
     )
@@ -43,17 +43,17 @@ test_that(
       b = 1029
     )
     mod2 <- define_strategy(
-      transition_matrix = mat1,
+      transition = mat1,
       X1 = s3,
       X2 = s4
     )
     mod3 <- define_strategy(
-      transition_matrix = mat2,
+      transition = mat2,
       X1 = s3,
       X3 = s4
     )
     mod4 <- define_strategy(
-      transition_matrix = mat1,
+      transition = mat1,
       X1 = s5,
       X2 = s5
     )
@@ -165,7 +165,7 @@ test_that(
       y = 1726
     )
     mod1 <- define_strategy(
-      transition_matrix = mat1,
+      transition = mat1,
       X1 = s1,
       X2 = s2
     )
@@ -178,7 +178,7 @@ test_that(
       y = 1029
     )
     mod2 <- define_strategy(
-      transition_matrix = mat1,
+      transition = mat1,
       X1 = s3,
       X2 = s4
     )
@@ -318,7 +318,7 @@ test_that("Discounting", {
     y = 1726
   )
   mod1 <- define_strategy(
-    transition_matrix = mat1,
+    transition = mat1,
     X1 = s1,
     X2 = s2
   )
@@ -332,7 +332,7 @@ test_that("Discounting", {
     y = 1029
   )
   mod2 <- define_strategy(
-    transition_matrix = mat1,
+    transition = mat1,
     X1 = s3,
     X2 = s4
   )
@@ -342,7 +342,7 @@ test_that("Discounting", {
     y = discount(c3, 0)
   )
   mod3 <- define_strategy(
-    transition_matrix = mat1,
+    transition = mat1,
     X1 = s1,
     X2 = s5
   )
@@ -356,7 +356,7 @@ test_that("Discounting", {
     y = 1029
   )
   mod4 <- define_strategy(
-    transition_matrix = mat1,
+    transition = mat1,
     X1 = s6,
     X2 = s4
   )
@@ -411,7 +411,7 @@ test_that(
       y = 1726
     )
     mod1 <- define_strategy(
-      transition_matrix = mat1,
+      transition = mat1,
       X1 = s1,
       X2 = s2
     )
@@ -424,7 +424,7 @@ test_that(
       y = 1029
     )
     mod2 <- define_strategy(
-      transition_matrix = mat1,
+      transition = mat1,
       X1 = s3,
       X2 = s4
     )

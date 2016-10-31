@@ -14,7 +14,7 @@ s2 <- define_state(
   )
 
 define_strategy(
-  transition_matrix = mat,
+  transition = mat,
   s1 = s1,
   s2 = s2
 )

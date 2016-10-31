@@ -152,8 +152,8 @@ get_code.uneval_model <- function(x, name = NULL, sub = FALSE,
     left_pad(paste0(
       name,
       "define_strategy(\n  ",
-      "transition_matrix = ",
-      get_code(x$transition_matrix, depth = depth),
+      "transition = ",
+      get_code(get_matrix(x), depth = depth),
       ",\n",
       st,
       "\n)"
