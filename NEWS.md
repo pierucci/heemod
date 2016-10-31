@@ -1,8 +1,14 @@
 # heemod devel
 
-## Bugfixes
+## Breaking changes
 
   * Base model cannot be specified anymore: it is always the least costly model.
+  
+## Bugfixes
+  
+  * Acceptability curve returns probabilities at 0.
+  * Correctly identify efficiency frontier.
+  * ICER are computed on the efficiency frontier.
 
 # heemod 0.6.0
 
@@ -26,12 +32,12 @@
 
   * Some functions were renamed for clarification:
     * `define_strategy()` <= `define_model()`
-    * `run_model()` <- `run_models()`
-    * `define_transition()` <- `define_matrix()`
-    * `define_dsa()` <- `define_sensitivity()`
-    * `define_psa()` <- `define_distrib()`
-    * `run_dsa()` <- `run_sensitivity()`
-    * `run_psa()` <- `run_probabilistic()`
+    * `run_model()` <= `run_models()`
+    * `define_transition()` <= `define_matrix()`
+    * `define_dsa()` <= `define_sensitivity()`
+    * `define_psa()` <= `define_distrib()`
+    * `run_dsa()` <= `run_sensitivity()`
+    * `run_psa()` <= `run_probabilistic()`
 
 ## New features
 
