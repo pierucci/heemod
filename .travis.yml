@@ -7,8 +7,8 @@ r:
   - oldrel
   - release
   - devel
-		  
-r_github_packages:		
+
+r_github_packages:
   - hadley/devtools
 
 branches:
