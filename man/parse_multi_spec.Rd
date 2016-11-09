@@ -7,9 +7,7 @@
 parse_multi_spec(multi_spec, split_on = ".model", group_vars)
 }
 \arguments{
-\item{multi_spec}{\code{data frame}, or, if of type 
-\code{character}, the name of a file that contains the 
-data frame.}
+\item{multi_spec}{\code{data frame}.}
 
 \item{split_on}{\code{character} of length 1, with the 
 name of the variable in \code{multi_spec} to be split 

@@ -1,0 +1,7 @@
+.model,.state,cost,qaly,.discount.qaly
+standard,PrimaryTHR,0,0,0.015
+standard,SuccessfulPrimary,0,0.85,
+standard,RevisionTHR,5294,0.3,
+standard,SuccessfulRevision,0,0.75,
+standard,Death,0,0,
+newzzz,PrimaryTHR,0,0,0.015

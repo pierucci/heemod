@@ -3,8 +3,8 @@ context("Heterogeneity & Demographic")
 test_that(
   "Demographic analysis", {
     mod1 <-
-      define_model(
-        transition_matrix = define_matrix(
+      define_strategy(
+        transition_matrix = define_transition(
           .4, .6,
           .1, .9
         ),
@@ -19,8 +19,8 @@ test_that(
       )
     
     mod2 <-
-      define_model(
-        transition_matrix = define_matrix(
+      define_strategy(
+        transition_matrix = define_transition(
           .5, .5,
           .1, .9
         ),
@@ -34,7 +34,7 @@ test_that(
         )
       )
     
-    res <- run_models(
+    res <- run_model(
       mod1, mod2,
       parameters = define_parameters(
         age_init = 60,
@@ -73,8 +73,8 @@ I -28996.37 2.403762 -12062.91",
 test_that(
   "Heterogeneity analysis", {
     mod1 <-
-      define_model(
-        transition_matrix = define_matrix(
+      define_strategy(
+        transition_matrix = define_transition(
           .5, .5,
           .1, .9
         ),
@@ -90,8 +90,8 @@ test_that(
       )
     
     mod2 <-
-      define_model(
-        transition_matrix = define_matrix(
+      define_strategy(
+        transition_matrix = define_transition(
           .5, .5,
           .1, .9
         ),
@@ -106,7 +106,7 @@ test_that(
         
       )
     
-    res <- run_models(
+    res <- run_model(
       mod1, mod2,
       parameters = define_parameters(
         age_init = 60,

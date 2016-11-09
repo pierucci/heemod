@@ -1,6 +1,6 @@
 Package: heemod
 Title: Models for Health Economic Evaluation
-Version: 0.4.0
+Version: 0.5.1
 Authors@R: c(
     person("Antoine", "Filipovic-Pierucci", email = "pierucci@gmail.com", role = c("aut", "cre")),
     person("Kevin", "Zarca", email = "kevin.zarca@urc-eco.fr", role = "aut"),
@@ -9,7 +9,7 @@ Authors@R: c(
     person("Vojtech", "Filipec", role = "ctb")
     )
 Description: Health Economic Evaluation Modelling.
-  Markov models (homogeneous and non-homogeneous)
+  Markov models (decision trees, homogeneous and non-homogeneous)
   for health economic evaluation. Model comparison,
   sensitivity and probabilistic analysis.
 Depends: R (>= 3.2.2)
@@ -36,6 +36,7 @@ LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
 Suggests: knitr,
+          formatR,
           readxl,
           rmarkdown,
           testthat

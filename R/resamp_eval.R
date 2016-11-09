@@ -1,16 +1,16 @@
 #' Run Probabilistic Uncertainty Analysis
 #' 
-#' @param model The result of \code{\link{run_models}}.
+#' @param model The result of \code{\link{run_model}}.
 #' @param resample Resampling distribution for parameters 
-#'   defined by \code{\link{define_distrib}}.
+#'   defined by \code{\link{define_psa}}.
 #' @param N > 0. Number of simulation to run.
 #'   
 #' @return A list with one \code{data.frame} per model.
 #' @export
 #' 
-#' @example inst/examples/example_run_probabilistic.R
+#' @example inst/examples/example_run_psa.R
 #'   
-run_probabilistic <- function(model, resample, N) {
+run_psa <- function(model, resample, N) {
   
   stopifnot(
     N > 0,
@@ -79,7 +79,7 @@ eval_correlation <- function(x, var_names) {
 
 #' Evaluate Resampling Definition
 #' 
-#' @param resample A \code{\link{define_distrib}} object.
+#' @param resample A \code{\link{define_psa}} object.
 #' @param N > 0. Number of simulation to run.
 #'   
 #' @return A \code{data.frame} of resampled values with on 

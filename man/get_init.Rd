@@ -7,7 +7,7 @@
 get_init(x)
 }
 \arguments{
-\item{x}{x Result from \code{\link{run_models}}.}
+\item{x}{x Result from \code{\link{run_model}}.}
 }
 \value{
 A vector of initial state values.

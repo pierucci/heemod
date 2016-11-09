@@ -3,16 +3,16 @@
 \name{update-model}
 \alias{plot.updated_models}
 \alias{update-model}
-\alias{update.run_models}
+\alias{update.run_model}
 \title{Run Model on New Data}
 \usage{
-\method{update}{run_models}(object, newdata, ...)
+\method{update}{run_model}(object, newdata, ...)
 
 \method{plot}{updated_models}(x, model, type = c("cost", "effect", "icer",
-  "counts", "ce"), ...)
+  "counts", "ce", "values"), ...)
 }
 \arguments{
-\item{object}{The result of \code{\link{run_models}}.}
+\item{object}{The result of \code{\link{run_model}}.}
 
 \item{newdata}{A \code{data.frame} of new parameter sets,
 one column per parameter and one row per parameter set.
@@ -52,7 +52,7 @@ take the following values: \code{"cost"}, \code{"effect"}
 or \code{"icer"} to plot the heterogeneity of the
 respective values. Furthermore \code{"ce"} and
 \code{"count"} can produce from the combined model plots
-similar to those of \code{\link{run_models}}.
+similar to those of \code{\link{run_model}}.
 }
 \section{Warning}{
 
@@ -62,8 +62,8 @@ similar to those of \code{\link{run_models}}.
 }
 \examples{
 mod1 <-
-  define_model(
-    transition_matrix = define_matrix(
+  define_strategy(
+    transition_matrix = define_transition(
       .5, .5,
       .1, .9
     ),
@@ -78,8 +78,8 @@ mod1 <-
   )
 
 mod2 <-
-  define_model(
-    transition_matrix = define_matrix(
+  define_strategy(
+    transition_matrix = define_transition(
       .5, .5,
       .1, .9
     ),
@@ -93,7 +93,7 @@ mod2 <-
     )
   )
 
-res <- run_models(
+res <- run_model(
   mod1, mod2,
   parameters = define_parameters(
     age_init = 60,

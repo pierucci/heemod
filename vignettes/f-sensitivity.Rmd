@@ -1,0 +1,225 @@
+---
+title: "Deterministic Sensitivity Analysis"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Deterministic Sensitivity Analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r, echo=FALSE, include=FALSE}
+library(heemod)
+
+param <- define_parameters(
+  rr = .509,
+  
+  p_AB_base = .202,
+  p_AC_base = .067,
+  p_AD_base = .010,
+  
+  p_BC_base = .407,
+  p_BD_base = .012,
+  
+  p_CD_base = .250,
+  
+  
+  p_AB = p_AB_base,
+  p_AC = p_AC_base,
+  p_AD = p_AD_base,
+  
+  p_BC = p_BC_base,
+  p_BD = p_BD_base,
+  
+  p_CD = p_CD_base,
+  
+  
+  cost_zido = 2278,
+  cost_lami = 2086,
+  
+  cost_A = 2756,
+  cost_B = 3052,
+  cost_C = 9007,
+  
+  dr = .06
+)
+
+mat_trans_mono <- define_transition(
+  C,    p_AB, p_AC, p_AD,
+  .000, C,    p_BC, p_BD,
+  .000, .000, C,    p_CD,
+  .000, .000, .000, 1.00
+)
+
+mat_trans_comb <- define_transition(
+  C,    p_AB * rr, p_AC * rr, p_AD * rr,
+  .000, C,    p_BC * rr, p_BD * rr,
+  .000, .000, C,    p_CD * rr,
+  .000, .000, .000, 1.00
+)
+
+A_mono <- define_state(
+  cost_health = cost_A,
+  cost_drugs = cost_zido,
+  cost_total = discount(cost_health + cost_drugs, dr),
+  life_year = 1
+)
+B_mono <- define_state(
+  cost_health = cost_B,
+  cost_drugs = cost_zido,
+  cost_total = discount(cost_health + cost_drugs, dr),
+  life_year = 1
+)
+C_mono <- define_state(
+  cost_health = cost_C,
+  cost_drugs = cost_zido,
+  cost_total = discount(cost_health + cost_drugs, dr),
+  life_year = 1
+)
+D_mono <- define_state(
+  cost_health = 0,
+  cost_drugs = 0,
+  cost_total = discount(cost_health + cost_drugs, dr),
+  life_year = 0
+)
+
+A_comb <- define_state(
+  cost_health = cost_A,
+  cost_drugs = cost_zido + cost_lami,
+  cost_total = discount(cost_health + cost_drugs, dr),
+  life_year = 1
+)
+B_comb <- define_state(
+  cost_health = cost_B,
+  cost_drugs = cost_zido + cost_lami,
+  cost_total = discount(cost_health + cost_drugs, dr),
+  life_year = 1
+)
+C_comb <- define_state(
+  cost_health = cost_C,
+  cost_drugs = cost_zido + cost_lami,
+  cost_total = discount(cost_health + cost_drugs, dr),
+  life_year = 1
+)
+D_comb <- define_state(
+  cost_health = 0,
+  cost_drugs = 0,
+  cost_total = discount(cost_health + cost_drugs, dr),
+  life_year = 0
+)
+
+mod_mono <- define_strategy(
+  transition_matrix = mat_trans_mono,
+  A_mono,
+  B_mono,
+  C_mono,
+  D_mono
+)
+
+mod_comb <- define_strategy(
+  transition_matrix = mat_trans_comb,
+  A_comb,
+  B_comb,
+  C_comb,
+  D_comb
+)
+
+res_mod <- run_model(
+  mono = mod_mono,
+  comb = mod_comb,
+  parameters = param,
+  cycles = 20,
+  cost = cost_total,
+  effect = life_year
+)
+```
+
+## Introduction
+
+The objective of deterministic sensitivity analysis is to assess how model results are sensitive to parameter values. Parameter values are changed through upper and lower bounds, and the results are reported.
+
+Sensitivity analysis is distinct from probabilistic uncertainty analysis: whereas in PSA the objective is to estimate the effect of global uncertainty on model results, in DSA the objective is to assess the sensitivity of results to variations of individual parameters. Both analyses are complementary.
+
+## Define the analysis
+
+This example uses the HIV drug model defined in `vignette("e-probabilistic", "heemod")`. See this vignette for an explanation of the model. Note that as in PSA, parameters need to be defined in `define_parameters()` in order to be modified in a DSA.
+
+In this example we will study the sensitivity of cost to 4 parameters:
+
+  * `rr`, the relative risk associated with the new treatment.
+  * `cost_zido` and `cost_lami`, the drug costs.
+  * `dr`, the discount rate.
+
+Upper and lower values for the paramters are given to `define_dsa()`.
+
+```{r}
+se <- define_dsa(
+  rr, .4, .6,
+  
+  cost_zido, 1500, 3000,
+  cost_lami, 1500, 3000,
+  
+  dr, .04, .08
+)
+```
+
+We then run the sensitivity analysis with `run_dsa()`, using `res_mod` the result from `run_model()` as input.
+
+```{r}
+res <- run_dsa(
+  model = res_mod,
+  sensitivity = se
+)
+```
+
+## Interpretation
+
+All the results can be displayed in a table.
+
+```{r}
+res
+```
+
+Two distinct plot types are available. The basic plot (`type = "simple"`) displays cost variations for each model, around the base cost.
+
+As expected `mono` model costs are not senstive to `cost_lami`, since this drug was not given to this group. Similarly it is not sensitive to `rr`, because this parameters only modifies transition probabilities in the other model.
+
+```{r, fig.width = 6, fig.align='center'}
+plot(res,
+     model = "mono",
+     result = "cost",
+     type = "simple")
+```
+
+On the other hand the `comb` model cost is sensitive to all 4 parameters.
+
+```{r, fig.width = 6, fig.align='center'}
+plot(res,
+     model = "comb",
+     result = "cost",
+     type = "simple")
+```
+
+And its effectiveness is sensitive to `rr`
+
+```{r, fig.width = 6, fig.align='center'}
+plot(res, 
+     model = "comb",
+     result = "effect",
+     type = "simple")
+```
+
+The difference plot (`type = "difference"`) displays the difference between the specified model `comb` and the reference model `mono`.
+
+```{r, fig.width = 6, fig.align='center'}
+plot(res,
+     model = "comb",
+     result = "cost",
+     type = "difference")
+plot(res,
+     model = "comb",
+     result = "icer",
+     type = "difference")
+```

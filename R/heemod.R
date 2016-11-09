@@ -23,11 +23,13 @@
 #' @importFrom dplyr desc
 #' @importFrom dplyr ungroup
 #' @importFrom dplyr mutate_if
+#' @importFrom dplyr funs
 #'   
 #' @importFrom lazyeval lazy
 #' @importFrom lazyeval lazy_dots
 #' @importFrom lazyeval as.lazy_dots
 #' @importFrom lazyeval lazy_eval
+#' @importFrom lazyeval interp
 #'   
 #' @importFrom pryr standardise_call
 #'   
@@ -89,4 +91,5 @@
 #' @importFrom graphics plot
 #'   
 #' @importFrom tibble tibble
+#' @importFrom tibble tibble_
 NULL

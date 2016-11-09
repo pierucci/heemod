@@ -10,16 +10,14 @@
 #' are between 0 and 1.
 #' 
 #' @param x a matrix.
-#' @param ... A list of informations to print when checks 
-#'   fail, for debugging purposes.
 #'   
 #' @return \code{NULL}
 #'   
 #' @keywords internal
-check_matrix <- function(x, ...) {
-  info <- list(...)
-  
-  if (! isTRUE(all.equal(rowSums(x), rep(1, nrow(x))))) {
+check_matrix <- function(x) {
+  if (! isTRUE(all.equal(
+    range(rowSums(x, dims = 2)),
+    c(1, 1)))) {
     stop("Not all transition matrix rows sum to 1.")
   }
   
@@ -34,54 +32,61 @@ check_matrix <- function(x, ...) {
 #' 
 #' Runs checks on the transition matrix during evaluation.
 #' 
+#' This functions has been heavily optimized, and thus can
+#' be difficult to read. Good luck...
+#' 
 #' @param x an \code{uneval_matrix} object.
 #' @param parameters an \code{eval_parameters} object.
 #'   
 #' @return An \code{eval_matrix} object (actually a list of 
-#'   transition matrix, one per cycle).
+#'   transition matrices, one per cycle).
 #'   
 #' @keywords internal
 eval_matrix <- function(x, parameters) {
-
   tab_res <- mutate_(parameters, C = -pi, .dots = x)[names(x)]
   
   n <- get_matrix_order(x)
-
-  f3 <- function(this_array) {
-    posC <- this_array == -pi
-    
-    stopifnot(
-      all(rowSums(posC, dims = 2) <= 1)
-    )
-    this_array[posC] <- 0
-    
-    valC <- 1 - rowSums(this_array, dims = 2)[which(posC, arr.ind = TRUE)[, -3]] 
-    this_array[posC] <- valC
-    
-    sapply(1:dim(this_array)[1], function(i){check_matrix(this_array[i,,])})
-    this_array
-  }
   
-  tab_res_2 <- array(unlist(tab_res), dim = c(nrow(tab_res), n, n))
-  
+  array_res <- array(unlist(tab_res), dim = c(nrow(tab_res), n, n))
+  # possible optimisation
+  # dont transpose
+  # but tweak dimensions in replace_C
   for(i in 1:nrow(tab_res)){
-    tab_res_2[i,,] <- t(tab_res_2[i,,])
+    array_res[i,,] <- t(array_res[i,,])
   }
   
-  tab_res_3 <- f3(tab_res_2)
-  tab_res_4 <- split_along_dim(tab_res_3, 1)
+  array_res <- replace_C(array_res)
   
-  structure(tab_res_4,
-            class = c("eval_matrix", class(tab_res_4)),
-            state_names = get_state_names(x))
+  check_matrix(array_res)
+  
+  structure(
+    split_along_dim(array_res, 1),
+    class = c("eval_matrix", "list"),
+    state_names = get_state_names(x)
+  )
 }
 
+split_along_dim <- function(a, n) {
+  # could be maybe optimized?
+  setNames(lapply(
+    split(a, arrayInd(seq_along(a), dim(a))[, n]),
+    array, dim = dim(a)[-n], dimnames(a)[-n]),
+    dimnames(a)[[n]])
+}
 
-split_along_dim <- function(a, n)
-  setNames(lapply(split(a, arrayInd(seq_along(a), dim(a))[, n]),
-                  array, dim = dim(a)[-n], dimnames(a)[-n]),
-           dimnames(a)[[n]])
-
+replace_C <- function(x) {
+  posC <- x == -pi
+  
+  if (! all(rowSums(posC, dims = 2) <= 1)) {
+    stop("Only one 'C' is allowed per matrix row.")
+  }
+  
+  x[posC] <- 0
+  
+  valC <- 1 - rowSums(x, dims = 2)[which(posC, arr.ind = TRUE)[, -3]] 
+  x[posC] <- valC
+  x
+}
 
 get_state_names.eval_matrix <- function(x, ...){
   attr(x, "state_names")

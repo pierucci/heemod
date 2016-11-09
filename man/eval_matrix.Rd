@@ -13,13 +13,16 @@ eval_matrix(x, parameters)
 }
 \value{
 An \code{eval_matrix} object (actually a list of 
-  transition matrix, one per cycle).
+  transition matrices, one per cycle).
 }
 \description{
 Evaluate a transition matrix using evaluated parameters.
 }
 \details{
 Runs checks on the transition matrix during evaluation.
+
+This functions has been heavily optimized, and thus can
+be difficult to read. Good luck...
 }
 \keyword{internal}
 

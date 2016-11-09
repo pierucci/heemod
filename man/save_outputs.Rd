@@ -8,7 +8,7 @@ save_outputs(outputs, output_dir, overwrite)
 }
 \arguments{
 \item{outputs}{Result from
-\code{\link{run_models_tabular}}.}
+\code{\link{run_model_tabular}}.}
 
 \item{output_dir}{Subdirectory in which to write output.}
 

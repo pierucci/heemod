@@ -14,7 +14,7 @@ vignette: >
 library(heemod)
 ```
 
-The purpose of this vignette is to present how to reproduce exactly the results from [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do). While other vignettes such as `vignette("homogeneous", package = "heemod")`, `vignette("non-homogeneous", package = "heemod")` or `vignette("probabilistic", package = "heemod")` are greatly inspired from this book, key elements differ (mostly for the sake of clarity) and thus results differ, sometimes significantly, from the book. Here we show how to exactly reproduce the results with the `heemod` package.
+The purpose of this vignette is to present how to reproduce exactly the results from [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do). While other vignettes such as `vignette("c-homogeneous", "heemod")`, `vignette("d-non-homogeneous", "heemod")` or `vignette("e-probabilistic", "heemod")` are greatly inspired from this book, key elements differ (mostly for the sake of clarity) and thus results differ, sometimes significantly, from the book. Here we show how to exactly reproduce the results with the `heemod` package.
 
 # HIV model
 
@@ -38,14 +38,14 @@ par_mod <- define_parameters(
   cost_zido = 2278
 )
 
-mat_mono <- define_matrix(
+mat_mono <- define_transition(
   1251/1734, 350/1734, 116/1734,  17/1734,
   0,         731/1258, 512/1258,  15/1258,
   0,         0,        1312/1749, 437/1749,
   0,         0,        0,         1.00
 )
 
-mat_comb <- define_matrix(
+mat_comb <- define_transition(
   C, 350/1734*rr, 116/1734*rr, 17/1734*rr,
   0, C,           512/1258*rr, 15/1258*rr,
   0, 0,           C,           437/1749*rr,
@@ -110,14 +110,14 @@ D_comb <- define_state(
   life_year = 0
 )
 
-mod_mono <- define_model(
+mod_mono <- define_strategy(
   transition_matrix = mat_mono,
   A_mono,
   B_mono,
   C_mono,
   D_mono
 )
-mod_comb <- define_model(
+mod_comb <- define_strategy(
   transition_matrix = mat_comb,
   A_comb,
   B_comb,
@@ -125,7 +125,7 @@ mod_comb <- define_model(
   D_comb
 )
 
-res_mod <- run_models(
+res_mod <- run_model(
   mono = mod_mono,
   comb = mod_comb,
   parameters = par_mod,
@@ -203,7 +203,7 @@ param <- define_parameters(
     c_revisionTHR = 5294
 )
 
-mat_standard <- define_matrix(
+mat_standard <- define_transition(
     state_names = c(
       "PrimaryTHR",
       "SuccessP",
@@ -218,7 +218,7 @@ mat_standard <- define_matrix(
     0, 0, 0,          0, 1
 )
 
-mat_np1 <- define_matrix(
+mat_np1 <- define_transition(
     state_names = c(
       "PrimaryTHR",
       "SuccessP",
@@ -233,7 +233,7 @@ mat_np1 <- define_matrix(
     0, 0, 0,     0, 1
 )
 
-mod_standard <- define_model(
+mod_standard <- define_strategy(
   transition_matrix = mat_standard,
   PrimaryTHR = define_state(
     utility = 0,
@@ -257,7 +257,7 @@ mod_standard <- define_model(
   )
 )
 
-mod_np1 <- define_model(
+mod_np1 <- define_strategy(
   transition_matrix = mat_np1,
   PrimaryTHR = define_state(
     utility = 0,
@@ -281,7 +281,7 @@ mod_np1 <- define_model(
   )
 )
 
-res_mod <- run_models(
+res_mod <- run_model(
   standard = mod_standard,
   np1 = mod_np1,
   parameters = param,
