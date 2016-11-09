@@ -8,6 +8,9 @@ r:
   - release
   - devel
 
+r_packages:
+  - survival
+
 r_github_packages:
   - hadley/devtools
 
