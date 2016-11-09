@@ -1,17 +1,17 @@
 #' @export
-print.run_models <- function(x, ...) {
+print.run_model <- function(x, ...) {
   print(summary(x, ...))
 }
 
 #' Summarise Markov Model Results
 #' 
-#' @param object Output from \code{\link{run_models}}.
+#' @param object Output from \code{\link{run_model}}.
 #' @param ... additional arguments affecting the summary 
 #'   produced.
 #'   
 #' @return A \code{summary_eval_model_list} object.
 #' @export
-summary.run_models <- function(object, ...) {
+summary.run_model <- function(object, ...) {
   if (! all(c(".cost", ".effect") %in% names(object))) {
     warning("No cost and/or effect defined, model summary unavailable.")
     return(invisible(NULL))
@@ -22,7 +22,7 @@ summary.run_models <- function(object, ...) {
   res <- dplyr::select_(res, ~ - .model_names)
   
   
-  res_comp <- res[c(".dcost", ".deffect", ".icer")]
+  res_comp <- res[c(".dcost", ".deffect", ".icer", ".dref")]
   is.na(res_comp$.icer) <- ! is.finite(res_comp$.icer)
   res_comp$.dcost <- res_comp$.dcost / sum(attr(object, "init"))
   res_comp$.deffect <- res_comp$.deffect / sum(attr(object, "init"))
@@ -35,7 +35,8 @@ summary.run_models <- function(object, ...) {
         ~ - .effect,
         ~ - .icer,
         ~ - .dcost,
-        ~ - .deffect
+        ~ - .deffect,
+        ~ - .dref
       ),
       res_comp = res_comp,
       cycles = attr(object, "cycles"),
@@ -43,7 +44,7 @@ summary.run_models <- function(object, ...) {
       method = attr(object, "method"),
       frontier = get_frontier(object)
     ),
-    class = "summary_run_models"
+    class = "summary_run_model"
   )
 }
 
@@ -52,8 +53,8 @@ summary.run_models <- function(object, ...) {
 #' Normalize cost and effect values taking base model as a 
 #' reference.
 #' 
-#' @param x Result of \code{\link{run_models}} or 
-#'   \code{\link{run_probabilistic}}.
+#' @param x Result of \code{\link{run_model}} or 
+#'   \code{\link{run_psa}}.
 #'   
 #' @return Input with normalized \code{.cost} and 
 #'   \code{.effect}, ordered by \code{.effect}.
@@ -62,7 +63,7 @@ summary.run_models <- function(object, ...) {
 normalize_ce <- function(x) {
   UseMethod("normalize_ce")
 }
-normalize_ce.run_models <- function(x) {
+normalize_ce.run_model <- function(x) {
   bm <- get_base_model(x)
   x$.cost <- x$.cost - x$.cost[x$.model_names == bm]
   x$.effect <- x$.effect - x$.effect[x$.model_names == bm]
@@ -76,7 +77,7 @@ normalize_ce.run_models <- function(x) {
 #' Models are ordered by effectiveness and ICER are computed
 #' sequencially.
 #' 
-#' @param x Result of \code{\link{run_models}}.
+#' @param x Result of \code{\link{run_model}}.
 #' @param model_order Order in which the models should be
 #'   sorted. Default: by increasing effect.
 #'   
@@ -84,34 +85,47 @@ normalize_ce.run_models <- function(x) {
 #'   
 #' @keywords internal
 compute_icer <- function(x, model_order = order(x$.effect)) {
-  
+  ef <- get_frontier(x)
   tab <- x[model_order, ]
   
   tab$.icer <- NA
   tab$.dcost <- NA
   tab$.deffect <- NA
+  tab$.dref <- NA
+  
   for (i in seq_len(nrow(tab))) {
     if (i == 1) {
-      tab$.icer[i] <- -Inf
+      tab$.icer[i] <- NA
+      ref_cost <- tab$.cost[i]
+      ref_effect <- tab$.effect[i]
+      ref_name <- tab$.model_names[i]
+      
     } else {
-      tab$.dcost[i] <- tab$.cost[i] - tab$.cost[i-1]
-      tab$.deffect[i] <- tab$.effect[i] - tab$.effect[i-1]
+      tab$.dcost[i] <- tab$.cost[i] - ref_cost
+      tab$.deffect[i] <- tab$.effect[i] - ref_effect
       tab$.icer[i] <- tab$.dcost[i] / tab$.deffect[i]
+      tab$.dref[i] <- ref_name
+      
+      if (tab$.model_names[i] %in% ef) {
+        ref_cost <- tab$.cost[i]
+        ref_effect <- tab$.effect[i]
+        ref_name <- tab$.model_names[i]
+      }
     }
   }
   tab
 }
 
 #' @export
-print.summary_run_models <- function(x, ...) {
+print.summary_run_model <- function(x, ...) {
   cat(sprintf(
-    "%i Markov model%s run for %i cycle%s.\n\n",
+    "%i strateg%s run for %i cycle%s.\n\n",
     nrow(x$res),
-    plur(nrow(x$res)),
+    plur_y(nrow(x$res)),
     x$cycles,
     plur(x$cycles)
   ))
-  cat("Initial states:\n\n")
+  cat("Initial state counts:\n\n")
   print(matrix(
     x$init,
     dimnames = list(
@@ -128,11 +142,11 @@ print.summary_run_models <- function(x, ...) {
   res_comp$.icer <- format(res_comp$.icer)
   res_comp$.icer[res_comp$.icer == "NA"] <- "-"
   res_comp <- res_comp[-1, ]
-  names(res_comp) <- c("Cost", "Effect", "ICER")
+  names(res_comp) <- c("\u0394 Cost", "\u0394 Effect", "ICER", "Ref.")
   
   if (nrow(x$res) > 1) {
     cat("\nEfficiency frontier:\n\n")
-    cat(x$frontier)
+    cat(paste(x$frontier, collapse = " -> "))
     cat("\n\nModel difference:\n\n")
     print(res_comp)
   }

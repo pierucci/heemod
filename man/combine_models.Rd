@@ -17,7 +17,7 @@ number of parameter sets.}
 }
 \value{
 A \code{combined_models} object, mostly similar
-  to a result from \code{\link{run_models}}. \code{plot}
+  to a result from \code{\link{run_model}}. \code{plot}
   and \code{summary} methods are available.
 }
 \description{

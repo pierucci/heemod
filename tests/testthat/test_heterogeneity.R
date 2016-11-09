@@ -3,8 +3,8 @@ context("Heterogeneity & Demographic")
 test_that(
   "Demographic analysis", {
     mod1 <-
-      define_model(
-        transition_matrix = define_matrix(
+      define_strategy(
+        transition = define_transition(
           .4, .6,
           .1, .9
         ),
@@ -19,8 +19,8 @@ test_that(
       )
     
     mod2 <-
-      define_model(
-        transition_matrix = define_matrix(
+      define_strategy(
+        transition = define_transition(
           .5, .5,
           .1, .9
         ),
@@ -34,7 +34,7 @@ test_that(
         )
       )
     
-    res <- run_models(
+    res <- run_model(
       mod1, mod2,
       parameters = define_parameters(
         age_init = 60,
@@ -49,22 +49,22 @@ test_that(
     
     # generating table with demographic data
     new_tab <- data.frame(
-      age_init = 40:80
+      age_init = 40:45
     )
     set.seed(1)
     new_tab2 <- data.frame(
-      age_init = 40:80,
-      .weights = runif(41)
+      age_init = 40:45,
+      .weights = runif(6)
     )
     
     x <- update(res, newdata = new_tab2)
+    
     plot(x, type = "counts", model = 1)
     expect_message(update(res, newdata = new_tab))
     
     expect_output(
       print(x),
-      "       Cost   Effect      ICER
-I -28996.37 2.403762 -12062.91",
+      "-20268.86  1.66937 -12141.62",
       fixed = TRUE
     )
   })
@@ -73,8 +73,8 @@ I -28996.37 2.403762 -12062.91",
 test_that(
   "Heterogeneity analysis", {
     mod1 <-
-      define_model(
-        transition_matrix = define_matrix(
+      define_strategy(
+        transition = define_transition(
           .5, .5,
           .1, .9
         ),
@@ -90,8 +90,8 @@ test_that(
       )
     
     mod2 <-
-      define_model(
-        transition_matrix = define_matrix(
+      define_strategy(
+        transition = define_transition(
           .5, .5,
           .1, .9
         ),
@@ -106,7 +106,7 @@ test_that(
         
       )
     
-    res <- run_models(
+    res <- run_model(
       mod1, mod2,
       parameters = define_parameters(
         age_init = 60,
@@ -131,9 +131,6 @@ test_that(
     plot(ndt, model = 1, type = "cost")
     plot(ndt, model = 1, type = "effect")
     
-    expect_error(
-      plot(ndt, model = "II")
-    )
     expect_error(
       update(mod1, newdata = new_tab)
     )

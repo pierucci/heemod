@@ -7,7 +7,7 @@
 #' @param name character. Optional argument giving the name
 #'   to assign to the object.
 #' @param sub logical. Should states or models be referenced
-#'   by name in \code{define_model} and \code{run_model}
+#'   by name in \code{define_strategy} and \code{run_model}
 #'   instead of including the entire code?
 #' @param depth Depth of the function call.
 #' @param n_space Number of space used for indentation.
@@ -25,7 +25,7 @@
 #' 
 #' get_code(p)
 #' 
-#' m <- define_matrix(
+#' m <- define_transition(
 #'   C, .1,
 #'   0, 1 
 #' )
@@ -76,7 +76,7 @@ get_code.uneval_matrix <- function(x, name = NULL,
   structure(
     left_pad(paste0(
       name,
-      "define_matrix(\n  ",
+      "define_transition(\n  ",
       "state_names = ",
       paste0("c(\"", paste(sn, collapse = "\", \""), "\"),\n  "),
       paste(
@@ -151,9 +151,9 @@ get_code.uneval_model <- function(x, name = NULL, sub = FALSE,
   structure(
     left_pad(paste0(
       name,
-      "define_model(\n  ",
-      "transition_matrix = ",
-      get_code(x$transition_matrix, depth = depth),
+      "define_strategy(\n  ",
+      "transition = ",
+      get_code(get_matrix(x), depth = depth),
       ",\n",
       st,
       "\n)"
@@ -164,7 +164,7 @@ get_code.uneval_model <- function(x, name = NULL, sub = FALSE,
 
 #' @export
 #' @rdname get_code
-get_code.run_models <- function(x, name = NULL, sub = FALSE,
+get_code.run_model <- function(x, name = NULL, sub = FALSE,
                                 depth = 0, n_space = 2,
                                 ...) {
   if (! is.null(name)) {
@@ -192,7 +192,7 @@ get_code.run_models <- function(x, name = NULL, sub = FALSE,
   structure(
     left_pad(paste0(
       name,
-      "run_models(\n  ",
+      "run_model(\n  ",
       md,
       ",\n  ",
       "parameters = ",
@@ -205,9 +205,6 @@ get_code.run_models <- function(x, name = NULL, sub = FALSE,
       ",\n  ",
       "method = ",
       paste0("\"", attr(x, "method"), "\"", sep = ""),
-      ",\n  ",
-      "base_model = ",
-      paste0("\"", attr(x, "base_model"), "\"", sep = ""),
       ",\n  ",
       "cost = ",
       deparse(attr(x, "ce")[[1]]$expr, width.cutoff = 500L),

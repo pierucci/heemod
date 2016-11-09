@@ -2,21 +2,27 @@
 % Please edit documentation in R/run_model_define.R
 \name{get_values}
 \alias{get_values}
+\alias{get_values.combined_models}
 \alias{get_values.eval_model}
 \alias{get_values.list}
-\alias{get_values.run_models}
+\alias{get_values.run_model}
+\alias{get_values.updated_models}
 \title{Get Model Values}
 \usage{
 get_values(x, ...)
 
-\method{get_values}{run_models}(x, m = 1, ...)
+\method{get_values}{run_model}(x, m = 1, ...)
 
 \method{get_values}{eval_model}(x, ...)
 
 \method{get_values}{list}(x, ...)
+
+\method{get_values}{updated_models}(x, m, ...)
+
+\method{get_values}{combined_models}(x, m, ...)
 }
 \arguments{
-\item{x}{Result from \code{\link{run_models}}.}
+\item{x}{Result from \code{\link{run_model}}.}
 
 \item{...}{further arguments passed to or from other
 methods.}
@@ -27,7 +33,7 @@ methods.}
 A data frame of values per state.
 }
 \description{
-Given a result from \code{\link{run_models}}, return 
+Given a result from \code{\link{run_model}}, return 
 cost and effect values for a specific model.
 }
 

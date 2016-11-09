@@ -4,5 +4,5 @@ effect,qaly
 ,
 method,end
 cycles,50
-n,100
+n,10
 init,"1000, 0, 0, 0, 0"

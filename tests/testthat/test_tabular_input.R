@@ -334,13 +334,13 @@ test_that(
   "problems with output generate warnings", {
     
     expect_warning(
-      run_models_tabular(
+      run_model_tabular(
         system.file("tabular/test/test_no_overwrite", package = "heemod"),
         save = TRUE, overwrite = FALSE, run_psa = FALSE, run_demo = FALSE
       )
     )
     expect_warning(
-      run_models_tabular(
+      run_model_tabular(
         system.file("tabular/test/test_no_output_dir", package = "heemod"),
         save = TRUE, overwrite = TRUE, run_psa = FALSE, run_demo = FALSE
       )
@@ -370,10 +370,10 @@ test_that(
     
     op <- options(heemod.verbose = TRUE)
     expect_message(
-      heemod:::gather_model_info(
+      capture.output(heemod:::gather_model_info(
         system.file("tabular/test", package = "heemod"),
         "edited_ref.csv"
-      ),
+      )),
       "Using absolute path for state, tm, parameters, demographics, data, output"
     )
     options(op)
@@ -405,7 +405,7 @@ test_that(
     
     expect_output(
       print(tm),
-      "An unevaluated matrix, 5 states\\.
+      "A transition matrix, 5 states\\.
 
                    PrimaryTHR SuccessfulPrimary.*
 PrimaryTHR                    C                .*
@@ -632,7 +632,7 @@ test_that(
 
 test_that(
   "Running model from files works.", {
-    result <- run_models_tabular(
+    result <- run_model_tabular(
       location = system.file("tabular/thr", package = "heemod"),
       save = TRUE, overwrite = TRUE
     )
@@ -657,9 +657,15 @@ test_that(
     
     expect_output(
       print(result$demographics),
-      "An analysis re-run on 62 parameter sets.",
+      "An analysis re-run on 8 parameter sets.",
       fixed = TRUE
     )
+    
+    plot(result$demographics, type = "counts")
+    plot(result$demographics, type = "values", value = "cost")
+    plot(result$demographics, type = "values", 
+         value = c("cost", "qaly"), panels = "by_value")
+    
   }
 )
 

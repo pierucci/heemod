@@ -6,7 +6,7 @@
 #' individual per state per model cycle.
 #' 
 #' \code{init} need not be integer. E.g. specifying a vector
-#' of type c(Q = 1, B = 0, C = 0, ...) returns the 
+#' of type \code{c(A = 1, B = 0, C = 0, ...)} returns the 
 #' probabilities for an individual starting in state A to be
 #' in each state, per cycle.
 #' 
@@ -19,6 +19,8 @@
 #'   model states. Number of individuals in each model state
 #'   at the beginning.
 #' @param method Counting method.
+#' @param expand_limit A named vector of state expansion
+#'   limits.
 #'   
 #' @return An \code{eval_model} object (actually a list of 
 #'   evaluated parameters, matrix, states and cycles 
@@ -28,32 +30,106 @@
 #'   
 #' @keywords internal
 eval_model <- function(model, parameters, cycles, 
-                       init, method) {
-  
+                       init, method, expand_limit) {
   stopifnot(
     cycles > 0,
     length(cycles) == 1,
     all(init >= 0)
   )
   
+  uneval_matrix <- get_matrix(model)
+  uneval_states <- get_states(model)
+  
+  i_parameters <- interp_heemod(parameters)
+  
+  i_uneval_matrix <- interp_heemod(
+    uneval_matrix,
+    more = as_expr_list(i_parameters)
+  )
+  
+  i_uneval_states <- interp_heemod(
+    uneval_states,
+    more = as_expr_list(i_parameters)
+  )
+  
+  td_tm <- has_state_cycle(i_uneval_matrix)
+  td_st <- has_state_cycle(i_uneval_states)
+  
+  expand <- any(c(td_tm, td_st))
+  
+  if (expand) {
+    uneval_matrix <- i_uneval_matrix
+    uneval_states <- i_uneval_states
+    
+    # parameters not needed anymore because of interp
+    parameters <- define_parameters()
+    
+    # from cells to cols
+    td_tm <- td_tm %>% 
+      matrix(
+        nrow = get_matrix_order(uneval_matrix), 
+        byrow = TRUE
+      ) %>% 
+      apply(1, any)
+    
+    to_expand <- sort(unique(c(
+      get_state_names(uneval_matrix)[td_tm],
+      get_state_names(uneval_states)[td_st]
+    )))
+    
+    message(sprintf(
+      "Detected use of 'state_cycle', expanding states: %s.",
+      paste(to_expand, collapse = ", ")
+    ))
+    
+    init <- insert(
+      init,
+      which(get_state_names(uneval_matrix) %in% to_expand),
+      rep(0, cycles)
+    )
+    
+    for (st in to_expand) {
+      uneval_matrix <- expand_state(
+        x = uneval_matrix,
+        state_pos = which(get_state_names(uneval_matrix) == st),
+        state_name = st,
+        cycles = expand_limit[st]
+      )
+      
+      uneval_states <- expand_state(
+        x = uneval_states,
+        state_name = st,
+        cycles = expand_limit[st]
+      )
+    }
+  }
   parameters <- eval_parameters(parameters,
                                 cycles = cycles)
-  transition_matrix <- eval_matrix(get_matrix(model),
+  transition <- eval_matrix(uneval_matrix,
                                    parameters)
-  states <- eval_state_list(get_states(model), parameters)
+  states <- eval_state_list(uneval_states, parameters)
   
   count_table <- compute_counts(
-    transition_matrix = transition_matrix,
+    transition = transition,
     init = init,
     method = method
   )
   
   values <- compute_values(states, count_table)
   
+  if (expand) {
+    for (st in to_expand) {
+      exp_cols <- sprintf(".%s_%i", st, seq_len(cycles+1))
+      
+      count_table[[st]] <- rowSums(count_table[exp_cols])
+      count_table <- count_table[-which(names(count_table) %in% exp_cols)]
+    }
+  }
+  
   structure(
     list(
       parameters = parameters,
-      transition_matrix = transition_matrix,
+      transition = transition,
       states = states,
       counts = count_table,
       values = values
@@ -74,7 +150,7 @@ eval_model <- function(model, parameters, cycles,
 #' each cycle. Alternatively linear interpolation between 
 #' cycles can be performed.
 #' 
-#' @param transition_matrix An \code{eval_matrix} object.
+#' @param transition An \code{eval_matrix} object.
 #' @param init numeric vector, same length as number of 
 #'   model states. Number of individuals in each model state
 #'   at the beginning.
@@ -83,20 +159,20 @@ eval_model <- function(model, parameters, cycles,
 #' @return A \code{cycle_counts} object.
 #'   
 #' @keywords internal
-compute_counts <- function(transition_matrix, init,
+compute_counts <- function(transition, init,
                            method) {
   
-  if (! length(init) == get_matrix_order(transition_matrix)) {
+  if (! length(init) == get_matrix_order(transition)) {
     stop(sprintf(
       "Length of 'init' vector (%i) differs from the number of states (%i).",
       length(init),
-      get_matrix_order(transition_matrix)
+      get_matrix_order(transition)
     ))
   }
   
   list_counts <- Reduce(
     "%*%",
-    transition_matrix,
+    transition,
     init,
     accumulate = TRUE
   )
@@ -106,12 +182,12 @@ compute_counts <- function(transition_matrix, init,
       matrix(
         unlist(list_counts),
         byrow = TRUE,
-        ncol = get_matrix_order(transition_matrix)
+        ncol = get_matrix_order(transition)
       )
     )
   )
   
-  colnames(res) <- get_state_names(transition_matrix)
+  colnames(res) <- get_state_names(transition)
   
   n0 <- res[- nrow(res), ]
   n1 <- res[-1, ]

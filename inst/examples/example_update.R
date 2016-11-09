@@ -1,6 +1,6 @@
 mod1 <-
-  define_model(
-    transition_matrix = define_matrix(
+  define_strategy(
+    transition = define_transition(
       .5, .5,
       .1, .9
     ),
@@ -15,8 +15,8 @@ mod1 <-
   )
 
 mod2 <-
-  define_model(
-    transition_matrix = define_matrix(
+  define_strategy(
+    transition = define_transition(
       .5, .5,
       .1, .9
     ),
@@ -30,7 +30,7 @@ mod2 <-
     )
   )
 
-res <- run_models(
+res <- run_model(
   mod1, mod2,
   parameters = define_parameters(
     age_init = 60,

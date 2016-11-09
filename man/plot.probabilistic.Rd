@@ -8,7 +8,7 @@
   1000), ...)
 }
 \arguments{
-\item{x}{Result from \code{\link{run_models}}.}
+\item{x}{Result from \code{\link{run_model}}.}
 
 \item{type}{Type of plot, see details.}
 
