@@ -28,7 +28,7 @@
 #'   demographic groups).
 #'   
 #' @export
-run_models_tabular <- function(location, reference = "REFERENCE.csv",
+run_model_tabular <- function(location, reference = "REFERENCE.csv",
                                run_psa = TRUE, run_demo = TRUE,
                                save = FALSE, overwrite = FALSE) {
   
@@ -170,6 +170,7 @@ eval_models_from_tabular <- function(inputs,
                                      run_demo = TRUE) {
   
   if (options()$heemod.verbose) message("* Running files...")
+  
   list_args <- c(
     inputs$models,
     list(
@@ -188,35 +189,44 @@ eval_models_from_tabular <- function(inputs,
     list_args
   )
   
+  
+  if (! is.null(inputs$model_options$num_cores)) {
+    use_cluster(inputs$model_options$num_cores)
+  }
+  
   if (options()$heemod.verbose) message("** Running models...")
   model_runs <- do.call(
-    run_models,
+    run_model,
     list_args
   )
   
   model_dsa <- NULL
   if (! is.null(inputs$param_info$dsa)) {
     if (options()$heemod.verbose) message("** Running DSA...")
-    model_dsa <- run_sensitivity(
+    model_dsa <- run_dsa(
       model_runs,
       inputs$param_info$dsa_params
     )
   }
-  
+
   model_psa <- NULL
   if (! is.null(inputs$param_info$psa_params) & run_psa) {
     if (options()$heemod.verbose) message("** Running PSA...")
-    model_psa <- run_probabilistic(
+    model_psa <- run_psa(
       model_runs,
       resample = inputs$param_info$psa_params,
       N = inputs$model_options$n
     )
   }
-  
+
   demo_res <- NULL
   if (! is.null(inputs$demographic_file) & run_demo) {
     if (options()$heemod.verbose) message("** Running demographic analysis...")
     demo_res <- stats::update(model_runs, inputs$demographic_file)
+  }
+  
+  if(! is.null(inputs$model_options$num_cores)) {
+    close_cluster()
   }
   
   list(
@@ -391,7 +401,7 @@ create_states_from_tabular <- function(state_info,
 #' \code{prob} is the probability of a transition from the 
 #' \code{from} state to the \code{to} state. Prob can be 
 #' defined in terms of parameters, just as when using 
-#' \code{define_matrix} at the keyboard. Probabilities of 0 
+#' \code{define_transition} at the keyboard. Probabilities of 0 
 #' need not be specified - they will be automatically 
 #' inserted.
 #' 
@@ -449,7 +459,7 @@ create_matrix_from_tabular <- function(trans_probs, state_names,
                      dimnames = list(state_names, state_names))
   prob_mat[as.matrix(trans_probs[, c("to", "from")])] <- trans_probs$prob
   
-  res <- define_matrix_(
+  res <- define_transition_(
     lazyeval::as.lazy_dots(prob_mat, env = df_env),
     state_names = state_names
   )
@@ -514,7 +524,7 @@ create_parameters_from_tabular <- function(param_defs,
     low <- stats::na.omit(param_defs$low)
     high <- stats::na.omit(param_defs$high)
     
-    dsa <- define_sensitivity_(
+    dsa <- define_dsa_(
       par_names = param_sens,
       low_dots = lazyeval::as.lazy_dots(
         setNames(
@@ -543,7 +553,7 @@ create_parameters_from_tabular <- function(param_defs,
     distrib_psa <- stats::na.omit(param_defs$psa)
     
     psa <- do.call(
-      define_distrib,
+      define_psa,
       lapply(
         seq_along(param_psa),
         function(i) {
@@ -576,7 +586,8 @@ create_parameters_from_tabular <- function(param_defs,
 create_options_from_tabular <- function(opt) {
   
   allowed_opt <- c("cost", "effect", "init",
-                   "method", "base", "cycles", "n")
+                   "method", "base", "cycles", "n",
+                   "num_cores")
   if(! inherits(opt, "data.frame"))
     stop("'opt' must be a data frame.")
   
@@ -618,7 +629,10 @@ create_options_from_tabular <- function(opt) {
   if (! is.null(res$effect)) {
     res$effect <- parse(text = res$effect)[[1]]
   }
-  if (options()$heemod.verbose) message(paste(
+  if (! is.null(res$num_cores)){
+    res$num_cores <- parse(text = res$num_cores)[[1]]
+  }
+    if (options()$heemod.verbose) message(paste(
     names(res), unlist(res), sep = " = ", collapse = "\n"
   ))
   res
@@ -636,7 +650,7 @@ create_options_from_tabular <- function(opt) {
 #' @param df_env An environment containing external data.
 #' 
 #' @return A \code{heemod} model as returned by 
-#'   \code{\link{define_model}}.
+#'   \code{\link{define_strategy}}.
 #'   
 #' @keywords internal
 create_model_from_tabular <- function(state_file,
@@ -655,7 +669,7 @@ create_model_from_tabular <- function(state_file,
   TM <- create_matrix_from_tabular(tm_file, get_state_names(states),
                                    df_env = df_env)
   
-  define_model_(transition_matrix = TM, states = states)
+  define_strategy_(transition = TM, states = states)
 }
 
 #' Load Data From a Folder Into an Environment
@@ -920,7 +934,7 @@ is_xls <- function(x) {
 #' Save Model Outputs
 #' 
 #' @param outputs Result from
-#'   \code{\link{run_models_tabular}}.
+#'   \code{\link{run_model_tabular}}.
 #' @param output_dir Subdirectory in which to write output.
 #' @param overwrite Should the outputs be overwritten?
 #'   
@@ -939,18 +953,73 @@ save_outputs <- function(outputs, output_dir, overwrite) {
     return(NULL)
     
   } else {
-    delete_succes <- 0
+    delete_success <- 0
     if(dir.exists(output_dir)) {
-      delete_succes <- unlink(output_dir, recursive = TRUE)
+      delete_success <- unlink(output_dir, recursive = TRUE)
     }
     
-    if (delete_succes == 1) {
+    if (delete_success == 1) {
       warning("Failed to delete output directory.")
       return(NULL)
     }
     
     dir.create(output_dir)
   }
+  
+  ## some csv files
+  if (options()$heemod.verbose) message("** Writing tabular outputs to files ...")
+  utils::write.csv(
+    outputs$demographics,
+    file = file.path(output_dir, "icer_by_group.csv"),
+    row.names = FALSE
+  )
+  
+  all_counts <- 
+    do.call("rbind",
+            lapply(get_model_names(outputs$model_runs),
+                   function(this_name){
+                     data.frame(.model = this_name,
+                                get_counts(outputs$model_runs, m = this_name))
+                   }
+            )
+    )
+  
+  utils::write.csv(
+    all_counts,
+    file = file.path(output_dir, "state_counts.csv"),
+    row.names = FALSE
+  )
+  
+  all_values <- 
+    do.call("rbind",
+            lapply(get_model_names(outputs$model_runs),
+                   function(this_name){
+                     data.frame(.model = this_name,
+                                get_values(outputs$model_runs, m = this_name))
+                   }
+            )
+    )
+  
+  utils::write.csv(
+    all_values,
+    file = file.path(output_dir, "cycle_values.csv"),
+    row.names = FALSE
+  )
+  
+  utils::write.csv(
+    as.data.frame(summary(outputs$dsa)),
+    file = file.path(output_dir, "dsa.csv"),
+    row.names = FALSE
+  )
+  
+  
+  utils::write.csv(
+    outputs$psa,
+    file = file.path(output_dir, "psa_values.csv"),
+    row.names = FALSE
+  )
+  
+    
   
   ## plots about individual models
   model_names <- names(outputs$models)
@@ -966,32 +1035,29 @@ save_outputs <- function(outputs, output_dir, overwrite) {
     save_graph(this_plot, output_dir, this_file)
   }
   
-  base_model <- get_base_model(outputs$model_runs)
+  lowest_model <- get_lowest_model(outputs$model_runs)
   
   ## plots about differences between models
   if (options()$heemod.verbose) message("** Generating plots with model differences...")
-  for(this_model in setdiff(model_names, base_model)){
+  for(this_model in setdiff(model_names, lowest_model)){
     this_plot <- plot(outputs$dsa, type = "diff", model = this_model)
-    this_file <- paste("dsa", this_model, "vs", base_model, sep = "_")
+    this_file <- paste("dsa", this_model, "vs", lowest_model, sep = "_")
+
     save_graph(this_plot, output_dir, this_file)
     
-    this_plot <- plot(outputs$psa, model = this_model)
-    this_file <- paste("psa", this_model, "vs", base_model, sep = "_")
-    save_graph(this_plot, output_dir, this_file)
+    if(!is.null(outputs$psa)){
+      this_plot <- plot(outputs$psa, model = this_model)
+      this_file <- paste("psa", this_model, "vs", lowest_model, sep = "_")
+      save_graph(this_plot, output_dir, this_file)
+    }
   }
-  
-  ## acceptability curve
-  if (options()$heemod.verbose) message("** Generating acceptability curve...")
-  this_plot <- plot(outputs$psa, type = "ac")
-  save_graph(this_plot,
-             output_dir, "acceptability")
-  
-  if (options()$heemod.verbose) message("** Writing ICER by group to a file...")
-  utils::write.csv(
-    outputs$demographics,
-    file = file.path(output_dir, "icer_by_group.csv"),
-    row.names = FALSE
-  )
+  if(!is.null(outputs$psa)){
+    ## acceptability curve
+    if (options()$heemod.verbose) message("** Generating acceptability curve...")
+    this_plot <- plot(outputs$psa, type = "ac")
+    save_graph(this_plot,
+               output_dir, "acceptability")
+  }
   invisible(NULL)
 }
 

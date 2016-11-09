@@ -17,7 +17,7 @@ path or parsed file).}
 }
 \value{
 A \code{heemod} model as returned by 
-  \code{\link{define_model}}.
+  \code{\link{define_strategy}}.
 }
 \description{
 Calls \code{\link{create_states_from_tabular}} and

@@ -1,8 +1,8 @@
 # running a single model
 
 mod1 <-
-  define_model(
-    transition_matrix = define_matrix(
+  define_strategy(
+    transition = define_transition(
       .5, .5,
       .1, .9
     ),
@@ -17,7 +17,7 @@ mod1 <-
   )
 
 
-res <- run_models(
+res <- run_model(
   mod1,
   init = c(100, 0),
   cycles = 2,
@@ -27,8 +27,8 @@ res <- run_models(
 
 # running several models
 mod2 <-
-  define_model(
-    transition_matrix = define_matrix(
+  define_strategy(
+    transition = define_transition(
       .5, .5,
       .1, .9
     ),
@@ -44,7 +44,7 @@ mod2 <-
   )
 
 
-res2 <- run_models(
+res2 <- run_model(
   mod1, mod2,
   init = c(100, 0),
   cycles = 10,

@@ -28,7 +28,7 @@ The data frame \code{trans_probs} should have columns
 \code{prob} is the probability of a transition from the 
 \code{from} state to the \code{to} state. Prob can be 
 defined in terms of parameters, just as when using 
-\code{define_matrix} at the keyboard. Probabilities of 0 
+\code{define_transition} at the keyboard. Probabilities of 0 
 need not be specified - they will be automatically 
 inserted.
 

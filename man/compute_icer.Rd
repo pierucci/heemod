@@ -7,7 +7,7 @@
 compute_icer(x, model_order = order(x$.effect))
 }
 \arguments{
-\item{x}{Result of \code{\link{run_models}}.}
+\item{x}{Result of \code{\link{run_model}}.}
 
 \item{model_order}{Order in which the models should be
 sorted. Default: by increasing effect.}

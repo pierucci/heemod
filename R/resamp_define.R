@@ -23,7 +23,7 @@
 #' 
 #' @example inst/examples/example_define_resample.R
 #'   
-define_distrib <- function(...,
+define_psa <- function(...,
                             correlation) {
   .dots <- list(...)
   
@@ -53,11 +53,11 @@ define_distrib <- function(...,
     correlation <- diag(length(list_qdist))
   }
   
-  define_distrib_(list_qdist, list_multi, correlation)
+  define_psa_(list_qdist, list_multi, correlation)
 }
 
-#' @rdname define_distrib
-define_distrib_ <- function(list_qdist, list_multi, correlation) {
+#' @rdname define_psa
+define_psa_ <- function(list_qdist, list_multi, correlation) {
   
   if (any(duplicated(names(list_qdist)))) {
     stop("Some parameter names are duplicated.")

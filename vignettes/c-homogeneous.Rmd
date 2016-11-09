@@ -17,51 +17,49 @@ library(ggplot2)
 
 The most simple Markov models in health economic evaluation are models were transition probabilities between states do not change with time. Those are called *homogeneous* or *time-homogeneous* Markov models.
 
-If you are not familiar with `heemod`, first consult the introduction vignette `vignette("introduction", package = "heemod")`.
+## Model description
 
-# Model description
-
-In this example we will model the cost effectiveness of lamivudine/zidovudine combination therapy in HIV infection ([Chancellor, 1997](https://www.ncbi.nlm.nih.gov/pubmed/10169387)) further described in [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do), page 32. For the sake of simplicity we will not reproduce exactly the analysis from the book. See vignette `vignette("reproduction", package = "heemod")` for an exact reproduction of the analysis.
+In this example we will model the cost effectiveness of lamivudine/zidovudine combination therapy in HIV infection ([Chancellor, 1997](https://www.ncbi.nlm.nih.gov/pubmed/10169387)) further described in [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do), page 32. For the sake of simplicity we will not reproduce exactly the analysis from the book. See vignette `vignette("i-reproduction", "heemod")` for an exact reproduction of the analysis.
 
 This model aims to compare costs and utilities of two treatment strategies, *monotherapy* and *combined therapy*.
 
-Four states are described, from best to worst healtwise:
+Four states are described, from best to worst health-wise:
 
   * __A__: CD4 cells > 200 and < 500 cells/mm3;
   * __B__: CD4 < 200 cells/mm3, non-AIDS;
   * __C__: AIDS;
   * __D__: Death.
 
-# Transition probabilities
+## Transition probabilities
 
-Transition probabilities for the monotherapy study group are rather simple to implement:
+Transition probabilities for the monotherapy study group are rather simple to implement with `define_transition()`:
 
 ```{r}
 mat_mono <-
-  define_matrix(
+  define_transition(
     .721, .202, .067, .010,
-    .000, .581, .407, .012,
-    .000, .000, .750, .250,
-    .000, .000, .000, 1.00
+    0,    .581, .407, .012,
+    0,    0,    .750, .250,
+    0,    0,    0,    1
   )
 mat_mono
 ```
 
-The combined therapy group has its transition probabilities multiplied by `rr`, the relative risk of event for the population treated by combined therapy. Since $rr < 1$, the combined therapy group has less chance to transition to worst health states.
+The combined therapy group has its transition probabilities multiplied by $rr = 0.509$, the relative risk of event for the population treated by combined therapy. Since $rr < 1$, the combined therapy group has less chance to transition to worst health states.
 
-The probabilities to stay in the same state are equal to $1 - \sum p_{trans}$ where $p_{trans}$ are the probabilities to change to another state (because all transition probabilities from a given state must sum to 1).
+The probabilities to stay in the same state are equal to $1 - \sum P_{trans}$ where $P_{trans}$ are the probabilities to change to another state (because all transition probabilities from a given state must sum to 1).
 
-We use the alias `C` as a convenient way to specify the probability complement, equal to `1 - sum(row probabilities)`
+We use the alias `C` as a convenient way to specify the probability complement, equal to $1 - \sum P_{trans}$.
 
 ```{r}
 rr <- .509
 
 mat_comb <-
-  define_matrix(
-    C,    .202*rr, .067*rr, .010*rr,
-    .000, C,       .407*rr, .012*rr,
-    .000, .000,    C,       .250*rr,
-    .000, .000,    .000,    1.00
+  define_transition(
+    C, .202*rr, .067*rr, .010*rr,
+    0, C,       .407*rr, .012*rr,
+    0, 0,       C,       .250*rr,
+    0, 0,       0,       1
   )
 mat_comb
 ```
@@ -78,7 +76,7 @@ And the combined therapy group:
 plot(mat_comb)
 ```
 
-# State values
+## State values
 
 The costs of lamivudine and zidovudine are defined:
 
@@ -91,11 +89,10 @@ In addition to drugs costs (called `cost_drugs` in the model), each state is ass
 
 Efficacy in this study is measured in terms of life expectancy (called `life_year` in the model). Each state thus has a value of 1 life year per year, except death who has a value of 0. Life-years are not discounted in this example.
 
-For example state A can be defined with `define_state`:
+For example state A can be defined with `define_state()`:
 
 ```{r}
-A_mono <-
-  define_state(
+A_mono <- define_state(
     cost_health = 2756,
     cost_drugs = cost_zido,
     cost_total = discount(cost_health + cost_drugs, .06),
@@ -107,22 +104,19 @@ A_mono
 The other states for the monotherapy treatment group can be specified in the same way:
 
 ```{r}
-B_mono <-
-  define_state(
+B_mono <- define_state(
     cost_health = 3052,
     cost_drugs = cost_zido,
     cost_total = discount(cost_health + cost_drugs, .06),
     life_year = 1
   )
-C_mono <-
-  define_state(
+C_mono <- define_state(
     cost_health = 9007,
     cost_drugs = cost_zido,
     cost_total = discount(cost_health + cost_drugs, .06),
     life_year = 1
   )
-D_mono <-
-  define_state(
+D_mono <- define_state(
     cost_health = 0,
     cost_drugs = 0,
     cost_total = discount(cost_health + cost_drugs, .06),
@@ -133,29 +127,25 @@ D_mono <-
 Similarly, for the the combined therapy treatment group, only `cost_drug` differs from the monotherapy treatment group:
 
 ```{r}
-A_comb <-
-  define_state(
+A_comb <- define_state(
     cost_health = 2756,
     cost_drugs = cost_zido + cost_lami,
     cost_total = discount(cost_health + cost_drugs, .06),
     life_year = 1
   )
-B_comb <-
-  define_state(
-    cost_health = 3052 + cost_lami,
-    cost_drugs = cost_zido,
+B_comb <- define_state(
+    cost_health = 3052,
+    cost_drugs = cost_zido + cost_lami,
     cost_total = discount(cost_health + cost_drugs, .06),
     life_year = 1
   )
-C_comb <-
-  define_state(
-    cost_health = 9007 + cost_lami,
-    cost_drugs = cost_zido,
+C_comb <- define_state(
+    cost_health = 9007,
+    cost_drugs = cost_zido + cost_lami,
     cost_total = discount(cost_health + cost_drugs, .06),
     life_year = 1
   )
-D_comb <-
-  define_state(
+D_comb <- define_state(
     cost_health = 0,
     cost_drugs = 0,
     cost_total = discount(cost_health + cost_drugs, .06),
@@ -163,12 +153,12 @@ D_comb <-
   )
 ```
 
-# Model definition
+## Strategy definitions
 
-Models can now be defined by combining a transition matrix and a state list with `define_model`:
+Strategies can now be defined by combining a transition matrix and a state list with `define_strategy()`:
 
 ```{r}
-mod_mono <- define_model(
+mod_mono <- define_strategy(
   transition_matrix = mat_mono,
   A_mono,
   B_mono,
@@ -181,7 +171,7 @@ mod_mono
 For the combined therapy model:
 
 ```{r}
-mod_comb <- define_model(
+mod_comb <- define_strategy(
   transition_matrix = mat_comb,
   A_comb,
   B_comb,
@@ -190,34 +180,36 @@ mod_comb <- define_model(
 )
 ```
 
-# Running models
+## Running the model
 
-Both models can then be run for 20 years with `run_model`. Models are given simple names (`mono` and `comb`) in order to facilitate result interpretation.
+Both strategies can then be combined in a model and run for 50 years with `run_model()`. Strategies are given names (`mono` and `comb`) in order to facilitate result interpretation.
 
 ```{r}
-res_mod <- run_models(
+res_mod <- run_model(
   mono = mod_mono,
   comb = mod_comb,
-  cycles = 20,
+  cycles = 50,
   cost = cost_total,
   effect = life_year
 )
 ```
 
-By default models are run for one person starting in the first state (here state A).
+By default models are run for 1000 persons starting in the first state (here state **A**).
 
-Model values can then be compared with `summary`:
+## Result interpretation
+
+Strategy values can then be compared with `summary()`:
 
 ```{r}
 summary(res_mod)
 ```
 
-The incremental cost-effectiveness ratio of the combiend therapy strategy is thus £6335 per life-year gained.
+The incremental cost-effectiveness ratio of the combiend therapy strategy is thus £5,100 per life-year gained.
 
-The counts per state can be plotted for the monotherapy group:
+The counts per state can be plotted by model:
 
 ```{r, fig.align='center', fig.width=6, message=FALSE}
-plot(res_mod, model = "mono", type = "counts") +
+plot(res_mod, type = "counts", panel = "by_model") +
   xlab("Time") +
   theme_minimal() +
   scale_color_brewer(
@@ -226,14 +218,14 @@ plot(res_mod, model = "mono", type = "counts") +
   )
 ```
 
-And the combined therapy group:
+Or by state:
 
 ```{r, fig.align='center', fig.width=6, message=FALSE}
-plot(res_mod, model = "comb", type = "counts") +
+plot(res_mod, type = "counts", panel = "by_state") +
   xlab("Time") +
   theme_minimal() +
   scale_color_brewer(
-    name = "State",
+    name = "Model",
     palette = "Set1"
   )
 ```

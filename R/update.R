@@ -18,10 +18,10 @@
 #' or \code{"icer"} to plot the heterogeneity of the
 #' respective values. Furthermore \code{"ce"} and
 #' \code{"count"} can produce from the combined model plots
-#' similar to those of \code{\link{run_models}}.
+#' similar to those of \code{\link{run_model}}.
 #' 
 #' @name update-model
-#' @param object The result of \code{\link{run_models}}.
+#' @param object The result of \code{\link{run_model}}.
 #' @param newdata A \code{data.frame} of new parameter sets,
 #'   one column per parameter and one row per parameter set.
 #'   An optional \code{.weights} column can be included for
@@ -43,10 +43,10 @@
 #' 
 #' @example inst/examples/example_update.R
 #'   
-update.run_models <- function(object, newdata, ...) {
+update.run_model <- function(object, newdata, ...) {
   
-  if (! any(class(object) %in% "run_models")) {
-    stop("'object' must be the result of 'run_models()'.")
+  if (! any(class(object) %in% "run_model")) {
+    stop("'object' must be the result of 'run_model()'.")
   }
   
   has_weights <- ".weights" %in% names(newdata)
@@ -67,7 +67,8 @@ update.run_models <- function(object, newdata, ...) {
     suppressMessages({
       list_res <- c(
         list_res,
-        list(eval_model_newdata(object, model = n, newdata = newdata))
+        list(eval_model_newdata(object, model = n, 
+                                newdata = newdata))
       )
     })
   }
@@ -124,13 +125,16 @@ print.updated_models <- function(x, ...) {
 #' @rdname update-model
 plot.updated_models <- function(x, model,
                                 type = c("cost", "effect", "icer",
-                                         "counts", "ce"),
+                                         "counts", "ce", "values"),
                                 ...) {
   type <- match.arg(type)
   
-  if (type %in% c("counts", "ce")) {
+  if (type %in% c("counts", "ce", "values")) {
+    if(missing(model)) model <- "all"
     return(graphics::plot(attr(x, "combined_models"),
-                          type = type, model = model))
+                          type = type, model = model,
+                          ...) 
+           )
   }
   
   check_model_index(

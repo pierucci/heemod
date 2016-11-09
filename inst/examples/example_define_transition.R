@@ -1,7 +1,7 @@
 
 # simple 3x3 transition matrix
 
-mat_1 <- define_matrix(
+mat_1 <- define_transition(
   .2, 0, .8,
   0, .1, .9,
   0, 0, 1
@@ -12,16 +12,16 @@ plot(mat_1)
 
 # referencing parameters
 # rr must be present in a parameter object
-# that must later be linked with define_model
+# that must later be linked with define_strategy
 
-define_matrix(
+define_transition(
   .5 - rr, rr,
   .4, .6
 )
 
 # can also use C
 
-define_matrix(
+define_transition(
   C, rr,
   .4, .6
 )
@@ -40,7 +40,7 @@ modify(
 # this matrix will generate an error later,
 # during model evaluation
 
-define_matrix(
+define_transition(
   .5, 3,
   -1, 2
 )

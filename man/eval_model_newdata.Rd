@@ -8,13 +8,13 @@ Values}
 eval_model_newdata(x, model = 1, newdata)
 }
 \arguments{
-\item{x}{Result from \code{\link{run_models}}.}
+\item{x}{Result from \code{\link{run_model}}.}
 
 \item{model}{Name or index of model to recompute.}
 
 \item{newdata}{a data.frame whose names match parameters 
 names. \code{model} will be evaluated iteratively, 
-taking successivel values from each row.}
+taking successive values from each row.}
 }
 \value{
 A data.frame containing the values of 
@@ -36,17 +36,17 @@ par1 <- define_parameters(
   b = 1 / (markov_cycle + a)
 )
 
-mat1 <- define_matrix(
+mat1 <- define_transition(
   1-b, b,
   0, 1
 )
-mod1 <- define_model(
-  transition_matrix = mat1,
+mod1 <- define_strategy(
+  transition = mat1,
   define_state(var = a),
   define_state(var = a * markov_cycle)
 )
 
-res1 <- run_models(
+res1 <- run_model(
   mod1,
   parameters = par1,
   cycles = 5,

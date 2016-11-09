@@ -6,12 +6,12 @@ test_that(
       a = .1,
       b = 1 / (markov_cycle + 1)
     )
-    mat1 <- define_matrix(
+    mat1 <- define_transition(
       state_names = c("X1", "X2"),
       1-a, a,
       1-b, b
     )
-    mat2 <- define_matrix(
+    mat2 <- define_transition(
       state_names = c("X1", "X3"),
       1-a, a,
       1-b, b
@@ -25,8 +25,8 @@ test_that(
       y = 1726
     )
     
-    mod1 <- define_model(
-      transition_matrix = mat1,
+    mod1 <- define_strategy(
+      transition = mat1,
       X1 = s1,
       X2 = s2
     )
@@ -42,94 +42,101 @@ test_that(
       a = 456,
       b = 1029
     )
-    mod2 <- define_model(
-      transition_matrix = mat1,
+    mod2 <- define_strategy(
+      transition = mat1,
       X1 = s3,
       X2 = s4
     )
-    mod3 <- define_model(
-      transition_matrix = mat2,
+    mod3 <- define_strategy(
+      transition = mat2,
       X1 = s3,
       X3 = s4
     )
-    mod4 <- define_model(
-      transition_matrix = mat1,
+    mod4 <- define_strategy(
+      transition = mat1,
       X1 = s5,
       X2 = s5
     )
     expect_error(
-      run_models(
+      run_model(
         mod1, mod2,
         parameters = par1,
         init = c(1, 2, 3)
       )
     )
     expect_error(
-      run_models(
+      run_model(
         mod1, mod2,
         parameters = par1,
         init = c(X3 = 1, X4 = 2)
       )
     )
     expect_error(
-      run_models(
+      run_model(
         mod1, mod2,
         parameters = par1,
         init = c(-1, 0)
       )
     )
     expect_error(
-      run_models(
+      run_model(
         mod1, mod2,
         parameters = par1,
         init = c(1, 0, 0)
       )
     )
     expect_error(
-      run_models(
+      run_model(
         mod1, mod2,
         parameters = par1,
         init = c(NA, 1)
       )
     )
     expect_error(
-      run_models(
+      run_model(
         mod1, mod2,
         parameters = par1,
         cycles = 0
       )
     )
     expect_error(
-      run_models(
+      run_model(
+        mod1, mod2,
+        parameters = par1,
+        cycles = 11.5
+      )
+    )
+    expect_error(
+      run_model(
         mod1,
         parameters = par1, list()
       )
     )
     expect_error(
-      run_models(
+      run_model(
         mod1, mod2,
         parameters = par1,
         method = "zzz"
       )
     )
     expect_error(
-      run_models(
+      run_model(
         mod1, mod3, parameters = par1
       )
     )
     expect_error(
-      run_models(
+      run_model(
         mod1, mod4, parameters = par1
       )
     )
     expect_warning(
-      run_models(
+      run_model(
         mod1, mod2,
         parameters = par1
       )
     )
     expect_warning(
-      run_models(
+      run_model(
         mod1, mod2,
         parameters = par1,
         cost = x
@@ -139,12 +146,12 @@ test_that(
 )
 
 test_that(
-  "run_models behaves as expected", {
+  "run_model behaves as expected", {
     par1 <- define_parameters(
       a = .1,
       b = 1 / (markov_cycle + 1)
     )
-    mat1 <- define_matrix(
+    mat1 <- define_transition(
       state_names = c("X1", "X2"),
       1-a, a,
       1-b, b
@@ -157,8 +164,8 @@ test_that(
       x = 987,
       y = 1726
     )
-    mod1 <- define_model(
-      transition_matrix = mat1,
+    mod1 <- define_strategy(
+      transition = mat1,
       X1 = s1,
       X2 = s2
     )
@@ -170,34 +177,34 @@ test_that(
       x = 456,
       y = 1029
     )
-    mod2 <- define_model(
-      transition_matrix = mat1,
+    mod2 <- define_strategy(
+      transition = mat1,
       X1 = s3,
       X2 = s4
     )
     
     expect_identical(
-      run_models(mod1, mod2,
+      run_model(mod1, mod2,
                  parameters = par1, init = c(1000L, 0L), cost = x, effect = y),
-      run_models(mod1, mod2,
+      run_model(mod1, mod2,
                  parameters = par1, cost = x, effect = y)
     )
     expect_identical(
-      run_models(mod1, mod2,
+      run_model(mod1, mod2,
                  parameters = par1, cost = x, effect = y),
-      run_models(I = mod1, II = mod2,
+      run_model(I = mod1, II = mod2,
                  parameters = par1, cost = x, effect = y)
     )
     expect_warning(
-      run_models(I = mod1, mod2,
+      run_model(I = mod1, mod2,
                  parameters = par1, cost = x, effect = y)
     )
     expect_warning(
-      summary(run_models(mod1, mod2,
+      summary(run_model(mod1, mod2,
                          parameters = par1))
     )
     expect_output(
-      str(run_models(mod1, mod2,
+      str(run_model(mod1, mod2,
                      parameters = par1, cost = x, effect = y,
                      method = "beginning")),
       '2 obs. of  5 variables:
@@ -209,7 +216,7 @@ test_that(
       fixed = TRUE
     )
     s_mod <- summary(
-      run_models(
+      run_model(
         mod1, mod2,
         parameters = par1, cost = x, effect = y,
         method = "beginning"))
@@ -226,16 +233,16 @@ test_that(
       round(s_mod$res$y), c(283300, 891300)
     )
     
-    res_b <- run_models(mod1, mod2,
+    res_b <- run_model(mod1, mod2,
                         parameters = par1, cost = x, effect = y,
                         method = "beginning")
-    res_e <- run_models(mod1, mod2,
+    res_e <- run_model(mod1, mod2,
                         parameters = par1, cost = x, effect = y,
                         method = "end")
-    res_h <- run_models(mod1, mod2,
+    res_h <- run_model(mod1, mod2,
                         parameters = par1, cost = x, effect = y,
                         method = "half-cycle")
-    res_l <- run_models(mod1, mod2,
+    res_l <- run_model(mod1, mod2,
                         parameters = par1, cost = x, effect = y,
                         method = "life-table")
     
@@ -245,26 +252,26 @@ test_that(
     
     expect_output(
       print(res_b),
-      "II 624.6    608 1.027303"
+      "1.027303"
     )
     expect_output(
       print(res_e),
-      "II  753    753    1"
+      "753"
     )
     expect_output(
       print(res_h),
-      "II 1501.65 1476.75 1.016861"
+      "1.016861"
     )
     expect_output(
       print(res_l),
-      "II 688.8  680.5 1.012197"
+      "1.012197"
     )
     expect_error(
-      run_models(mod1, mod2,
+      run_model(mod1, mod2,
                  parameters = par1, cost = x, effect = y,
                  method = "testtest")
     )
-    rm <- run_models(mod1, mod2,
+    rm <- run_model(mod1, mod2,
                      parameters = par1, cost = x, effect = y,
                      cycles = 5)
     expect_equivalent(
@@ -296,7 +303,7 @@ test_that("Discounting", {
     c2 = 876,
     c3 = 1726
   )
-  mat1 <- define_matrix(
+  mat1 <- define_transition(
     state_names = c("X1", "X2"),
     1-a, a,
     1-b, b
@@ -310,8 +317,8 @@ test_that("Discounting", {
     x = 987,
     y = 1726
   )
-  mod1 <- define_model(
-    transition_matrix = mat1,
+  mod1 <- define_strategy(
+    transition = mat1,
     X1 = s1,
     X2 = s2
   )
@@ -324,8 +331,8 @@ test_that("Discounting", {
     x = 456,
     y = 1029
   )
-  mod2 <- define_model(
-    transition_matrix = mat1,
+  mod2 <- define_strategy(
+    transition = mat1,
     X1 = s3,
     X2 = s4
   )
@@ -334,8 +341,8 @@ test_that("Discounting", {
     x = discount(c1, 0),
     y = discount(c3, 0)
   )
-  mod3 <- define_model(
-    transition_matrix = mat1,
+  mod3 <- define_strategy(
+    transition = mat1,
     X1 = s1,
     X2 = s5
   )
@@ -348,22 +355,22 @@ test_that("Discounting", {
     x = 456,
     y = 1029
   )
-  mod4 <- define_model(
-    transition_matrix = mat1,
+  mod4 <- define_strategy(
+    transition = mat1,
     X1 = s6,
     X2 = s4
   )
-  res <- run_models(mod1, mod2, cycles = 10,
+  res <- run_model(mod1, mod2, cycles = 10,
                     parameters = par1, cost = x, effect = y,
                     method = "beginning")
   expect_output(
     print(res),
     "II 3292.352 4193.422 0.7851231"
   )
-  res1 <- run_models(mod1, mod2, cycles = 10,
+  res1 <- run_model(mod1, mod2, cycles = 10,
                      parameters = par1, cost = x, effect = y,
                      method = "beginning")
-  res2 <- run_models(mod3, mod2, cycles = 10,
+  res2 <- run_model(mod3, mod2, cycles = 10,
                      parameters = par1, cost = x, effect = y,
                      method = "beginning")
   expect_output(
@@ -378,7 +385,7 @@ II 6437001 7136374"
   )
   
   expect_error(
-    run_models(mod1, mod4, cycles = 10,
+    run_model(mod1, mod4, cycles = 10,
                parameters = par1, cost = x, effect = y)
   )
 })
@@ -390,7 +397,7 @@ test_that(
       a = .1,
       b = 1 / (markov_cycle + 1)
     )
-    mat1 <- define_matrix(
+    mat1 <- define_transition(
       state_names = c("X1", "X2"),
       1-a, a,
       1-b, b
@@ -403,8 +410,8 @@ test_that(
       x = 987,
       y = 1726
     )
-    mod1 <- define_model(
-      transition_matrix = mat1,
+    mod1 <- define_strategy(
+      transition = mat1,
       X1 = s1,
       X2 = s2
     )
@@ -416,13 +423,13 @@ test_that(
       x = 456,
       y = 1029
     )
-    mod2 <- define_model(
-      transition_matrix = mat1,
+    mod2 <- define_strategy(
+      transition = mat1,
       X1 = s3,
       X2 = s4
     )
     
-    res <- run_models(
+    res <- run_model(
       mod1, mod2,
       parameters = par1, init = c(1000L, 0L),
       cost = x, effect = y)

@@ -1,5 +1,5 @@
 to_char_uneval_matrix <- function(x) {
-  ex <- unlist(lapply(x, function(y) deparse(y$expr)))
+  ex <- unlist(lapply(x, function(y) deparse(y$expr, width.cutoff = 500)))
   ex[ex == "0"] <- ""
   matrix(ex,
          byrow = TRUE,
@@ -11,7 +11,7 @@ to_char_uneval_matrix <- function(x) {
 #' @export
 print.uneval_matrix <- function(x, ...) {
   cat(sprintf(
-    "An unevaluated matrix, %i states.\n\n",
+    "A transition matrix, %i states.\n\n",
     get_matrix_order(x)
   ))
   
@@ -25,7 +25,7 @@ print.uneval_matrix <- function(x, ...) {
 #' @export
 print.eval_matrix <- function(x, ...) {
   cat(sprintf(
-    "An evaluated matrix, %i states, %i markov cycles.\n\n",
+    "An evaluated transition matrix, %i states, %i markov cycles.\n\n",
     get_matrix_order(x),
     length(x)
   ))
@@ -41,7 +41,7 @@ print.eval_matrix <- function(x, ...) {
 }
 
 #' @export
-#' @rdname define_matrix
+#' @rdname define_transition
 plot.uneval_matrix <- function(x, relsize = .75,
                                shadow.size = 0,
                                latex = TRUE, ...) {

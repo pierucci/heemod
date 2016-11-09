@@ -67,7 +67,7 @@ modify_.state <- function(.OBJECT, .dots) {
 #' \code{state} objects.
 #' 
 #' State names have to correspond to those specified through
-#' \code{\link{define_matrix}}.
+#' \code{\link{define_transition}}.
 #' 
 #' All states should have the same value names.
 #' 

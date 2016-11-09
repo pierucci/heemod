@@ -4,8 +4,8 @@ context("Probabilistic analysis")
 test_that(
   "Probabilistic analysis works", {
     mod1 <-
-      define_model(
-        transition_matrix = define_matrix(
+      define_strategy(
+        transition = define_transition(
           .5, .5,
           .1, .9
         ),
@@ -20,8 +20,8 @@ test_that(
         
       )
     mod2 <-
-      define_model(
-        transition_matrix = define_matrix(
+      define_strategy(
+        transition = define_transition(
           .5, .5,
           .1, .9
         ),
@@ -36,7 +36,7 @@ test_that(
         
       )
     
-    res2 <- run_models(
+    res2 <- run_model(
       mod1, mod2,
       parameters = define_parameters(
         age_init = 60,
@@ -50,7 +50,7 @@ test_that(
       method = "beginning"
     )
     
-    rsp1 <- define_distrib(
+    rsp1 <- define_psa(
       age_init ~ normal(60, 10),
       cost_init ~ normal(1000, 100),
       
@@ -59,7 +59,7 @@ test_that(
         .4, 1
       ), byrow = TRUE, ncol = 2)
     )
-    rsp2 <- define_distrib(
+    rsp2 <- define_psa(
       age_init ~ normal(60, 10),
       cost_init ~ normal(1000, 100),
       
@@ -68,20 +68,20 @@ test_that(
     
     set.seed(1)
     # with run_model result
-    ndt1 <- run_probabilistic(res2, resample = rsp1, N = 10)
-    ndt2 <- run_probabilistic(res2, resample = rsp1, N = 1)
+    ndt1 <- run_psa(res2, resample = rsp1, N = 10)
+    ndt2 <- run_psa(res2, resample = rsp1, N = 1)
     
     expect_error(
-      run_probabilistic(res2, resample = rsp1, N = NULL)
+      run_psa(res2, resample = rsp1, N = NULL)
     )
     
     plot(ndt1, type = "ce")
     plot(ndt1, type = "ac")
     
     set.seed(1)
-    ndt3 <- run_probabilistic(res2, resample = rsp2, N = 10)
+    ndt3 <- run_psa(res2, resample = rsp2, N = 10)
     
-    x <- define_distrib(
+    x <- define_psa(
       rate1 + rate2 + rate3 ~ multinom(10, 50, 40),
       a + b ~ multinom(15, 30)
     )
@@ -133,7 +133,7 @@ test_that(
       fixed = TRUE
     )
     
-    rsp3 <- define_distrib(
+    rsp3 <- define_psa(
       age_init ~ lognormal(60, 10),
       cost_init ~ make_gamma (1000, 100),
       p_trans ~ prop(.5, 100),
@@ -149,7 +149,7 @@ test_that(
 1 64.82732  1105.112    0.56 0.4842654
 2 77.79468  1164.304    0.57 0.6539179"
     )
-    res2 <- suppressWarnings(run_models(
+    res2 <- suppressWarnings(run_model(
       mod1, mod2,
       parameters = define_parameters(
         age_init = 60,
@@ -160,9 +160,9 @@ test_that(
       cycles = 10,
       method = "beginning"
     ))
-    expect_error(run_probabilistic(res3, resample = rsp2, N = 10))
+    expect_error(run_psa(res3, resample = rsp2, N = 10))
     expect_error(
-      define_distrib(
+      define_psa(
         age_init ~ normal(60, 10),
         age_init ~ normal(1000, 100),
         

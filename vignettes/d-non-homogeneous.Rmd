@@ -14,18 +14,9 @@ vignette: >
 library(heemod)
 ```
 
-In more complex Markov models in health economic evaluation, transition probabilities between states can vary with time. These models are called *non-homogeneous* or *time-inhomogeneous* Markov models. A further distinction can be made depending on whether:
+## Model description
 
-  1. transition probabilities depend on how long __the entire model__ has been running (model-time variation): this situation can be modelled with a non-homogeneous Markov model;
-  2. transition probabilities depend on how long __an individual__ has been in a state (individual-time variation): this situation usually needs to be modelled with a microsimulation.
-
-However in some special cases non-homogeneous Markov models can be used in situation 2, when the state with transition probabilities depending on individual-time is the starting state __and__ it is not possible to go back to that state after having left it. In this situation individual-time is equivalent to model-time. This is the case in the following example.
-
-If you are not familiar with `heemod`, first consult the introduction vignette `vignette("introduction", package = "heemod")`.
-
-# Model description
-
-This example is an implementation of the assessment of a new total hip replacement (THR) technology described in chapter 3.5 of [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do). A more detailed report is available [at this location](https://www.york.ac.uk/media/che/documents/papers/technicalpapers/CHE%20Technical%20Paper%2028.pdf), event though this reports goes a bit further in the analysis. For the sake of simplicity we will not reproduce exactly the analysis from the book. See vignette `vignette("reproduction", package = "heemod")` for an exact reproduction of the analysis.
+This example is an implementation of the assessment of a new total hip replacement (THR) technology described in chapter 3.5 of [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do). A more detailed report is available [at this location](https://www.york.ac.uk/media/che/documents/papers/technicalpapers/CHE%20Technical%20Paper%2028.pdf). This reports goes a bit further in the analysis. For the sake of simplicity we will not reproduce exactly the analysis from the book. See vignette `vignette("i-reproduction", "heemod")` for an exact reproduction.
 
 This model has 5 states:
 
@@ -38,7 +29,7 @@ This model has 5 states:
 Two transition probabilities are time-varying in this model:
 
   * Probability of death by another cause increases with age;
-  * Probability of primary THR revision increases with time.
+  * Probability of primary THR revision changes with time.
 
 ## Other-Cause death
 
@@ -46,7 +37,7 @@ Other-cause death probabilities (mortality rate `mr`) for the United Kingdom is 
 
 ## THR revision
 
-- Primary THR revision probability for the standard THR, called `standardRR` increases with time with the following formula (a [Weibull distribution](https://en.wikipedia.org/wiki/Weibull_distribution)):
+  * Primary THR revision probability for the standard THR, called `standardRR` increases with time with the following formula (a [Weibull distribution](https://en.wikipedia.org/wiki/Weibull_distribution)):
 
 $$
 P_{revision} = 1 - \exp(\lambda \times ((t-1)^\gamma-t^\gamma))
@@ -58,28 +49,29 @@ $$
 \lambda = exp(cons + ageC \times age + maleC \times sex)
 $$
 
-Where `age` and `sex` (female = 0, male = 1) are individual characteristics, `cons` = -5.49094, `ageC` = -0.0367 and `maleC` = 0.768536.
+Where $age$ and $sex$ (female = *0*, male = *1*) are individual characteristics, $cons = -5.49094$, $ageC = -0.0367$ and $maleC = 0.768536$.
 
-- For the NP1 procedure the standard procedure revision probability `standardRR` is modified by the relative risk `rrNP1` = 0.260677.
+  * For the NP1 procedure the standard procedure revision probability `standardRR` is modified by the relative risk $rrNP1 = 0.260677$.
 
 $$
-P_{revision} = 1 - \exp(\lambda \times rrNP1 \times ((t-1)^\gamma-t^\gamma))
+P_{revision} = 1 - \exp(\lambda \times rr \times NP1 \times ((t-1)^\gamma-t^\gamma))
 $$
 
-- Revision THR re-revision (`rrr`) probability is set to be constant at 0.04 per year.
+  * Revision THR re-revision (`rrr`) probability is set to be constant at *0.04* per year.
 
-# Parameters definition
+## Parameter definition
 
-The key element to specify time-varying elements in `heemod` is through the use of a **package-defined variable**, `markov_model`. This variable takes increasing values with each cycles, starting from 1. For example the age of individuals at any moment can be defined as `Initial age + markov_cycle`.
+The key element to specify time-varying elements in `heemod` is through the use of the **package-defined variables** `markov_cycle` and `state_cycle`. See vignette `vignette("b-time-dependency", "heemod")` for more details.
 
-In order to build this more complex Markov model, parameters need to be defined through `define_parameters()`. The equations decribed in the previous section can be written easily, here for a female population (`sex` = 0) starting at 60 years old (`age_init` = 60).
+In order to build this more complex Markov model, parameters need to be defined through `define_parameters()` (for 2 reasons: to keep the transition matrix readable, and to avoid repetition by re-using parameters between strategies).
 
-Note that state values that are going to be discounted need to be defined through `define_parameters()`.
+The equations decribed in the previous section can be written easily, here for a female population (`sex` = *0*) starting at 60 years old (`age_init` = *60*).
 
 ```{r}
 param <- define_parameters(
     age_init = 60,
     sex = 0,
+    
     # age increases with cycles
     age = age_init + markov_cycle,
     
@@ -107,7 +99,7 @@ param <- define_parameters(
     
     # age-related mortality rate
     sex_cat = ifelse(sex == 0, "FMLE", "MLE"),
-    mr = get_who_mr(age, sex_cat, country = "GBR"),
+    mr = get_who_mr(age, sex_cat, country = "GBR", local = TRUE),
     
     # state values
     u_SuccessP = .85,
@@ -118,12 +110,12 @@ param <- define_parameters(
 param
 ```
 
-# Transition matrix definition
+## Transition matrix definition
 
 Now that parameters are defined, the probability transitions can be easily written:
 
 ```{r}
-mat_standard <- define_matrix(
+mat_standard <- define_transition(
     state_names = c(
       "PrimaryTHR",
       "SuccessP",
@@ -139,7 +131,7 @@ mat_standard <- define_matrix(
 )
 mat_standard
 
-mat_np1 <- define_matrix(
+mat_np1 <- define_transition(
     state_names = c(
       "PrimaryTHR",
       "SuccessP",
@@ -162,14 +154,14 @@ While it is possible to plot the matrix thanks to the `diagram` package, the res
 plot(mat_standard)
 ```
 
-# State & model definition
+## State & strategy definition
 
 Utilities and costs are then associated to states. In this model costs are discounted at a rate of 6% and utilities at a rate of 1.5%.
 
-Now that parameters, transition matrix and states are defined we can define the models for the control group and the NP1 treatment.
+Now that parameters, transition matrix and states are defined we can define the strategies for the control group and the NP1 treatment.
 
 ```{r}
-mod_standard <- define_model(
+strat_standard <- define_strategy(
   transition_matrix = mat_standard,
   PrimaryTHR = define_state(
     utility = 0,
@@ -192,9 +184,9 @@ mod_standard <- define_model(
     cost = 0
   )
 )
-mod_standard
+strat_standard
 
-mod_np1 <- define_model(
+strat_np1 <- define_strategy(
   transition_matrix = mat_np1,
   PrimaryTHR = define_state(
     utility = 0,
@@ -217,16 +209,19 @@ mod_np1 <- define_model(
     cost = 0
   )
 )
+strat_np1
 ```
 
-# Model analysis
+## Model analysis
 
-Both models can now be run for 60 years. By default models are computed for 1000 person starting in `PrimaryTHR`. To replicate results from the original study we assume transitions occur at the end of each cycles. This is necessary because THR cost defined in state `PrimaryTHR` need to be accounted for all 1000 individuals.
+Both strategies can now be run for 60 years. By default models are computed for 1000 person starting in `PrimaryTHR`.
+
+To approach results from the original study we assume transitions occur at the end of each cycles. This is necessary because THR cost defined in state `PrimaryTHR` need to be accounted for all 1000 individuals, if we used another counting method the number of persons in `PrimaryTHR` would be reduced, or even null, negating surgery costs.
 
 ```{r}
-res_mod <- run_models(
-  standard = mod_standard,
-  np1 = mod_np1,
+res_mod <- run_model(
+  standard = strat_standard,
+  np1 =      strat_np1,
   parameters = param,
   cycles = 60,
   cost = cost,
@@ -235,24 +230,18 @@ res_mod <- run_models(
 )
 ```
 
-A comparison of both models can be done with `summary()`. The incremental cost and effect are displayed in columns `.cost` and `.effect`.
+A comparison of both strategies can be done with `summary()`. The incremental cost and effect are displayed in columns `Cost` and `Effect`.
 
 ```{r}
 summary(res_mod)
 ```
 
-The new treatment costs £1687 more per QALY gained.
+The new treatment costs £1706 more per QALY gained.
 
-It should be noted that this result differs from the original study. This difference is explained by higher population-level all-causes mortality rates in the original study than in the WHO database (used here). See vignette `vignette("reproduction", package = "heemod")` for an exact reproduction of the analysis.
+It should be noted that this result differs from the original study. This difference is explained by higher population-level all-causes mortality rates in the original study than in the WHO database (used here). See vignette `vignette("i-reproduction", "heemod")` for an exact reproduction of the analysis.
 
-We can plot the counts per state for the *standard* model:
+We can plot the counts per state:
 
-```{r, fig.width = 6, fig.align='center'}
-plot(res_mod, model = "standard", type = "counts")
-```
-
-And the *np1* model:
-
-```{r, fig.width = 6, fig.align='center'}
-plot(res_mod, model = "np1", type = "counts")
+```{r, fig.width = 6, fig.height=6, fig.align='center'}
+plot(res_mod, type = "counts", panel = "by_state")
 ```

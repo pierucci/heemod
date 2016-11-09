@@ -4,7 +4,7 @@
 \alias{eval_model}
 \title{Evaluate Markov Model}
 \usage{
-eval_model(model, parameters, cycles, init, method)
+eval_model(model, parameters, cycles, init, method, expand_limit)
 }
 \arguments{
 \item{model}{An \code{uneval_model} object.}
@@ -20,6 +20,9 @@ model states. Number of individuals in each model state
 at the beginning.}
 
 \item{method}{Counting method.}
+
+\item{expand_limit}{A named vector of state expansion
+limits.}
 }
 \value{
 An \code{eval_model} object (actually a list of 
@@ -34,7 +37,7 @@ individual per state per model cycle.
 }
 \details{
 \code{init} need not be integer. E.g. specifying a vector
-of type c(Q = 1, B = 0, C = 0, ...) returns the 
+of type \code{c(A = 1, B = 0, C = 0, ...)} returns the 
 probabilities for an individual starting in state A to be
 in each state, per cycle.
 }
@@ -43,13 +46,13 @@ param <- define_parameters(
   a = markov_cycle + 1 * 2
 )
 
-mat <- define_matrix(
+mat <- define_transition(
   1-1/a, 1/a,
   .1,    .9
 )
 
-mod <- define_model(
-  transition_matrix = mat,
+mod <- define_strategy(
+  transition = mat,
   A = define_state(cost = 10),
   B = define_state(cost = 2)
 )

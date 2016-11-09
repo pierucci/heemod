@@ -31,7 +31,7 @@ Define the states of a Markov model by combining
 }
 \details{
 State names have to correspond to those specified through
-\code{\link{define_matrix}}.
+\code{\link{define_transition}}.
 
 All states should have the same value names.
 
