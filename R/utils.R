@@ -332,7 +332,7 @@ pretty_names <- function(x) {
              ".icer", ".dref",
              ".model_names"),
     to = c("Cost", "Effect",
-           "\u0394 Cost", "\u0394 Effect",
+           "Cost Diff.", "Effect Diff.",
            "ICER", "Ref.",
            "Strategy")
   ) %>% 

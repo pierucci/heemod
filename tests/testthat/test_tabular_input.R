@@ -645,7 +645,7 @@ test_that(
     
     expect_output(
       print(result$model_runs),
-      "new -223.3065 0.04426563 -5044.693",
+      "-223.3065   0.04426563 -5044.693",
       fixed = TRUE
     )
     

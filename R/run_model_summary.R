@@ -142,7 +142,7 @@ print.summary_run_model <- function(x, ...) {
   res_comp$.icer <- format(res_comp$.icer)
   res_comp$.icer[res_comp$.icer == "NA"] <- "-"
   res_comp <- res_comp[-1, ]
-  names(res_comp) <- c("\u0394 Cost", "\u0394 Effect", "ICER", "Ref.")
+  names(res_comp) <- c("Cost Diff.", "Effect Diff.", "ICER", "Ref.")
   
   if (nrow(x$res) > 1) {
     cat("\nEfficiency frontier:\n\n")

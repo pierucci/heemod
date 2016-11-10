@@ -223,7 +223,7 @@ summary.updated_models <- function(object, ...) {
                  ".dcost", ".deffect", 
                  ".icer"),
       labels = c("Cost", "Effect",
-                 "\u0394 Cost", "\u0394 Effect",
+                 "Cost Diff.", "Effect Diff.",
                  "Icer")
     )
   

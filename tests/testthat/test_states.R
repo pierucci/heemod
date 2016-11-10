@@ -273,7 +273,7 @@ test_that(
     
     expect_output(
       print(res),
-      "0        0    -"
+      "0            0    -"
     )
   }
 )

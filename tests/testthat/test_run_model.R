@@ -365,7 +365,7 @@ test_that("Discounting", {
                     method = "beginning")
   expect_output(
     print(res),
-    "II 3292.352 4193.422 0.7851231"
+    "3292.352     4193.422 0.7851231"
   )
   res1 <- run_model(mod1, mod2, cycles = 10,
                      parameters = par1, cost = x, effect = y,

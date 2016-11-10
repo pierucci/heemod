@@ -224,7 +224,7 @@ test_that(
     )
     expect_output(
       print(e_mod2),
-      "422.5384 899.5074 0.4697442",
+      "422.5384     899.5074 0.4697442",
       fixed = TRUE
     )
     s_mod2 <- summary(e_mod2)
@@ -243,7 +243,7 @@ test_that(
     
     expect_output(
       print(summary(e_mod2)),
-      "422.5384 899.5074 0.4697442",
+      "422.5384     899.5074 0.4697442",
       fixed = TRUE
     )
     expect_output(
@@ -258,7 +258,7 @@ test_that(
           method = "beginning"
         )
       ),
-      "422.5384 899.5074 0.4697442",
+      "422.5384     899.5074 0.4697442",
       fixed = TRUE
     )
   }

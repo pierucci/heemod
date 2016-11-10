@@ -67,13 +67,13 @@ plot.eval_sensitivity <- function(x, type = c("simple", "difference"),
       var_plot <- ".dcost"
       var_ref <- ".dcost_ref"
       var_col <- ".col_dcost"
-      xl <- "\u0394 Cost"
+      xl <- "Cost Diff."
     },
     difference_effect = {
       var_plot <- ".deffect"
       var_ref <- ".deffect_ref"
       var_col <- ".col_deffect"
-      xl <- "\u0394 Effect"
+      xl <- "Effect Diff."
     },
     difference_icer = {
       var_plot <- ".icer"
