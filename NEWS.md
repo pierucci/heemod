@@ -1,4 +1,9 @@
-# heemod devel
+# heemod 0.6.0
+
+## New features
+
+  * Parallel computing with `use_cluster()`.
+  * Compute average values from PSA.
 
 ## Breaking changes
 
@@ -10,12 +15,6 @@
   * Acceptability curve returns probabilities at 0.
   * Correctly identify efficiency frontier.
   * ICER are computed on the efficiency frontier.
-
-# heemod 0.6.0
-
-## New features
-
-  * Parallel computing with `use_cluster()`.
   
 ## Acknowledments
 
