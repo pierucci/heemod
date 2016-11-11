@@ -323,7 +323,12 @@ get_tm_pos <- function(row, col, n) {
 }
 
 pretty_names <- function(x) {
-  n <- names(x)
+  if (is_matrix <- inherits(x, "matrix")) {
+    n <- colnames(x)
+  } else {
+    n <- names(x)
+  }
+  
   names(n) <- n
   
   ref <- tibble::tibble(
@@ -339,5 +344,12 @@ pretty_names <- function(x) {
     dplyr::filter_(~ from %in% n)
   
   n[ref$from] <- ref$to
-  stats::setNames(x, n)
+  
+  if (is_matrix) {
+    colnames(x) <- n
+  } else (
+    names(x) <- n
+  )
+  
+  x
 }
