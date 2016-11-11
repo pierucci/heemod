@@ -8,7 +8,7 @@
 #'   \code{.model} (treatments or models), \code{.n} (the 
 #'   number of cases in which the treatment was most 
 #'   cost-effective), and \code{.p} (the proportion of cases
-#'   in which the treatment was most effective).
+#'   where the treatment was most effective).
 #'   
 #' @keywords internal
 acceptability_curve <- function(x, wtp_thresholds) {
@@ -24,7 +24,9 @@ acceptability_curve <- function(x, wtp_thresholds) {
     dplyr::group_by_(~ .index, ~ .ceac) %>% 
     dplyr::mutate_(
       .nmb = ~ .effect * .ceac - .cost,
-      .top_strategy = ~ .nmb == max(.nmb)
+      .top_strategy = ~ .nmb == max(.nmb),
+      .top_strategy = ~ .top_strategy & cumsum(.top_strategy) == 1
+      # in case 2 nmb are identical, pick first
     ) %>% 
     dplyr::group_by_(~ .ceac, ~ .model_names) %>% 
     dplyr::summarise_(.n = ~ sum(.top_strategy)) %>% 
