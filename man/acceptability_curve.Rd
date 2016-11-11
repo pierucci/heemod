@@ -17,7 +17,7 @@ A data frame with columns \code{.ceac} (the
   \code{.model} (treatments or models), \code{.n} (the 
   number of cases in which the treatment was most 
   cost-effective), and \code{.p} (the proportion of cases
-  in which the treatment was most effective).
+  where the treatment was most effective).
 }
 \description{
 Acceptability Curve from Probabilistic Analysis

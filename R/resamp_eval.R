@@ -55,12 +55,14 @@ run_psa <- function(model, resample, N) {
   
   structure(
     res, 
-    class = c("probabilistic", class(res)),
-    model = model
+    class = c("psa", class(res)),
+    model = model,
+    N = N,
+    resamp_par = names(newdata)
   )
 }
 
-get_base_model.probabilistic <- function(x, ...) {
+get_base_model.psa <- function(x, ...) {
   get_base_model(attr(x, "model"))
 }
 

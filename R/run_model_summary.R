@@ -147,7 +147,7 @@ print.summary_run_model <- function(x, ...) {
   if (nrow(x$res) > 1) {
     cat("\nEfficiency frontier:\n\n")
     cat(paste(x$frontier, collapse = " -> "))
-    cat("\n\nModel difference:\n\n")
+    cat("\n\nDifferences:\n\n")
     print(res_comp)
   }
 }
