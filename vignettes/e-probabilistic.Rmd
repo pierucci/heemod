@@ -219,6 +219,12 @@ pm <- run_psa(
 )
 ```
 
+The average results are computed. In theory these values are more accurate than simple estimates because of non-linearities.
+
+```{r}
+pm
+```
+
 The results of the analysis can be plotted on the cost-effectiveness plane. We can see there seem to be little uncertainty on the costs compared to the uncertainty on the effects, resulting in an uncertainty cloud that looks like a line.
 
 ```{r, fig.width = 6, fig.height=4, fig.align='center'}
@@ -246,3 +252,12 @@ plot(pm, type = "ce") +
   theme_minimal()
 ```
 
+## Parallel computing
+
+Resampling can be significantly sped up by using parallel computing. This can be done in the following way:
+
+  * Define a cluster with the `use_cluster()` functions (i.e. `use_cluster(4)` to use 4 cores).
+  * Run the analysis as usual.
+  * To stop using parallel computing use the `close_cluster()` function.
+  
+Results may vary depending on the machine, but we found speed gains to be quite limited beyond 4 cores.

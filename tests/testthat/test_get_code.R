@@ -12,7 +12,7 @@ test_that(
     )
     mod1 <-
       define_strategy(
-        transition_matrix =  mat1,
+        transition =  mat1,
         s1,
         define_state(
           cost = 432 + age,
@@ -22,7 +22,7 @@ test_that(
     
     mod2 <-
       define_strategy(
-        transition_matrix = define_transition(
+        transition = define_transition(
           .5, .5,
           .1, .9
         ),
@@ -54,31 +54,28 @@ test_that(
         text = get_code(res),
         width.cutoff = 57,
         output = FALSE)$text.tidy,
-      'run_model(I = define_strategy(transition_matrix = define_transition(state_names = c("A", 
+      'run_model(I = define_strategy(transition = define_transition(state_names = c("A", 
     "B"), 0.4, 0.6, 0.1, 0.9), A = define_state(cost = 543 + 
     age * 5, ly = 1), B = define_state(cost = 432 + age, ly = 1 * 
-    age/100)), II = define_strategy(transition_matrix = define_transition(state_names = c("A", 
+    age/100)), II = define_strategy(transition = define_transition(state_names = c("A", 
     "B"), 0.5, 0.5, 0.1, 0.9), A = define_state(cost = 789 * 
     age/10, ly = 1), B = define_state(cost = 456 * age/10, 
     ly = 1 * age/200)), parameters = define_parameters(age_init = 60, 
     age = age_init + markov_cycle), init = c(1, 0), cycles = 10, 
-    method = "beginning", base_model = "II", cost = cost, 
-    effect = ly)'
-    )
+    method = "beginning", cost = cost, effect = ly)')
     expect_identical(
       formatR::tidy_source(
         text = get_code(res, name = "res"), width.cutoff = 57,
         output = FALSE)$text.tidy,
-      'res <- run_model(I = define_strategy(transition_matrix = define_transition(state_names = c("A", 
+      'res <- run_model(I = define_strategy(transition = define_transition(state_names = c("A", 
     "B"), 0.4, 0.6, 0.1, 0.9), A = define_state(cost = 543 + 
     age * 5, ly = 1), B = define_state(cost = 432 + age, ly = 1 * 
-    age/100)), II = define_strategy(transition_matrix = define_transition(state_names = c("A", 
+    age/100)), II = define_strategy(transition = define_transition(state_names = c("A", 
     "B"), 0.5, 0.5, 0.1, 0.9), A = define_state(cost = 789 * 
     age/10, ly = 1), B = define_state(cost = 456 * age/10, 
     ly = 1 * age/200)), parameters = define_parameters(age_init = 60, 
     age = age_init + markov_cycle), init = c(1, 0), cycles = 10, 
-    method = "beginning", base_model = "II", cost = cost, 
-    effect = ly)'
+    method = "beginning", cost = cost, effect = ly)'
     )
     expect_identical(
       formatR::tidy_source(
@@ -86,15 +83,14 @@ test_that(
         output = FALSE)$text.tidy,
       'run_model(I = m_i, II = m_ii, parameters = define_parameters(age_init = 60, 
     age = age_init + markov_cycle), init = c(1, 0), cycles = 10, 
-    method = "beginning", base_model = "II", cost = cost, 
-    effect = ly)'
+    method = "beginning", cost = cost, effect = ly)'
     )
     expect_identical(
       formatR::tidy_source(
         text = get_code(mod1, sub = TRUE, name = "m1"),
         width.cutoff = 57,
         output = FALSE)$text.tidy,
-      'm1 <- define_strategy(transition_matrix = define_transition(state_names = c("A", 
+      'm1 <- define_strategy(transition = define_transition(state_names = c("A", 
     "B"), 0.4, 0.6, 0.1, 0.9), A = s_a, B = s_b)'
     )
     expect_identical(

@@ -14,10 +14,10 @@ run_models_(...)
 run_model(..., parameters = define_parameters(), init = c(1000L, rep(0L,
   get_state_number(get_states(list(...)[[1]])) - 1)), cycles = 1,
   method = c("life-table", "beginning", "end", "half-cycle"), cost = NULL,
-  effect = NULL, base_model = NULL, state_cycle_limit = NULL)
+  effect = NULL, state_cycle_limit = NULL)
 
 run_model_(list_models, parameters, init, cycles, method, cost, effect,
-  base_model, state_cycle_limit)
+  state_cycle_limit)
 }
 \arguments{
 \item{...}{One or more \code{uneval_model} object.}
@@ -39,9 +39,6 @@ cost-effectiveness plane.}
 
 \item{effect}{Names or expression to compute effect on 
 the cost-effectiveness plane.}
-
-\item{base_model}{Name of base model used as reference. 
-By default the model with the lowest effectiveness.}
 
 \item{state_cycle_limit}{Optional expansion limit for 
 \code{state_cycle}, see details.}
@@ -90,7 +87,7 @@ each cycle through \code{compute_values}.
 
 mod1 <-
   define_strategy(
-    transition_matrix = define_transition(
+    transition = define_transition(
       .5, .5,
       .1, .9
     ),
@@ -116,7 +113,7 @@ res <- run_model(
 # running several models
 mod2 <-
   define_strategy(
-    transition_matrix = define_transition(
+    transition = define_transition(
       .5, .5,
       .1, .9
     ),

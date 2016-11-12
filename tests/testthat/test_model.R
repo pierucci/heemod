@@ -16,7 +16,7 @@ test_that(
       y = 1726
     )
     mod1 <- define_strategy(
-      transition_matrix = mat1,
+      transition = mat1,
       X1 = s1,
       X2 = s2
     )
@@ -25,7 +25,7 @@ test_that(
       1-b, b
     )
     mod2 <- define_strategy(
-      transition_matrix = mat2,
+      transition = mat2,
       s1,
       s2
     )
@@ -40,7 +40,7 @@ test_that(
     expect_output(
       str(mod1),
       "List of 2
- $ transition_matrix:List of 4",
+ $ transition:List of 4",
       fixed = TRUE
     )
     expect_output(
@@ -50,7 +50,7 @@ test_that(
     )
     expect_error(
       define_strategy(
-        transition_matrix = mat2,
+        transition = mat2,
         s1,
         s2,
         s2
@@ -58,7 +58,7 @@ test_that(
     )
     expect_error(
       define_strategy(
-        transition_matrix = mat1,
+        transition = mat1,
         X1 = s1,
         X3 = s2
       )
@@ -86,7 +86,7 @@ test_that(
       y = 1726
     )
     mod1 <- define_strategy(
-      transition_matrix = mat1,
+      transition = mat1,
       X1 = s1,
       X2 = s2
     )
@@ -193,12 +193,12 @@ test_that(
       y = 1726
     )
     mod1 <- define_strategy(
-      transition_matrix = mat1,
+      transition = mat1,
       X1 = s1,
       X2 = s2
     )
     mod2 <- define_strategy(
-      transition_matrix = mat1,
+      transition = mat1,
       X1 = s1,
       X2 = s1
     )
@@ -224,24 +224,7 @@ test_that(
     )
     expect_output(
       print(e_mod2),
-      "   N
-X1 1
-X2 0
-
-Counting method: 'beginning'.
-
-          x        y
-II 1170.000  615.000
-I  1592.538 1514.507
-
-Efficiency frontier:
-
-II -> I
-
-Model difference:
-
-      Cost   Effect      ICER
-I 422.5384 899.5074 0.4697442",
+      "422.5384     899.5074 0.4697442",
       fixed = TRUE
     )
     s_mod2 <- summary(e_mod2)
@@ -260,24 +243,7 @@ I 422.5384 899.5074 0.4697442",
     
     expect_output(
       print(summary(e_mod2)),
-      "   N
-X1 1
-X2 0
-
-Counting method: 'beginning'.
-
-          x        y
-II 1170.000  615.000
-I  1592.538 1514.507
-
-Efficiency frontier:
-
-II -> I
-
-Model difference:
-
-      Cost   Effect      ICER
-I 422.5384 899.5074 0.4697442",
+      "422.5384     899.5074 0.4697442",
       fixed = TRUE
     )
     expect_output(
@@ -292,24 +258,7 @@ I 422.5384 899.5074 0.4697442",
           method = "beginning"
         )
       ),
-      "   N
-X1 1
-X2 0
-
-Counting method: 'beginning'.
-
-            x        y
-mod2 1170.000  615.000
-mod1 1592.538 1514.507
-
-Efficiency frontier:
-
-mod2 -> mod1
-
-Model difference:
-
-         Cost   Effect      ICER
-mod1 422.5384 899.5074 0.4697442",
+      "422.5384     899.5074 0.4697442",
       fixed = TRUE
     )
   }

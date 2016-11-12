@@ -105,12 +105,12 @@ eval_model <- function(model, parameters, cycles,
   }
   parameters <- eval_parameters(parameters,
                                 cycles = cycles)
-  transition_matrix <- eval_matrix(uneval_matrix,
+  transition <- eval_matrix(uneval_matrix,
                                    parameters)
   states <- eval_state_list(uneval_states, parameters)
   
   count_table <- compute_counts(
-    transition_matrix = transition_matrix,
+    transition = transition,
     init = init,
     method = method
   )
@@ -129,7 +129,7 @@ eval_model <- function(model, parameters, cycles,
   structure(
     list(
       parameters = parameters,
-      transition_matrix = transition_matrix,
+      transition = transition,
       states = states,
       counts = count_table,
       values = values
@@ -150,7 +150,7 @@ eval_model <- function(model, parameters, cycles,
 #' each cycle. Alternatively linear interpolation between 
 #' cycles can be performed.
 #' 
-#' @param transition_matrix An \code{eval_matrix} object.
+#' @param transition An \code{eval_matrix} object.
 #' @param init numeric vector, same length as number of 
 #'   model states. Number of individuals in each model state
 #'   at the beginning.
@@ -159,20 +159,20 @@ eval_model <- function(model, parameters, cycles,
 #' @return A \code{cycle_counts} object.
 #'   
 #' @keywords internal
-compute_counts <- function(transition_matrix, init,
+compute_counts <- function(transition, init,
                            method) {
   
-  if (! length(init) == get_matrix_order(transition_matrix)) {
+  if (! length(init) == get_matrix_order(transition)) {
     stop(sprintf(
       "Length of 'init' vector (%i) differs from the number of states (%i).",
       length(init),
-      get_matrix_order(transition_matrix)
+      get_matrix_order(transition)
     ))
   }
   
   list_counts <- Reduce(
     "%*%",
-    transition_matrix,
+    transition,
     init,
     accumulate = TRUE
   )
@@ -182,12 +182,12 @@ compute_counts <- function(transition_matrix, init,
       matrix(
         unlist(list_counts),
         byrow = TRUE,
-        ncol = get_matrix_order(transition_matrix)
+        ncol = get_matrix_order(transition)
       )
     )
   )
   
-  colnames(res) <- get_state_names(transition_matrix)
+  colnames(res) <- get_state_names(transition)
   
   n0 <- res[- nrow(res), ]
   n1 <- res[-1, ]

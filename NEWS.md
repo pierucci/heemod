@@ -1,3 +1,25 @@
+# heemod 0.6.0
+
+## New features
+
+  * Parallel computing with `use_cluster()`.
+  * Compute average values from PSA.
+
+## Breaking changes
+
+  * Base model cannot be specified anymore: it is always the least costly model.
+  * Renamed arguement `transition_matrix` => `transition` in `define_strategy()`.
+  
+## Bugfixes
+  
+  * Acceptability curve returns probabilities at 0.
+  * Correctly identify efficiency frontier.
+  * ICER are computed on the efficiency frontier.
+  
+## Acknowledments
+
+  * Thanks to [Matthew Wiener](https://github.com/MattWiener), [Zdenek Kabat](https://github.com/zkabat) and [Vojtech Filipec](https://github.com/vojtech-filipec) for their great contributions to this update.
+
 # heemod 0.5.1
 
 ## Bugfixes
@@ -9,13 +31,13 @@
 ## Breaking changes
 
   * Some functions were renamed for clarification:
-    * `define_strategy()` <- `define_model()`
-    * `run_model()` <- `run_models()`
-    * `define_transition()` <- `define_matrix()`
-    * `define_dsa()` <- `define_sensitivity()`
-    * `define_psa()` <- `define_distrib()`
-    * `run_dsa()` <- `run_sensitivity()`
-    * `run_psa()` <- `run_probabilistic()`
+    * `define_strategy()` <= `define_model()`
+    * `run_model()` <= `run_models()`
+    * `define_transition()` <= `define_matrix()`
+    * `define_dsa()` <= `define_sensitivity()`
+    * `define_psa()` <= `define_distrib()`
+    * `run_dsa()` <= `run_sensitivity()`
+    * `run_psa()` <= `run_probabilistic()`
 
 ## New features
 
@@ -81,7 +103,7 @@
 
 ## Bug fixes
 
-  * fix mishandling of matrix index with `C` in `eval_matrix()` (thanks to @MattWiener).
+  * fix mishandling of matrix index with `C` in `eval_matrix()` (thanks to [Matthew Wiener](https://github.com/MattWiener)).
   * fix problem with upcoming version of `tidyr`.
 
 # heemod 0.3.1

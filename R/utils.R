@@ -202,7 +202,7 @@ wtd_summary <- function(x, weights = NULL) {
 #' @keywords internal
 safe_convert <- function(x, f) {
   na1 <- is.na(x)
-  res <- f(x)
+  res <- suppressWarnings(f(x))
   na2 <- is.na(res)
   
   if (any(pb <- na1 != na2)) {
@@ -320,4 +320,36 @@ insert <- function(x, pos, what) {
 
 get_tm_pos <- function(row, col, n) {
   (row - 1) * n + col
+}
+
+pretty_names <- function(x) {
+  if (is_matrix <- inherits(x, "matrix")) {
+    n <- colnames(x)
+  } else {
+    n <- names(x)
+  }
+  
+  names(n) <- n
+  
+  ref <- tibble::tibble(
+    from = c(".cost", ".effect",
+             ".dcost", ".deffect",
+             ".icer", ".dref",
+             ".model_names"),
+    to = c("Cost", "Effect",
+           "Cost Diff.", "Effect Diff.",
+           "ICER", "Ref.",
+           "Strategy")
+  ) %>% 
+    dplyr::filter_(~ from %in% n)
+  
+  n[ref$from] <- ref$to
+  
+  if (is_matrix) {
+    colnames(x) <- n
+  } else (
+    names(x) <- n
+  )
+  
+  x
 }

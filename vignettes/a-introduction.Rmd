@@ -162,6 +162,25 @@ In order to compare different strategies it is possible to run a model with mult
 
 Time varying transition probabilities and state values are available through the `markov_cycle` and `state_cycle` variables. Time-varying probabilities and values are explained in `vignette("b-time-dependency", "heemod")`.
 
+## Transition costs
+
+Transition costs between states can be defined by adding an additional state called a transition state. This is a special case of a tunnel state. A situation where the transtion from `A` to `B` (noted `A->B`) costs \$100 and reduces utility by 0.1 points compared to the usual values of `B` can be modelled by adding a state `B_trans`.
+
+The cost and utility of `B_trans` are the same as those of `B` +\$100 and -0.1 QALY respectively. 
+`A->B_trans` is equal to the former value of `A->B`. `A->B` is set to 0 (all transitions from `A` to `B` must pass through `B_trans` from now on). 
+The probability to stay in `B_trans` is 0, `B_trans->B` is equal to `B->B` and similarly all `B_trans->*` are equal to `B->*`.
+
+## Parallel computing
+
+Some operation such as PSA can be significantly sped up using parallel computing. This can be done in the following way:
+
+  * Define a cluster with the `use_cluster()` functions (i.e. `use_cluster(4)` to use 4 cores).
+  * Run the analysis as usual.
+  * To stop using parallel computing use the `close_cluster()` function.
+  
+  
+Results may vary depending on the machine, but we found speed gains to be quite limited beyond 4 cores.
+
 ## Going further
 
 Probabilistic uncertainty analysis `vignette("e-probabilistic", "heemod")` and deterministic sensitivity analysis `vignette("f-sensitivity", "heemod")` can be performed. Population-level estimates and heterogeneity can be computed : `vignette("g-heterogeneity", "heemod")`.

@@ -26,7 +26,7 @@ test_that(
     )
     
     mod1 <- define_strategy(
-      transition_matrix = mat1,
+      transition = mat1,
       X1 = s1,
       X2 = s2
     )
@@ -43,17 +43,17 @@ test_that(
       b = 1029
     )
     mod2 <- define_strategy(
-      transition_matrix = mat1,
+      transition = mat1,
       X1 = s3,
       X2 = s4
     )
     mod3 <- define_strategy(
-      transition_matrix = mat2,
+      transition = mat2,
       X1 = s3,
       X3 = s4
     )
     mod4 <- define_strategy(
-      transition_matrix = mat1,
+      transition = mat1,
       X1 = s5,
       X2 = s5
     )
@@ -165,7 +165,7 @@ test_that(
       y = 1726
     )
     mod1 <- define_strategy(
-      transition_matrix = mat1,
+      transition = mat1,
       X1 = s1,
       X2 = s2
     )
@@ -178,7 +178,7 @@ test_that(
       y = 1029
     )
     mod2 <- define_strategy(
-      transition_matrix = mat1,
+      transition = mat1,
       X1 = s3,
       X2 = s4
     )
@@ -252,19 +252,19 @@ test_that(
     
     expect_output(
       print(res_b),
-      "II 624.6    608 1.027303"
+      "1.027303"
     )
     expect_output(
       print(res_e),
-      "II  753    753    1"
+      "753"
     )
     expect_output(
       print(res_h),
-      "II 1501.65 1476.75 1.016861"
+      "1.016861"
     )
     expect_output(
       print(res_l),
-      "II 688.8  680.5 1.012197"
+      "1.012197"
     )
     expect_error(
       run_model(mod1, mod2,
@@ -318,7 +318,7 @@ test_that("Discounting", {
     y = 1726
   )
   mod1 <- define_strategy(
-    transition_matrix = mat1,
+    transition = mat1,
     X1 = s1,
     X2 = s2
   )
@@ -332,7 +332,7 @@ test_that("Discounting", {
     y = 1029
   )
   mod2 <- define_strategy(
-    transition_matrix = mat1,
+    transition = mat1,
     X1 = s3,
     X2 = s4
   )
@@ -342,7 +342,7 @@ test_that("Discounting", {
     y = discount(c3, 0)
   )
   mod3 <- define_strategy(
-    transition_matrix = mat1,
+    transition = mat1,
     X1 = s1,
     X2 = s5
   )
@@ -356,7 +356,7 @@ test_that("Discounting", {
     y = 1029
   )
   mod4 <- define_strategy(
-    transition_matrix = mat1,
+    transition = mat1,
     X1 = s6,
     X2 = s4
   )
@@ -365,7 +365,7 @@ test_that("Discounting", {
                     method = "beginning")
   expect_output(
     print(res),
-    "II 3292.352 4193.422 0.7851231"
+    "3292.352     4193.422 0.7851231"
   )
   res1 <- run_model(mod1, mod2, cycles = 10,
                      parameters = par1, cost = x, effect = y,
@@ -411,7 +411,7 @@ test_that(
       y = 1726
     )
     mod1 <- define_strategy(
-      transition_matrix = mat1,
+      transition = mat1,
       X1 = s1,
       X2 = s2
     )
@@ -424,7 +424,7 @@ test_that(
       y = 1029
     )
     mod2 <- define_strategy(
-      transition_matrix = mat1,
+      transition = mat1,
       X1 = s3,
       X2 = s4
     )

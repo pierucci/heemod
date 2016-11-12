@@ -14,7 +14,7 @@ eval_model_newdata(x, model = 1, newdata)
 
 \item{newdata}{a data.frame whose names match parameters 
 names. \code{model} will be evaluated iteratively, 
-taking successivel values from each row.}
+taking successive values from each row.}
 }
 \value{
 A data.frame containing the values of 
@@ -41,7 +41,7 @@ mat1 <- define_transition(
   0, 1
 )
 mod1 <- define_strategy(
-  transition_matrix = mat1,
+  transition = mat1,
   define_state(var = a),
   define_state(var = a * markov_cycle)
 )

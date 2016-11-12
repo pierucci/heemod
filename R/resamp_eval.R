@@ -4,14 +4,13 @@
 #' @param resample Resampling distribution for parameters 
 #'   defined by \code{\link{define_psa}}.
 #' @param N > 0. Number of simulation to run.
-#'   
+#' 
 #' @return A list with one \code{data.frame} per model.
 #' @export
 #' 
 #' @example inst/examples/example_run_psa.R
 #'   
 run_psa <- function(model, resample, N) {
-  
   stopifnot(
     N > 0,
     ! is.null(N)
@@ -56,12 +55,14 @@ run_psa <- function(model, resample, N) {
   
   structure(
     res, 
-    class = c("probabilistic", class(res)),
-    model = model
+    class = c("psa", class(res)),
+    model = model,
+    N = N,
+    resamp_par = names(newdata)
   )
 }
 
-get_base_model.probabilistic <- function(x, ...) {
+get_base_model.psa <- function(x, ...) {
   get_base_model(attr(x, "model"))
 }
 

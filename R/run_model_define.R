@@ -44,8 +44,6 @@
 #'   cost-effectiveness plane.
 #' @param effect Names or expression to compute effect on 
 #'   the cost-effectiveness plane.
-#' @param base_model Name of base model used as reference. 
-#'   By default the model with the lowest effectiveness.
 #' @param method Counting method.
 #' @param list_models List of models, only used by 
 #'   \code{run_model_} to avoid using \code{...}.
@@ -64,8 +62,8 @@ run_model <- function(...,
                        method = c("life-table", "beginning", "end",
                                   "half-cycle"),
                        cost = NULL, effect = NULL,
-                       base_model = NULL,
                        state_cycle_limit = NULL) {
+  
   list_models <- list(...)
   
   method <- match.arg(method)
@@ -78,7 +76,6 @@ run_model <- function(...,
     method = method,
     cost = lazyeval::lazy_(substitute(cost), env = parent.frame()),
     effect = lazyeval::lazy_(substitute(effect), env = parent.frame()),
-    base_model = base_model,
     state_cycle_limit = state_cycle_limit
   )
 }
@@ -90,7 +87,7 @@ run_model_ <- function(list_models,
                         init,
                         cycles,
                         method,
-                        cost, effect, base_model,
+                        cost, effect,
                         state_cycle_limit) {
   
   if (! is.wholenumber(cycles)) {
@@ -194,9 +191,7 @@ run_model_ <- function(list_models,
   res <- Reduce(dplyr::bind_rows, list_res) %>% 
     dplyr::mutate_(.dots = ce)
   
-  if (is.null(base_model)) {
-    base_model <- get_base_model(res)
-  }
+  base_model <- get_base_model(res)
   
   structure(
     res,
@@ -233,15 +228,21 @@ get_base_model <- function(x, ...) {
 }
 
 get_base_model.default <- function(x, ...) {
-  if (! ".effect" %in% names(x)) {
+  if (! all(c(".cost", ".effect") %in% names(x))) {
     warning("No effect defined, cannot find base model.")
     return(NULL)
   }
-  x$.model_names[x$.effect == min(x$.effect)][1]
+  (x %>% 
+    dplyr::arrange_(.dots = list(~ .cost, ~ desc(.effect))) %>% 
+    dplyr::slice(1))$.model_names
 }
 
 get_base_model.run_model <- function(x, ...) {
   attr(x, "base_model")
+}
+
+get_lowest_model <- function(x) {
+  x$.model_names[x$.effect == min(x$.effect)][1]
 }
 
 #' Get Model Values

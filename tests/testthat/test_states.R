@@ -249,7 +249,7 @@ test_that(
       y = discount(r = .1, 1726)
     )
     mod1 <- define_strategy(
-      transition_matrix = mat1,
+      transition = mat1,
       X1 = s1,
       X2 = s2
     )
@@ -262,7 +262,7 @@ test_that(
       y = discount(cte4, .1)
     )
     mod2 <- define_strategy(
-      transition_matrix = mat1,
+      transition = mat1,
       X1 = s3,
       X2 = s4
     )
@@ -273,8 +273,7 @@ test_that(
     
     expect_output(
       print(res),
-      "   Cost Effect ICER
-II    0      0    -"
+      "0            0    -"
     )
   }
 )
