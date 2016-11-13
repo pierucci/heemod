@@ -4,7 +4,7 @@
 \alias{compute_icer}
 \title{Compute ICER}
 \usage{
-compute_icer(x, strategy_order = order(get_effect(x)))
+compute_icer(x, strategy_order = order(x$.effect))
 }
 \arguments{
 \item{x}{Result of \code{\link{run_model}}.}

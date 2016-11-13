@@ -129,8 +129,8 @@ summary.combined_model <- function(object, ...) {
   summary.run_model(object, ...)
 }
 
-normalize_ce.combined_model <- function(x, ...) {
-  normalize_ce.run_model(x, ...)
+scale.combined_model <- function(x, center = TRUE, scale = TRUE) {
+  scale.run_model(x, center = center, scale = scale)
 }
 
 #' @rdname get_counts

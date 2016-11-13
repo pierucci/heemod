@@ -48,17 +48,21 @@ plot.psa <- function(x, type = c("ce", "ac"),
     stop("Unknown plot type."))
 }
 
-normalize_ce.psa <- function(x) {
-  .bm <- get_base_model(x)
+scale.psa <- function(x, center = TRUE, scale = TRUE) {
+  .bm <- get_base_strategy(get_model(x))
   
-  n_ind <- sum(get_init(get_model(x)))
+  n_ind <- if (scale) sum(get_init(get_model(x))) else 1
   
-  x %>% 
-    dplyr::group_by_(".index") %>% 
-    dplyr::mutate_(
-      .cost = ~ (.cost - sum(.cost * (.model_names == .bm))) / n_ind,
-      .effect = ~ (.effect - sum(.effect * (.model_names == .bm))) / n_ind
-    )
+  if (center) {
+    x %>% 
+      dplyr::group_by_(".index") %>% 
+      dplyr::mutate_(
+        .cost = ~ (.cost - sum(.cost * (.model_names == .bm))) / n_ind,
+        .effect = ~ (.effect - sum(.effect * (.model_names == .bm))) / n_ind
+      )
+  } else {
+    x
+  }
 }
 
 #' @export
