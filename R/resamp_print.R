@@ -33,15 +33,15 @@ plot.psa <- function(x, type = c("ce", "ac"),
         ggplot2::ylab("Incremental cost")
     },
     ac = {
-      tab <- acceptability_curve(x, values)
+      tab <- acceptability_curve(x$psa, values)
       ggplot2::ggplot(tab, 
                       ggplot2::aes_string(
                         x = ".ceac",
                         y = ".p",
-                        colour = ".model")) +
+                        colour = ".strategy_names")) +
         ggplot2::geom_line() +
         ggplot2::ylim(0, 1) +
-        ggplot2::scale_colour_hue(name = "Model") +
+        ggplot2::scale_colour_hue(name = "Strategy") +
         ggplot2::xlab("Willingness to pay") +
         ggplot2::ylab("Probability of cost-effectiveness")
     },
