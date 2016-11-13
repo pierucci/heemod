@@ -68,15 +68,15 @@ plot.run_model <- function(x, type = c("counts", "ce", "values"),
                       ...)
     },
     ce = {
-      tab_ce <- normalize_ce(x)
-      ef <- get_frontier(x)
+      tab_ce <- scale(x)
+      ef <- get_frontier(x$run_model)
       
       ggplot2::ggplot(tab_ce,
                       ggplot2::aes_string(
                         x = ".effect",
                         y = ".cost",
-                        label = ".model_names")) +
-        ggplot2::geom_line(data = tab_ce[tab_ce$.model_names %in% ef, ]) +
+                        label = ".strategy_names")) +
+        ggplot2::geom_line(data = tab_ce[tab_ce$.strategy_names %in% ef, ]) +
         ggplot2::geom_point() +
         ggplot2::geom_text(hjust = 1) +
         ggplot2::xlab("Effect") +

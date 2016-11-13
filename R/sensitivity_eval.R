@@ -54,3 +54,7 @@ run_dsa <- function(model, dsa) {
     class = c("eval_dsa", class(res))
   )
 }
+
+get_model.dsa <- function(x) {
+  x$model
+}

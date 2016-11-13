@@ -64,8 +64,16 @@ run_psa <- function(model, resample, N) {
   )
 }
 
-get_base_model.psa <- function(x, ...) {
-  get_base_model(get_model(x))
+get_model <- function(x) {
+  UseMethod("get_model")
+}
+
+get_model.psa <- function(x) {
+  x$model
+}
+
+get_base_strategy.psa <- function(x, ...) {
+  get_base_strategy(get_model(x))
 }
 
 eval_correlation <- function(x, var_names) {

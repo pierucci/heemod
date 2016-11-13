@@ -21,12 +21,12 @@ plot.psa <- function(x, type = c("ce", "ac"),
   switch(
     type,
     ce = {
-      tab <- normalize_ce(x)
+      tab <- scale(x)
       ggplot2::ggplot(data = tab,
                       ggplot2::aes_string(
                         x = ".effect",
                         y = ".cost",
-                        colour = ".model_names")) +
+                        colour = ".strategy_names")) +
         ggplot2::geom_point() +
         ggplot2::scale_colour_hue(name = "Model") +
         ggplot2::xlab("Incremental effect") +
@@ -54,32 +54,40 @@ scale.psa <- function(x, center = TRUE, scale = TRUE) {
   n_ind <- if (scale) sum(get_init(get_model(x))) else 1
   
   if (center) {
-    x %>% 
+    x$psa %>% 
       dplyr::group_by_(".index") %>% 
       dplyr::mutate_(
-        .cost = ~ (.cost - sum(.cost * (.model_names == .bm))) / n_ind,
-        .effect = ~ (.effect - sum(.effect * (.model_names == .bm))) / n_ind
-      )
+        .cost = ~ (.cost - sum(.cost * (.strategy_names == .bm))) / n_ind,
+        .effect = ~ (.effect - sum(.effect * (.strategy_names == .bm))) / n_ind
+      ) %>% 
+      dplyr::ungroup()
   } else {
-    x
+    x$psa
   }
 }
 
 #' @export
 summary.psa <- function(object, ...) {
   res <- object %>% 
-    dplyr::group_by_(".index") %>% 
-    dplyr::do_(~ compute_icer(.)) %>% 
-    dplyr::ungroup() %>% 
-    dplyr::select_(~ - .dref, ~ - .index) %>%
-    dplyr::group_by_(".model_names") %>%
-    dplyr::summarise_all(
-      mean
-    )
+    scale() %>% 
+    dplyr::select_(~ - .index) %>% 
+    dplyr::group_by_(".strategy_names") %>%
+    dplyr::summarise_all(mean) %>% 
+    as.data.frame()
+  
+  res_values <- res %>% 
+    dplyr::select_(~ - .cost, ~ - .effect)
+  res_values <- res_values[! names(res_values) %in%
+                             c(object$resamp_par, ".cost", ".effect")]
+  
+  res_comp <- res %>% 
+    compute_icer() %>% 
+    as.data.frame()
   
   structure(
     list(
-      average_result = res,
+      res_values = res_values,
+      res_comp = res_comp,
       total_result = object
     ),
     class = "summary_psa"
@@ -90,37 +98,10 @@ summary.psa <- function(object, ...) {
 print.summary_psa <- function(x, ...) {
   cat(sprintf(
     "A PSA with %i resamplings.\n\n",
-    attr(x$total_result, "N")
+    x$total_result$N
   ))
-  values <- x$average_result
-  values <- values[! names(values) %in% x$total_result$resamp_par]
-  values <- values %>% 
-    dplyr::select_(
-      ~ - .cost,
-      ~ - .effect,
-      ~ - .icer,
-      ~ - .dcost,
-      ~ - .deffect,
-      ~ - .model_names
-    ) %>% 
-    as.matrix()
   
-  rownames(values) <- x$average_result$.model_names
-  
-  cat("Values:\n\n")
-  
-  print(values, ...)
-  
-  if (nrow(x$average_result) > 1) {
-    cat("\nDifferences:\n\n")
-    res_comp <- x$average_result[c(".dcost", ".deffect", ".icer")]
-    is.na(res_comp$.icer) <- ! is.finite(res_comp$.icer)
-    res_comp$.dcost <- res_comp$.dcost / sum(attr(attr(x$total, "model"), "init"))
-    res_comp$.deffect <- res_comp$.deffect / sum(attr(attr(x$total, "model"), "init"))
-    res_comp <- as.matrix(res_comp)
-    rownames(res_comp) <- x$average_result$.model_names
-    print(pretty_names(res_comp[! is.na(res_comp[, ".icer"]), , drop = FALSE]), ...)
-  }
+  print_results(x$res_values, x$res_comp)
 }
 
 #' @export

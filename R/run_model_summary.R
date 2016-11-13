@@ -154,17 +154,20 @@ print.summary_run_model <- function(x, ...) {
     "\nCounting method: '%s'.\n\n", x$method
   ))
   
-  res_values <- x$res_values
+  print_results(x$res_values, x$res_comp)
+}
+
+print_results <- function(res_values, res_comp) {
+  cat("Values:\n\n")
   rownames(res_values) <- res_values$.strategy_names
   res_values <- dplyr::select_(res_values, ~ - .strategy_names)
   print(res_values)
   
-  if (nrow(x$res_values) > 1) {
+  if (nrow(res_values) > 1) {
     cat("\nEfficiency frontier:\n\n")
-    cat(paste(x$frontier, collapse = " -> "))
+    cat(paste(get_frontier(res_comp), collapse = " -> "))
     cat("\n\nDifferences:\n\n")
     
-    res_comp <- x$res_comp
     rownames(res_comp) <- res_comp$.strategy_names
     res_comp <- res_comp %>% 
       dplyr::select_(".dcost", ".deffect",
