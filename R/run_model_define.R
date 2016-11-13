@@ -267,7 +267,7 @@ get_values <- function(x, ...) {
 #' @export
 get_values.run_model <- function(x, strategy = 1, ...) {
   check_strategy_index(x, strategy, ...)
-  get_values(x$eval_strategy_list[[m]])
+  get_values(x$eval_strategy_list[[strategy]])
 }
 
 #' @rdname get_values
@@ -301,8 +301,8 @@ get_counts <- function(x, ...) {
 #' @rdname get_counts
 #' @export
 get_counts.run_model <- function(x, strategy = 1, ...) {
-  check_model_index(x, strategy, ...)
-  get_counts(attr(x, "eval_strategy_list")[[stragtegy]])
+  check_strategy_index(x, strategy, ...)
+  get_counts(x$eval_strategy_list[[strategy]])
 }
 
 #' @rdname get_counts
@@ -335,4 +335,8 @@ get_cycles <- function(x) {
 
 get_method <- function(x) {
   x$method
+}
+
+get_state_names.run_model <- function(x, ...) {
+  get_state_names(x$uneval_strategy_list[[1]])
 }
