@@ -45,7 +45,7 @@
 #' @param effect Names or expression to compute effect on 
 #'   the cost-effectiveness plane.
 #' @param method Counting method.
-#' @param list_models List of models, only used by 
+#' @param uneval_strategy_list List of models, only used by 
 #'   \code{run_model_} to avoid using \code{...}.
 #' @param state_cycle_limit Optional expansion limit for 
 #'   \code{state_cycle}, see details.
@@ -56,20 +56,20 @@
 #' @example inst/examples/example_run_model.R
 #'   
 run_model <- function(...,
-                       parameters = define_parameters(),
-                       init = c(1000L, rep(0L, get_state_number(get_states(list(...)[[1]])) - 1)),
-                       cycles = 1,
-                       method = c("life-table", "beginning", "end",
-                                  "half-cycle"),
-                       cost = NULL, effect = NULL,
-                       state_cycle_limit = NULL) {
+                      parameters = define_parameters(),
+                      init = c(1000L, rep(0L, get_state_number(get_states(list(...)[[1]])) - 1)),
+                      cycles = 1,
+                      method = c("life-table", "beginning", "end",
+                                 "half-cycle"),
+                      cost = NULL, effect = NULL,
+                      state_cycle_limit = NULL) {
   
-  list_models <- list(...)
+  uneval_strategy_list <- list(...)
   
   method <- match.arg(method)
   
   run_model_(
-    list_models = list_models,
+    uneval_strategy_list = uneval_strategy_list,
     parameters = parameters,
     init = init,
     cycles = cycles,
@@ -82,24 +82,24 @@ run_model <- function(...,
 
 #' @export
 #' @rdname run_model
-run_model_ <- function(list_models,
-                        parameters,
-                        init,
-                        cycles,
-                        method,
-                        cost, effect,
-                        state_cycle_limit) {
+run_model_ <- function(uneval_strategy_list,
+                       parameters,
+                       init,
+                       cycles,
+                       method,
+                       cost, effect,
+                       state_cycle_limit) {
   
   if (! is.wholenumber(cycles)) {
     stop("'cycles' must be a whole number.")
   }
   
   if (! all(unlist(lapply(
-    list_models,
+    uneval_strategy_list,
     function(x) "uneval_model" %in% class(x))))) {
     
-    .x <- names(list_models[! unlist(lapply(
-      list_models,
+    .x <- names(uneval_strategy_list[! unlist(lapply(
+      uneval_strategy_list,
       function(x) "uneval_model" %in% class(x)))])
     
     stop(sprintf(
@@ -119,35 +119,35 @@ run_model_ <- function(list_models,
     list_ce
   )
   
-  model_names <- names(list_models)
+  strategy_names <- names(uneval_strategy_list)
   
-  if (is.null(model_names)) {
+  if (is.null(strategy_names)) {
     message("No named model -> generating names.")
-    model_names <- as.character(utils::as.roman(seq_along(list_models)))
-    names(list_models) <- model_names
+    strategy_names <- as.character(utils::as.roman(seq_along(uneval_strategy_list)))
+    names(uneval_strategy_list) <- strategy_names
   }
   
-  if (any(model_names == "")) {
+  if (any(strategy_names == "")) {
     warning("Not all models are named -> generating names.")
-    model_names <- as.character(utils::as.roman(seq_along(list_models)))
-    names(list_models) <- model_names
+    strategy_names <- as.character(utils::as.roman(seq_along(uneval_strategy_list)))
+    names(uneval_strategy_list) <- strategy_names
   }
   
-  if (! list_all_same(lapply(list_models,
+  if (! list_all_same(lapply(uneval_strategy_list,
                              function(x) sort(get_state_names(x))))) {
     stop("State names differ between models.")
   }
   
-  if (! list_all_same(lapply(list_models,
+  if (! list_all_same(lapply(uneval_strategy_list,
                              function(x) sort(get_state_value_names(x))))) {
     stop("State value names differ between models.")
   }
   
-  if (! length(init) == get_state_number(list_models[[1]])) {
+  if (! length(init) == get_state_number(uneval_strategy_list[[1]])) {
     stop(sprintf(
       "Length of 'init' vector (%i) differs from number of states (%i).",
       length(init),
-      get_state_number(list_models[[1]])
+      get_state_number(uneval_strategy_list[[1]])
     ))
   }
   
@@ -156,24 +156,24 @@ run_model_ <- function(list_models,
   }
   
   if (is.null(names(init)))
-    names(init) <- get_state_names(list_models[[1]])
+    names(init) <- get_state_names(uneval_strategy_list[[1]])
   
-  if (! all(sort(names(init)) == sort(get_state_names(list_models[[1]])))) {
+  if (! all(sort(names(init)) == sort(get_state_names(uneval_strategy_list[[1]])))) {
     stop("Names of 'init' vector differ from state names.")
   }
   
   state_cycle_limit <- complete_scl(
     state_cycle_limit,
-    state_names = get_state_names(list_models[[1]]),
-    model_names = names(list_models),
+    state_names = get_state_names(uneval_strategy_list[[1]]),
+    strategy_names = names(uneval_strategy_list),
     cycles = cycles
   )
   
-  eval_model_list <- list()
+  eval_strategy_list <- list()
   
-  for (n in names(list_models)) {
-    eval_model_list[[n]] <- eval_model(
-      list_models[[n]], 
+  for (n in names(uneval_strategy_list)) {
+    eval_strategy_list[[n]] <- eval_strategy(
+      strategy = uneval_strategy_list[[n]], 
       parameters = parameters,
       init = init, 
       cycles = cycles,
@@ -182,37 +182,39 @@ run_model_ <- function(list_models,
     )
   }
   
-  list_res <- lapply(eval_model_list, get_total_state_values)
+  list_res <- lapply(eval_strategy_list, get_total_state_values)
   
-  for (n in model_names){
-    list_res[[n]]$.model_names <- n
+  for (n in strategy_names){
+    list_res[[n]]$.strategy_names <- n
   }
   
   res <- Reduce(dplyr::bind_rows, list_res) %>% 
     dplyr::mutate_(.dots = ce)
   
-  base_model <- get_base_model(res)
+  base_strategy <- get_base_strategy(res)
   
   structure(
-    res,
-    eval_model_list = eval_model_list,
-    uneval_model_list = list_models,
-    class = c("run_model", class(res)),
-    parameters = parameters,
-    init = init,
-    cycles = cycles,
-    method = method,
-    ce = ce,
-    base_model = base_model
+    list(
+      run_model = res,
+      eval_strategy_list = eval_strategy_list,
+      uneval_strategy_list = uneval_strategy_list,
+      parameters = parameters,
+      init = init,
+      cycles = cycles,
+      method = method,
+      ce = ce,
+      base_strategy = base_strategy
+    ),
+    class = c("run_model", class(res))
   )
 }
 
-get_model_names <- function(x) {
-  x$.model_names
+get_strategy_names <- function(x) {
+  x$run_model$.strategy_names
 }
 
-get_model_count <- function(x) {
-  nrow(x)
+get_strategy_count <- function(x) {
+  nrow(x$run_model)
 }
 
 get_total_state_values <- function(x) {
@@ -223,35 +225,35 @@ get_total_state_values <- function(x) {
   res
 }
 
-get_base_model <- function(x, ...) {
-  UseMethod("get_base_model")
+get_base_strategy <- function(x, ...) {
+  UseMethod("get_base_strategy")
 }
 
-get_base_model.default <- function(x, ...) {
+get_base_strategy.default <- function(x, ...) {
   if (! all(c(".cost", ".effect") %in% names(x))) {
-    warning("No effect defined, cannot find base model.")
+    warning("No cost and/or effect defined, cannot find base strategy.")
     return(NULL)
   }
   (x %>% 
-    dplyr::arrange_(.dots = list(~ .cost, ~ desc(.effect))) %>% 
-    dplyr::slice(1))$.model_names
+      dplyr::arrange_(.dots = list(~ .cost, ~ desc(.effect))) %>% 
+      dplyr::slice(1))$.strategy_names
 }
 
-get_base_model.run_model <- function(x, ...) {
-  attr(x, "base_model")
+get_base_strategy.run_model <- function(x, ...) {
+  x$base_strategy
 }
 
-get_lowest_model <- function(x) {
-  x$.model_names[x$.effect == min(x$.effect)][1]
+get_effect <- function(x) {
+  x$run_model$.effect
 }
 
-#' Get Model Values
+#' Get Strategy Values
 #' 
 #' Given a result from \code{\link{run_model}}, return 
-#' cost and effect values for a specific model.
+#' cost and effect values for a specific strategy.
 #' 
 #' @param x Result from \code{\link{run_model}}.
-#' @param m Model name or index.
+#' @param m Strategy name or index.
 #' @param ...	further arguments passed to or from other
 #'   methods.
 #'   
@@ -263,14 +265,14 @@ get_values <- function(x, ...) {
 
 #' @rdname get_values
 #' @export
-get_values.run_model <- function(x, m = 1, ...) {
-  check_model_index(x, m, ...)
-  get_values(attr(x, "eval_model_list")[[m]])
+get_values.run_model <- function(x, strategy = 1, ...) {
+  check_strategy_index(x, strategy, ...)
+  get_values(x$eval_strategy_list[[m]])
 }
 
 #' @rdname get_values
 #' @export
-get_values.eval_model <- function(x, ...) {
+get_values.eval_strategy <- function(x, ...) {
   x$values
 }
 
@@ -280,28 +282,13 @@ get_values.list <- function(x, ...) {
   x$values
 }
 
-#' @rdname get_values
-#' @export
-get_values.updated_models <- function(x, m, ...) {
-  get_values(attributes(x)$combined_models, m, ...)
-}
-
-#' @rdname get_values
-#' @export
-get_values.combined_models <- function(x, m, ...){
-  x <- attributes(x)$eval_model_list
-  x$.model_names <- names(x)
-  check_model_index(x, m)
-  get_values(x[[m]])
-}
-
 #' Get State Membership Counts
 #' 
 #' Given a result from \code{\link{run_model}}, return 
-#' state membership counts for a specific model.
+#' state membership counts for a specific strategy.
 #' 
 #' @param x Result from \code{\link{run_model}}.
-#' @param m Model name or index.
+#' @param m Strategy name or index.
 #' @param ...	further arguments passed to or from other
 #'   methods.
 #'   
@@ -313,14 +300,14 @@ get_counts <- function(x, ...) {
 
 #' @rdname get_counts
 #' @export
-get_counts.run_model <- function(x, m = 1, ...) {
-  check_model_index(x, m, ...)
-  get_counts(attr(x, "eval_model_list")[[m]])
+get_counts.run_model <- function(x, strategy = 1, ...) {
+  check_model_index(x, strategy, ...)
+  get_counts(attr(x, "eval_strategy_list")[[stragtegy]])
 }
 
 #' @rdname get_counts
 #' @export
-get_counts.eval_model <- function(x, ...) {
+get_counts.eval_strategy <- function(x, ...) {
   x$counts
 }
 
@@ -330,27 +317,22 @@ get_counts.list <- function(x, ...) {
   x$counts
 }
 
-#' @rdname get_counts
-#' @export
-get_counts.updated_models <- function(x, m, ...) {
-  get_counts(attributes(x)$combined_models, m, ...)
-}
-
-#' @rdname get_counts
-#' @export
-get_counts.combined_models <- function(x, m, ...){
-  x <- attributes(x)$eval_model_list
-  x$.model_names <- names(x)
-  check_model_index(x, m)
-  get_counts(x[[m]])
-}
-
-#' Get Initial State Values
-#' 
-#' @param x x Result from \code{\link{run_model}}.
-#'   
-#' @return A vector of initial state values.
-#' @export
 get_init <- function(x) {
-  attr(x, "init")
+  x$init
+}
+
+get_ce <- function(x) {
+  x$ce
+}
+
+get_parameters <- function(x) {
+  x$parameters
+}
+
+get_cycles <- function(x) {
+  x$cycles
+}
+
+get_method <- function(x) {
+  x$method
 }

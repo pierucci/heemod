@@ -87,7 +87,7 @@ mat_np1 <- define_transition(
 )
 
 mod_standard <- define_strategy(
-  transition_matrix = mat_standard,
+  transition = mat_standard,
   PrimaryTHR = define_state(
     utility = 0,
     cost = 394
@@ -111,7 +111,7 @@ mod_standard <- define_strategy(
 )
 
 mod_np1 <- define_strategy(
-  transition_matrix = mat_np1,
+  transition = mat_np1,
   PrimaryTHR = define_state(
     utility = 0,
     cost = 579
@@ -158,7 +158,7 @@ For this example we will use the result from the assessment of a new total hip r
 The characteristics of the population are input from a table, with one column per parameter and one row per individual. Those may be for example the characteristics of the indiviuals included in the original trial data.
 
 ```{r include = FALSE}
-N <- 100
+N <- 10
 
 tab_indiv <- tibble::tibble(
   age = round(rnorm(N, mean = 60, sd = 10)),

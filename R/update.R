@@ -54,29 +54,30 @@ update.run_model <- function(object, newdata, ...) {
   if (has_weights) {
     weights <- newdata$.weights
     newdata <- dplyr::select_(newdata, ~ (- .weights))
+    
   } else {
-    message("No weights specified in model update, using equal weights.")
+    message("No weights specified in update, using equal weights.")
     weights <- rep(1, nrow(newdata))
   }
   
-  ce <- attr(object, "ce")
+  ce <- get_ce(object)
   list_res <- list()
   
-  for (n in get_model_names(object)) {
-    message(sprintf("Updating model '%s'...", n))
+  for (n in get_strategy_names(object)) {
+    message(sprintf("Updating strategy '%s'...", n))
     suppressMessages({
       list_res <- c(
         list_res,
-        list(eval_model_newdata(object, model = n, 
-                                newdata = newdata))
+        list(eval_strategy_newdata(object, strategy = n, 
+                                   newdata = newdata))
       )
     })
   }
   
-  names(list_res) <- get_model_names(object)
+  names(list_res) <- get_strategy_names(object)
   
   for (n in names(list_res)) {
-    list_res[[n]]$.model_names <- n
+    list_res[[n]]$.strategy_names <- n
     list_res[[n]]$.index <- seq_len(nrow(newdata))
   }
   
@@ -90,7 +91,7 @@ update.run_model <- function(object, newdata, ...) {
       dplyr::ungroup() %>% 
       dplyr::group_by_(".index") %>% 
       dplyr::mutate_(.dots = ce) %>% 
-      dplyr::do_(~ compute_icer(., model_order = order(object$.effect))) %>% 
+      dplyr::do_(~ compute_icer(., strategy_order = get_effect(object))) %>% 
       dplyr::left_join(
         dplyr::data_frame(
           .index = seq_len(nrow(newdata)),
@@ -100,19 +101,21 @@ update.run_model <- function(object, newdata, ...) {
   })
   
   comb_mods <- combine_models(
-    list_newmodels = list_res,
+    newmodels = list_res,
     weights = weights,
     oldmodel = object
   )
   
   structure(
-    res_total,
-    class = c("updated_models", class(res)),
-    newdata = newdata,
-    original_model = object,
-    combined_models = comb_mods,
-    has_weights = has_weights,
-    weights = weights
+    list(
+      updated_model = res_total,
+      newdata = newdata,
+      original_model = object,
+      combined_models = comb_mods,
+      has_weights = has_weights,
+      weights = weights
+    ),
+    class = c("updated_models", class(res))
   )
 }
 
@@ -134,7 +137,7 @@ plot.updated_models <- function(x, model,
     return(graphics::plot(attr(x, "combined_models"),
                           type = type, model = model,
                           ...) 
-           )
+    )
   }
   
   check_model_index(
@@ -238,16 +241,22 @@ summary.updated_models <- function(object, ...) {
     paste(tab_res$Value, sep = " - ")
   
   structure(
-    tab_res,
-    class = c("summary_updated_models", class(tab_res)),
-    model = object,
-    to_print = mat_res
+    list(
+      results = tab_res,
+      model = object,
+      to_print = mat_res
+    ),
+    class = c("summary_updated_models", class(tab_res))
   )
+}
+
+get_model.summary_updated_models <- function(x) {
+  x$model
 }
 
 #' @export
 print.summary_updated_models <- function(x, ...) {
-  object <- attr(x, "model")
+  object <- get_model(x)
   
   cat(sprintf(
     "An analysis re-run on %i parameter sets.\n\n",

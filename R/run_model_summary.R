@@ -9,28 +9,28 @@ print.run_model <- function(x, ...) {
 #' @param ... additional arguments affecting the summary 
 #'   produced.
 #'   
-#' @return A \code{summary_eval_model_list} object.
+#' @return A \code{summary_eval_strategy_list} object.
 #' @export
 summary.run_model <- function(object, ...) {
-  if (! all(c(".cost", ".effect") %in% names(object))) {
+  if (! all(c(".cost", ".effect") %in% names(object$run_model))) {
     warning("No cost and/or effect defined, model summary unavailable.")
     return(invisible(NULL))
   }
   
-  res <- as.data.frame(compute_icer(normalize_ce(object)))
-  rownames(res) <- res$.model_names
-  res <- dplyr::select_(res, ~ - .model_names)
+  res_values <- as.data.frame(compute_icer(normalize_ce(object$run_model)))
+  rownames(res_values) <- res_values$.strategy_names
+  res_values <- dplyr::select_(res_values, ~ - .strategy_names)
   
   
-  res_comp <- res[c(".dcost", ".deffect", ".icer", ".dref")]
+  res_comp <- res_values[c(".dcost", ".deffect", ".icer", ".dref")]
   is.na(res_comp$.icer) <- ! is.finite(res_comp$.icer)
-  res_comp$.dcost <- res_comp$.dcost / sum(attr(object, "init"))
-  res_comp$.deffect <- res_comp$.deffect / sum(attr(object, "init"))
+  res_comp$.dcost <- res_comp$.dcost / sum(get_init(object))
+  res_comp$.deffect <- res_comp$.deffect / sum(get_init(object))
   
   structure(
     list(
-      res = dplyr::select_(
-        res,
+      res_values = dplyr::select_(
+        res_values,
         ~ - .cost,
         ~ - .effect,
         ~ - .icer,
@@ -39,9 +39,9 @@ summary.run_model <- function(object, ...) {
         ~ - .dref
       ),
       res_comp = res_comp,
-      cycles = attr(object, "cycles"),
-      init = attr(object, "init"),
-      method = attr(object, "method"),
+      cycles = get_cycles(object),
+      init = get_init(object),
+      method = get_method(object),
       frontier = get_frontier(object)
     ),
     class = "summary_run_model"
@@ -65,9 +65,15 @@ normalize_ce <- function(x) {
 }
 normalize_ce.run_model <- function(x) {
   bm <- get_base_model(x)
-  x$.cost <- x$.cost - x$.cost[x$.model_names == bm]
-  x$.effect <- x$.effect - x$.effect[x$.model_names == bm]
-  x[order(x$.effect), ]
+  res <- tibble::tibble(
+    .strategy_names = get_strategy_names(x)
+  )
+  re$.cost <- get_cost(x) -
+    get_cost(x)[get_strategy_names(x) == bm]
+  res$.effect <- get_effect(x) -
+    get_effect(x)[get_strategy_names(x) == bm]
+  
+  res[order(res$.effect), ]
 }
 
 #' Compute ICER
@@ -78,15 +84,15 @@ normalize_ce.run_model <- function(x) {
 #' sequencially.
 #' 
 #' @param x Result of \code{\link{run_model}}.
-#' @param model_order Order in which the models should be
-#'   sorted. Default: by increasing effect.
+#' @param strategy_order Order in which the strategies
+#'   should be sorted. Default: by increasing effect.
 #'   
 #' @return A \code{data.frame} with computed ICER.
 #'   
 #' @keywords internal
-compute_icer <- function(x, model_order = order(x$.effect)) {
+compute_icer <- function(x, strategy_order = order(get_effect(x))) {
   ef <- get_frontier(x)
-  tab <- x[model_order, ]
+  tab <- x[strategy_order, ]
   
   tab$.icer <- NA
   tab$.dcost <- NA
@@ -98,7 +104,7 @@ compute_icer <- function(x, model_order = order(x$.effect)) {
       tab$.icer[i] <- NA
       ref_cost <- tab$.cost[i]
       ref_effect <- tab$.effect[i]
-      ref_name <- tab$.model_names[i]
+      ref_name <- tab$.strategy_names[i]
       
     } else {
       tab$.dcost[i] <- tab$.cost[i] - ref_cost
@@ -106,10 +112,10 @@ compute_icer <- function(x, model_order = order(x$.effect)) {
       tab$.icer[i] <- tab$.dcost[i] / tab$.deffect[i]
       tab$.dref[i] <- ref_name
       
-      if (tab$.model_names[i] %in% ef) {
+      if (tab$.strategy_names[i] %in% ef) {
         ref_cost <- tab$.cost[i]
         ref_effect <- tab$.effect[i]
-        ref_name <- tab$.model_names[i]
+        ref_name <- tab$.strategy_names[i]
       }
     }
   }
@@ -136,7 +142,7 @@ print.summary_run_model <- function(x, ...) {
   cat(sprintf(
     "\nCounting method: '%s'.\n\n", x$method
   ))
-  print(x$res)
+  print(x$res_values)
   
   res_comp <- x$res_comp
   res_comp$.icer <- format(res_comp$.icer)

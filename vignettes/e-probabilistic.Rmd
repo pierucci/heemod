@@ -133,7 +133,7 @@ Strategies must be first defined and run as in a standard deterministic analysis
 
 ```{r}
 strat_mono <- define_strategy(
-  transition_matrix = mat_trans_mono,
+  transition = mat_trans_mono,
   A_mono,
   B_mono,
   C_mono,
@@ -141,21 +141,14 @@ strat_mono <- define_strategy(
 )
 
 strat_comb <- define_strategy(
-  transition_matrix = mat_trans_comb,
+  transition = mat_trans_comb,
   A_comb,
   B_comb,
   C_comb,
   D_comb
 )
 
-res_mod <- run_model(
-  mono = strat_mono,
-  comb = strat_comb,
-  parameters = param,
-  cycles = 50,
-  cost = cost_total,
-  effect = life_year
-)
+res_mod
 ```
 
 ## Resampling distributions
@@ -215,7 +208,7 @@ Now that the distributions of parameters are set we can simply run the probabili
 pm <- run_psa(
   model = res_mod,
   resample = rsp,
-  N = 100
+  N = 10
 )
 ```
 

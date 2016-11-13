@@ -210,7 +210,7 @@ all.funs <- function(expr) {
 }
 
 complete_scl <- function(scl, state_names,
-                         model_names, cycles) {
+                         strategy_names, cycles) {
   uni <- FALSE
   if (is.numeric(scl) && length(scl) == 1 && is.null(names(scl))) {
     uni <- TRUE
@@ -224,11 +224,11 @@ complete_scl <- function(scl, state_names,
   }
   
   res <- lapply(
-    model_names,
+    strategy_names,
     function(x) rep(cycles, length(state_names)) %>% 
       setNames(state_names)
   ) %>% 
-    setNames(model_names)
+    setNames(strategy_names)
   
   if (is.null(scl) || uni) {
     return(res)
@@ -265,7 +265,7 @@ complete_scl <- function(scl, state_names,
   }
   
   if (is.list(scl)) {
-    if (any(pb <- ! names(scl) %in% model_names)) {
+    if (any(pb <- ! names(scl) %in% strategy_names)) {
       stop(sprintf(
         "Some 'state_limit_cycle' names are not model names: %s.",
         paste(names(scl)[pb], collapse = ", ")

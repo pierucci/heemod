@@ -51,7 +51,7 @@ plot.psa <- function(x, type = c("ce", "ac"),
 normalize_ce.psa <- function(x) {
   .bm <- get_base_model(x)
   
-  n_ind <- sum(get_init(attr(x, "model")))
+  n_ind <- sum(get_init(get_model(x)))
   
   x %>% 
     dplyr::group_by_(".index") %>% 
@@ -75,8 +75,8 @@ summary.psa <- function(object, ...) {
   
   structure(
     list(
-      average = res,
-      total = object
+      average_result = res,
+      total_result = object
     ),
     class = "summary_psa"
   )
@@ -86,10 +86,10 @@ summary.psa <- function(object, ...) {
 print.summary_psa <- function(x, ...) {
   cat(sprintf(
     "A PSA with %i resamplings.\n\n",
-    attr(x$total, "N")
+    attr(x$total_result, "N")
   ))
-  values <- x$average
-  values <- values[! names(values) %in% attr(x$total, "resamp_par")]
+  values <- x$average_result
+  values <- values[! names(values) %in% x$total_result$resamp_par]
   values <- values %>% 
     dplyr::select_(
       ~ - .cost,
@@ -101,20 +101,20 @@ print.summary_psa <- function(x, ...) {
     ) %>% 
     as.matrix()
   
-  rownames(values) <- x$average$.model_names
+  rownames(values) <- x$average_result$.model_names
   
   cat("Values:\n\n")
   
   print(values, ...)
   
-  if (nrow(x$average) > 1) {
+  if (nrow(x$average_result) > 1) {
     cat("\nDifferences:\n\n")
-    res_comp <- x$average[c(".dcost", ".deffect", ".icer")]
+    res_comp <- x$average_result[c(".dcost", ".deffect", ".icer")]
     is.na(res_comp$.icer) <- ! is.finite(res_comp$.icer)
     res_comp$.dcost <- res_comp$.dcost / sum(attr(attr(x$total, "model"), "init"))
     res_comp$.deffect <- res_comp$.deffect / sum(attr(attr(x$total, "model"), "init"))
     res_comp <- as.matrix(res_comp)
-    rownames(res_comp) <- x$average$.model_names
+    rownames(res_comp) <- x$average_result$.model_names
     print(pretty_names(res_comp[! is.na(res_comp[, ".icer"]), , drop = FALSE]), ...)
   }
 }

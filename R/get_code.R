@@ -173,16 +173,16 @@ get_code.run_model <- function(x, name = NULL, sub = FALSE,
   
   if (sub) {
     md <- paste(
-      names(attr(x, "uneval_model_list")),
-      make_names(paste0("m_", names(attr(x, "uneval_model_list")))),
+      names(attr(x, "uneval_strategy_list")),
+      make_names(paste0("m_", names(attr(x, "uneval_strategy_list")))),
       sep = " = ",
       collapse = ",\n"
     )
   } else {
     
     md <- paste(
-      names(attr(x, "uneval_model_list")),
-      unlist(lapply(attr(x, "uneval_model_list"),
+      names(attr(x, "uneval_strategy_list")),
+      unlist(lapply(attr(x, "uneval_strategy_list"),
                     get_code, depth = depth + 1)),
       sep = " = ",
       collapse = ",\n  "

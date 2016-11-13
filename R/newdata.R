@@ -21,14 +21,14 @@
 #' @example inst/examples/example_eval_model_newdata.R
 #'   
 #' @keywords internal
-eval_model_newdata <- function(x, model = 1, newdata) {
-  check_model_index(x = x, i = model)
+eval_strategy_newdata <- function(x, strategy = 1, newdata) {
+  check_strategy_index(x = x, i = strategy)
   
-  cycles <- attr(x, "cycles")
-  init <- attr(x, "init")
-  method <- attr(x, "method")
-  old_parameters <- attr(x, "parameters")
-  uneval_model <- attr(x, "uneval_model_list")[[model]]
+  cycles <- get_cycles(x)
+  init <- get_init(x)
+  method <- get_method(x)
+  old_parameters <- get_parameters(x)
+  uneval_strategy <- x$uneval_strategy_list[[strategy]]
   
   if (status_cluster(verbose = FALSE)) {
     cl <- get_cluster()
@@ -43,19 +43,19 @@ eval_model_newdata <- function(x, model = 1, newdata) {
     pnewdata <- split(newdata, split_vec)
     parallel::clusterExport(
       cl, 
-      c("uneval_model", "old_parameters", "pnewdata", 
+      c("uneval_strategy", "old_parameters", "pnewdata", 
         "cycles", "init", "method"),
       envir = environment()
     )
     
-    pieces <- parallel::parLapply(cl, pnewdata, function(newdata){
+    pieces <- parallel::parLapply(cl, pnewdata, function(newdata) {
       
       newdata %>% 
         dplyr::rowwise() %>% 
         dplyr::do_(
           .mod = ~ eval_newdata(
             .,
-            model = uneval_model,
+            strategy = uneval_strategy,
             old_parameters = old_parameters,
             cycles = cycles,
             init = init,
@@ -69,13 +69,14 @@ eval_model_newdata <- function(x, model = 1, newdata) {
     })
     res <- do.call("rbind", pieces)
     rownames(res) <- NULL
+    
   } else {
     res <- newdata %>% 
       dplyr::rowwise() %>% 
       dplyr::do_(
         .mod = ~ eval_newdata(
           .,
-          model = uneval_model,
+          strategy = uneval_strategy,
           old_parameters = old_parameters,
           cycles = cycles,
           init = init,
@@ -91,7 +92,7 @@ eval_model_newdata <- function(x, model = 1, newdata) {
   res
 }
 
-eval_newdata <- function(new_parameters, model, old_parameters,
+eval_newdata <- function(new_parameters, strategy, old_parameters,
                          cycles, init, method) {
   
   new_parameters <- Filter(
@@ -106,8 +107,8 @@ eval_newdata <- function(new_parameters, model, old_parameters,
     lazy_new_param
   )
   
-  eval_model(
-    model = model,
+  eval_strategy(
+    strategy = strategy,
     parameters = parameters,
     cycles = cycles,
     init = init,

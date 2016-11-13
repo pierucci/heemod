@@ -162,7 +162,7 @@ Now that parameters, transition matrix and states are defined we can define the 
 
 ```{r}
 strat_standard <- define_strategy(
-  transition_matrix = mat_standard,
+  transition = mat_standard,
   PrimaryTHR = define_state(
     utility = 0,
     cost = 394
@@ -187,7 +187,7 @@ strat_standard <- define_strategy(
 strat_standard
 
 strat_np1 <- define_strategy(
-  transition_matrix = mat_np1,
+  transition = mat_np1,
   PrimaryTHR = define_state(
     utility = 0,
     cost = 579
@@ -221,7 +221,7 @@ To approach results from the original study we assume transitions occur at the e
 ```{r}
 res_mod <- run_model(
   standard = strat_standard,
-  np1 =      strat_np1,
+  np1      = strat_np1,
   parameters = param,
   cycles = 60,
   cost = cost,

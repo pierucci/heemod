@@ -7,12 +7,12 @@
 \usage{
 run_sensitivity(model, sensitivity)
 
-run_dsa(model, sensitivity)
+run_dsa(model, dsa)
 }
 \arguments{
-\item{model}{An evaluated Markov model}
+\item{model}{An evaluated Markov model.}
 
-\item{sensitivity}{An object returned by 
+\item{dsa}{An object returned by 
 \code{\link{define_dsa}}.}
 }
 \value{

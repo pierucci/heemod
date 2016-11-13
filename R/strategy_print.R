@@ -91,8 +91,8 @@ plot.run_model <- function(x, type = c("counts", "ce", "values"),
       if((length(value) == 1 && value == "count") & 
          !(panels %in% c("by_model", "by_state")))
         stop("to plot values, panels must be 'by_model' or 'by_state'")
-      all_states <- names(attributes(x)$eval_model_list[[1]]$counts)
-      model_info <- attr(x, "eval_model_list")
+      all_states <- names(attributes(x)$eval_strategy_list[[1]]$counts)
+      model_info <- attr(x, "eval_strategy_list")
       if(model == "all") model <- 1:length(model_info)
       if(is.character(model))
         model <- match(model, names(model_info))
