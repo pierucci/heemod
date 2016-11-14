@@ -265,9 +265,26 @@ get_values <- function(x, ...) {
 
 #' @rdname get_values
 #' @export
-get_values.run_model <- function(x, strategy = 1, ...) {
-  check_strategy_index(x, strategy, ...)
-  get_values(x$eval_strategy_list[[strategy]])
+get_values.run_model <- function(x, ...) {
+  res <- do.call(
+    bind_rows,
+    lapply(
+      get_strategy_names(x),
+      function(.n) {
+        get_values(x$eval_strategy_list[[.n]]) %>% 
+          dplyr::mutate_(.strategy_names = ~ .n)
+      }
+    )
+  )
+  
+  tidyr::gather_(
+    data = res,
+    key_col = "value_names",
+    value_col = "value",
+    gather_cols = names(res)[! names(res) %in% 
+                               c("markov_cycle",
+                                 ".strategy_names")]
+  )
 }
 
 #' @rdname get_values
@@ -288,7 +305,6 @@ get_values.list <- function(x, ...) {
 #' state membership counts for a specific strategy.
 #' 
 #' @param x Result from \code{\link{run_model}}.
-#' @param m Strategy name or index.
 #' @param ...	further arguments passed to or from other
 #'   methods.
 #'   
@@ -300,9 +316,28 @@ get_counts <- function(x, ...) {
 
 #' @rdname get_counts
 #' @export
-get_counts.run_model <- function(x, strategy = 1, ...) {
-  check_strategy_index(x, strategy, ...)
-  get_counts(x$eval_strategy_list[[strategy]])
+get_counts.run_model <- function(x, ...) {
+  res <- do.call(
+    bind_rows,
+    lapply(
+      get_strategy_names(x),
+      function(.n) {
+        get_counts(x$eval_strategy_list[[.n]]) %>% 
+          dplyr::mutate_(
+            .strategy_names = ~ .n,
+            markov_cycle = ~ row_number())
+      }
+    )
+  )
+  
+  tidyr::gather_(
+    data = res,
+    key_col = "state_names",
+    value_col = "count",
+    gather_cols = names(res)[! names(res) %in% 
+                               c("markov_cycle",
+                                 ".strategy_names")]
+  )
 }
 
 #' @rdname get_counts

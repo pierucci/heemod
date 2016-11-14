@@ -26,7 +26,7 @@ print.uneval_model <- function(x, ...) {
 #'   the plot.
 #' @param panels Should plots be faceted by model or by
 #'   value or by state (state for counts only)?
-#' @param value Names of values to be plotted.  These can be
+#' @param values Names of values to be plotted.  These can be
 #'   any of the costs or effects defined in state files.
 #' @param ... Additional arguments passed to \code{plot}.
 #'   
@@ -194,6 +194,6 @@ plot.run_model <- function(x, type = c("counts", "ce", "values"),
         ggplot2::theme(legend.position = extra_args$legend.position)
       this_plot
     },
-    stop(sprintf("Unknown type: '%s'.", type))
+    stop(sprintf("Unknown plot type: '%s'.", type))
   )
 }

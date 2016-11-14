@@ -132,8 +132,8 @@ plot(res_mod) +
 The state membership counts and the values can be accessed with `get_counts()` and `get_values()` respectively.
 
 ```{r}
-get_counts(res_mod)
-get_values(res_mod)
+head(get_counts(res_mod))
+head(get_values(res_mod))
 ```
 
 ## Convenience functions

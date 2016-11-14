@@ -15,7 +15,7 @@
 
 get_values(x, ...)
 
-\method{get_values}{run_model}(x, strategy = 1, ...)
+\method{get_values}{run_model}(x, ...)
 
 \method{get_values}{eval_strategy}(x, ...)
 

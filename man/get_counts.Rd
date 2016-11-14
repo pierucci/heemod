@@ -15,7 +15,7 @@
 
 get_counts(x, ...)
 
-\method{get_counts}{run_model}(x, strategy = 1, ...)
+\method{get_counts}{run_model}(x, ...)
 
 \method{get_counts}{eval_strategy}(x, ...)
 
@@ -26,8 +26,6 @@ get_counts(x, ...)
 
 \item{...}{further arguments passed to or from other
 methods.}
-
-\item{m}{Strategy name or index.}
 }
 \value{
 A data frame of counts per state.
