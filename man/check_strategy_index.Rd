@@ -15,8 +15,7 @@ check_strategy_index(x, i, allow_multiple = FALSE)
 index?}
 }
 \value{
-Nothing, just throws an error if an incorrect
-  strategy index is used.
+Strategy names.
 }
 \description{
 Check Strategy Index

@@ -21,26 +21,20 @@ print.uneval_model <- function(x, ...) {
 #' 
 #' @param x Result from \code{\link{run_model}}.
 #' @param type Type of plot, see details.
-#' @param model Name or position of model of interest.
-#' @param include_states Names of states to be included in
+#' @param strategy Name or position of model(s) of interest.
+#' @param states Names of states to be included in
 #'   the plot.
-#' @param panels Should plots be faceted by model or by
-#'   value or by state (state for counts only)?
-#' @param values Names of values to be plotted.  These can be
-#'   any of the costs or effects defined in state files.
+#' @param panels Should plots be faceted by model, by
+#'   value or by state?
+#' @param values Names of values to be plotted. These can be
+#'   any of the costs or effects defined in states.
 #' @param ... Additional arguments passed to \code{plot}.
 #'   
-#' @details \code{type = "counts"} represents state
+#' \code{type = "counts"} represents state
 #' memberships (corrected) by cycle, \code{type = "ce"}
 #' plots models on the cost-efficiency plane with the
-#' efficiency frontier.
-#' 
-#' When \code{type = "count"}, model can be a vector of
-#' model numbers or names, or "all".
-#' 
-#' \code{include_states} and \code{panels} are active only
-#' when \code{type = "count"}.   When \code{include_states =
-#' character(0)} (the default), all states will be included.
+#' efficiency frontier, and \code{type = "values"} state
+#' values per cycle.
 #' 
 #' @return A \code{ggplot2} object.
 #' 
@@ -48,24 +42,63 @@ print.uneval_model <- function(x, ...) {
 #' 
 #' @export
 plot.run_model <- function(x, type = c("counts", "ce", "values"),
-                            model = "all", 
-                            include_states = character(0), 
-                            panels = c("by_model", "by_state", "by_value"),
-                            value = NULL,
-                            ...){
+                           panels = c("by_strategy", "by_state", "by_value"),
+                           values = NULL,
+                           strategy = NULL, 
+                           states = NULL,
+                           ...) {
   type <- match.arg(type)
   panels <- match.arg(panels)
-  extra_args <- list(...)
   
   switch(
     type,
     counts = {
-      ## for backwards compatibility
-      plot.run_model(x, type = "values", model = model,
-                      include_states = include_states,
-                      panels = panels,
-                      value = "count", 
-                      ...)
+      if (panels == "by_strategy") {
+        colour_var <- "state_names"
+        colour_lab <- "State"
+        panel_var <- ".strategy_names"
+      } else if (panels == "by_state") {
+        colour_var <- ".strategy_names"
+        colour_lab <- "Strategy"
+        panel_var <- "state_names"
+      } else {
+        stop("'panels' arguement not compatible.")
+      }
+      
+      tab <- get_counts(x)
+      
+      if (! is.null(states)) {
+        if (any(pb <- ! states %in% get_state_names(x))) {
+          stop(sprintf(
+            "Some state do not exist: %s.",
+            paste(states[pb], collapse = ", ")
+          ))
+        }
+        tab <- tab[tab$state_names %in% states, ]
+      }
+      
+      if (! is.null(strategy)) {
+        strategy <- check_strategy_index(x, strategy,
+                                         allow_multiple = TRUE)
+        
+        tab <- tab[tab$.strategy_names %in% strategy, ]
+      }
+      
+      
+      pos_cycle <- pretty(sort(unique(tab$markov_cycle)),
+                          n = min(max(tab$markov_cycle), 10))
+      ggplot2::ggplot(
+        tab,
+        ggplot2::aes_string(x = "markov_cycle", y = "count",
+                            colour = colour_var)) +
+        ggplot2::geom_point() +
+        ggplot2::geom_line() +
+        ggplot2::facet_grid(as.formula(paste(panel_var, "~ ."))) +
+        ggplot2::ylim(0, max(tab$count)) +
+        ggplot2::xlab("Markov cycle") +
+        ggplot2::ylab("Count") +
+        ggplot2::scale_x_continuous(breaks = pos_cycle) +
+        ggplot2::scale_colour_hue(name = colour_lab)
     },
     ce = {
       tab_ce <- scale(x)
@@ -83,116 +116,53 @@ plot.run_model <- function(x, type = c("counts", "ce", "values"),
         ggplot2::ylab("Cost")
     },
     values = {
-      if(length(value) > 1 & "count" %in% value)
-        stop("count can't be plotted along with other values")
-      if((length(value) > 1 || value != "count") & 
-         !(panels %in% c("by_model", "by_value")))
-        stop("to plot values, panels must be 'by_model' or 'by_value'")
-      if((length(value) == 1 && value == "count") & 
-         !(panels %in% c("by_model", "by_state")))
-        stop("to plot values, panels must be 'by_model' or 'by_state'")
-      all_states <- get_state_names(x)
-      model_info <- get_strategy_names(x)
-      if(model == "all") model <- 1:length(model_info)
-      if(is.character(model))
-        model <- match(model, names(model_info))
-      if(length(include_states) > 0){
-        if(!all(include_states %in% all_states))
-          stop("all elements of include_states must be states of the model")
+      
+      if (panels == "by_strategy") {
+        colour_var <- "value_names"
+        colour_lab <- "Value"
+        panel_var <- ".strategy_names"
+      } else if (panels == "by_value") {
+        colour_var <- ".strategy_names"
+        colour_lab <- "Strategy"
+        panel_var <- "value_names"
+      } else {
+        stop("'panels' arguement not compatible.")
       }
       
-      if(length(value) == 1 && value == "count") 
-        get_for_plot <- get_counts
-      else{
-        get_for_plot <- function(...){get_values(...)[, value, drop = FALSE]}
-        val_names <- names(get_values(x, 1))
-        names_present <- value %in% val_names
-        if(!all(names_present))
-          stop(paste(value[names_present], "is not one of the values calculated for the model:",
-                     paste(val_names, collapse = ", ")))
-      }
-
-      ## set up some of the plot parameters we'll need
-      title_string <- NULL
-      if(panels == "by_model"){
-        color_string <- "key"
-        facet_string <- ".model ~ ."
-        legend_name <- value
-        scale_string <- "fixed"
-        use_facets <- TRUE
-        if(length(model) == 1){
-          use_facets <- FALSE
-          if(is.character(model)) title_string <- model
-          if(is.numeric(model)) title_string <- names(model_info)[model]
+      tab <- get_values(x)
+      
+      if (! is.null(values)) {
+        if (any(pb <- ! values %in% get_state_value_names(x))) {
+          stop(sprintf(
+            "Some state do not exist: %s.",
+            paste(values[pb], collapse = ", ")
+          ))
         }
-      }
-      if(panels == "by_value" | panels == "by_state"){
-        color_string <- ".model"
-        legend_name <- "Model"
-        use_facets <- TRUE
-        facet_string <- "key ~ ."
-        scale_string <- "free_y"
-        if(length(include_states) == 1){
-          title_string <- include_states
-        }
+        tab <- tab[tab$value_names %in% values, ]
       }
       
-      ## prepare the data
-      tab_values_pieces <- lapply(names(model_info),
-                                  function(this_model) {
-                                    dplyr::mutate_(
-                                      get_for_plot(x, this_model),
-                                      .model = ~ this_model,
-                                      markov_cycle = ~ row_number())
-                                  })
-      tab_values <- do.call("rbind", tab_values_pieces)
-      tab_values$.model <- factor(tab_values$.model, levels = names(model_info))
-      pos_cycle <- pretty(seq_len(nrow(tab_values)), n = min(nrow(tab_values), 10))
-      
-      tab_values <- tidyr::gather_(
-        data = tab_values,
-        key_col = "key",
-        value_col = "value",
-        gather_cols = setdiff(names(tab_values),
-                              c(".model", "markov_cycle")))
-      
-      if(panels == "by_model"){
-        tab_values <- dplyr::filter_(
-          tab_values, ~ .model %in% names(model_info)[model]
-        )
+      if (! is.null(strategy)) {
+        strategy <- check_strategy_index(x, strategy,
+                                         allow_multiple = TRUE)
+        
+        tab <- tab[tab$.strategy_names %in% strategy, ]
       }
-      if(length(include_states) > 0)
-        tab_values <- dplyr::filter_(
-          tab_values, ~ key %in% include_states
-        )
       
-      y_max <- max(tab_values$value)
-      this_plot <- ggplot2::ggplot(
-        tab_values, 
-        ggplot2::aes_string(
-          x = "markov_cycle", 
-          y = "value", 
-          colour = color_string)) +
-        ggplot2::geom_line() +
+      
+      pos_cycle <- pretty(sort(unique(tab$markov_cycle)),
+                          n = min(max(tab$markov_cycle), 10))
+      ggplot2::ggplot(
+        tab,
+        ggplot2::aes_string(x = "markov_cycle", y = "value",
+                            colour = colour_var)) +
         ggplot2::geom_point() +
-        ggplot2::scale_x_continuous(breaks = pos_cycle) +
+        ggplot2::geom_line() +
+        ggplot2::facet_grid(as.formula(paste(panel_var, "~ ."))) +
+        ggplot2::ylim(0, max(tab$value)) +
         ggplot2::xlab("Markov cycle") +
-        ggplot2::ylab(value) +
-        ggplot2::scale_colour_hue(name = legend_name) +
-        ggplot2::ggtitle(label = title_string)
-      
-      if(use_facets) 
-        this_plot <- this_plot +
-        ggplot2::facet_grid(
-          facet_string, scales = scale_string
-        )
-      
-      if(scale_string == "fixed") this_plot <- this_plot +
-        ggplot2::ylim(0, y_max)
-      if("legend.position" %in% names(extra_args))
-        this_plot <- this_plot +
-        ggplot2::theme(legend.position = extra_args$legend.position)
-      this_plot
+        ggplot2::ylab("Value") +
+        ggplot2::scale_x_continuous(breaks = pos_cycle) +
+        ggplot2::scale_colour_hue(name = colour_lab)
     },
     stop(sprintf("Unknown plot type: '%s'.", type))
   )
