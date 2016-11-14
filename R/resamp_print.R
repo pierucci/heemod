@@ -52,19 +52,27 @@ plot.psa <- function(x, type = c("ce", "ac"),
 scale.psa <- function(x, center = TRUE, scale = TRUE) {
   .bm <- get_base_strategy(get_model(x))
   
-  n_ind <- if (scale) sum(get_init(get_model(x))) else 1
+  res <- x$psa
+  
+  if (scale) {
+    res <- res %>% 
+      dplyr::mutate_(
+        .cost = ~ .cost / sum(get_init(get_model(x))),
+        .effect = ~ .effect / sum(get_init(get_model(x)))
+      )
+  }
   
   if (center) {
-    x$psa %>% 
+    res <- res %>% 
       dplyr::group_by_(".index") %>% 
       dplyr::mutate_(
-        .cost = ~ (.cost - sum(.cost * (.strategy_names == .bm))) / n_ind,
-        .effect = ~ (.effect - sum(.effect * (.strategy_names == .bm))) / n_ind
+        .cost = ~ (.cost - sum(.cost * (.strategy_names == .bm))),
+        .effect = ~ (.effect - sum(.effect * (.strategy_names == .bm)))
       ) %>% 
       dplyr::ungroup()
-  } else {
-    x$psa
   }
+  
+  res
 }
 
 #' @export
