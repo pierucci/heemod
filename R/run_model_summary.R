@@ -25,7 +25,7 @@ summary.run_model <- function(object, ...) {
     as.data.frame()
   
   res_comp <- object %>%
-    scale() %>% 
+    scale(...) %>% 
     compute_icer() %>% 
     as.data.frame()
   

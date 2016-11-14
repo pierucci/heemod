@@ -5,7 +5,8 @@
 \title{Plot Sensitivity Analysis}
 \usage{
 \method{plot}{dsa}(x, type = c("simple", "difference"), result = c("cost",
-  "effect", "icer"), model = 1, widest_on_top = TRUE, ...)
+  "effect", "icer", "value"), value = NULL, strategy = 1,
+  widest_on_top = TRUE, ...)
 }
 \arguments{
 \item{x}{A result of \code{\link{run_dsa}}.}
@@ -14,7 +15,7 @@
 
 \item{result}{Plot cost, effect, or ICER.}
 
-\item{model}{Name or index of model to plot.}
+\item{strategy}{Name or index of strategy to plot.}
 
 \item{widest_on_top}{logical. Should bars be sorted so
 widest are on top?}
@@ -29,8 +30,7 @@ Plot the results of a sensitivity analysis as a tornado
 plot.
 }
 \details{
-Plot type \code{simple} plots variations of single model 
-costs, while \code{difference} plots cost difference
-between the specified model and the reference model.
+Plot type \code{simple} plots variations of single strategy 
+values, while \code{difference} plots incremental values.
 }
 

@@ -168,7 +168,7 @@ se <- define_dsa(
 We then run the sensitivity analysis with `run_dsa()`, using `res_mod` the result from `run_model()` as input.
 
 ```{r}
-res <- run_dsa(
+res_dsa <- run_dsa(
   model = res_mod,
   dsa = se
 )
@@ -179,7 +179,7 @@ res <- run_dsa(
 All the results can be displayed in a table.
 
 ```{r}
-res
+res_dsa
 ```
 
 Two distinct plot types are available. The basic plot (`type = "simple"`) displays cost variations for each model, around the base cost.
@@ -187,8 +187,8 @@ Two distinct plot types are available. The basic plot (`type = "simple"`) displa
 As expected `mono` model costs are not senstive to `cost_lami`, since this drug was not given to this group. Similarly it is not sensitive to `rr`, because this parameters only modifies transition probabilities in the other model.
 
 ```{r, fig.width = 6, fig.align='center'}
-plot(res,
-     model = "mono",
+plot(res_dsa,
+     strategy = "mono",
      result = "cost",
      type = "simple")
 ```
@@ -196,8 +196,8 @@ plot(res,
 On the other hand the `comb` model cost is sensitive to all 4 parameters.
 
 ```{r, fig.width = 6, fig.align='center'}
-plot(res,
-     model = "comb",
+plot(res_dsa,
+     strategy = "comb",
      result = "cost",
      type = "simple")
 ```
@@ -205,8 +205,8 @@ plot(res,
 And its effectiveness is sensitive to `rr`
 
 ```{r, fig.width = 6, fig.align='center'}
-plot(res, 
-     model = "comb",
+plot(res_dsa, 
+     strategy = "comb",
      result = "effect",
      type = "simple")
 ```
@@ -214,12 +214,12 @@ plot(res,
 The difference plot (`type = "difference"`) displays the difference between the specified model `comb` and the reference model `mono`.
 
 ```{r, fig.width = 6, fig.align='center'}
-plot(res,
-     model = "comb",
+plot(res_dsa,
+     strategy = "comb",
      result = "cost",
      type = "difference")
-plot(res,
-     model = "comb",
+plot(res_dsa,
+     strategy = "comb",
      result = "icer",
      type = "difference")
 ```

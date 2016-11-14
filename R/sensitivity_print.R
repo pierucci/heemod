@@ -3,12 +3,11 @@
 #' Plot the results of a sensitivity analysis as a tornado 
 #' plot.
 #' 
-#' Plot type \code{simple} plots variations of single model 
-#' costs, while \code{difference} plots cost difference
-#' between the specified model and the reference model.
+#' Plot type \code{simple} plots variations of single strategy 
+#' values, while \code{difference} plots incremental values.
 #' 
 #' @param x A result of \code{\link{run_dsa}}.
-#' @param model Name or index of model to plot.
+#' @param strategy Name or index of strategy to plot.
 #' @param type Type of plot (see details).
 #' @param result Plot cost, effect, or ICER.
 #' @param widest_on_top logical. Should bars be sorted so
@@ -19,34 +18,38 @@
 #' @export
 #' 
 plot.dsa <- function(x, type = c("simple", "difference"),
-                     result = c("cost", "effect", "icer"),
-                     model = 1, widest_on_top = TRUE, ...) {
+                     result = c("cost", "effect", "icer", "value"),
+                     value = NULL,
+                     strategy = 1, widest_on_top = TRUE, ...) {
   type <- match.arg(type)
   result <- match.arg(result)
   
-  n_ind <- sum(attr(attr(x, "model_ref"), "init"))
+  model_ref <- get_model(x)
   
-  model_ref <- attr(x, "model_ref")
-  
-  check_model_index(x = model_ref, i = model)
-  
-  if (is.numeric(model)) {
-    model <- get_model_names(model_ref)[model]
-  }
+  strategy <- check_strategy_index(x = model_ref, i = strategy)
   
   if (type == "simple" & result == "icer") {
-    stop("Result ICER can conly be computed with type = 'difference'.")
+    stop("Result 'icer' can conly be computed with type = 'difference'.")
   }
   
-  if (type == "difference" & model == get_lowest_model(model_ref)) {
-    stop("type = 'difference' cannot be computed for base model.")
+  if (type == "value" & is.null(value)) {
+    stop("Result 'value' need a specified value.")
   }
   
-  if (type == "simple") {
-    main_title <- paste("Model:", model)
-  } else {
-    main_title <- paste("Model:", model, "vs.",
-                        get_base_model(model_ref))
+  if (type == "value") {
+    if (is.null(value)) {
+      stop("Argument 'value' missing.")
+    } else if (! value %in% x$variables | length(value) > 1) {
+      stop("'value' must be a single DSA variable name.")
+    }
+  }
+  
+  if (type == "difference" & strategy == get_frontier(model_ref$run_model)[1]) {
+    stop("Type = 'difference' cannot be computed for base strategy.")
+  }
+  
+  if (type == "difference" & result == "value") {
+    stop("Type = 'difference' is not compatible with result = 'value'.")
   }
   
   switch(
@@ -62,6 +65,12 @@ plot.dsa <- function(x, type = c("simple", "difference"),
       var_ref <- ".effect_ref"
       var_col <- ".col_effect"
       xl <- "Effect"
+    },
+    simple_value = {
+      var_plot <- value
+      var_ref <- ".effect_ref"
+      var_col <- ".col_effect"
+      xl <- value
     },
     difference_cost = {
       var_plot <- ".dcost"
@@ -83,42 +92,39 @@ plot.dsa <- function(x, type = c("simple", "difference"),
     }
   )
   
-  suppressMessages({
-    tab <- summary(x) %>% 
-      dplyr::left_join(
-        model_ref %>%
-          dplyr::bind_cols(summary(model_ref)$res_comp) %>% 
-          dplyr::select_(
-            ".model_names",
-            .cost_ref = ".cost",
-            .effect_ref = ".effect",
-            .dcost_ref = ".dcost",
-            .deffect_ref = ".deffect",
-            .icer_ref = ".icer"
-          )
-      ) %>% 
-      dplyr::mutate_(
-        .dcost = ~ .dcost / n_ind,
-        .deffect = ~ .deffect / n_ind,
-        .col_cost = ~ ifelse(.cost > .cost_ref, ">",
-                             ifelse(.cost == .cost_ref, "=", "<")),
-        .col_effect = ~ ifelse(.effect > .effect_ref, ">",
-                               ifelse(.effect == .effect_ref, "=", "<")),
-        .col_dcost = ~ ifelse(.dcost > .dcost_ref, ">",
-                              ifelse(.dcost == .dcost_ref, "=", "<")),
-        .col_deffect = ~ ifelse(.deffect > .deffect_ref, ">",
-                                ifelse(.deffect == .deffect_ref, "=", "<")),
-        .col_icer = ~ ifelse(.icer > .icer_ref, ">",
-                             ifelse(.icer == .icer_ref, "=", "<"))
-      ) %>% 
-      dplyr::filter_(
-        ~ .model_names == model
-      ) %>%
-      dplyr::arrange_(
-        ".par_names", var_plot) %>%
-      dplyr::group_by_(".par_names") %>%
-      dplyr::mutate_(.hjust = ~ 1 - (row_number() - 1))
-  })
+  tab <- summary(x, center = FALSE)$res_comp %>% 
+    dplyr::left_join(
+      summary(model_ref, center = FALSE)$res_comp %>%
+        dplyr::select_(
+          ".strategy_names",
+          .cost_ref = ".cost",
+          .effect_ref = ".effect",
+          .dcost_ref = ".dcost",
+          .deffect_ref = ".deffect",
+          .icer_ref = ".icer"
+        ),
+      by = ".strategy_names"
+    ) %>% 
+    dplyr::mutate_(
+      .col_cost = ~ ifelse(.cost > .cost_ref, ">",
+                           ifelse(.cost == .cost_ref, "=", "<")),
+      .col_effect = ~ ifelse(.effect > .effect_ref, ">",
+                             ifelse(.effect == .effect_ref, "=", "<")),
+      .col_dcost = ~ ifelse(.dcost > .dcost_ref, ">",
+                            ifelse(.dcost == .dcost_ref, "=", "<")),
+      .col_deffect = ~ ifelse(.deffect > .deffect_ref, ">",
+                              ifelse(.deffect == .deffect_ref, "=", "<")),
+      .col_icer = ~ ifelse(.icer > .icer_ref, ">",
+                           ifelse(.icer == .icer_ref, "=", "<"))
+    ) %>% 
+    dplyr::filter_(
+      substitute(.strategy_names == strategy,
+                 list(strategy = strategy))
+    ) %>%
+    dplyr::arrange_(
+      ".par_names", var_plot) %>%
+    dplyr::group_by_(".par_names") %>%
+    dplyr::mutate_(.hjust = ~ 1 - (row_number() - 1))
   
   if (widest_on_top) {
     tab$.par_names <- stats::reorder(
@@ -141,7 +147,6 @@ plot.dsa <- function(x, type = c("simple", "difference"),
     ggplot2::guides(colour = FALSE) +
     ggplot2::ylab("Variable") +
     ggplot2::xlab(xl) +
-    ggplot2::ggtitle(main_title) + 
     ggplot2::xlim(min(tab[[var_plot]]) - l, max(tab[[var_plot]]) + l) +
     ggplot2::geom_text(
       ggplot2::aes_string(
@@ -185,25 +190,32 @@ print.dsa <- function(x, ...) {
 scale.dsa <- function(x, center = TRUE, scale = TRUE) {
   .bm <- get_base_strategy(get_model(x))
   
-  n_ind <- if (scale) sum(get_init(get_model(x))) else 1
+  res <- x$dsa
+  
+  if (scale) {
+    res <- res %>% 
+      dplyr::mutate_(
+        .cost = ~ .cost / sum(get_init(get_model(x))),
+        .effect = ~ .effect / sum(get_init(get_model(x)))
+      )
+  }
   
   if (center) {
-    x$dsa %>% 
+    res <- res %>% 
       dplyr::group_by_(~ .par_names, ~ .par_value) %>% 
       dplyr::mutate_(
-        .cost = ~ (.cost - sum(.cost * (.strategy_names == .bm))) / n_ind,
-        .effect = ~ (.effect - sum(.effect * (.strategy_names == .bm))) / n_ind
+        .cost = ~ .cost - sum(.cost * (.strategy_names == .bm)),
+        .effect = ~ .effect - sum(.effect * (.strategy_names == .bm))
       ) %>% 
       dplyr::ungroup()
-  } else {
-    x$dsa
   }
+  res
 }
 
 #' @export
 summary.dsa <- function(object, ...) {
   res <- object %>% 
-    scale() %>% 
+    scale(...) %>% 
     dplyr::group_by_(~ .par_names, ~ .par_value)  %>% 
     dplyr::do_(~ compute_icer(
       ., strategy_order = order(get_effect(get_model(object)))
@@ -217,4 +229,10 @@ summary.dsa <- function(object, ...) {
     ),
     class = c("summary_dsa", class(res))
   )
+}
+
+tidy_dsa <- function(x) {
+  tab <- summary(x)$res_comp
+  tab %>% 
+    tidyr::gather()
 }
