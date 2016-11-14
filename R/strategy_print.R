@@ -28,6 +28,7 @@ print.uneval_model <- function(x, ...) {
 #'   value or by state?
 #' @param values Names of values to be plotted. These can be
 #'   any of the costs or effects defined in states.
+#' @param free_y Should y limits be free between panels?
 #' @param ... Additional arguments passed to \code{plot}.
 #'   
 #' \code{type = "counts"} represents state
@@ -46,9 +47,12 @@ plot.run_model <- function(x, type = c("counts", "ce", "values"),
                            values = NULL,
                            strategy = NULL, 
                            states = NULL,
+                           free_y = FALSE,
                            ...) {
   type <- match.arg(type)
   panels <- match.arg(panels)
+  
+  scales <- if (free_y) "free_y" else "fixed"
   
   switch(
     type,
@@ -93,8 +97,9 @@ plot.run_model <- function(x, type = c("counts", "ce", "values"),
                             colour = colour_var)) +
         ggplot2::geom_point() +
         ggplot2::geom_line() +
-        ggplot2::facet_grid(as.formula(paste(panel_var, "~ ."))) +
-        ggplot2::ylim(0, max(tab$count)) +
+        ggplot2::facet_grid(as.formula(paste(panel_var, "~ .")),
+                            scales = scales) +
+        ggplot2::ylim(0, NA) +
         ggplot2::xlab("Markov cycle") +
         ggplot2::ylab("Count") +
         ggplot2::scale_x_continuous(breaks = pos_cycle) +
@@ -151,14 +156,16 @@ plot.run_model <- function(x, type = c("counts", "ce", "values"),
       
       pos_cycle <- pretty(sort(unique(tab$markov_cycle)),
                           n = min(max(tab$markov_cycle), 10))
+      
       ggplot2::ggplot(
         tab,
         ggplot2::aes_string(x = "markov_cycle", y = "value",
                             colour = colour_var)) +
         ggplot2::geom_point() +
         ggplot2::geom_line() +
-        ggplot2::facet_grid(as.formula(paste(panel_var, "~ ."))) +
-        ggplot2::ylim(0, max(tab$value)) +
+        ggplot2::facet_grid(as.formula(paste(panel_var, "~ .")),
+                            scales = scales) +
+        ggplot2::ylim(0, NA) +
         ggplot2::xlab("Markov cycle") +
         ggplot2::ylab("Value") +
         ggplot2::scale_x_continuous(breaks = pos_cycle) +

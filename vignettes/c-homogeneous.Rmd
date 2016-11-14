@@ -206,10 +206,10 @@ The incremental cost-effectiveness ratio of the combiend therapy strategy is thu
 
 The counts per state can be plotted by model:
 
-```{r, fig.align='center', fig.width=6, message=FALSE}
-plot(res_mod, type = "counts", panel = "by_model") +
+```{r, fig.align='center', fig.width=6, fig.height=6, message=FALSE}
+plot(res_mod, type = "counts", panel = "by_strategy") +
   xlab("Time") +
-  theme_minimal() +
+  theme_bw() +
   scale_color_brewer(
     name = "State",
     palette = "Set1"
@@ -218,10 +218,23 @@ plot(res_mod, type = "counts", panel = "by_model") +
 
 Or by state:
 
-```{r, fig.align='center', fig.width=6, message=FALSE}
+```{r, fig.align='center', fig.width=6, fig.height=8, message=FALSE}
 plot(res_mod, type = "counts", panel = "by_state") +
   xlab("Time") +
-  theme_minimal() +
+  theme_bw() +
+  scale_color_brewer(
+    name = "Model",
+    palette = "Set1"
+  )
+```
+
+The values can also be represented:
+
+```{r, fig.align='center', fig.width=6, fig.height=8, message=FALSE}
+plot(res_mod, type = "values", panel = "by_value",
+     free_y = TRUE) +
+  xlab("Time") +
+  theme_bw() +
   scale_color_brewer(
     name = "Model",
     palette = "Set1"
