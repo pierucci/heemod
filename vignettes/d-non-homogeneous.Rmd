@@ -12,6 +12,7 @@ vignette: >
 
 ```{r, echo=FALSE, include=FALSE}
 library(heemod)
+library(ggplot2)
 ```
 
 ## Model description
@@ -243,5 +244,10 @@ It should be noted that this result differs from the original study. This differ
 We can plot the counts per state:
 
 ```{r, fig.width = 6, fig.height=6, fig.align='center'}
-plot(res_mod, type = "counts", panel = "by_state")
+plot(res_mod, type = "counts", panel = "by_state", free_y = TRUE) +
+  theme_bw() +
+  scale_color_brewer(
+    name = "Strategy",
+    palette = "Set1"
+  )
 ```

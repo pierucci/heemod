@@ -223,7 +223,7 @@ plot(res_mod, type = "counts", panel = "by_state") +
   xlab("Time") +
   theme_bw() +
   scale_color_brewer(
-    name = "Model",
+    name = "Strategy",
     palette = "Set1"
   )
 ```
@@ -236,7 +236,7 @@ plot(res_mod, type = "values", panel = "by_value",
   xlab("Time") +
   theme_bw() +
   scale_color_brewer(
-    name = "Model",
+    name = "Strategy",
     palette = "Set1"
   )
 ```
