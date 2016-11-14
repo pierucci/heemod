@@ -130,8 +130,7 @@ make_names <- function(x) {
 #' @param allow_multiple logical. Allow multiple strategy
 #'   index?
 #'   
-#' @return Nothing, just throws an error if an incorrect
-#'   strategy index is used.
+#' @return Strategy names.
 #'   
 #' @keywords internal
 check_strategy_index <- function(x, i, allow_multiple = FALSE) {
@@ -155,6 +154,11 @@ check_strategy_index <- function(x, i, allow_multiple = FALSE) {
       paste(get_strategy_names(x), collapse = " - ")
     ))
   }
+  
+  res <- get_strategy_names(x)
+  names(res) <- res
+  
+  res[i]
 }
 
 #' Weighted Summary
