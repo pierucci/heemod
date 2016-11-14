@@ -48,6 +48,7 @@ plot.psa <- function(x, type = c("ce", "ac"),
     stop("Unknown plot type."))
 }
 
+#' @rdname heemod_scale
 scale.psa <- function(x, center = TRUE, scale = TRUE) {
   .bm <- get_base_strategy(get_model(x))
   

@@ -18,9 +18,9 @@
 #' @return A \code{ggplot2} object.
 #' @export
 #' 
-plot.eval_sensitivity <- function(x, type = c("simple", "difference"),
-                                  result = c("cost", "effect", "icer"),
-                                  model = 1, widest_on_top = TRUE, ...) {
+plot.dsa <- function(x, type = c("simple", "difference"),
+                     result = c("cost", "effect", "icer"),
+                     model = 1, widest_on_top = TRUE, ...) {
   type <- match.arg(type)
   result <- match.arg(result)
   
@@ -101,18 +101,18 @@ plot.eval_sensitivity <- function(x, type = c("simple", "difference"),
         .dcost = ~ .dcost / n_ind,
         .deffect = ~ .deffect / n_ind,
         .col_cost = ~ ifelse(.cost > .cost_ref, ">",
-                                 ifelse(.cost == .cost_ref, "=", "<")),
+                             ifelse(.cost == .cost_ref, "=", "<")),
         .col_effect = ~ ifelse(.effect > .effect_ref, ">",
-                                   ifelse(.effect == .effect_ref, "=", "<")),
+                               ifelse(.effect == .effect_ref, "=", "<")),
         .col_dcost = ~ ifelse(.dcost > .dcost_ref, ">",
-                                  ifelse(.dcost == .dcost_ref, "=", "<")),
+                              ifelse(.dcost == .dcost_ref, "=", "<")),
         .col_deffect = ~ ifelse(.deffect > .deffect_ref, ">",
-                                    ifelse(.deffect == .deffect_ref, "=", "<")),
+                                ifelse(.deffect == .deffect_ref, "=", "<")),
         .col_icer = ~ ifelse(.icer > .icer_ref, ">",
-                                 ifelse(.icer == .icer_ref, "=", "<"))
+                             ifelse(.icer == .icer_ref, "=", "<"))
       ) %>% 
       dplyr::filter_(
-          ~ .model_names == model
+        ~ .model_names == model
       ) %>%
       dplyr::arrange_(
         ".par_names", var_plot) %>%
@@ -154,25 +154,20 @@ plot.eval_sensitivity <- function(x, type = c("simple", "difference"),
 }
 
 #' @export
-print.summary_sensitivity <- function(x, ...) {
-  v <- attr(attr(x, "sensitivity"), "variables")
+print.summary_dsa <- function(x, ...) {
+  v <- x$object$variables
   cat(sprintf("A sensitivity analysis on %i parameters.\n\n",
               length(v)))
   cat(paste(c("Parameters:", v), collapse = "\n  -"))
-  cat("\n\n")
-  cat("Original results:\n\n")
-  model_ref <- attr(x, "sensitivity") %>% attr("model_ref")
-  print(model_ref)
-  cat("\nSensitivity analysis:\n\n")
+  cat("\n\nSensitivity analysis:\n\n")
   
-  rn <- paste0(x$.par_names, " = ", x$.par_value,
-               " (", x$.model_names, ")")
+  rn <- paste(x$res_comp$.strategy_names,
+              x$res_comp$.par_names, "=",
+              x$res_comp$.par_value)
   
-  x$.dcost <- x$.dcost / sum(attr(model_ref, "init"))
-  x$.deffect <- x$.deffect / sum(attr(model_ref, "init"))
-  x <- dplyr::select_(x, ~ - .par_names,
+  x <- dplyr::select_(x$res_comp, ~ - .par_names,
                       ~ - .par_value,
-                      ~ - .model_names)
+                      ~ - .strategy_names)
   x <- pretty_names(x)
   
   res <- as.matrix(x)
@@ -182,22 +177,44 @@ print.summary_sensitivity <- function(x, ...) {
 }
 
 #' @export
-print.eval_sensitivity <- function(x, ...) {
+print.dsa <- function(x, ...) {
   print(summary(x))
 }
 
+#' @rdname heemod_scale
+scale.dsa <- function(x, center = TRUE, scale = TRUE) {
+  .bm <- get_base_strategy(get_model(x))
+  
+  n_ind <- if (scale) sum(get_init(get_model(x))) else 1
+  
+  if (center) {
+    x$dsa %>% 
+      dplyr::group_by_(~ .par_names, ~ .par_value) %>% 
+      dplyr::mutate_(
+        .cost = ~ (.cost - sum(.cost * (.strategy_names == .bm))) / n_ind,
+        .effect = ~ (.effect - sum(.effect * (.strategy_names == .bm))) / n_ind
+      ) %>% 
+      dplyr::ungroup()
+  } else {
+    x$dsa
+  }
+}
+
 #' @export
-summary.eval_sensitivity <- function(object, ...) {
+summary.dsa <- function(object, ...) {
   res <- object %>% 
-    dplyr::rowwise() %>% 
-    dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
-    dplyr::bind_cols(object %>% dplyr::select_(~ - .mod)) %>% 
-    dplyr::ungroup() %>% 
-    dplyr::group_by_(~ .par_names, ~ .par_value) %>% 
-    dplyr::mutate_(.dots = attr(object, "model_ref") %>% attr("ce")) %>% 
-    dplyr::do_(~ compute_icer(.)) %>% 
+    scale() %>% 
+    dplyr::group_by_(~ .par_names, ~ .par_value)  %>% 
+    dplyr::do_(~ compute_icer(
+      ., strategy_order = order(get_effect(get_model(object)))
+    )) %>% 
     dplyr::ungroup()
   
-  structure(res, class = c("summary_sensitivity", class(res)),
-            sensitivity = object)
+  structure(
+    list(
+      res_comp = res,
+      object = object
+    ),
+    class = c("summary_dsa", class(res))
+  )
 }

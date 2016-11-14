@@ -44,6 +44,12 @@ run_dsa <- function(model, dsa) {
   res <- Reduce(dplyr::bind_rows, list_res) %>% 
     tidyr::gather_(".par_names", ".par_value",
                    attr(dsa, "variables"), na.rm = TRUE)
+  res <- res %>% 
+    dplyr::rowwise() %>% 
+    dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
+    dplyr::bind_cols(res %>% dplyr::select_(~ - .mod)) %>% 
+    dplyr::ungroup() %>% 
+    dplyr::mutate_(.dots = get_ce(model))
   
   structure(
     list(
@@ -51,7 +57,7 @@ run_dsa <- function(model, dsa) {
       variables = attr(dsa, "variables"),
       model = model
     ),
-    class = c("eval_dsa", class(res))
+    class = c("dsa", class(res))
   )
 }
 

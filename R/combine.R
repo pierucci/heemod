@@ -129,6 +129,7 @@ summary.combined_model <- function(object, ...) {
   summary.run_model(object, ...)
 }
 
+#' @rdname heemod_scale
 scale.combined_model <- function(x, center = TRUE, scale = TRUE) {
   scale.run_model(x, center = center, scale = scale)
 }

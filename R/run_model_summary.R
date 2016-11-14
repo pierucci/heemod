@@ -54,7 +54,7 @@ get_effect <- function(x) {
 #' 
 #' Normalize cost and effect values taking base model as a 
 #' reference.
-#' 
+#' @name heemod_scale
 #' @param x Result of \code{\link{run_model}} or 
 #'   \code{\link{run_psa}}.
 #' @param center Center results around base model?
@@ -64,6 +64,9 @@ get_effect <- function(x) {
 #'   \code{.effect}, ordered by \code{.effect}.
 #'   
 #' @keywords internal
+NULL
+
+#' @rdname heemod_scale
 scale.run_model <- function(x, center = TRUE, scale = TRUE) {
   bm <- get_base_strategy(x)
   res <- tibble::tibble(
