@@ -82,7 +82,7 @@ combine_models <- function(newmodels, weights, oldmodel) {
   
   structure(
     list(
-      combined_model = res,
+      run_model = res,
       base_strategy = get_base_strategy(oldmodel),
       eval_strategy_list = list_eval_models, 
       parameters = get_parameters(oldmodel),
@@ -136,17 +136,14 @@ scale.combined_model <- function(x, center = TRUE, scale = TRUE) {
 
 #' @rdname get_counts
 #' @export
-get_counts.updated_model <- function(x, strategy, ...) {
-  get_counts(x$combined_model, strategy, ...)
+get_counts.updated_model <- function(x, ...) {
+  get_counts(x$combined_model, ...)
 }
 
 #' @rdname get_counts
 #' @export
-get_counts.combined_model <- function(x, strategy, ...){
-  x <- x$eval_strategy_list
-  x$.strategy_names <- names(x)
-  check_model_index(x, strategy)
-  get_counts(x[[strategy]])
+get_counts.combined_model <- function(x, ...) {
+  get_counts.run_model(x)
 }
 
 #' @rdname get_values

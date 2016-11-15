@@ -18,7 +18,7 @@
 #' @export
 #' 
 plot.dsa <- function(x, type = c("simple", "difference"),
-                     result = c("cost", "effect", "icer", "value"),
+                     result = c("cost", "effect", "icer"),
                      value = NULL,
                      strategy = 1, widest_on_top = TRUE, ...) {
   type <- match.arg(type)
@@ -30,18 +30,6 @@ plot.dsa <- function(x, type = c("simple", "difference"),
   
   if (type == "simple" & result == "icer") {
     stop("Result 'icer' can conly be computed with type = 'difference'.")
-  }
-  
-  if (type == "value" & is.null(value)) {
-    stop("Result 'value' need a specified value.")
-  }
-  
-  if (type == "value") {
-    if (is.null(value)) {
-      stop("Argument 'value' missing.")
-    } else if (! value %in% x$variables | length(value) > 1) {
-      stop("'value' must be a single DSA variable name.")
-    }
   }
   
   if (type == "difference" & strategy == get_frontier(model_ref$run_model)[1]) {
@@ -65,12 +53,6 @@ plot.dsa <- function(x, type = c("simple", "difference"),
       var_ref <- ".effect_ref"
       var_col <- ".col_effect"
       xl <- "Effect"
-    },
-    simple_value = {
-      var_plot <- value
-      var_ref <- ".effect_ref"
-      var_col <- ".col_effect"
-      xl <- value
     },
     difference_cost = {
       var_plot <- ".dcost"

@@ -9,9 +9,9 @@
 \alias{get_counts.updated_model}
 \title{Get State Membership Counts}
 \usage{
-\method{get_counts}{updated_model}(x, strategy, ...)
+\method{get_counts}{updated_model}(x, ...)
 
-\method{get_counts}{combined_model}(x, strategy, ...)
+\method{get_counts}{combined_model}(x, ...)
 
 get_counts(x, ...)
 
