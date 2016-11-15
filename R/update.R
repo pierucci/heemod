@@ -199,7 +199,7 @@ plot.updated_model <- function(x, type = c("simple", "difference",
 scale.updated_model <- function(x, scale = TRUE, center = TRUE) {
   .bm <- get_base_strategy(get_model(x))
   
-  res <- res_h$updated_model
+  res <- x$updated_model
   
   if (scale) {
     res <- res %>% 
@@ -324,7 +324,7 @@ print.summary_updated_model <- function(x, ...) {
     cat("* Weigths distribution:\n\n")
     print(summary(object$weights))
     cat(sprintf("\nTotal weight: %s",
-                format(sum(attr(object, "weights")))))
+                format(sum(object$weights))))
   }
   
   cat("\n\n* Values distribution:\n\n")
