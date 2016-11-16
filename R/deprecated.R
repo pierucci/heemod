@@ -72,7 +72,7 @@ define_distrib_ <- function(...) {
 #' @rdname run_dsa
 run_sensitivity <- function(model, sensitivity) {
   warning("'run_sensitivity' is deprecated, use 'run_dsa' instead.")
-  run_dsa(model = model, sensitivity = sensitivity)
+  run_dsa(model = model, dsa = sensitivity)
 }
 
 #' @export

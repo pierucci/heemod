@@ -49,6 +49,7 @@
 #' @importFrom stats reorder
 #' @importFrom stats na.omit
 #' @importFrom stats update
+#' @importFrom stats as.formula
 #'   
 #' @importFrom graphics par
 #'   

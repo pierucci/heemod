@@ -16,7 +16,7 @@ run_psa <- function(model, resample, N) {
     ! is.null(N)
   )
   
-  if (! all(c(".cost", ".effect") %in% names(model))) {
+  if (! all(c(".cost", ".effect") %in% names(model$run_model))) {
     stop("No cost and/or effect defined, probabilistic analysis unavailable.")
   }
   
@@ -24,14 +24,14 @@ run_psa <- function(model, resample, N) {
   
   list_res <- list()
   
-  for (n in get_model_names(model)) {
-    message(sprintf("Resampling model '%s'...", n))
+  for (n in get_strategy_names(model)) {
+    message(sprintf("Resampling strategy '%s'...", n))
     list_res <- c(
       list_res,
       list(
-        eval_model_newdata(
+        eval_strategy_newdata(
           x = model,
-          model = n,
+          strategy = n,
           newdata = newdata) %>% 
           dplyr::rowwise() %>% 
           dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
@@ -41,29 +41,39 @@ run_psa <- function(model, resample, N) {
     )
   }
   
-  names(list_res) <- get_model_names(model)
+  names(list_res) <- get_strategy_names(model)
   index <- seq_len(N)
   
   for (n in names(list_res)) {
-    list_res[[n]]$.model_names <- n
+    list_res[[n]]$.strategy_names <- n
     list_res[[n]]$.index <- index
   }
   
   res <- Reduce(dplyr::bind_rows, list_res)
   
-  res <- dplyr::mutate_(res, .dots = attr(model, "ce"))
+  res <- dplyr::mutate_(res, .dots = get_ce(model))
   
   structure(
-    res, 
-    class = c("psa", class(res)),
-    model = model,
-    N = N,
-    resamp_par = names(newdata)
+    list(
+      psa = res,
+      model = model,
+      N = N,
+      resamp_par = names(newdata)
+    ),
+    class = c("psa", class(res))
   )
 }
 
-get_base_model.psa <- function(x, ...) {
-  get_base_model(attr(x, "model"))
+get_model <- function(x) {
+  UseMethod("get_model")
+}
+
+get_model.psa <- function(x) {
+  x$model
+}
+
+get_base_strategy.psa <- function(x, ...) {
+  get_base_strategy(get_model(x))
 }
 
 eval_correlation <- function(x, var_names) {
@@ -110,7 +120,7 @@ eval_resample <- function(resample, N) {
   colnames(list_res) <- names(resample$list_qdist)
   res <- as.data.frame(list_res)
   
-  for (f in attr(resample, "multinom")) {
+  for (f in resample$multinom) {
     res <- f(res)
   }
   res

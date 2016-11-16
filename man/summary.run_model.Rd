@@ -13,7 +13,7 @@
 produced.}
 }
 \value{
-A \code{summary_eval_model_list} object.
+A \code{summary_run_model} object.
 }
 \description{
 Summarise Markov Model Results

@@ -90,18 +90,16 @@ test_that(
     
     res2 <- heemod:::eval_resample(x, 2)
     
-    expect_output(
-      str(head(as.data.frame(ndt2))),
-      '2 obs. of  8 variables:
- $ cost        : num  10653 38163
- $ ly          : num  10 10
- $ age_init    : num  66.6 66.6
- $ cost_init   : num  930 930
- $ .model_names: chr  "I" "II"
- $ .index      : int  1 1
- $ .cost       : num  10653 38163
- $ .effect     : num  10 10',
-      fixed = TRUE
+    expect_equal(
+      nrow(ndt2$psa), 2
+    )
+    
+    expect_equal(
+      round(ndt2$psa$.cost), c(10653, 38163)
+    )
+    
+    expect_equal(
+      round(summary(ndt2)$res_comp$.cost[2]), 27511
     )
 
     expect_equal(
@@ -118,19 +116,19 @@ test_that(
         row.names = c(NA, -2L),
         class = "data.frame")
     )
+    
     expect_identical(ndt1, ndt3)
-    expect_output(
-      str(head(as.data.frame(ndt2))),
-      '2 obs. of  8 variables:
- $ cost        : num  10653 38163
- $ ly          : num  10 10
- $ age_init    : num  66.6 66.6
- $ cost_init   : num  930 930
- $ .model_names: chr  "I" "II"
- $ .index      : int  1 1
- $ .cost       : num  10653 38163
- $ .effect     : num  10 10',
-      fixed = TRUE
+    
+    expect_equal(
+      nrow(ndt1$psa), 20
+    )
+    
+    expect_equal(
+      round(ndt1$psa$.cost)[1:3], c(12515, 10923, 13662)
+    )
+    
+    expect_equal(
+      round(summary(ndt1)$res_comp$.cost[2]), 25085
     )
     
     rsp3 <- define_psa(

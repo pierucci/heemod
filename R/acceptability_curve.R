@@ -28,9 +28,8 @@ acceptability_curve <- function(x, wtp_thresholds) {
       .top_strategy = ~ .top_strategy & cumsum(.top_strategy) == 1
       # in case 2 nmb are identical, pick first
     ) %>% 
-    dplyr::group_by_(~ .ceac, ~ .model_names) %>% 
+    dplyr::group_by_(~ .ceac, ~ .strategy_names) %>% 
     dplyr::summarise_(.n = ~ sum(.top_strategy)) %>% 
     dplyr::group_by_(~ .ceac) %>% 
-    dplyr::mutate_(.p = ~ .n / sum(.n),
-                   .model = ~ .model_names)
+    dplyr::mutate_(.p = ~ .n / sum(.n))
 }

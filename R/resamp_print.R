@@ -21,62 +21,83 @@ plot.psa <- function(x, type = c("ce", "ac"),
   switch(
     type,
     ce = {
-      tab <- normalize_ce(x)
+      tab <- scale(x)
       ggplot2::ggplot(data = tab,
                       ggplot2::aes_string(
                         x = ".effect",
                         y = ".cost",
-                        colour = ".model_names")) +
+                        colour = ".strategy_names")) +
         ggplot2::geom_point() +
         ggplot2::scale_colour_hue(name = "Model") +
         ggplot2::xlab("Incremental effect") +
         ggplot2::ylab("Incremental cost")
     },
     ac = {
-      tab <- acceptability_curve(x, values)
+      tab <- acceptability_curve(x$psa, values)
       ggplot2::ggplot(tab, 
                       ggplot2::aes_string(
                         x = ".ceac",
                         y = ".p",
-                        colour = ".model")) +
+                        colour = ".strategy_names")) +
         ggplot2::geom_line() +
         ggplot2::ylim(0, 1) +
-        ggplot2::scale_colour_hue(name = "Model") +
+        ggplot2::scale_colour_hue(name = "Strategy") +
         ggplot2::xlab("Willingness to pay") +
         ggplot2::ylab("Probability of cost-effectiveness")
     },
     stop("Unknown plot type."))
 }
 
-normalize_ce.psa <- function(x) {
-  .bm <- get_base_model(x)
+#' @rdname heemod_scale
+scale.psa <- function(x, center = TRUE, scale = TRUE) {
+  .bm <- get_base_strategy(get_model(x))
   
-  n_ind <- sum(get_init(attr(x, "model")))
+  res <- x$psa
   
-  x %>% 
-    dplyr::group_by_(".index") %>% 
-    dplyr::mutate_(
-      .cost = ~ (.cost - sum(.cost * (.model_names == .bm))) / n_ind,
-      .effect = ~ (.effect - sum(.effect * (.model_names == .bm))) / n_ind
-    )
+  if (scale) {
+    res <- res %>% 
+      dplyr::mutate_(
+        .cost = ~ .cost / sum(get_init(get_model(x))),
+        .effect = ~ .effect / sum(get_init(get_model(x)))
+      )
+  }
+  
+  if (center) {
+    res <- res %>% 
+      dplyr::group_by_(".index") %>% 
+      dplyr::mutate_(
+        .cost = ~ (.cost - sum(.cost * (.strategy_names == .bm))),
+        .effect = ~ (.effect - sum(.effect * (.strategy_names == .bm)))
+      ) %>% 
+      dplyr::ungroup()
+  }
+  
+  res
 }
 
 #' @export
 summary.psa <- function(object, ...) {
   res <- object %>% 
-    dplyr::group_by_(".index") %>% 
-    dplyr::do_(~ compute_icer(.)) %>% 
-    dplyr::ungroup() %>% 
-    dplyr::select_(~ - .dref, ~ - .index) %>%
-    dplyr::group_by_(".model_names") %>%
-    dplyr::summarise_all(
-      mean
-    )
+    scale() %>% 
+    dplyr::select_(~ - .index) %>% 
+    dplyr::group_by_(".strategy_names") %>%
+    dplyr::summarise_all(mean) %>% 
+    as.data.frame()
+  
+  res_values <- res %>% 
+    dplyr::select_(~ - .cost, ~ - .effect)
+  res_values <- res_values[! names(res_values) %in%
+                             c(object$resamp_par, ".cost", ".effect")]
+  
+  res_comp <- res %>% 
+    compute_icer() %>% 
+    as.data.frame()
   
   structure(
     list(
-      average = res,
-      total = object
+      res_values = res_values,
+      res_comp = res_comp,
+      total_result = object
     ),
     class = "summary_psa"
   )
@@ -86,37 +107,10 @@ summary.psa <- function(object, ...) {
 print.summary_psa <- function(x, ...) {
   cat(sprintf(
     "A PSA with %i resamplings.\n\n",
-    attr(x$total, "N")
+    x$total_result$N
   ))
-  values <- x$average
-  values <- values[! names(values) %in% attr(x$total, "resamp_par")]
-  values <- values %>% 
-    dplyr::select_(
-      ~ - .cost,
-      ~ - .effect,
-      ~ - .icer,
-      ~ - .dcost,
-      ~ - .deffect,
-      ~ - .model_names
-    ) %>% 
-    as.matrix()
   
-  rownames(values) <- x$average$.model_names
-  
-  cat("Values:\n\n")
-  
-  print(values, ...)
-  
-  if (nrow(x$average) > 1) {
-    cat("\nDifferences:\n\n")
-    res_comp <- x$average[c(".dcost", ".deffect", ".icer")]
-    is.na(res_comp$.icer) <- ! is.finite(res_comp$.icer)
-    res_comp$.dcost <- res_comp$.dcost / sum(attr(attr(x$total, "model"), "init"))
-    res_comp$.deffect <- res_comp$.deffect / sum(attr(attr(x$total, "model"), "init"))
-    res_comp <- as.matrix(res_comp)
-    rownames(res_comp) <- x$average$.model_names
-    print(pretty_names(res_comp[! is.na(res_comp[, ".icer"]), , drop = FALSE]), ...)
-  }
+  print_results(x$res_values, x$res_comp)
 }
 
 #' @export
