@@ -26,7 +26,7 @@
 #'   evaluated parameters, matrix, states and cycles 
 #'   counts).
 #'   
-#' @example inst/examples/example_eval_model.R
+#' @example inst/examples/example_eval_strategy.R
 #'   
 #' @keywords internal
 eval_strategy <- function(strategy, parameters, cycles, 

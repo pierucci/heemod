@@ -19,7 +19,6 @@
 #' 
 plot.dsa <- function(x, type = c("simple", "difference"),
                      result = c("cost", "effect", "icer"),
-                     value = NULL,
                      strategy = 1, widest_on_top = TRUE, ...) {
   type <- match.arg(type)
   result <- match.arg(result)
@@ -34,10 +33,6 @@ plot.dsa <- function(x, type = c("simple", "difference"),
   
   if (type == "difference" & strategy == get_frontier(model_ref$run_model)[1]) {
     stop("Type = 'difference' cannot be computed for base strategy.")
-  }
-  
-  if (type == "difference" & result == "value") {
-    stop("Type = 'difference' is not compatible with result = 'value'.")
   }
   
   switch(

@@ -83,35 +83,41 @@ combine_models <- function(newmodels, weights, oldmodel) {
   structure(
     list(
       run_model = res,
-      base_strategy = get_base_strategy(oldmodel),
       eval_strategy_list = list_eval_models, 
+      base_model = get_base_strategy(oldmodel),
+      eval_model_list = list_eval_models, 
       parameters = get_parameters(oldmodel),
       init = get_init(oldmodel),
       cycles = get_cycles(oldmodel),
       method = get_method(oldmodel),
-      ce = get_ce(oldmodel)
+      ce = get_ce(oldmodel),
+      oldmodel = oldmodel
     ),
     class = c("combined_model", class(res))
   )
 }
 
+get_oldmodel <- function(x) {
+  x$oldmodel
+}
+
 get_base_strategy.combined_model <- function(x, ...) {
-  get_base_strategy.run_model(x, ...)
+  get_base_strategy(get_oldmodel(x), ...)
 }
 get_parameters.combined_model <- function(x) {
-  get_parameters.run_model(x)
+  get_parameters(get_oldmodel(x))
 }
 get_init.combined_model <- function(x) {
-  get_init.run_model(x)
+  get_init(get_oldmodel(x))
 }
 get_cycles.combined_model <- function(x) {
-  get_cycles.run_model(x)
+  get_cycles(get_oldmodel(x))
 }
 get_method.combined_model <- function(x) {
-  get_method.run_model(x)
+  get_method(get_oldmodel(x))
 }
 get_ce.combined_model <- function(x) {
-  get_ce.run_model(x)
+  get_ce(get_oldmodel(x))
 }
 
 #' @export
@@ -148,15 +154,17 @@ get_counts.combined_model <- function(x, ...) {
 
 #' @rdname get_values
 #' @export
-get_values.updated_model <- function(x, strategy, ...) {
-  get_values(x$combined_model, strategy, ...)
+get_values.updated_model <- function(x, ...) {
+  get_values(x$combined_model, ...)
 }
 
 #' @rdname get_values
 #' @export
-get_values.combined_model <- function(x, strategy, ...){
-  x <- x$eval_strategy_list
-  x$.strategy_names <- names(x)
-  check_model_index(x, strategy)
-  get_values(x[[strategy]])
+get_values.combined_model <- function(x, ...) {
+  get_values.run_model(x)
 }
+
+get_state_value_names.combined_model <- function(x) {
+  get_state_value_names(get_oldmodel(x))
+}
+

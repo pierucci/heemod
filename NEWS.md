@@ -1,3 +1,17 @@
+# heemod devel
+
+## Breaking changes
+
+  * Some plotting arguments changed (e.g. `type`=>`results`).
+
+## Backend changes
+
+  * Important object structure change (from attributes to lists).
+  * More getter functions.
+  * More systematic processing of model objects.
+  * Unit tests rely less on printed results.
+  * Using new nomenclature in backend functions (`model`=>`strategy`).
+
 # heemod 0.6.0
 
 ## New features

@@ -26,9 +26,11 @@ a weighted analysis.}
 
 \item{x}{Updated model to plot.}
 
-\item{type}{The type of plot to return (see details).}
+\item{type}{Plot simple values or differences?}
 
-\item{model}{A model index, character or numeric.}
+\item{result}{The the result to plot (see details).}
+
+\item{strategy}{A model index, character or numeric.}
 }
 \value{
 A \code{data.frame} with one row per model/value.

@@ -74,13 +74,6 @@ are state names): the limits are applied to the given
 state names, for all models. 3. As a named list of named
 vectors: the limits are applied to the given state names
 for the given models.
-
-Internally this function does 2 operations: first 
-evaluating parameters, transition matrix, state values 
-and computing individual counts through 
-\code{\link{eval_model}}; and then using individual 
-counts and evaluated state values to compute values at 
-each cycle through \code{compute_values}.
 }
 \examples{
 # running a single model

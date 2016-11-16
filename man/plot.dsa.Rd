@@ -5,8 +5,7 @@
 \title{Plot Sensitivity Analysis}
 \usage{
 \method{plot}{dsa}(x, type = c("simple", "difference"), result = c("cost",
-  "effect", "icer"), value = NULL, strategy = 1, widest_on_top = TRUE,
-  ...)
+  "effect", "icer"), strategy = 1, widest_on_top = TRUE, ...)
 }
 \arguments{
 \item{x}{A result of \code{\link{run_dsa}}.}

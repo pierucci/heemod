@@ -12,6 +12,8 @@ run_dsa(model, dsa)
 \arguments{
 \item{model}{An evaluated Markov model.}
 
+\item{sensitivity}{Deprecated, use \code{dsa} instead.}
+
 \item{dsa}{An object returned by 
 \code{\link{define_dsa}}.}
 }
@@ -77,7 +79,6 @@ print(ds)
 x <- run_dsa(res2, ds)
 
 plot(x, value = "cost")
-plot(x, value = "icer", type = "difference", model = 2)
 
 # can be specified as a function of other parameters
 

@@ -27,8 +27,9 @@
 #'   An optional \code{.weights} column can be included for
 #'   a weighted analysis.
 #' @param x Updated model to plot.
-#' @param model A model index, character or numeric.
-#' @param type The type of plot to return (see details).
+#' @param strategy A model index, character or numeric.
+#' @param result The the result to plot (see details).
+#' @param type Plot simple values or differences?
 #' @param ... Additional arguments passed to
 #'   \code{geom_histogram}. Especially usefull to specify
 #'   \code{binwidth}.
@@ -245,7 +246,7 @@ summary.updated_model <- function(object, ...) {
   for (.n in strategy_names) {
     
     tmp <- tab_scaled %>%
-      dplyr::filter(.strategy_names == .n)
+      dplyr::filter_(~ .strategy_names == .n)
     
     list_res <- c(
       list_res,

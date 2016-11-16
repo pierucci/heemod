@@ -97,7 +97,7 @@ plot.run_model <- function(x, type = c("counts", "ce", "values"),
                             colour = colour_var)) +
         ggplot2::geom_point() +
         ggplot2::geom_line() +
-        ggplot2::facet_grid(as.formula(paste(panel_var, "~ .")),
+        ggplot2::facet_grid(stats::as.formula(paste(panel_var, "~ .")),
                             scales = scales) +
         ggplot2::ylim(0, NA) +
         ggplot2::xlab("Markov cycle") +

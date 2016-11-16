@@ -18,7 +18,7 @@
 #'   \code{newdata} and each Markov Model evaluation in 
 #'   \code{res}.
 #'   
-#' @example inst/examples/example_eval_model_newdata.R
+#' @example inst/examples/example_eval_strategy_newdata.R
 #'   
 #' @keywords internal
 eval_strategy_newdata <- function(x, strategy = 1, newdata) {

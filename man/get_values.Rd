@@ -9,9 +9,9 @@
 \alias{get_values.updated_model}
 \title{Get Strategy Values}
 \usage{
-\method{get_values}{updated_model}(x, strategy, ...)
+\method{get_values}{updated_model}(x, ...)
 
-\method{get_values}{combined_model}(x, strategy, ...)
+\method{get_values}{combined_model}(x, ...)
 
 get_values(x, ...)
 
@@ -26,8 +26,6 @@ get_values(x, ...)
 
 \item{...}{further arguments passed to or from other
 methods.}
-
-\item{m}{Strategy name or index.}
 }
 \value{
 A data frame of values per state.

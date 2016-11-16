@@ -57,7 +57,7 @@ mod <- define_strategy(
   B = define_state(cost = 2)
 )
 
-heemod:::eval_model(
+heemod:::eval_strategy(
   mod,
   param,
   init = c(10, 5),

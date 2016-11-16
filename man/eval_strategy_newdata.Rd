@@ -58,7 +58,7 @@ new_tab <- data.frame(
   a = 1:10
 )
 
-heemod:::eval_model_newdata(
+heemod:::eval_strategy_newdata(
   res1,
   newdata = new_tab
 )
