@@ -1022,30 +1022,25 @@ save_outputs <- function(outputs, output_dir, overwrite) {
   
   
   ## plots about individual models
-  model_names <- names(outputs$models)
   
   if (options()$heemod.verbose) message("** Generating plots for individual models...")
-  for(this_model in model_names){
-    this_plot <- plot(outputs$model_runs, model = this_model)
-    this_file <- paste("state_count_plot", this_model, sep = "_")
-    save_graph(this_plot, output_dir, this_file)
-    
-    this_plot <- plot(outputs$dsa, model = this_model)
-    this_file <- paste("dsa", this_model, sep = "_")
-    save_graph(this_plot, output_dir, this_file)
-  }
+  this_plot <- plot(outputs$model_runs)
+  this_file <- "state_count_plot"
+  save_graph(this_plot, output_dir, this_file)
   
-  lowest_model <- get_base_strategy(outputs$model_runs)
+  this_plot <- plot(outputs$dsa)
+  this_file <- "dsa"
+  save_graph(this_plot, output_dir, this_file)
+  
   
   ## plots about differences between models
   if (options()$heemod.verbose) message("** Generating plots with model differences...")
-  for(this_model in setdiff(model_names, lowest_model)){
-    this_plot <- plot(outputs$dsa, type = "diff")
-    this_file <- paste("dsa", this_model, "vs", lowest_model, sep = "_")
-    
-    #save_graph(this_plot, output_dir, this_file)
-    
-  }
+  
+  this_plot <- plot(outputs$dsa, type = "difference")
+  this_file <- "dsa_diff"
+  
+  save_graph(this_plot, output_dir, this_file)
+  
   if(!is.null(outputs$psa)){
     this_plot <- plot(outputs$psa)
     this_file <- paste("psa")

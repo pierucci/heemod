@@ -72,8 +72,16 @@ get_model.psa <- function(x) {
   x$model
 }
 
-get_base_strategy.psa <- function(x, ...) {
-  get_base_strategy(get_model(x))
+get_central_strategy.psa <- function(x, ...) {
+  get_central_strategy(get_model(x))
+}
+
+get_noncomparable_strategy.psa <- function(x, ...) {
+  get_noncomparable_strategy(summary(x, ...)$res_comp)
+}
+
+get_root_strategy.psa <- function(x, ...) {
+  get_root_strategy(summary(x, ...)$res_comp)
 }
 
 eval_correlation <- function(x, var_names) {

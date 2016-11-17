@@ -7,7 +7,7 @@
 #' values, while \code{difference} plots incremental values.
 #' 
 #' @param x A result of \code{\link{run_dsa}}.
-#' @param strategy Name or index of strategy to plot.
+#' @param strategy Name or index of strategies to plot.
 #' @param type Type of plot (see details).
 #' @param result Plot cost, effect, or ICER.
 #' @param widest_on_top logical. Should bars be sorted so
@@ -19,20 +19,30 @@
 #' 
 plot.dsa <- function(x, type = c("simple", "difference"),
                      result = c("cost", "effect", "icer"),
-                     strategy = 1, widest_on_top = TRUE, ...) {
+                     strategy = NULL, widest_on_top = TRUE, ...) {
+  
   type <- match.arg(type)
   result <- match.arg(result)
   
   model_ref <- get_model(x)
   
-  strategy <- check_strategy_index(x = model_ref, i = strategy)
+  if (is.null(strategy)) {
+    strategy <- get_strategy_names(get_model(x))
+  } else {
+    
+    strategy <- check_strategy_index(x = model_ref, i = strategy,
+                                     allow_multiple = TRUE)
+  }
   
   if (type == "simple" & result == "icer") {
     stop("Result 'icer' can conly be computed with type = 'difference'.")
   }
   
-  if (type == "difference" & strategy == get_frontier(model_ref$run_model)[1]) {
-    stop("Type = 'difference' cannot be computed for base strategy.")
+  if (type == "difference") {
+    strategy <- setdiff(strategy, get_noncomparable_strategy(model_ref))
+    if (length(strategy) == 0) {
+      stop("Cannot plot type = 'difference' for noncomparable strategy.")
+    }
   }
   
   switch(
@@ -95,12 +105,12 @@ plot.dsa <- function(x, type = c("simple", "difference"),
                            ifelse(.icer == .icer_ref, "=", "<"))
     ) %>% 
     dplyr::filter_(
-      substitute(.strategy_names == strategy,
+      substitute(.strategy_names %in% strategy,
                  list(strategy = strategy))
     ) %>%
     dplyr::arrange_(
       ".par_names", var_plot) %>%
-    dplyr::group_by_(".par_names") %>%
+    dplyr::group_by_(~ .par_names, ~ .strategy_names) %>%
     dplyr::mutate_(.hjust = ~ 1 - (row_number() - 1))
   
   if (widest_on_top) {
@@ -132,7 +142,8 @@ plot.dsa <- function(x, type = c("simple", "difference"),
         label = ".par_value",
         hjust = ".hjust"
       )
-    )
+    ) +
+    ggplot2::facet_wrap(stats::as.formula("~ .strategy_names"))
 }
 
 #' @export
@@ -163,9 +174,13 @@ print.dsa <- function(x, ...) {
   print(summary(x))
 }
 
+get_central_strategy.dsa <- function(x, ...) {
+  get_central_strategy(get_model(x))
+}
+
 #' @rdname heemod_scale
 scale.dsa <- function(x, center = TRUE, scale = TRUE) {
-  .bm <- get_base_strategy(get_model(x))
+  .bm <- get_central_strategy(x)
   
   res <- x$dsa
   

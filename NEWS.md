@@ -4,13 +4,18 @@
 
   * Some plotting arguments changed (e.g. `type`=>`results`).
 
+## New features
+
+  * All plotting functions can now represent multiple strategies with facets.
+
 ## Backend changes
 
   * Important object structure change (from attributes to lists).
-  * More getter functions.
-  * More systematic processing of model objects.
+  * More systematic use of getter functions.
+  * More standarized processing of model objects.
   * Unit tests rely less on printed results.
   * Using new nomenclature in backend functions (`model`=>`strategy`).
+  * `base_strategy` divided in 3 concepts: `central_strategy`, `root_strategy`, `noncomparable_strategy`.
 
 # heemod 0.6.0
 

@@ -29,7 +29,7 @@ get_frontier <- function(x) {
     }
   }
   
-  bm <- get_base_strategy(x)
+  bm <- get_root_strategy(x)
   ebm <- x$.effect[x$.strategy_names == bm]
   
   c(bm, f(x %>% dplyr::filter_(

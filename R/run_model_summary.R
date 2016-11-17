@@ -68,7 +68,7 @@ NULL
 
 #' @rdname heemod_scale
 scale.run_model <- function(x, center = TRUE, scale = TRUE) {
-  bm <- get_base_strategy(x)
+  bm <- get_central_strategy(x)
   res <- tibble::tibble(
     .strategy_names = get_strategy_names(x),
     .cost = get_cost(x),
