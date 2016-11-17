@@ -6,7 +6,7 @@
 \usage{
 \method{plot}{run_model}(x, type = c("counts", "ce", "values"),
   panels = c("by_strategy", "by_state", "by_value"), values = NULL,
-  strategy = NULL, states = NULL, free_y = FALSE, ...)
+  strategy = NULL, states = NULL, free_y = FALSE, bw = FALSE, ...)
 }
 \arguments{
 \item{x}{Result from \code{\link{run_model}}.}
@@ -25,6 +25,8 @@ any of the costs or effects defined in states.}
 the plot.}
 
 \item{free_y}{Should y limits be free between panels?}
+
+\item{bw}{Black & white plot for publications?}
 
 \item{...}{Additional arguments passed to \code{plot}.
   

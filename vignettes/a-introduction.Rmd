@@ -129,6 +129,14 @@ plot(res_mod) +
   )
 ```
 
+And black & white plots for publication are available with the `bw` plot option
+
+```{r, fig.align='center', fig.height=4, fig.width=6, message=FALSE}
+library(ggplot2)
+
+plot(res_mod, bw = TRUE)
+```
+
 The state membership counts and the values can be accessed with `get_counts()` and `get_values()` respectively.
 
 ```{r}

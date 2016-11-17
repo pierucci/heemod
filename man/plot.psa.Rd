@@ -5,7 +5,7 @@
 \title{Plot Results of Probabilistic Analysis}
 \usage{
 \method{plot}{psa}(x, type = c("ce", "ac"), max_wtp = 1e+05, n = 100,
-  log_scale = TRUE, ...)
+  log_scale = TRUE, bw = FALSE, ...)
 }
 \arguments{
 \item{x}{Result from \code{\link{run_model}}.}
@@ -18,6 +18,8 @@
 100 may take significant time).}
 
 \item{log_scale}{Show willingness to pay on a log scale?}
+
+\item{bw}{Black & white plot for publications?}
 
 \item{...}{Additional arguments passed to \code{plot}.}
 }
