@@ -80,18 +80,26 @@ combine_models <- function(newmodels, weights, oldmodel) {
   res <- Reduce(dplyr::bind_rows, list_res) %>% 
     dplyr::mutate_(.dots = get_ce(oldmodel))
   
+  root_strategy <- get_root_strategy(res)
+  noncomparable_strategy <- get_noncomparable_strategy(res)
+  
+  # central from oldmodel!
+  central_strategy <- get_central_strategy(oldmodel)
+  
   structure(
     list(
       run_model = res,
       eval_strategy_list = list_eval_models, 
-      base_model = get_base_strategy(oldmodel),
       eval_model_list = list_eval_models, 
       parameters = get_parameters(oldmodel),
       init = get_init(oldmodel),
       cycles = get_cycles(oldmodel),
       method = get_method(oldmodel),
       ce = get_ce(oldmodel),
-      oldmodel = oldmodel
+      oldmodel = oldmodel,
+      root_strategy = root_strategy,
+      central_strategy = central_strategy,
+      noncomparable_strategy = noncomparable_strategy
     ),
     class = c("combined_model", class(res))
   )
@@ -101,9 +109,16 @@ get_oldmodel <- function(x) {
   x$oldmodel
 }
 
-get_base_strategy.combined_model <- function(x, ...) {
-  get_base_strategy(get_oldmodel(x), ...)
+get_central_strategy.combined_model <- function(x, ...) {
+  get_central_strategy.run_model(x, ...)
 }
+get_root_strategy.combined_model <- function(x, ...) {
+  get_root_strategy.run_model(x, ...)
+}
+get_noncomparable_strategy.combined_model <- function(x, ...) {
+  get_noncomparable_strategy.run_model(x, ...)
+}
+
 get_parameters.combined_model <- function(x) {
   get_parameters(get_oldmodel(x))
 }

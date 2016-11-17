@@ -17,12 +17,12 @@
 #' The initial number of individuals in each state and the 
 #' number of cycle will be the same for all models.
 #' 
-#' \code{state_cycle_limit} can be specified in 3 different
-#' ways: 1. As a single value: the limit is applied to all
-#' states in all models. 2. As a named vector (where names
-#' are state names): the limits are applied to the given
-#' state names, for all models. 3. As a named list of named
-#' vectors: the limits are applied to the given state names
+#' \code{state_cycle_limit} can be specified in 3 different 
+#' ways: 1. As a single value: the limit is applied to all 
+#' states in all models. 2. As a named vector (where names 
+#' are state names): the limits are applied to the given 
+#' state names, for all models. 3. As a named list of named 
+#' vectors: the limits are applied to the given state names 
 #' for the given models.
 #' 
 #' @param ... One or more \code{uneval_model} object.
@@ -42,6 +42,8 @@
 #'   \code{run_model_} to avoid using \code{...}.
 #' @param state_cycle_limit Optional expansion limit for 
 #'   \code{state_cycle}, see details.
+#' @param central_strategy The strategy at the center of the
+#'   cost-effectiveness plane, for readability.
 #'   
 #' @return A list of evaluated models with computed values.
 #' @export
@@ -55,7 +57,8 @@ run_model <- function(...,
                       method = c("life-table", "beginning", "end",
                                  "half-cycle"),
                       cost = NULL, effect = NULL,
-                      state_cycle_limit = NULL) {
+                      state_cycle_limit = NULL,
+                      central_strategy = NULL) {
   
   uneval_strategy_list <- list(...)
   
@@ -69,7 +72,8 @@ run_model <- function(...,
     method = method,
     cost = lazyeval::lazy_(substitute(cost), env = parent.frame()),
     effect = lazyeval::lazy_(substitute(effect), env = parent.frame()),
-    state_cycle_limit = state_cycle_limit
+    state_cycle_limit = state_cycle_limit,
+    central_strategy = central_strategy
   )
 }
 
@@ -81,7 +85,8 @@ run_model_ <- function(uneval_strategy_list,
                        cycles,
                        method,
                        cost, effect,
-                       state_cycle_limit) {
+                       state_cycle_limit,
+                       central_strategy) {
   
   if (! is.wholenumber(cycles)) {
     stop("'cycles' must be a whole number.")
@@ -184,7 +189,12 @@ run_model_ <- function(uneval_strategy_list,
   res <- Reduce(dplyr::bind_rows, list_res) %>% 
     dplyr::mutate_(.dots = ce)
   
-  base_strategy <- get_base_strategy(res)
+  root_strategy <- get_root_strategy(res)
+  noncomparable_strategy <- get_noncomparable_strategy(res)
+  
+  if (is.null(central_strategy)) {
+    central_strategy <- get_central_strategy(res)
+  }
   
   structure(
     list(
@@ -196,7 +206,9 @@ run_model_ <- function(uneval_strategy_list,
       cycles = cycles,
       method = method,
       ce = ce,
-      base_strategy = base_strategy
+      root_strategy = root_strategy,
+      central_strategy = central_strategy,
+      noncomparable_strategy = noncomparable_strategy
     ),
     class = c("run_model", class(res))
   )
@@ -222,22 +234,51 @@ get_total_state_values <- function(x) {
   res
 }
 
-get_base_strategy <- function(x, ...) {
-  UseMethod("get_base_strategy")
+get_root_strategy <- function(x, ...) {
+  UseMethod("get_root_strategy")
 }
 
-get_base_strategy.default <- function(x, ...) {
+get_root_strategy.default <- function(x, ...) {
   if (! all(c(".cost", ".effect") %in% names(x))) {
-    warning("No cost and/or effect defined, cannot find base strategy.")
-    return(NULL)
+    warning("No cost and/or effect defined, cannot find root strategy.")
+    return(invisible(NULL))
   }
   (x %>% 
       dplyr::arrange_(.dots = list(~ .cost, ~ desc(.effect))) %>% 
       dplyr::slice(1))$.strategy_names
 }
 
-get_base_strategy.run_model <- function(x, ...) {
-  x$base_strategy
+get_root_strategy.run_model <- function(x, ...) {
+  x$root_strategy
+}
+
+get_noncomparable_strategy <- function(x, ...) {
+  UseMethod("get_noncomparable_strategy")
+}
+
+get_noncomparable_strategy.default <- function(x, ...) {
+  if (! ".effect" %in% names(x)) {
+    warning("No effect defined, cannot find noncomparable strategy.")
+  }
+  (x %>% 
+      dplyr::arrange_(.dots = list(~ desc(.effect))) %>% 
+      dplyr::slice(1))$.strategy_names
+}
+
+get_noncomparable_strategy.run_model <- function(x, ...) {
+  x$noncomparable_strategy
+}
+
+get_central_strategy <- function(x, ...) {
+  UseMethod("get_central_strategy")
+}
+
+get_central_strategy.default <- function(x, ...) {
+  get_root_strategy(x)
+}
+
+get_central_strategy.run_model <- function(x, ...) {
+  x$central_strategy
 }
 
 get_effect <- function(x) {

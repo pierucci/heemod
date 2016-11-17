@@ -1035,7 +1035,7 @@ save_outputs <- function(outputs, output_dir, overwrite) {
     save_graph(this_plot, output_dir, this_file)
   }
   
-  lowest_model <- get_base_strategy(outputs$model_runs)
+  lowest_model <- get_uncomparable_strategy(outputs$model_runs)
   
   ## plots about differences between models
   if (options()$heemod.verbose) message("** Generating plots with model differences...")
@@ -1043,7 +1043,7 @@ save_outputs <- function(outputs, output_dir, overwrite) {
     this_plot <- plot(outputs$dsa, type = "diff")
     this_file <- paste("dsa", this_model, "vs", lowest_model, sep = "_")
     
-    #save_graph(this_plot, output_dir, this_file)
+    save_graph(this_plot, output_dir, this_file)
     
   }
   if(!is.null(outputs$psa)){

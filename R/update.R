@@ -144,7 +144,7 @@ plot.updated_model <- function(x, type = c("simple", "difference",
     strategy <- get_strategy_names(get_model(x))
     
     if (type == "difference") {
-      strategy <- setdiff(strategy, get_base_strategy(get_model(x)))
+      strategy <- setdiff(strategy, get_noncomparable_strategy(get_model(x)))
     }
     
   } else {
@@ -155,9 +155,9 @@ plot.updated_model <- function(x, type = c("simple", "difference",
     )
   }
   
-  if (get_base_strategy(get_model(x)) %in% strategy &&
+  if (get_noncomparable_strategy(get_model(x)) %in% strategy &&
       "difference" %in% type) {
-    stop("Cannot represent value differences from base strategy.")
+    stop("Cannot represent value differences from uncomparable strategy.")
   }
   
   if (type == "simple" && result == "icer") {
@@ -198,7 +198,7 @@ plot.updated_model <- function(x, type = c("simple", "difference",
 }
 
 scale.updated_model <- function(x, scale = TRUE, center = TRUE) {
-  .bm <- get_base_strategy(get_model(x))
+  .bm <- get_root_strategy(get_model(x))
   
   res <- x$updated_model
   

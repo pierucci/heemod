@@ -163,9 +163,13 @@ print.dsa <- function(x, ...) {
   print(summary(x))
 }
 
+get_central_strategy.dsa <- function(x, ...) {
+  get_central_strategy(get_model(x))
+}
+
 #' @rdname heemod_scale
 scale.dsa <- function(x, center = TRUE, scale = TRUE) {
-  .bm <- get_base_strategy(get_model(x))
+  .bm <- get_central_strategy(x)
   
   res <- x$dsa
   

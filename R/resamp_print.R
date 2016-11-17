@@ -50,7 +50,7 @@ plot.psa <- function(x, type = c("ce", "ac"),
 
 #' @rdname heemod_scale
 scale.psa <- function(x, center = TRUE, scale = TRUE) {
-  .bm <- get_base_strategy(get_model(x))
+  .bm <- get_central_strategy(x)
   
   res <- x$psa
   
