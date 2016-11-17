@@ -68,6 +68,7 @@
 #' @importFrom ggplot2 ylab
 #' @importFrom ggplot2 aes
 #' @importFrom ggplot2 xlim
+#' @importFrom ggplot2 "%+replace%"
 #'   
 #' @importFrom tidyr gather_
 #'   
