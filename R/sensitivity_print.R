@@ -12,6 +12,7 @@
 #' @param result Plot cost, effect, or ICER.
 #' @param widest_on_top logical. Should bars be sorted so
 #'   widest are on top?
+#' @param bw Black & white plot for publications?
 #' @param ... Additional arguments passed to \code{plot}.
 #'   
 #' @return A \code{ggplot2} object.
@@ -19,7 +20,8 @@
 #' 
 plot.dsa <- function(x, type = c("simple", "difference"),
                      result = c("cost", "effect", "icer"),
-                     strategy = NULL, widest_on_top = TRUE, ...) {
+                     strategy = NULL, widest_on_top = TRUE,
+                     bw = FALSE, ...) {
   
   type <- match.arg(type)
   result <- match.arg(result)
@@ -124,7 +126,7 @@ plot.dsa <- function(x, type = c("simple", "difference"),
   
   l <- diff(range(tab[[var_plot]])) * .1
   
-  ggplot2::ggplot(tab, ggplot2::aes_string(
+  res <- ggplot2::ggplot(tab, ggplot2::aes_string(
     y = ".par_names",
     yend = ".par_names",
     x = var_plot,
@@ -144,6 +146,14 @@ plot.dsa <- function(x, type = c("simple", "difference"),
       )
     ) +
     ggplot2::facet_wrap(stats::as.formula("~ .strategy_names"))
+  
+  if (bw) {
+    res <- res +
+      ggplot2::scale_color_grey(start = 0, end = .8) +
+      theme_pub_bw()
+  }
+  
+  res
 }
 
 #' @export

@@ -12,6 +12,7 @@
 #' @param n Number of CECA points to estimate (values above
 #'   100 may take significant time).
 #' @param log_scale Show willingness to pay on a log scale?
+#' @param bw Black & white plot for publications?
 #' @param ... Additional arguments passed to \code{plot}.
 #'   
 #' @return A \code{ggplot2} object.
@@ -19,14 +20,15 @@
 #' 
 plot.psa <- function(x, type = c("ce", "ac"),
                      max_wtp = 1e5,
-                     n = 100, log_scale = TRUE, ...) {
+                     n = 100, log_scale = TRUE,
+                     bw = FALSE, ...) {
   type <- match.arg(type)
   
   switch(
     type,
     ce = {
       tab <- scale(x)
-      ggplot2::ggplot(data = tab,
+      res <- ggplot2::ggplot(data = tab,
                       ggplot2::aes_string(
                         x = ".effect",
                         y = ".cost",
@@ -35,6 +37,15 @@ plot.psa <- function(x, type = c("ce", "ac"),
         ggplot2::scale_colour_hue(name = "Model") +
         ggplot2::xlab("Incremental effect") +
         ggplot2::ylab("Incremental cost")
+      
+      if (bw) {
+        res <- res +
+          ggplot2::scale_color_grey(start = 0, end = .8,
+                                    name = "Strategy") +
+          theme_pub_bw()
+      }
+      
+      res
     },
     ac = {
       values <- generate_wtp(max_wtp = max_wtp,
@@ -56,7 +67,15 @@ plot.psa <- function(x, type = c("ce", "ac"),
         res <- res +
           ggplot2::scale_x_log10()
       }
-      print(res)
+      
+      if (bw) {
+        res <- res +
+          ggplot2::scale_color_grey(start = 0, end = .8,
+                                    name = "Strategy") +
+          theme_pub_bw()
+      }
+      
+      res
     },
     stop("Unknown plot type."))
 }

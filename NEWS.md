@@ -8,6 +8,7 @@
 
   * All plotting functions can now represent multiple strategies with facets.
   * CECA plotted on a log scale by default.
+  * Black & white plots for publications with the `bw` plot option.
 
 ## Backend changes
 
