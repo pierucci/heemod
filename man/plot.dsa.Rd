@@ -5,7 +5,7 @@
 \title{Plot Sensitivity Analysis}
 \usage{
 \method{plot}{dsa}(x, type = c("simple", "difference"), result = c("cost",
-  "effect", "icer"), strategy = 1, widest_on_top = TRUE, ...)
+  "effect", "icer"), strategy = NULL, widest_on_top = TRUE, ...)
 }
 \arguments{
 \item{x}{A result of \code{\link{run_dsa}}.}
@@ -14,7 +14,7 @@
 
 \item{result}{Plot cost, effect, or ICER.}
 
-\item{strategy}{Name or index of strategy to plot.}
+\item{strategy}{Name or index of strategies to plot.}
 
 \item{widest_on_top}{logical. Should bars be sorted so
 widest are on top?}
