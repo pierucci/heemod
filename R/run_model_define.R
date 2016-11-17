@@ -259,9 +259,10 @@ get_noncomparable_strategy <- function(x, ...) {
 get_noncomparable_strategy.default <- function(x, ...) {
   if (! ".effect" %in% names(x)) {
     warning("No effect defined, cannot find noncomparable strategy.")
+    return(invisible(NULL))
   }
   (x %>% 
-      dplyr::arrange_(.dots = list(~ desc(.effect))) %>% 
+      dplyr::arrange_(.dots = list(~ .effect)) %>% 
       dplyr::slice(1))$.strategy_names
 }
 
