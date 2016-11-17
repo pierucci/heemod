@@ -234,7 +234,7 @@ plot(pm, type = "ce")
 And as cost-effectiveness acceptability curves:
 
 ```{r, fig.width = 6, fig.align='center'}
-plot(pm, type = "ac", values = seq(0, 25e3, 1e3))
+plot(pm, type = "ac", max_wtp = 10000, log_scale = FALSE)
 ```
 
 As usual plots can be modified with the standard `ggplot2` syntax.

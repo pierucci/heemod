@@ -7,6 +7,7 @@
 ## New features
 
   * All plotting functions can now represent multiple strategies with facets.
+  * CECA plotted on a log scale by default.
 
 ## Backend changes
 

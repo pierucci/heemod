@@ -33,3 +33,19 @@ acceptability_curve <- function(x, wtp_thresholds) {
     dplyr::group_by_(~ .ceac) %>% 
     dplyr::mutate_(.p = ~ .n / sum(.n))
 }
+
+generate_wtp <- function(max_wtp,
+                         min_wtp = max_wtp / 1000,
+                         n, log_scale) {
+  stopifnot(
+    max_wtp > 0
+  )
+  if (log_scale) {
+    res <- seq(from = log(min_wtp, base = 10),
+               to = log(max_wtp, base = 10),
+               length.out = n)
+    10 ^ res
+  } else {
+    seq(from = 0, to = max_wtp, length.out = n)
+  }
+}

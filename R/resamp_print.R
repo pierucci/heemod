@@ -8,14 +8,18 @@
 #' 
 #' @param x Result from \code{\link{run_model}}.
 #' @param type Type of plot, see details.
-#' @param values Values for CEAC.
+#' @param max_wtp Maximal willingness to pay.
+#' @param n Number of CECA points to estimate (values above
+#'   100 may take significant time).
+#' @param log_scale Show willingness to pay on a log scale?
 #' @param ... Additional arguments passed to \code{plot}.
 #'   
 #' @return A \code{ggplot2} object.
 #' @export
 #' 
 plot.psa <- function(x, type = c("ce", "ac"),
-                     values = seq(0, 1e5, 1e3), ...) {
+                     max_wtp = 1e5,
+                     n = 100, log_scale = TRUE, ...) {
   type <- match.arg(type)
   
   switch(
@@ -33,8 +37,11 @@ plot.psa <- function(x, type = c("ce", "ac"),
         ggplot2::ylab("Incremental cost")
     },
     ac = {
+      values <- generate_wtp(max_wtp = max_wtp,
+                             n = n, log_scale = log_scale)
       tab <- acceptability_curve(x$psa, values)
-      ggplot2::ggplot(tab, 
+      
+      res <- ggplot2::ggplot(tab, 
                       ggplot2::aes_string(
                         x = ".ceac",
                         y = ".p",
@@ -44,6 +51,12 @@ plot.psa <- function(x, type = c("ce", "ac"),
         ggplot2::scale_colour_hue(name = "Strategy") +
         ggplot2::xlab("Willingness to pay") +
         ggplot2::ylab("Probability of cost-effectiveness")
+      
+      if (log_scale) {
+        res <- res +
+          ggplot2::scale_x_log10()
+      }
+      print(res)
     },
     stop("Unknown plot type."))
 }

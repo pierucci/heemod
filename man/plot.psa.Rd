@@ -4,15 +4,20 @@
 \alias{plot.psa}
 \title{Plot Results of Probabilistic Analysis}
 \usage{
-\method{plot}{psa}(x, type = c("ce", "ac"), values = seq(0, 1e+05, 1000),
-  ...)
+\method{plot}{psa}(x, type = c("ce", "ac"), max_wtp = 1e+05, n = 100,
+  log_scale = TRUE, ...)
 }
 \arguments{
 \item{x}{Result from \code{\link{run_model}}.}
 
 \item{type}{Type of plot, see details.}
 
-\item{values}{Values for CEAC.}
+\item{max_wtp}{Maximal willingness to pay.}
+
+\item{n}{Number of CECA points to estimate (values above
+100 may take significant time).}
+
+\item{log_scale}{Show willingness to pay on a log scale?}
 
 \item{...}{Additional arguments passed to \code{plot}.}
 }
