@@ -5,8 +5,8 @@
 \title{Plot Sensitivity Analysis}
 \usage{
 \method{plot}{dsa}(x, type = c("simple", "difference"), result = c("cost",
-  "effect", "icer"), strategy = NULL, widest_on_top = TRUE, bw = FALSE,
-  ...)
+  "effect", "icer"), strategy = NULL, widest_on_top = TRUE,
+  remove_ns = FALSE, bw = FALSE, ...)
 }
 \arguments{
 \item{x}{A result of \code{\link{run_dsa}}.}
@@ -19,6 +19,8 @@
 
 \item{widest_on_top}{logical. Should bars be sorted so
 widest are on top?}
+
+\item{remove_ns}{Remove variables that are not sensitive.}
 
 \item{bw}{Black & white plot for publications?}
 

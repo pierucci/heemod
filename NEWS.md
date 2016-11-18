@@ -9,6 +9,7 @@
   * All plotting functions can now represent multiple strategies with facets.
   * CECA plotted on a log scale by default.
   * Black & white plots for publications with the `bw` plot option.
+  * Remove variables that are not sensitive in DSA with `remove_ns`.
 
 ## Backend changes
 

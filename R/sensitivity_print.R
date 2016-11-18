@@ -13,6 +13,7 @@
 #' @param widest_on_top logical. Should bars be sorted so
 #'   widest are on top?
 #' @param bw Black & white plot for publications?
+#' @param remove_ns Remove variables that are not sensitive.
 #' @param ... Additional arguments passed to \code{plot}.
 #'   
 #' @return A \code{ggplot2} object.
@@ -21,6 +22,7 @@
 plot.dsa <- function(x, type = c("simple", "difference"),
                      result = c("cost", "effect", "icer"),
                      strategy = NULL, widest_on_top = TRUE,
+                     remove_ns = FALSE,
                      bw = FALSE, ...) {
   
   type <- match.arg(type)
@@ -114,6 +116,14 @@ plot.dsa <- function(x, type = c("simple", "difference"),
       ".par_names", var_plot) %>%
     dplyr::group_by_(~ .par_names, ~ .strategy_names) %>%
     dplyr::mutate_(.hjust = ~ 1 - (row_number() - 1))
+  
+  if (remove_ns) {
+    tab <- tab %>% 
+      dplyr::group_by_(".par_names") %>% 
+      dplyr::filter_(
+        substitute(! all(var_col == "="), list(var_col = as.name(var_col)))
+      )
+  }
   
   if (widest_on_top) {
     tab$.par_names <- stats::reorder(
