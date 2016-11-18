@@ -19,6 +19,7 @@
   * Unit tests rely less on printed results.
   * Using new nomenclature in backend functions (`model`=>`strategy`).
   * `base_strategy` divided in 3 concepts: `central_strategy`, `root_strategy`, `noncomparable_strategy`.
+  * Non-heemod versions of `discount()` throw warnings.
 
 # heemod 0.6.0
 

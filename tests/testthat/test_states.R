@@ -274,5 +274,13 @@ test_that(
     expect_equal(
       summary(res)$res_comp$.icer, c(NA, NaN)
     )
+    
+    discount <- function(x, r) x
+    expect_warning(
+      run_model(
+        mod1, mod2,
+        parameters = par1, cost = x, effect = y
+      )
+    )
   }
 )
