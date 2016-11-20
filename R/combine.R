@@ -105,6 +105,10 @@ combine_models <- function(newmodels, weights, oldmodel) {
   )
 }
 
+get_model_results.combined_model <- function(x) {
+  get_model_results.run_model(x)
+}
+
 get_oldmodel <- function(x) {
   x$oldmodel
 }

@@ -111,7 +111,7 @@ update.run_model <- function(object, newdata, ...) {
       updated_model = res_total,
       newdata = newdata,
       model = object,
-      combined_models = comb_mods,
+      combined_model = comb_mods,
       has_weights = has_weights,
       weights = weights
     ),
@@ -121,7 +121,7 @@ update.run_model <- function(object, newdata, ...) {
 
 #' @export
 print.updated_model <- function(x, ...) {
-  print(summary(x, ...))
+  print(summary(x), ...)
 }
 
 #' @export
@@ -135,7 +135,7 @@ plot.updated_model <- function(x, type = c("simple", "difference",
   result <- match.arg(result)
   
   if (type %in% c("counts", "ce", "values")) {
-    return(plot(x$combined_models,
+    return(plot(x$combined_model,
                 type = type, strategy = strategy,
                 ...) 
     )
@@ -300,7 +300,8 @@ summary.updated_model <- function(object, ...) {
       summary_results = tab_res,
       scaled_results = tab_scaled,
       model = object,
-      to_print = mat_res
+      to_print = mat_res,
+      sum_comb = summary(object$combined_model, ...)
     ),
     class = c("summary_updated_model", class(tab_res))
   )
@@ -334,7 +335,7 @@ print.summary_updated_model <- function(x, ...) {
   
   cat("\n* Combined result:\n\n")
   
-  print(object$combined_models)
+  print(x$sum_comb)
   
   invisible(x)
 }
