@@ -12,7 +12,7 @@
 #' @example inst/examples/example_run_dsa.R
 run_dsa <- function(model, dsa) {
   
-  if (! all(c(".cost", ".effect") %in% names(model$run_model))) {
+  if (! all(c(".cost", ".effect") %in% names(get_model_results(model)))) {
     stop("No cost and/or effect defined, sensitivity analysis unavailable.")
   }
   

@@ -118,7 +118,7 @@ plot.run_model <- function(x, type = c("counts", "ce", "values"),
     },
     ce = {
       tab_ce <- scale(x)
-      ef <- get_frontier(x$run_model)
+      ef <- get_frontier(get_model_results(x))
       
       ggplot2::ggplot(tab_ce,
                       ggplot2::aes_string(

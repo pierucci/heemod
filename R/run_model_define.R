@@ -215,11 +215,11 @@ run_model_ <- function(uneval_strategy_list,
 }
 
 get_strategy_names <- function(x) {
-  x$run_model$.strategy_names
+  get_model_results(x)$.strategy_names
 }
 
 get_strategy_count <- function(x) {
-  nrow(x$run_model)
+  nrow(get_model_results(x))
 }
 
 get_state_value_names.run_model <- function(x) {
@@ -283,7 +283,7 @@ get_central_strategy.run_model <- function(x, ...) {
 }
 
 get_effect <- function(x) {
-  x$run_model$.effect
+  get_model_results(x)$.effect
 }
 
 #' Get Strategy Values
@@ -391,6 +391,10 @@ get_counts.list <- function(x, ...) {
 }
 
 get_init <- function(x) {
+  UseMethod("get_init")
+}
+
+get_init.run_model <- function(x) {
   x$init
 }
 
@@ -403,10 +407,17 @@ get_parameters <- function(x) {
 }
 
 get_cycles <- function(x) {
+  UseMethod("get_cycles")
+}
+
+get_cycles.run_model <- function(x) {
   x$cycles
 }
 
 get_method <- function(x) {
+  UseMethod("get_method")
+}
+get_method.run_model <- function(x) {
   x$method
 }
 

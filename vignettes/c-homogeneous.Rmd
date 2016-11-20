@@ -196,10 +196,11 @@ By default models are run for 1000 persons starting in the first state (here sta
 
 ## Result interpretation
 
-Strategy values can then be compared with `summary()`:
+Strategy values can then be compared with `summary()` (optionnaly net monetary benefits can be calculated with the `threshold` option):
 
 ```{r}
-summary(res_mod)
+summary(res_mod,
+        threshold = c(1000, 5000, 6000, 1e4))
 ```
 
 The incremental cost-effectiveness ratio of the combiend therapy strategy is thus £5,100 per life-year gained.

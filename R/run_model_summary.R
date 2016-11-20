@@ -6,26 +6,47 @@ print.run_model <- function(x, ...) {
 #' Summarise Markov Model Results
 #' 
 #' @param object Output from \code{\link{run_model}}.
+#' @param threshold ICER threshold (possibly several) for
+#'   net monetary benefit computation.
 #' @param ... additional arguments affecting the summary 
 #'   produced.
 #'   
 #' @return A \code{summary_run_model} object.
 #' @export
-summary.run_model <- function(object, ...) {
-  if (! all(c(".cost", ".effect") %in% names(object$run_model))) {
+summary.run_model <- function(object, threshold = NULL, ...) {
+  if (! all(c(".cost", ".effect") %in% names(get_model_results(object)))) {
     warning("No cost and/or effect defined, model summary unavailable.")
     return(invisible(NULL))
   }
   
-  res_values <- object$run_model %>% 
+  res_values <- get_model_results(object) %>% 
     dplyr::select_(
       ~ - .cost,
       ~ - .effect
     ) %>% 
     as.data.frame()
   
+  if (! is.null(threshold)) {
+    stopifnot(
+      all(threshold >= 0),
+      ! any(duplicated(threshold))
+    )
+    
+    res_nmb <- object %>% 
+      scale.run_model(center = FALSE) %>% 
+      dplyr::select_(".strategy_names", ".cost", ".effect") %>% 
+      as.data.frame()
+    
+    for (tr in threshold) {
+      res_nmb[format(tr, digits = 2)] <- res_nmb$.effect * tr -
+        res_nmb$.cost
+    }
+  } else {
+    res_nmb <- NULL
+  }
+  
   res_comp <- object %>%
-    scale(...) %>% 
+    scale.run_model(...) %>% 
     compute_icer() %>% 
     as.data.frame()
   
@@ -33,21 +54,34 @@ summary.run_model <- function(object, ...) {
     list(
       res_values = res_values,
       res_comp = res_comp,
+      res_nmb = res_nmb,
       cycles = get_cycles(object),
       init = get_init(object),
       method = get_method(object),
-      frontier = get_frontier(scale(object))
+      frontier = get_frontier(get_model_results(object))
     ),
     class = "summary_run_model"
   )
 }
 
+get_init.summary_run_model <- function(x) {
+  x$init
+}
+
+get_model_results <- function(x) {
+  UseMethod("get_model_results")
+}
+
+get_model_results.run_model <- function(x) {
+  x$run_model
+}
+
 get_cost <- function(x) {
-  x$run_model$.cost
+  get_model_results(x)$.cost
 }
 
 get_effect <- function(x) {
-  x$run_model$.effect
+  get_model_results(x)$.effect
 }
 
 #' Normalize Cost and Effect
@@ -149,7 +183,7 @@ print.summary_run_model <- function(x, ...) {
   print(matrix(
     get_init(x),
     dimnames = list(
-      names(x$init),
+      names(get_init(x)),
       "N"
     )
   ))
@@ -157,14 +191,26 @@ print.summary_run_model <- function(x, ...) {
     "\nCounting method: '%s'.\n\n", x$method
   ))
   
-  print_results(x$res_values, x$res_comp)
+  print_results(x$res_values, x$res_comp, x$res_nmb)
 }
 
-print_results <- function(res_values, res_comp) {
+print_results <- function(res_values, res_comp, res_nmb) {
   cat("Values:\n\n")
   rownames(res_values) <- res_values$.strategy_names
   res_values <- dplyr::select_(res_values, ~ - .strategy_names)
   print(res_values)
+  
+  if (! is.null(res_nmb)) {
+    cat("\nNet monetary benefit:\n\n")
+    rownames(res_nmb) <- res_nmb$.strategy_names
+    res_nmb <- res_nmb %>% 
+      dplyr::select_(
+        ~ - .strategy_names,
+        ~ - .cost,
+        ~ - .effect
+      )
+    print(res_nmb)
+  }
   
   if (nrow(res_values) > 1) {
     cat("\nEfficiency frontier:\n\n")

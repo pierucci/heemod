@@ -4,10 +4,13 @@
 \alias{summary.run_model}
 \title{Summarise Markov Model Results}
 \usage{
-\method{summary}{run_model}(object, ...)
+\method{summary}{run_model}(object, threshold = NULL, ...)
 }
 \arguments{
 \item{object}{Output from \code{\link{run_model}}.}
+
+\item{threshold}{ICER threshold (possibly several) for
+net monetary benefit computation.}
 
 \item{...}{additional arguments affecting the summary 
 produced.}

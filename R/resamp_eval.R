@@ -16,7 +16,7 @@ run_psa <- function(model, resample, N) {
     ! is.null(N)
   )
   
-  if (! all(c(".cost", ".effect") %in% names(model$run_model))) {
+  if (! all(c(".cost", ".effect") %in% names(get_model_results(model)))) {
     stop("No cost and/or effect defined, probabilistic analysis unavailable.")
   }
   
@@ -53,9 +53,16 @@ run_psa <- function(model, resample, N) {
   
   res <- dplyr::mutate_(res, .dots = get_ce(model))
   
+  run_model <- res %>% 
+    dplyr::select_(~ - .index) %>% 
+    dplyr::group_by_(".strategy_names") %>%
+    dplyr::summarise_all(mean) %>% 
+    as.data.frame()
+  
   structure(
     list(
       psa = res,
+      run_model = run_model[! names(run_model) %in% names(newdata)],
       model = model,
       N = N,
       resamp_par = names(newdata)
@@ -70,6 +77,22 @@ get_model <- function(x) {
 
 get_model.psa <- function(x) {
   x$model
+}
+
+get_model_results.psa <- function(x) {
+  x$run_model
+}
+
+get_cycles.psa <- function(x) {
+  get_cycles(get_model(x))
+}
+
+get_init.psa <- function(x) {
+  get_init(get_model(x))
+}
+
+get_method.psa <- function(x) {
+  get_method(get_model(x))
 }
 
 get_central_strategy.psa <- function(x, ...) {

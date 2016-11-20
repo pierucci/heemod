@@ -124,44 +124,16 @@ scale.psa <- function(x, center = TRUE, scale = TRUE) {
 }
 
 #' @export
-summary.psa <- function(object, ...) {
-  res <- object %>% 
-    scale() %>% 
-    dplyr::select_(~ - .index) %>% 
-    dplyr::group_by_(".strategy_names") %>%
-    dplyr::summarise_all(mean) %>% 
-    as.data.frame()
-  
-  res_values <- res %>% 
-    dplyr::select_(~ - .cost, ~ - .effect)
-  res_values <- res_values[! names(res_values) %in%
-                             c(object$resamp_par, ".cost", ".effect")]
-  
-  res_comp <- res %>% 
-    compute_icer() %>% 
-    as.data.frame()
-  
-  structure(
-    list(
-      res_values = res_values,
-      res_comp = res_comp,
-      total_result = object
-    ),
-    class = "summary_psa"
-  )
-}
-
-#' @export
-print.summary_psa <- function(x, ...) {
-  cat(sprintf(
-    "A PSA with %i resamplings.\n\n",
-    x$total_result$N
-  ))
-  
-  print_results(x$res_values, x$res_comp)
+summary.psa <- function(object, threshold = NULL, ...) {
+  summary.run_model(object = object, threshold = threshold, ...)
 }
 
 #' @export
 print.psa <- function(x, ...) {
+  cat(sprintf(
+    "A PSA with %i resamplings.\n\n",
+    x$N
+  ))
+  
   print(summary(x), ...)
 }

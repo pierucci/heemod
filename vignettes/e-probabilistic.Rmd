@@ -219,10 +219,11 @@ pm <- run_psa(
 )
 ```
 
-The average results are computed. In theory these values are more accurate than simple estimates because of non-linearities.
+The average results are computed. In theory these values are more accurate than simple estimates because of non-linearities. An optional `threshold` can be passed to `summary()` to compute net monetary benefit.
 
 ```{r}
-pm
+summary(pm, 
+        threshold = c(1000, 5000, 6000, 1e4))
 ```
 
 The results of the analysis can be plotted on the cost-effectiveness plane. We can see there seem to be little uncertainty on the costs compared to the uncertainty on the effects, resulting in an uncertainty cloud that looks like a line.
