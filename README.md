@@ -26,8 +26,9 @@ devtools::install_github("pierucci/heemod@devel")
   * Time-varying transition probabilities.
   * Time-varying values attached to states.
   * Microsimulation-like models.
-  * Probabilistic uncertainty analysis.
-  * Deterministic sensitivity analysis.
+  * Probabilistic uncertainty analysis (PSA).
+  * Covariance analysis for PSA.
+  * Deterministic sensitivity analysis (DSA).
   * Multiple state membership correction methods (life-table, half-cycle, etc.).
   * Demographic analysis to compute population-level results.
   * Heterogeneity analysis.

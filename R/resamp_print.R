@@ -4,7 +4,8 @@
 #' 
 #' \code{type = "ac"} plots cost-effectiveness acceptability
 #' curves, \code{type = "ce"} plots results on the 
-#' cost-efficiency plane.
+#' cost-efficiency plane, \code{type = "cov"} to perform
+#' covariance analysis on the results.
 #' 
 #' @param x Result from \code{\link{run_model}}.
 #' @param type Type of plot, see details.
@@ -18,7 +19,7 @@
 #' @return A \code{ggplot2} object.
 #' @export
 #' 
-plot.psa <- function(x, type = c("ce", "ac"),
+plot.psa <- function(x, type = c("ce", "ac", "cov"),
                      max_wtp = 1e5,
                      n = 100, log_scale = TRUE,
                      bw = FALSE, ...) {
@@ -29,10 +30,10 @@ plot.psa <- function(x, type = c("ce", "ac"),
     ce = {
       tab <- scale(x)
       res <- ggplot2::ggplot(data = tab,
-                      ggplot2::aes_string(
-                        x = ".effect",
-                        y = ".cost",
-                        colour = ".strategy_names")) +
+                             ggplot2::aes_string(
+                               x = ".effect",
+                               y = ".cost",
+                               colour = ".strategy_names")) +
         ggplot2::geom_point() +
         ggplot2::scale_colour_hue(name = "Model") +
         ggplot2::xlab("Incremental effect") +
@@ -53,10 +54,10 @@ plot.psa <- function(x, type = c("ce", "ac"),
       tab <- acceptability_curve(x$psa, values)
       
       res <- ggplot2::ggplot(tab, 
-                      ggplot2::aes_string(
-                        x = ".ceac",
-                        y = ".p",
-                        colour = ".strategy_names")) +
+                             ggplot2::aes_string(
+                               x = ".ceac",
+                               y = ".p",
+                               colour = ".strategy_names")) +
         ggplot2::geom_line() +
         ggplot2::ylim(0, 1) +
         ggplot2::scale_colour_hue(name = "Strategy") +
@@ -76,6 +77,21 @@ plot.psa <- function(x, type = c("ce", "ac"),
       }
       
       res
+    },
+    cov = {
+      tab <- compute_cov(x) %>% 
+        dplyr::mutate_(
+          .prop = ~ .prop * 100
+        )
+      
+      ggplot2::ggplot(
+        tab,
+        ggplot2::aes_string(".par_names", ".prop")) +
+        ggplot2::geom_col() +
+        ggplot2::facet_grid(.result ~ .strategy_names) +
+        ggplot2::xlab("Parameter") +
+        ggplot2::ylab("Variance explained (%)") +
+        ggplot2::coord_flip()
     },
     stop("Unknown plot type."))
 }

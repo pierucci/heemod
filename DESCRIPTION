@@ -15,7 +15,7 @@ Description: Health Economic Evaluation Modelling.
 Depends: R (>= 3.2.2)
 Imports:  diagram,
           dplyr,
-          ggplot2,
+          ggplot2 (>= 2.2.0),
           graphics,
           grDevices,
           Hmisc,
@@ -38,6 +38,7 @@ RoxygenNote: 5.0.1
 Suggests: knitr,
           parallel,
           formatR,
+          mgcv,
           readxl,
           rmarkdown,
           testthat
