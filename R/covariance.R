@@ -10,7 +10,7 @@ compute_cov <- function(psa) {
   ))
   compute_prop <- function(mod) {
     n <- attr(mod$terms, "term.labels")
-    if (identical(0, var(mod$y))) {
+    if (identical(0, stats::var(mod$y))) {
       return(
         rep(0, length(n)) %>% 
           stats::setNames(n) %>% 
@@ -30,14 +30,14 @@ compute_cov <- function(psa) {
     ))
     res <- stats::lm(form, data = data_trans)
     
-    tot <- sum(coef(res)[-1])
+    tot <- sum(stats::coef(res)[-1])
     r2 <- summary(res)$r.squared
     if (r2 < .99) {
       warning(sprintf(
         "Only %.0f%% of variance explained, results may be inaccurate."
       ))
     }
-    as.data.frame(as.list(coef(res)[-1] / tot * r2))
+    as.data.frame(as.list(stats::coef(res)[-1] / tot * r2))
   }
   
   psa$psa %>% 
