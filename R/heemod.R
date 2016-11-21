@@ -50,6 +50,8 @@
 #' @importFrom stats na.omit
 #' @importFrom stats update
 #' @importFrom stats as.formula
+#' @importFrom stats var
+#' @importFrom stats coef
 #'   
 #' @importFrom graphics par
 #'   
