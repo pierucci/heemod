@@ -49,6 +49,9 @@
 #' @importFrom stats reorder
 #' @importFrom stats na.omit
 #' @importFrom stats update
+#' @importFrom stats as.formula
+#' @importFrom stats var
+#' @importFrom stats coef
 #'   
 #' @importFrom graphics par
 #'   
@@ -67,6 +70,7 @@
 #' @importFrom ggplot2 ylab
 #' @importFrom ggplot2 aes
 #' @importFrom ggplot2 xlim
+#' @importFrom ggplot2 "%+replace%"
 #'   
 #' @importFrom tidyr gather_
 #'   

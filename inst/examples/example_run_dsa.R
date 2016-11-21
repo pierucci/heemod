@@ -52,7 +52,6 @@ print(ds)
 x <- run_dsa(res2, ds)
 
 plot(x, value = "cost")
-plot(x, value = "icer", type = "difference", model = 2)
 
 # can be specified as a function of other parameters
 

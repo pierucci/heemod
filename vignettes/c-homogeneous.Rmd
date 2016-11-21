@@ -35,8 +35,7 @@ Four states are described, from best to worst health-wise:
 Transition probabilities for the monotherapy study group are rather simple to implement with `define_transition()`:
 
 ```{r}
-mat_mono <-
-  define_transition(
+mat_mono <- define_transition(
     .721, .202, .067, .010,
     0,    .581, .407, .012,
     0,    0,    .750, .250,
@@ -54,8 +53,7 @@ We use the alias `C` as a convenient way to specify the probability complement, 
 ```{r}
 rr <- .509
 
-mat_comb <-
-  define_transition(
+mat_comb <- define_transition(
     C, .202*rr, .067*rr, .010*rr,
     0, C,       .407*rr, .012*rr,
     0, 0,       C,       .250*rr,
@@ -158,21 +156,21 @@ D_comb <- define_state(
 Strategies can now be defined by combining a transition matrix and a state list with `define_strategy()`:
 
 ```{r}
-mod_mono <- define_strategy(
-  transition_matrix = mat_mono,
+strat_mono <- define_strategy(
+  transition = mat_mono,
   A_mono,
   B_mono,
   C_mono,
   D_mono
 )
-mod_mono
+strat_mono
 ```
 
 For the combined therapy model:
 
 ```{r}
-mod_comb <- define_strategy(
-  transition_matrix = mat_comb,
+strat_comb <- define_strategy(
+  transition = mat_comb,
   A_comb,
   B_comb,
   C_comb,
@@ -186,8 +184,8 @@ Both strategies can then be combined in a model and run for 50 years with `run_m
 
 ```{r}
 res_mod <- run_model(
-  mono = mod_mono,
-  comb = mod_comb,
+  mono = strat_mono,
+  comb = strat_comb,
   cycles = 50,
   cost = cost_total,
   effect = life_year
@@ -198,20 +196,21 @@ By default models are run for 1000 persons starting in the first state (here sta
 
 ## Result interpretation
 
-Strategy values can then be compared with `summary()`:
+Strategy values can then be compared with `summary()` (optionnaly net monetary benefits can be calculated with the `threshold` option):
 
 ```{r}
-summary(res_mod)
+summary(res_mod,
+        threshold = c(1000, 5000, 6000, 1e4))
 ```
 
 The incremental cost-effectiveness ratio of the combiend therapy strategy is thus £5,100 per life-year gained.
 
 The counts per state can be plotted by model:
 
-```{r, fig.align='center', fig.width=6, message=FALSE}
-plot(res_mod, type = "counts", panel = "by_model") +
+```{r, fig.align='center', fig.width=6, fig.height=6, message=FALSE}
+plot(res_mod, type = "counts", panel = "by_strategy") +
   xlab("Time") +
-  theme_minimal() +
+  theme_bw() +
   scale_color_brewer(
     name = "State",
     palette = "Set1"
@@ -220,12 +219,25 @@ plot(res_mod, type = "counts", panel = "by_model") +
 
 Or by state:
 
-```{r, fig.align='center', fig.width=6, message=FALSE}
+```{r, fig.align='center', fig.width=6, fig.height=8, message=FALSE}
 plot(res_mod, type = "counts", panel = "by_state") +
   xlab("Time") +
-  theme_minimal() +
+  theme_bw() +
   scale_color_brewer(
-    name = "Model",
+    name = "Strategy",
+    palette = "Set1"
+  )
+```
+
+The values can also be represented:
+
+```{r, fig.align='center', fig.width=6, fig.height=8, message=FALSE}
+plot(res_mod, type = "values", panel = "by_value",
+     free_y = TRUE) +
+  xlab("Time") +
+  theme_bw() +
+  scale_color_brewer(
+    name = "Strategy",
     palette = "Set1"
   )
 ```

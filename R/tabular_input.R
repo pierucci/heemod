@@ -29,8 +29,8 @@
 #'   
 #' @export
 run_model_tabular <- function(location, reference = "REFERENCE.csv",
-                               run_psa = TRUE, run_demo = TRUE,
-                               save = FALSE, overwrite = FALSE) {
+                              run_psa = TRUE, run_demo = TRUE,
+                              save = FALSE, overwrite = FALSE) {
   
   inputs <- gather_model_info(location, reference)
   outputs <- eval_models_from_tabular(inputs,
@@ -208,7 +208,7 @@ eval_models_from_tabular <- function(inputs,
       inputs$param_info$dsa_params
     )
   }
-
+  
   model_psa <- NULL
   if (! is.null(inputs$param_info$psa_params) & run_psa) {
     if (options()$heemod.verbose) message("** Running PSA...")
@@ -218,7 +218,7 @@ eval_models_from_tabular <- function(inputs,
       N = inputs$model_options$n
     )
   }
-
+  
   demo_res <- NULL
   if (! is.null(inputs$demographic_file) & run_demo) {
     if (options()$heemod.verbose) message("** Running demographic analysis...")
@@ -632,7 +632,7 @@ create_options_from_tabular <- function(opt) {
   if (! is.null(res$num_cores)){
     res$num_cores <- parse(text = res$num_cores)[[1]]
   }
-    if (options()$heemod.verbose) message(paste(
+  if (options()$heemod.verbose) message(paste(
     names(res), unlist(res), sep = " = ", collapse = "\n"
   ))
   res
@@ -976,7 +976,7 @@ save_outputs <- function(outputs, output_dir, overwrite) {
   
   all_counts <- 
     do.call("rbind",
-            lapply(get_model_names(outputs$model_runs),
+            lapply(get_strategy_names(outputs$model_runs),
                    function(this_name){
                      data.frame(.model = this_name,
                                 get_counts(outputs$model_runs, m = this_name))
@@ -992,7 +992,7 @@ save_outputs <- function(outputs, output_dir, overwrite) {
   
   all_values <- 
     do.call("rbind",
-            lapply(get_model_names(outputs$model_runs),
+            lapply(get_strategy_names(outputs$model_runs),
                    function(this_name){
                      data.frame(.model = this_name,
                                 get_values(outputs$model_runs, m = this_name))
@@ -1019,39 +1019,32 @@ save_outputs <- function(outputs, output_dir, overwrite) {
     row.names = FALSE
   )
   
-    
+  
   
   ## plots about individual models
-  model_names <- names(outputs$models)
   
   if (options()$heemod.verbose) message("** Generating plots for individual models...")
-  for(this_model in model_names){
-    this_plot <- plot(outputs$model_runs, model = this_model)
-    this_file <- paste("state_count_plot", this_model, sep = "_")
-    save_graph(this_plot, output_dir, this_file)
-    
-    this_plot <- plot(outputs$dsa, model = this_model)
-    this_file <- paste("dsa", this_model, sep = "_")
-    save_graph(this_plot, output_dir, this_file)
-  }
+  this_plot <- plot(outputs$model_runs)
+  this_file <- "state_count_plot"
+  save_graph(this_plot, output_dir, this_file)
   
-  lowest_model <- get_lowest_model(outputs$model_runs)
+  this_plot <- plot(outputs$dsa)
+  this_file <- "dsa"
+  save_graph(this_plot, output_dir, this_file)
+  
   
   ## plots about differences between models
   if (options()$heemod.verbose) message("** Generating plots with model differences...")
-  for(this_model in setdiff(model_names, lowest_model)){
-    this_plot <- plot(outputs$dsa, type = "diff", model = this_model)
-    this_file <- paste("dsa", this_model, "vs", lowest_model, sep = "_")
-
-    save_graph(this_plot, output_dir, this_file)
-    
-    if(!is.null(outputs$psa)){
-      this_plot <- plot(outputs$psa, model = this_model)
-      this_file <- paste("psa", this_model, "vs", lowest_model, sep = "_")
-      save_graph(this_plot, output_dir, this_file)
-    }
-  }
+  
+  this_plot <- plot(outputs$dsa, type = "difference")
+  this_file <- "dsa_diff"
+  
+  save_graph(this_plot, output_dir, this_file)
+  
   if(!is.null(outputs$psa)){
+    this_plot <- plot(outputs$psa)
+    this_file <- paste("psa")
+    save_graph(this_plot, output_dir, this_file)
     ## acceptability curve
     if (options()$heemod.verbose) message("** Generating acceptability curve...")
     this_plot <- plot(outputs$psa, type = "ac")

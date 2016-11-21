@@ -82,10 +82,10 @@ define_psa_ <- function(list_qdist, list_multi, correlation) {
   structure(
     list(
       list_qdist = list_qdist,
-      correlation = correlation
+      correlation = correlation,
+      multinom = list_multi
     ),
-    class = "resamp_definition",
-    multinom = list_multi
+    class = "resamp_definition"
   )
 }
 

@@ -28,9 +28,24 @@ acceptability_curve <- function(x, wtp_thresholds) {
       .top_strategy = ~ .top_strategy & cumsum(.top_strategy) == 1
       # in case 2 nmb are identical, pick first
     ) %>% 
-    dplyr::group_by_(~ .ceac, ~ .model_names) %>% 
+    dplyr::group_by_(~ .ceac, ~ .strategy_names) %>% 
     dplyr::summarise_(.n = ~ sum(.top_strategy)) %>% 
     dplyr::group_by_(~ .ceac) %>% 
-    dplyr::mutate_(.p = ~ .n / sum(.n),
-                   .model = ~ .model_names)
+    dplyr::mutate_(.p = ~ .n / sum(.n))
+}
+
+generate_wtp <- function(max_wtp,
+                         min_wtp = max_wtp / 1000,
+                         n, log_scale) {
+  stopifnot(
+    max_wtp > 0
+  )
+  if (log_scale) {
+    res <- seq(from = log(min_wtp, base = 10),
+               to = log(max_wtp, base = 10),
+               length.out = n)
+    10 ^ res
+  } else {
+    seq(from = 0, to = max_wtp, length.out = n)
+  }
 }

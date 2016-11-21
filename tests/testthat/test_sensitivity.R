@@ -113,48 +113,23 @@ test_that(
     
     x <- run_dsa(res2, ds)
     
-    expect_output(
-      str(head(as.data.frame(x))),
-      '6 obs. of  4 variables:
- $ .mod        :List of 6',
-      fixed = TRUE
+    expect_equal(
+      round(x$dsa$.cost),
+      c(514389, 451356, 703168, 514069,
+        456666, 475359, 529998, 586078)
     )
     
     expect_error(run_dsa(res3, ds))
     
-    expect_output(
-      str(summary(x)),
-      '8 obs. of  11 variables:
- $ cost        : num  514389 703168 451356 514069 456666 ...
- $ ly          : num  871 871 587 587 611 ...
- $ .model_names: chr  "I" "II" "I" "II" ...
- $ .par_names  : chr  "p1" "p1" "p1" "p1" ...
- $ .par_value  : chr  "0.1" "0.1" "0.9" "0.9" ...
- $ .cost       : num  514389 703168 451356 514069 456666 ...
- $ .effect     : num  871 871 587 587 611 ...
- $ .icer       : num  NA Inf NA Inf NA ...
- $ .dcost      : num  NA 188779 NA 62712 NA ...
- $ .deffect    : num  NA 0 NA 0 NA 0 NA 0
- $ .dref       : chr  NA "I" NA "I" ...',
-      fixed = TRUE
+    sx <- summary(x)
+    
+    expect_equal(
+      round(sx$res_comp$.cost),
+      c(0, 1888, 0, 627, 0, 733, 0, 1107)
     )
-    
-    expect_output(
-      print(x),
-      "p1 = 0.1 (I)  514389.5 871.1237",
-      fixed = TRUE
-    )
-    
-    plot(x, type = "simple", result = "cost")
-    plot(x, type = "simple", result = "effect")
-    
-    expect_error(
-      plot(x, type = "difference", result = "cost")
-    )
-    
-    plot(x, type = "difference", result = "cost", model = 2)
-    plot(x, type = "difference", result = "effect", model = 2)
-    plot(x, type = "difference", result = "icer", model = 2)
+
+    plot(x, result = "cost")
+    plot(x, result = "effect")
   })
 
 test_that(
@@ -215,6 +190,6 @@ test_that(
     .icer <- c(NA, 3988, NA, 668, NA, 761, NA, 1195,
                NA, 978, NA, 1300)
     
-    expect_identical(round(x$.icer), .icer)
+    expect_identical(round(x$res_comp$.icer), .icer)
   }
 )

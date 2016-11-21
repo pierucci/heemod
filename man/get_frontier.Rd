@@ -7,7 +7,7 @@
 get_frontier(x)
 }
 \arguments{
-\item{x}{An \code{eval_model_list} object.}
+\item{x}{An \code{eval_strategy_list} object.}
 }
 \value{
 A vector of model names on the efficiency

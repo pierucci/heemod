@@ -82,12 +82,12 @@ state_B
 Now that the transition matrix and the state values are defined for a given strategy, we can combine them with `define_strategy()`:
 
 ```{r}
-strat_1 <- define_strategy(
-  transition_matrix = mat_trans,
+strat <- define_strategy(
+  transition = mat_trans,
   state_A,
   state_B
 )
-strat_1
+strat
 ```
 
 ## Run the model
@@ -95,13 +95,13 @@ strat_1
 A model is a made of one or more strategy, run with `run_model()` for a given number of cycles. Here we run only one strategy, so no comparison of the cost-effectiveness of the different strategies will be made. The variables corresponding to valuation of cost and effect must be given at that point.
 
 ```{r}
-res_mod_1 <- run_model(
-  strat_1,
+res_mod <- run_model(
+  strat,
   cycles = 10,
   cost = cost,
   effect = utility
 )
-res_mod_1
+res_mod
 ```
 
 By default the model is run for *1000* persons starting in the first state (here state **A**).
@@ -111,7 +111,7 @@ By default the model is run for *1000* persons starting in the first state (here
 We can plot the state membership counts over time. Other plot types are available.
 
 ```{r, fig.width = 6, fig.height=4, fig.align='center'}
-plot(res_mod_1)
+plot(res_mod)
 ```
 
 Plots can be modified using `ggplot2` syntax.
@@ -119,7 +119,7 @@ Plots can be modified using `ggplot2` syntax.
 ```{r, fig.align='center', fig.height=4, fig.width=6, message=FALSE}
 library(ggplot2)
 
-plot(res_mod_1) +
+plot(res_mod) +
   xlab("Time") +
   ylab("N") +
   theme_minimal() +
@@ -129,11 +129,19 @@ plot(res_mod_1) +
   )
 ```
 
+And black & white plots for publication are available with the `bw` plot option
+
+```{r, fig.align='center', fig.height=4, fig.width=6, message=FALSE}
+library(ggplot2)
+
+plot(res_mod, bw = TRUE)
+```
+
 The state membership counts and the values can be accessed with `get_counts()` and `get_values()` respectively.
 
 ```{r}
-get_counts(res_mod_1)
-get_values(res_mod_1)
+head(get_counts(res_mod))
+head(get_values(res_mod))
 ```
 
 ## Convenience functions

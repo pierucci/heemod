@@ -664,7 +664,7 @@ test_that(
     plot(result$demographics, type = "counts")
     plot(result$demographics, type = "values", value = "cost")
     plot(result$demographics, type = "values", 
-         value = c("cost", "qaly"), panels = "by_value")
+         value = c("cost", "qaly"), panels = "by_value", free_y = TRUE)
     
   }
 )
