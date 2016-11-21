@@ -30,14 +30,16 @@ compute_cov <- function(psa) {
     ))
     res <- stats::lm(form, data = data_trans)
     
-    tot <- sum(stats::coef(res)[-1])
+    val <- abs(stats::coef(res)[-1])
+    tot <- sum(val)
     r2 <- summary(res)$r.squared
     if (r2 < .99) {
       warning(sprintf(
-        "Only %.0f%% of variance explained, results may be inaccurate."
+        "Only %.0f%% of variance explained, results may be inaccurate.",
+        r2 * 100
       ))
     }
-    as.data.frame(as.list(stats::coef(res)[-1] / tot * r2))
+    as.data.frame(as.list(val / tot * r2))
   }
   
   psa$psa %>% 
