@@ -126,8 +126,7 @@ plot.run_model <- function(x, type = c("counts", "ce", "values"),
                         y = ".cost",
                         label = ".strategy_names")) +
         ggplot2::geom_line(data = tab_ce[tab_ce$.strategy_names %in% ef, ]) +
-        ggplot2::geom_point() +
-        ggplot2::geom_text(hjust = 1) +
+        ggplot2::geom_label() +
         ggplot2::xlab("Effect") +
         ggplot2::ylab("Cost")
     },
