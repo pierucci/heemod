@@ -110,7 +110,7 @@ res <- run_model(
 
 # generating table with new parameter sets
 new_tab <- data.frame(
-  age_init = 40:80
+  age_init = 40:45
 )
 
 # with run_model result
@@ -121,7 +121,7 @@ summary(ndt)
 # using weights
 
 new_tab2 <- data.frame(
-  age_init = 40:80,
+  age_init = 40:45,
   .weights = runif(41)
 )
 ndt2 <- update(res, newdata = new_tab2)
