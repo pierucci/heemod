@@ -13,14 +13,11 @@ Description: Health Economic Evaluation Modelling.
   for health economic evaluation. Model comparison,
   sensitivity and probabilistic analysis.
 Depends: R (>= 3.2.2)
-Imports:  diagram,
-          dplyr,
+Imports:  dplyr,
           ggplot2 (>= 2.2.0),
           graphics,
           grDevices,
-          Hmisc,
           lazyeval,
-          logitnorm,
           memoise,
           mvnfast,
           pryr,
@@ -34,7 +31,10 @@ License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
-Suggests: knitr,
+Suggests: diagram,
+          Hmisc,
+          knitr,
+          logitnorm,
           parallel,
           formatR,
           mgcv,

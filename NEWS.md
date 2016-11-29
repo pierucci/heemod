@@ -1,3 +1,9 @@
+# devel
+
+## Backend changes
+
+  * Package `diagram` moved from `Imports` to `Suggests`.
+
 # heemod 0.7.1
 
 ## Bugfixes
