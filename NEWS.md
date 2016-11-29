@@ -1,3 +1,9 @@
+# heemod 0.7.1
+
+## Bugfixes
+
+  * Fixed an error resulting in incorrect covariance analysis results when relations between values and parameters were negative.
+
 # heemod 0.7.0
 
 ## Breaking changes
