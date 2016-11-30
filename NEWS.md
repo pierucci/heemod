@@ -2,7 +2,8 @@
 
 ## Backend changes
 
-  * Package `diagram` moved from `Imports` to `Suggests`.
+  * Cleaner handling of clusters.
+  * Package `diagram`, `Hmisc` and `logitnorm` moved from `Imports` to `Suggests`.
 
 # heemod 0.7.1
 
