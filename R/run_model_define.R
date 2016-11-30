@@ -42,8 +42,9 @@
 #'   \code{run_model_} to avoid using \code{...}.
 #' @param state_cycle_limit Optional expansion limit for 
 #'   \code{state_cycle}, see details.
-#' @param central_strategy The strategy at the center of the
-#'   cost-effectiveness plane, for readability.
+#' @param central_strategy character. The name of the
+#'   strategy at the center of the cost-effectiveness plane,
+#'   for readability.
 #'   
 #' @return A list of evaluated models with computed values.
 #' @export
@@ -87,7 +88,9 @@ run_model_ <- function(uneval_strategy_list,
                        cost, effect,
                        state_cycle_limit,
                        central_strategy) {
-  
+  if (length(uneval_strategy_list) == 0) {
+    stop("At least 1 strategy is needed.")
+  }
   if (! is.wholenumber(cycles)) {
     stop("'cycles' must be a whole number.")
   }
@@ -194,6 +197,12 @@ run_model_ <- function(uneval_strategy_list,
   
   if (is.null(central_strategy)) {
     central_strategy <- get_central_strategy(res)
+    
+  } else {
+    stopifnot(
+      length(central_strategy) == 1,
+      central_strategy %in% strategy_names
+    )
   }
   
   structure(
