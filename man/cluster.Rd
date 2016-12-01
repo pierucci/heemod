@@ -7,7 +7,7 @@
 \alias{use_cluster}
 \title{Run \code{heemod} on a Cluster}
 \usage{
-use_cluster(num_cores, cluster = NULL)
+use_cluster(num_cores, cluster = NULL, close = TRUE)
 
 status_cluster(verbose = TRUE)
 
@@ -18,12 +18,15 @@ close_cluster()
 
 \item{cluster}{A custom cluster. See details.}
 
+\item{close}{Close existing cluster before defining a new
+one?}
+
 \item{verbose}{Print cluster info.}
 }
 \value{
 \code{use_cluster} and \code{close_cluster} 
-  return \code{TRUE} invisibly in case of success.
-  \code{status_cluster} returns \code{TRUE} if a cluster
+  return \code{TRUE} invisibly in case of success. 
+  \code{status_cluster} returns \code{TRUE} if a cluster 
   is defined, \code{FALSE} otherwise.
 }
 \description{

@@ -43,8 +43,9 @@ the cost-effectiveness plane.}
 \item{state_cycle_limit}{Optional expansion limit for 
 \code{state_cycle}, see details.}
 
-\item{central_strategy}{The strategy at the center of the
-cost-effectiveness plane, for readability.}
+\item{central_strategy}{character. The name of the
+strategy at the center of the cost-effectiveness plane,
+for readability.}
 
 \item{uneval_strategy_list}{List of models, only used by 
 \code{run_model_} to avoid using \code{...}.}

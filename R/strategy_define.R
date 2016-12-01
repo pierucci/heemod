@@ -18,6 +18,9 @@
 #'   \code{\link{define_state}}.
 #' @param states List of states, only used by
 #'   \code{define_strategy_} to avoid using \code{...}.
+#' @param partitioned_survival Partitioned survival argument. 
+#'   See \code{\link{survival_from_data}} and 
+#'   \code{\link{partitioned_survival_from_tabular}}.
 #' @param transition_matrix Deprecated argument, use
 #'   \code{transition}.
 #'   
@@ -47,9 +50,11 @@ define_strategy <- function(...,
 
 #' @rdname define_strategy
 #' @export
-define_strategy_ <- function(transition, states) {
+define_strategy_ <- function(transition, states, 
+                             partitioned_survival = NULL) {
   
-  if (! get_state_number(states) == get_matrix_order(transition)) {
+  if(inherits(transition, "uneval_matrix")){
+    if (! get_state_number(states) == get_matrix_order(transition)) {
     stop(sprintf(
       "Number of state in model input (%i) differ from number of state in transition matrix (%i).",
       get_state_number(states),
@@ -57,17 +62,19 @@ define_strategy_ <- function(transition, states) {
     ))
   }
   
-  if (! identical(
-    sort(get_state_names(states)),
-    sort(get_state_names(transition))
-  )) {
-    stop("State names in model input differ from transition matrix.")
+    if (! identical(
+      sort(get_state_names(states)),
+      sort(get_state_names(transition))
+    )) {
+      stop("State names in model input differ from transition matrix.")
+    }
   }
   
-  structure(
+ structure(
     list(
       transition = transition,
-      states = states
+      states = states,
+      partitioned_survival = partitioned_survival
     ), class = "uneval_model")
 }
 
@@ -122,4 +129,11 @@ get_state_value_names.uneval_model <- function(x) {
 
 get_state_names.uneval_model <- function(x, ...) {
   get_state_names(get_states(x))
+}
+
+get_partitioned_survival <- function(x){
+  UseMethod("get_partitioned_survival")
+}
+get_partitioned_survival.default <- function(x){
+  x$partitioned_survival
 }

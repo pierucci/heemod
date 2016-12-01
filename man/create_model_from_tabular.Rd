@@ -4,16 +4,17 @@
 \alias{create_model_from_tabular}
 \title{Create a \code{heemod} Model From Tabular Files Info}
 \usage{
-create_model_from_tabular(state_file, tm_file, df_env = globalenv())
+create_model_from_tabular(state_info, tm_info, surv_info,
+  df_env = globalenv())
 }
 \arguments{
+\item{df_env}{An environment containing external data.}
+
 \item{state_file}{A state tabular file (file path or 
 parsed file).}
 
 \item{tm_file}{A transition matrix tabular file (file 
 path or parsed file).}
-
-\item{df_env}{An environment containing external data.}
 }
 \value{
 A \code{heemod} model as returned by 
