@@ -169,6 +169,9 @@ partitioned_survival_from_tabular <- function(ref, df_env, model_names) {
                          fit_files = si$fit_files,
                          fit_names = si$fit_names,
                          fit_metric = si$fit_metric,
+                         time_col_name = si$time_col_name,
+                         censor_col_name = si$censor_col_name,
+                         treatment_col_name = si$treatment_col_name,
                          use_envir = df_env)
   
   ## switch the survival information to be by model instead of by fit type
@@ -1173,6 +1176,28 @@ save_graph <- function(plot, path, file_name) {
 #'
 get_survival_input <- function(ref) {
   
+  time_col_name <- "time"
+  censor_col_name <- "status"
+  treatment_col_name <- "treatment"
+  
+  time_col_index <- grep("time_col_name", ref$data)
+  censor_col_index <- grep("censor_col_name", ref$data)
+  treatment_col_index <- grep("treatment_col_name", ref$data)
+  
+  if(length(time_col_index) > 1)
+    stop("must have at most one time_col_name; default = 'time'")
+  if(length(censor_col_index) > 1)
+    stop("must have at most one censor_col_name; default = 'status'")
+  if(length(treatment_col_index) > 1)
+    stop("must have at most one treatment_col_name; default = 'treatment'")
+
+  if(length(time_col_index) == 1)
+    time_col_name <- ref[time_col_index, "file"]
+  if(length(censor_col_index) == 1)
+    censor_col_name <- ref[censor_col_index, "file"]
+  if(length(treatment_col_index) == 1)
+    treatment_col_name <- ref[treatment_col_index, "file"]
+    
   surv_data_indices <- grep("surv_data_file", ref$data)
   fit_file_indices <- grep("fit_file", ref$data)
   fit_name_indices <- grep("fit_name", ref$data)
@@ -1227,7 +1252,10 @@ get_survival_input <- function(ref) {
       fit_files = fit_files,
       fit_names = fit_names,
       surv_data_files = surv_data_files,
-      fit_metric = fit_metric
+      fit_metric = fit_metric,
+      time_col_name = time_col_name,
+      censor_col_name = censor_col_name,
+      treatment_col_name = treatment_col_name
           )
   )
   

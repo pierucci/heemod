@@ -1,10 +1,10 @@
 data,file
-state,HNoncStates.csv
-tm,HNoncTransitionProbs.csv
-parameters,HNoncParams.csv
+state,example_oncStates.csv
+tm,example_oncTransitionProbs.csv
+parameters,example_oncParams.csv
 survivalDataDirectory,survival_data
 data,required_info
-demographics,HNdemographics.csv
+demographics,example_demographics.csv
 fit_metric,AIC
 fit_name_pfs,PFS.fit
 surv_data_file_pfs,PFS.data.csv
@@ -13,4 +13,4 @@ fit_name_ofs,OS.fit
 surv_data_file_ofs,OS.data.csv
 fit_file_ofs,OS.surv.fit
 output,output
-options,HNoncOptions.csv
+options,example_oncOptions.csv

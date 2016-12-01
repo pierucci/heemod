@@ -43,8 +43,10 @@ survival_from_data <-
 
     if(length(data_files) == 0 & length(fit_files) == 0)
       stop("must specify at least one of data_files or fit_files")
-    if(length(fit_files) != length(fit_names))
-      stop("must specify the same number of fit_files and fit_names")
+    if(length(fit_files) > 0 & 
+       length(fit_files) != length(fit_names))
+      stop(paste("must specify the same number of fit_files and",
+                  "fit_names if any fit_names are specified."))
     
     if(!is.null(base_dir))
       full_path <- file.path(base_dir, surv_dir)
