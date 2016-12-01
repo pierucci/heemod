@@ -14,10 +14,10 @@ run_models_(...)
 run_model(..., parameters = define_parameters(), init = c(1000L, rep(0L,
   get_state_number(get_states(list(...)[[1]])) - 1)), cycles = 1,
   method = c("life-table", "beginning", "end", "half-cycle"), cost = NULL,
-  effect = NULL, base_model = NULL, state_cycle_limit = NULL)
+  effect = NULL, state_cycle_limit = NULL, central_strategy = NULL)
 
-run_model_(list_models, parameters, init, cycles, method, cost, effect,
-  base_model, state_cycle_limit)
+run_model_(uneval_strategy_list, parameters, init, cycles, method, cost, effect,
+  state_cycle_limit, central_strategy)
 }
 \arguments{
 \item{...}{One or more \code{uneval_model} object.}
@@ -40,13 +40,13 @@ cost-effectiveness plane.}
 \item{effect}{Names or expression to compute effect on 
 the cost-effectiveness plane.}
 
-\item{base_model}{Name of base model used as reference. 
-By default the model with the lowest effectiveness.}
-
 \item{state_cycle_limit}{Optional expansion limit for 
 \code{state_cycle}, see details.}
 
-\item{list_models}{List of models, only used by 
+\item{central_strategy}{The strategy at the center of the
+cost-effectiveness plane, for readability.}
+
+\item{uneval_strategy_list}{List of models, only used by 
 \code{run_model_} to avoid using \code{...}.}
 }
 \value{
@@ -70,27 +70,20 @@ value names).
 The initial number of individuals in each state and the 
 number of cycle will be the same for all models.
 
-\code{state_cycle_limit} can be specified in 3 different
-ways: 1. As a single value: the limit is applied to all
-states in all models. 2. As a named vector (where names
-are state names): the limits are applied to the given
-state names, for all models. 3. As a named list of named
-vectors: the limits are applied to the given state names
+\code{state_cycle_limit} can be specified in 3 different 
+ways: 1. As a single value: the limit is applied to all 
+states in all models. 2. As a named vector (where names 
+are state names): the limits are applied to the given 
+state names, for all models. 3. As a named list of named 
+vectors: the limits are applied to the given state names 
 for the given models.
-
-Internally this function does 2 operations: first 
-evaluating parameters, transition matrix, state values 
-and computing individual counts through 
-\code{\link{eval_model}}; and then using individual 
-counts and evaluated state values to compute values at 
-each cycle through \code{compute_values}.
 }
 \examples{
 # running a single model
 
 mod1 <-
   define_strategy(
-    transition_matrix = define_transition(
+    transition = define_transition(
       .5, .5,
       .1, .9
     ),
@@ -116,7 +109,7 @@ res <- run_model(
 # running several models
 mod2 <-
   define_strategy(
-    transition_matrix = define_transition(
+    transition = define_transition(
       .5, .5,
       .1, .9
     ),

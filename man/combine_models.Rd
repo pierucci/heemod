@@ -4,10 +4,10 @@
 \alias{combine_models}
 \title{Combine Multiple Models}
 \usage{
-combine_models(list_newmodels, weights, oldmodel)
+combine_models(newmodels, weights, oldmodel)
 }
 \arguments{
-\item{list_newmodels}{A list of models run over a set of 
+\item{newmodels}{A list of models run over a set of 
 multiple parameters.}
 
 \item{weights}{A vector of weigths, same length as the

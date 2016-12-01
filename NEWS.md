@@ -1,3 +1,55 @@
+# heemod 0.7.1
+
+## Bugfixes
+
+  * Fixed an error resulting in incorrect covariance analysis results when relations between values and parameters were negative.
+
+# heemod 0.7.0
+
+## Breaking changes
+
+  * Some plotting arguments changed (e.g. `type`=>`results`).
+
+## New features
+
+  * Added covariance analysis for PSA with `type = "cov"` plot.
+  * All plotting functions can now represent multiple strategies with facets.
+  * CECA plotted on a log scale by default.
+  * Black & white plots for publications with the `bw` plot option.
+  * Remove variables that are not sensitive in DSA with `remove_ns`.
+
+## Backend changes
+
+  * Important object structure change (from attributes to lists).
+  * More systematic use of getter functions.
+  * More standarized processing of model objects.
+  * Unit tests rely less on printed results.
+  * Using new nomenclature in backend functions (`model`=>`strategy`).
+  * `base_strategy` divided in 3 concepts: `central_strategy`, `root_strategy`, `noncomparable_strategy`.
+  * Non-heemod versions of `discount()` throw warnings.
+
+# heemod 0.6.0
+
+## Breaking changes
+
+  * Base model cannot be specified anymore: it is always the least costly model.
+  * Renamed arguement `transition_matrix` => `transition` in `define_strategy()`.
+
+## New features
+
+  * Parallel computing with `use_cluster()`.
+  * Compute average values from PSA.
+  
+## Bugfixes
+  
+  * Acceptability curve returns probabilities at 0.
+  * Correctly identify efficiency frontier.
+  * ICER are computed on the efficiency frontier.
+  
+## Acknowledments
+
+  * Thanks to [Matthew Wiener](https://github.com/MattWiener), [Zdenek Kabat](https://github.com/zkabat) and [Vojtech Filipec](https://github.com/vojtech-filipec) for their great contributions to this update.
+
 # heemod 0.5.1
 
 ## Bugfixes
@@ -9,13 +61,13 @@
 ## Breaking changes
 
   * Some functions were renamed for clarification:
-    * `define_strategy()` <- `define_model()`
-    * `run_model()` <- `run_models()`
-    * `define_transition()` <- `define_matrix()`
-    * `define_dsa()` <- `define_sensitivity()`
-    * `define_psa()` <- `define_distrib()`
-    * `run_dsa()` <- `run_sensitivity()`
-    * `run_psa()` <- `run_probabilistic()`
+    *  `define_model()` => `define_strategy()`
+    *  `run_models()` => `run_model()`
+    *  `define_matrix()` => `define_transition()`
+    *  `define_sensitivity()` => `define_dsa()`
+    *  `define_distrib()` => `define_psa()`
+    *  `run_sensitivity()` => `run_dsa()`
+    *  `run_probabilistic()` => `run_psa()`
 
 ## New features
 
@@ -39,9 +91,6 @@
   * `look_up()` to look up values from external data.
   * Added option to pool female and male mortality rates in WHO data.
   * Counting method now defaults to life-table.
-  
-## Enhancements
-
   * `plot_sensitivity()` now plots by default the widest bar on top.
   * Convenience functions for converting rates to probabilities.
   * Models can be run without state values, to compute counts only.
@@ -57,7 +106,7 @@
 
   * _really_ fixed problem when the argument to `discount()` was not defined as a parameter.
   
-## Changes
+## Backend changes
 
   * `eval_model_newdata()`, the function behind resampling and sensitivity analysis now returns list-variables.
   
@@ -69,51 +118,51 @@
 
 ## New features
 
-  * added a vignette to exactly reproduce results from Decision Modelling for Health Economic Evaluation.
+  * Added a vignette to exactly reproduce results from Decision Modelling for Health Economic Evaluation.
 
 ## Bug fixes
 
-  * fixed problem when argument to `discount()` was not defined as a parameter.
-  * corrected several errors in the vignettes (thanks to Michael Schenkenberg from SBU, Stockholm, Sweden).
-  * updated mortality rate tests to reflect GHO database update.
+  * Fixed problem when argument to `discount()` was not defined as a parameter.
+  * Corrected several errors in the vignettes (thanks to [Michael Schenkenberg](https://github.com/MichaelSvm) from SBU, Stockholm, Sweden).
+  * Updated mortality rate tests to reflect GHO database update.
 
 # heemod 0.3.2
 
 ## Bug fixes
 
-  * fix mishandling of matrix index with `C` in `eval_matrix()` (thanks to @MattWiener).
-  * fix problem with upcoming version of `tidyr`.
+  * Fix mishandling of matrix index with `C` in `eval_matrix()` (thanks to [Matthew Wiener](https://github.com/MattWiener)).
+  * Fix problem with upcoming version of `tidyr`.
 
 # heemod 0.3.1
 
-## Changes
+## Backend changes
 
-  * a single set of parameters is now used for a set of models.
+  * A single set of parameters is now used for a set of models.
 
-# Bug fixes
+## Bug fixes
 
-  * correct error in probabilistic analysis vignette.
-  * fix incompatibility with upcoming dplyr update.
+  * Correct error in probabilistic analysis vignette.
+  * Fix incompatibility with upcoming `dplyr` update.
 
 # heemod 0.3.0
 
-## Enhancements
+## New features
 
   * `shiny` interface.
-  * added support for different counting options.
+  * Added support for different counting options.
   * `get_who_mr()` to extract mortality rates from WHO data.
 
 # heemod 0.2.0
 
-## Enhancements
+## New features
 
-  * added ability to plot matrix.
-  * added framework for probabilistic uncertainty analysis.
-  * written vignette for probabilistic and sensitivity analysis.
-  * added complement alias for matrix definition.
+  * Added ability to plot matrix.
+  * Added framework for probabilistic uncertainty analysis.
+  * Written vignette for probabilistic and sensitivity analysis.
+  * Added complement alias for matrix definition.
   * `run_*` functions now output a single table instead of a list of tables.
-  * variables corresponding to cost and effect must now be specified in `run_models()`.
-  * plotting for sensitivity and probabilistic analysis.
+  * Variables corresponding to cost and effect must now be specified in `run_models()`.
+  * Plotting for sensitivity and probabilistic analysis.
   
 ## Bug fixes
 
@@ -122,8 +171,8 @@
 ## Removed
 
   * `run_model_newdata()` cannot run `uneval_model` anymore.
-  * removed need to use `define_state_list()`.
+  * Removed need to use `define_state_list()`.
 
 # heemod 0.1.0
 
-  * intial CRAN submission.
+  * Intial CRAN submission.

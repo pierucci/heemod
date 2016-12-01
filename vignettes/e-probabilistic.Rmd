@@ -133,7 +133,7 @@ Strategies must be first defined and run as in a standard deterministic analysis
 
 ```{r}
 strat_mono <- define_strategy(
-  transition_matrix = mat_trans_mono,
+  transition = mat_trans_mono,
   A_mono,
   B_mono,
   C_mono,
@@ -141,7 +141,7 @@ strat_mono <- define_strategy(
 )
 
 strat_comb <- define_strategy(
-  transition_matrix = mat_trans_comb,
+  transition = mat_trans_comb,
   A_comb,
   B_comb,
   C_comb,
@@ -219,6 +219,13 @@ pm <- run_psa(
 )
 ```
 
+The average results are computed. In theory these values are more accurate than simple estimates because of non-linearities. An optional `threshold` can be passed to `summary()` to compute net monetary benefit.
+
+```{r}
+summary(pm, 
+        threshold = c(1000, 5000, 6000, 1e4))
+```
+
 The results of the analysis can be plotted on the cost-effectiveness plane. We can see there seem to be little uncertainty on the costs compared to the uncertainty on the effects, resulting in an uncertainty cloud that looks like a line.
 
 ```{r, fig.width = 6, fig.height=4, fig.align='center'}
@@ -228,7 +235,13 @@ plot(pm, type = "ce")
 And as cost-effectiveness acceptability curves:
 
 ```{r, fig.width = 6, fig.align='center'}
-plot(pm, type = "ac", values = seq(0, 25e3, 1e3))
+plot(pm, type = "ac", max_wtp = 10000, log_scale = FALSE)
+```
+
+A covariance analysis can be performed:
+
+```{r, fig.width = 6, fig.height = 4, fig.align='center'}
+plot(pm, type = "cov")
 ```
 
 As usual plots can be modified with the standard `ggplot2` syntax.
@@ -246,3 +259,12 @@ plot(pm, type = "ce") +
   theme_minimal()
 ```
 
+## Parallel computing
+
+Resampling can be significantly sped up by using parallel computing. This can be done in the following way:
+
+  * Define a cluster with the `use_cluster()` functions (i.e. `use_cluster(4)` to use 4 cores).
+  * Run the analysis as usual.
+  * To stop using parallel computing use the `close_cluster()` function.
+  
+Results may vary depending on the machine, but we found speed gains to be quite limited beyond 4 cores.

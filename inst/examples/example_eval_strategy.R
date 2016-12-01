@@ -8,12 +8,12 @@ mat <- define_transition(
 )
 
 mod <- define_strategy(
-  transition_matrix = mat,
+  transition = mat,
   A = define_state(cost = 10),
   B = define_state(cost = 2)
 )
 
-heemod:::eval_model(
+heemod:::eval_strategy(
   mod,
   param,
   init = c(10, 5),

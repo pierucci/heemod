@@ -120,6 +120,7 @@ Models specified by tabular input will run with defaults options. The following 
   * `base`: name of base model.
   * `cycles`: run the model for how many cycles?
   * `n`: number of resample for PSA.
+  * `num_core`: number of cluster cores.
 
 ```{r echo = FALSE}
 heemod:::read_file(system.file("tabular/thr/THR_options.csv", package = "heemod")) %>% 
@@ -144,8 +145,7 @@ result$model_runs
 plot(result$psa,
      type = "ce")
 plot(result$dsa,
-     type = "difference",
-     result = "icer",
-     model = "new")
+     result = "cost",
+     strategy = "new")
 result$demographics
 ```

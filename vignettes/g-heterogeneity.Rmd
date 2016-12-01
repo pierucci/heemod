@@ -46,7 +46,8 @@ param <- define_parameters(
     
     # age-related mortality rate
     sex_cat = ifelse(sex == 0, "FMLE", "MLE"),
-    mr = get_who_mr(age, sex_cat, country = "GBR"),
+    mr = get_who_mr(age, sex_cat,
+                    country = "GBR", local = TRUE),
     
     # state values
     u_SuccessP = .85,
@@ -86,7 +87,7 @@ mat_np1 <- define_transition(
 )
 
 mod_standard <- define_strategy(
-  transition_matrix = mat_standard,
+  transition = mat_standard,
   PrimaryTHR = define_state(
     utility = 0,
     cost = 394
@@ -110,7 +111,7 @@ mod_standard <- define_strategy(
 )
 
 mod_np1 <- define_strategy(
-  transition_matrix = mat_np1,
+  transition = mat_np1,
   PrimaryTHR = define_state(
     utility = 0,
     cost = 579
@@ -170,7 +171,7 @@ tab_indiv_w <- tibble::tibble(
 )
 ```
 
-For this example we will use the characteristics of `r N` individuals, with varying sex and age:
+For this example we will use the characteristics of `r N` individuals, with varying sex and age, specified in the data frame `tab_indiv`:
 
 ```{r, fig.align='center', fig.height=4, fig.width=6}
 tab_indiv
@@ -196,18 +197,26 @@ The `summary()` method reports summary statistics for cost, effect and ICER, as 
 summary(res_h)
 ```
 
-The variation of the incremental differences in cost, effect or ICER can then be plotted.
+The variation of cost or effect can then be plotted.
 
 ```{r, fig.align='center', fig.height=4, fig.width=6}
-plot(res_h, type = "icer", model = "np1", binwidth = 500)
-plot(res_h, type = "effect", model = "np1", binwidth = 50)
-plot(res_h, type = "cost", model = "np1", binwidth = 25000)
+plot(res_h, result = "effect", binwidth = 5)
+plot(res_h, result = "cost", binwidth = 50)
+```
+
+```{r, fig.align='center', fig.height=4, fig.width=6}
+plot(res_h, result = "icer", type = "difference",
+     binwidth = 500)
+plot(res_h, result = "effect", type = "difference",
+     binwidth = .1)
+plot(res_h, result = "cost", type = "difference",
+     binwidth = 30)
 ```
 
 The results from the combined model can be plotted similarly to the results from `run_model()`.
 
 ```{r, fig.align='center', fig.height=4, fig.width=6}
-plot(res_h, type = "counts", model = "np1")
+plot(res_h, type = "counts")
 ```
 
 ## Weighted results
@@ -220,3 +229,12 @@ res_w <- update(res_mod, newdata = tab_indiv_w)
 res_w
 ```
 
+## Parallel computing
+
+Updating can be significantly sped up by using parallel computing. This can be done in the following way:
+
+  * Define a cluster with the `use_cluster()` functions (i.e. `use_cluster(4)` to use 4 cores).
+  * Run the analysis as usual.
+  * To stop using parallel computing use the `close_cluster()` function.
+  
+Results may vary depending on the machine, but we found speed gains to be quite limited beyond 4 cores.

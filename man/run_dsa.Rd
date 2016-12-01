@@ -7,12 +7,14 @@
 \usage{
 run_sensitivity(model, sensitivity)
 
-run_dsa(model, sensitivity)
+run_dsa(model, dsa)
 }
 \arguments{
-\item{model}{An evaluated Markov model}
+\item{model}{An evaluated Markov model.}
 
-\item{sensitivity}{An object returned by 
+\item{sensitivity}{Deprecated, use \code{dsa} instead.}
+
+\item{dsa}{An object returned by 
 \code{\link{define_dsa}}.}
 }
 \value{
@@ -29,34 +31,34 @@ param <- define_parameters(
   r = .05
 )
 mod1 <- define_strategy(
-    transition_matrix = define_transition(
-      C, p1,
-      p2, C
-    ),
-    define_state(
-      cost = discount(543, r),
-      ly = 1
-    ),
-    define_state(
-      cost = discount(432, r),
-      ly = .5
-    )
+  transition = define_transition(
+    C, p1,
+    p2, C
+  ),
+  define_state(
+    cost = discount(543, r),
+    ly = 1
+  ),
+  define_state(
+    cost = discount(432, r),
+    ly = .5
   )
+)
 
 mod2 <- define_strategy(
-    transition_matrix = define_transition(
-      C, p1,
-      p2, C
-    ),
-    define_state(
-      cost = 789,
-      ly = 1
-    ),
-    define_state(
-      cost = 456,
-      ly = .8
-    )
+  transition = define_transition(
+    C, p1,
+    p2, C
+  ),
+  define_state(
+    cost = 789,
+    ly = 1
+  ),
+  define_state(
+    cost = 456,
+    ly = .8
   )
+)
 
 res2 <- run_model(
   mod1, mod2,
@@ -77,7 +79,6 @@ print(ds)
 x <- run_dsa(res2, ds)
 
 plot(x, value = "cost")
-plot(x, value = "icer", type = "difference", model = 2)
 
 # can be specified as a function of other parameters
 

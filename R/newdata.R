@@ -12,43 +12,87 @@
 #' @param model Name or index of model to recompute.
 #' @param newdata a data.frame whose names match parameters 
 #'   names. \code{model} will be evaluated iteratively, 
-#'   taking successivel values from each row.
+#'   taking successive values from each row.
 #'   
 #' @return A data.frame containing the values of 
 #'   \code{newdata} and each Markov Model evaluation in 
 #'   \code{res}.
 #'   
-#' @example inst/examples/example_eval_model_newdata.R
+#' @example inst/examples/example_eval_strategy_newdata.R
 #'   
 #' @keywords internal
-eval_model_newdata <- function(x, model = 1, newdata) {
-  check_model_index(x = x, i = model)
+eval_strategy_newdata <- function(x, strategy = 1, newdata) {
+  check_strategy_index(x = x, i = strategy)
   
-  cycles <- attr(x, "cycles")
-  init <- attr(x, "init")
-  method <- attr(x, "method")
-  old_parameters <- attr(x, "parameters")
-  uneval_model <- attr(x, "uneval_model_list")[[model]]
+  cycles <- get_cycles(x)
+  init <- get_init(x)
+  method <- get_method(x)
+  old_parameters <- get_parameters(x)
+  uneval_strategy <- x$uneval_strategy_list[[strategy]]
   
-  newdata %>% 
-    dplyr::rowwise() %>% 
-    dplyr::do_(
-      .mod = ~ eval_newdata(
-        .,
-        model = uneval_model,
-        old_parameters = old_parameters,
-        cycles = cycles,
-        init = init,
-        method = method
-      )
-    ) %>% 
-    dplyr::ungroup() %>% 
-    dplyr::bind_cols(
-      newdata
+  if (status_cluster(verbose = FALSE)) {
+    cl <- get_cluster()
+    
+    num_cores <- length(cl)
+    
+    message(paste("Using a cluster with", num_cores, "cores."))
+    
+    split_vec <- rep(1:num_cores, each = nrow(newdata) %/% num_cores)
+    split_vec <- c(split_vec, rep(num_cores, nrow(newdata) %% num_cores))
+    
+    pnewdata <- split(newdata, split_vec)
+    parallel::clusterExport(
+      cl, 
+      c("uneval_strategy", "old_parameters", "pnewdata", 
+        "cycles", "init", "method"),
+      envir = environment()
     )
+    
+    pieces <- parallel::parLapply(cl, pnewdata, function(newdata) {
+      
+      newdata %>% 
+        dplyr::rowwise() %>% 
+        dplyr::do_(
+          .mod = ~ eval_newdata(
+            .,
+            strategy = uneval_strategy,
+            old_parameters = old_parameters,
+            cycles = cycles,
+            init = init,
+            method = method
+          )
+        ) %>% 
+        dplyr::ungroup() %>% 
+        dplyr::bind_cols(
+          newdata
+        )
+    })
+    res <- do.call("rbind", pieces)
+    rownames(res) <- NULL
+    
+  } else {
+    res <- newdata %>% 
+      dplyr::rowwise() %>% 
+      dplyr::do_(
+        .mod = ~ eval_newdata(
+          .,
+          strategy = uneval_strategy,
+          old_parameters = old_parameters,
+          cycles = cycles,
+          init = init,
+          method = method
+        )
+      ) %>% 
+      dplyr::ungroup() %>% 
+      dplyr::bind_cols(
+        newdata
+      )
+    
+  }
+  res
 }
 
-eval_newdata <- function(new_parameters, model, old_parameters,
+eval_newdata <- function(new_parameters, strategy, old_parameters,
                          cycles, init, method) {
   
   new_parameters <- Filter(
@@ -63,8 +107,8 @@ eval_newdata <- function(new_parameters, model, old_parameters,
     lazy_new_param
   )
   
-  eval_model(
-    model = model,
+  eval_strategy(
+    strategy = strategy,
     parameters = parameters,
     cycles = cycles,
     init = init,

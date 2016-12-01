@@ -8,7 +8,7 @@ mat1 <- define_transition(
   0, 1
 )
 mod1 <- define_strategy(
-  transition_matrix = mat1,
+  transition = mat1,
   define_state(var = a),
   define_state(var = a * markov_cycle)
 )
@@ -25,7 +25,7 @@ new_tab <- data.frame(
   a = 1:10
 )
 
-heemod:::eval_model_newdata(
+heemod:::eval_strategy_newdata(
   res1,
   newdata = new_tab
 )

@@ -29,8 +29,8 @@
 #'   
 #' @export
 run_model_tabular <- function(location, reference = "REFERENCE.csv",
-                               run_psa = TRUE, run_demo = TRUE,
-                               save = FALSE, overwrite = FALSE) {
+                              run_psa = TRUE, run_demo = TRUE,
+                              save = FALSE, overwrite = FALSE) {
   
   inputs <- gather_model_info(location, reference)
   outputs <- eval_models_from_tabular(inputs,
@@ -170,6 +170,7 @@ eval_models_from_tabular <- function(inputs,
                                      run_demo = TRUE) {
   
   if (options()$heemod.verbose) message("* Running files...")
+  
   list_args <- c(
     inputs$models,
     list(
@@ -187,6 +188,11 @@ eval_models_from_tabular <- function(inputs,
     function(x) ! is.null(x),
     list_args
   )
+  
+  
+  if (! is.null(inputs$model_options$num_cores)) {
+    use_cluster(inputs$model_options$num_cores)
+  }
   
   if (options()$heemod.verbose) message("** Running models...")
   model_runs <- do.call(
@@ -217,6 +223,10 @@ eval_models_from_tabular <- function(inputs,
   if (! is.null(inputs$demographic_file) & run_demo) {
     if (options()$heemod.verbose) message("** Running demographic analysis...")
     demo_res <- stats::update(model_runs, inputs$demographic_file)
+  }
+  
+  if(! is.null(inputs$model_options$num_cores)) {
+    close_cluster()
   }
   
   list(
@@ -576,7 +586,8 @@ create_parameters_from_tabular <- function(param_defs,
 create_options_from_tabular <- function(opt) {
   
   allowed_opt <- c("cost", "effect", "init",
-                   "method", "base", "cycles", "n")
+                   "method", "base", "cycles", "n",
+                   "num_cores")
   if(! inherits(opt, "data.frame"))
     stop("'opt' must be a data frame.")
   
@@ -618,6 +629,9 @@ create_options_from_tabular <- function(opt) {
   if (! is.null(res$effect)) {
     res$effect <- parse(text = res$effect)[[1]]
   }
+  if (! is.null(res$num_cores)){
+    res$num_cores <- parse(text = res$num_cores)[[1]]
+  }
   if (options()$heemod.verbose) message(paste(
     names(res), unlist(res), sep = " = ", collapse = "\n"
   ))
@@ -655,7 +669,7 @@ create_model_from_tabular <- function(state_file,
   TM <- create_matrix_from_tabular(tm_file, get_state_names(states),
                                    df_env = df_env)
   
-  define_strategy_(transition_matrix = TM, states = states)
+  define_strategy_(transition = TM, states = states)
 }
 
 #' Load Data From a Folder Into an Environment
@@ -962,7 +976,7 @@ save_outputs <- function(outputs, output_dir, overwrite) {
   
   all_counts <- 
     do.call("rbind",
-            lapply(get_model_names(outputs$model_runs),
+            lapply(get_strategy_names(outputs$model_runs),
                    function(this_name){
                      data.frame(.model = this_name,
                                 get_counts(outputs$model_runs, m = this_name))
@@ -978,7 +992,7 @@ save_outputs <- function(outputs, output_dir, overwrite) {
   
   all_values <- 
     do.call("rbind",
-            lapply(get_model_names(outputs$model_runs),
+            lapply(get_strategy_names(outputs$model_runs),
                    function(this_name){
                      data.frame(.model = this_name,
                                 get_values(outputs$model_runs, m = this_name))
@@ -1005,38 +1019,32 @@ save_outputs <- function(outputs, output_dir, overwrite) {
     row.names = FALSE
   )
   
-    
+  
   
   ## plots about individual models
-  model_names <- names(outputs$models)
   
   if (options()$heemod.verbose) message("** Generating plots for individual models...")
-  for(this_model in model_names){
-    this_plot <- plot(outputs$model_runs, model = this_model)
-    this_file <- paste("state_count_plot", this_model, sep = "_")
-    save_graph(this_plot, output_dir, this_file)
-    
-    this_plot <- plot(outputs$dsa, model = this_model)
-    this_file <- paste("dsa", this_model, sep = "_")
-    save_graph(this_plot, output_dir, this_file)
-  }
+  this_plot <- plot(outputs$model_runs)
+  this_file <- "state_count_plot"
+  save_graph(this_plot, output_dir, this_file)
   
-  base_model <- get_base_model(outputs$model_runs)
+  this_plot <- plot(outputs$dsa)
+  this_file <- "dsa"
+  save_graph(this_plot, output_dir, this_file)
+  
   
   ## plots about differences between models
   if (options()$heemod.verbose) message("** Generating plots with model differences...")
-  for(this_model in setdiff(model_names, base_model)){
-    this_plot <- plot(outputs$dsa, type = "diff", model = this_model)
-    this_file <- paste("dsa", this_model, "vs", base_model, sep = "_")
-    save_graph(this_plot, output_dir, this_file)
-    
-    if(!is.null(outputs$psa)){
-      this_plot <- plot(outputs$psa, model = this_model)
-      this_file <- paste("psa", this_model, "vs", base_model, sep = "_")
-      save_graph(this_plot, output_dir, this_file)
-    }
-  }
+  
+  this_plot <- plot(outputs$dsa, type = "difference")
+  this_file <- "dsa_diff"
+  
+  save_graph(this_plot, output_dir, this_file)
+  
   if(!is.null(outputs$psa)){
+    this_plot <- plot(outputs$psa)
+    this_file <- paste("psa")
+    save_graph(this_plot, output_dir, this_file)
     ## acceptability curve
     if (options()$heemod.verbose) message("** Generating acceptability curve...")
     this_plot <- plot(outputs$psa, type = "ac")

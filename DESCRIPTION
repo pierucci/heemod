@@ -1,6 +1,6 @@
 Package: heemod
 Title: Models for Health Economic Evaluation
-Version: 0.5.1
+Version: 0.7.1
 Authors@R: c(
     person("Antoine", "Filipovic-Pierucci", email = "pierucci@gmail.com", role = c("aut", "cre")),
     person("Kevin", "Zarca", email = "kevin.zarca@urc-eco.fr", role = "aut"),
@@ -15,7 +15,7 @@ Description: Health Economic Evaluation Modelling.
 Depends: R (>= 3.2.2)
 Imports:  diagram,
           dplyr,
-          ggplot2,
+          ggplot2 (>= 2.2.0),
           graphics,
           grDevices,
           Hmisc,
@@ -24,7 +24,6 @@ Imports:  diagram,
           memoise,
           mvnfast,
           pryr,
-          readr,
           rgho,
           stats,
           tibble,
@@ -36,9 +35,11 @@ LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
 Suggests: knitr,
+          parallel,
           formatR,
+          mgcv,
           readxl,
           rmarkdown,
           testthat
-URL: https://github.com/pierucci/heemod, https://pierucci.github.io
+URL: https://github.com/pierucci/heemod, https://pierucci.org
 BugReports: https://github.com/pierucci/heemod/issues

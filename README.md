@@ -26,11 +26,13 @@ devtools::install_github("pierucci/heemod@devel")
   * Time-varying transition probabilities.
   * Time-varying values attached to states.
   * Microsimulation-like models.
-  * Probabilistic uncertainty analysis.
-  * Deterministic sensitivity analysis.
+  * Probabilistic uncertainty analysis (PSA).
+  * Covariance analysis for PSA.
+  * Deterministic sensitivity analysis (DSA).
   * Multiple state membership correction methods (life-table, half-cycle, etc.).
   * Demographic analysis to compute population-level results.
   * Heterogeneity analysis.
+  * Parallel computing support.
 
 ## Learning heemod
 
@@ -47,7 +49,7 @@ Specific analysis examples (mostly inspired from [Decision Modelling for Health 
 
 ## Devs
 
-[Kevin Zarca](http://www.urc-eco.fr/Kevin-ZARCA,402) and [Antoine Filipović-Pierucci](https://pierucci.github.io/).
+[Kevin Zarca](http://www.urc-eco.fr/Kevin-ZARCA,402) and [Antoine Filipović-Pierucci](https://pierucci.org).
 
 <h1 align="center">
 <a href="http://www.urc-eco.fr">

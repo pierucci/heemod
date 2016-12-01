@@ -4,59 +4,136 @@
 #' 
 #' \code{type = "ac"} plots cost-effectiveness acceptability
 #' curves, \code{type = "ce"} plots results on the 
-#' cost-efficiency plane.
+#' cost-efficiency plane, \code{type = "cov"} to perform
+#' covariance analysis on the results.
 #' 
 #' @param x Result from \code{\link{run_model}}.
 #' @param type Type of plot, see details.
-#' @param values Values for CEAC.
+#' @param max_wtp Maximal willingness to pay.
+#' @param n Number of CECA points to estimate (values above
+#'   100 may take significant time).
+#' @param log_scale Show willingness to pay on a log scale?
+#' @param bw Black & white plot for publications?
 #' @param ... Additional arguments passed to \code{plot}.
 #'   
 #' @return A \code{ggplot2} object.
 #' @export
 #' 
-plot.probabilistic <- function(x, type = c("ce", "ac"),
-                               values = seq(0, 1e5, 1e3), ...) {
+plot.psa <- function(x, type = c("ce", "ac", "cov"),
+                     max_wtp = 1e5,
+                     n = 100, log_scale = TRUE,
+                     bw = FALSE, ...) {
   type <- match.arg(type)
   
   switch(
     type,
     ce = {
-      tab <- normalize_ce(x)
-      ggplot2::ggplot(data = tab,
-                      ggplot2::aes_string(
-                        x = ".effect",
-                        y = ".cost",
-                        colour = ".model_names")) +
+      tab <- scale(x)
+      res <- ggplot2::ggplot(data = tab,
+                             ggplot2::aes_string(
+                               x = ".effect",
+                               y = ".cost",
+                               colour = ".strategy_names")) +
         ggplot2::geom_point() +
         ggplot2::scale_colour_hue(name = "Model") +
         ggplot2::xlab("Incremental effect") +
         ggplot2::ylab("Incremental cost")
+      
+      if (bw) {
+        res <- res +
+          ggplot2::scale_color_grey(start = 0, end = .8,
+                                    name = "Strategy") +
+          theme_pub_bw()
+      }
+      
+      res
     },
     ac = {
-      tab <- acceptability_curve(x, values)
-      ggplot2::ggplot(tab, 
-                      ggplot2::aes_string(
-                        x = ".ceac",
-                        y = ".p",
-                        colour = ".model")) +
+      values <- generate_wtp(max_wtp = max_wtp,
+                             n = n, log_scale = log_scale)
+      tab <- acceptability_curve(x$psa, values)
+      
+      res <- ggplot2::ggplot(tab, 
+                             ggplot2::aes_string(
+                               x = ".ceac",
+                               y = ".p",
+                               colour = ".strategy_names")) +
         ggplot2::geom_line() +
         ggplot2::ylim(0, 1) +
-        ggplot2::scale_colour_hue(name = "Model") +
+        ggplot2::scale_colour_hue(name = "Strategy") +
         ggplot2::xlab("Willingness to pay") +
         ggplot2::ylab("Probability of cost-effectiveness")
+      
+      if (log_scale) {
+        res <- res +
+          ggplot2::scale_x_log10()
+      }
+      
+      if (bw) {
+        res <- res +
+          ggplot2::scale_color_grey(start = 0, end = .8,
+                                    name = "Strategy") +
+          theme_pub_bw()
+      }
+      
+      res
+    },
+    cov = {
+      tab <- compute_cov(x) %>% 
+        dplyr::mutate_(
+          .prop = ~ .prop * 100
+        )
+      
+      ggplot2::ggplot(
+        tab,
+        ggplot2::aes_string(".par_names", ".prop")) +
+        ggplot2::geom_col() +
+        ggplot2::facet_grid(.result ~ .strategy_names) +
+        ggplot2::xlab("Parameter") +
+        ggplot2::ylab("Variance explained (%)") +
+        ggplot2::coord_flip()
     },
     stop("Unknown plot type."))
 }
 
-normalize_ce.probabilistic <- function(x) {
-  .bm <- get_base_model(x)
+#' @rdname heemod_scale
+scale.psa <- function(x, center = TRUE, scale = TRUE) {
+  .bm <- get_central_strategy(x)
   
-  n_ind <- sum(get_init(attr(x, "model")))
+  res <- x$psa
   
-  x %>% 
-    dplyr::group_by_(".index") %>% 
-    dplyr::mutate_(
-      .cost = ~ (.cost - sum(.cost * (.model_names == .bm))) / n_ind,
-      .effect = ~ (.effect - sum(.effect * (.model_names == .bm))) / n_ind
-    )
+  if (scale) {
+    res <- res %>% 
+      dplyr::mutate_(
+        .cost = ~ .cost / sum(get_init(get_model(x))),
+        .effect = ~ .effect / sum(get_init(get_model(x)))
+      )
+  }
+  
+  if (center) {
+    res <- res %>% 
+      dplyr::group_by_(".index") %>% 
+      dplyr::mutate_(
+        .cost = ~ (.cost - sum(.cost * (.strategy_names == .bm))),
+        .effect = ~ (.effect - sum(.effect * (.strategy_names == .bm)))
+      ) %>% 
+      dplyr::ungroup()
+  }
+  
+  res
+}
+
+#' @export
+summary.psa <- function(object, threshold = NULL, ...) {
+  summary.run_model(object = object, threshold = threshold, ...)
+}
+
+#' @export
+print.psa <- function(x, ...) {
+  cat(sprintf(
+    "A PSA with %i resamplings.\n\n",
+    x$N
+  ))
+  
+  print(summary(x), ...)
 }

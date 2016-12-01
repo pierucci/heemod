@@ -645,7 +645,7 @@ test_that(
     
     expect_output(
       print(result$model_runs),
-      "new -223.3065 0.04426563 -5044.693",
+      "-223.3065   0.04426563 -5044.693",
       fixed = TRUE
     )
     
@@ -664,7 +664,7 @@ test_that(
     plot(result$demographics, type = "counts")
     plot(result$demographics, type = "values", value = "cost")
     plot(result$demographics, type = "values", 
-         value = c("cost", "qaly"), panels = "by_value")
+         value = c("cost", "qaly"), panels = "by_value", free_y = TRUE)
     
   }
 )
