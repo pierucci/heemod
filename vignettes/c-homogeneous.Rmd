@@ -203,7 +203,7 @@ summary(res_mod,
         threshold = c(1000, 5000, 6000, 1e4))
 ```
 
-The incremental cost-effectiveness ratio of the combiend therapy strategy is thus £5,100 per life-year gained.
+The incremental cost-effectiveness ratio of the combined therapy strategy is thus £`r round(summary(res_mod)$res_comp$.icer[2])` per life-year gained.
 
 The counts per state can be plotted by model:
 
