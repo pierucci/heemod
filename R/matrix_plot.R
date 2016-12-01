@@ -45,6 +45,9 @@ print.eval_matrix <- function(x, ...) {
 plot.uneval_matrix <- function(x, relsize = .75,
                                shadow.size = 0,
                                latex = TRUE, ...) {
+  if (! requireNamespace("diagram")) {
+    stop("'diagram' package required for transition plot.")
+  }
   op <- graphics::par(mar = c(0, 0, 0, 0))
   res <- to_char_uneval_matrix(x)
   diagram::plotmat(

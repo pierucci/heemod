@@ -1,6 +1,6 @@
 Package: heemod
 Title: Models for Health Economic Evaluation
-Version: 0.6.0
+Version: 0.7.1
 Authors@R: c(
     person("Antoine", "Filipovic-Pierucci", email = "pierucci@gmail.com", role = c("aut", "cre")),
     person("Kevin", "Zarca", email = "kevin.zarca@urc-eco.fr", role = "aut"),
@@ -13,18 +13,14 @@ Description: Health Economic Evaluation Modelling.
   for health economic evaluation. Model comparison,
   sensitivity and probabilistic analysis.
 Depends: R (>= 3.2.2)
-Imports:  diagram,
-          dplyr,
-          ggplot2,
+Imports:  dplyr,
+          ggplot2 (>= 2.2.0),
           graphics,
           grDevices,
-          Hmisc,
           lazyeval,
-          logitnorm,
           memoise,
           mvnfast,
           pryr,
-          readr,
           rgho,
           stats,
           tibble,
@@ -35,9 +31,13 @@ License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
-Suggests: knitr,
+Suggests: diagram,
+          Hmisc,
+          knitr,
+          logitnorm,
           parallel,
           formatR,
+          mgcv,
           readxl,
           rmarkdown,
           testthat

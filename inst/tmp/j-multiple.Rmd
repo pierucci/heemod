@@ -1,0 +1,159 @@
+---
+title: "Results with more than 2 Strategies"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Results with more than 2 Strategies}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r, echo=FALSE, include=FALSE}
+library(heemod)
+library(ggplot2)
+```
+
+We define some strategies.
+
+```{r}
+sA <- define_state(
+  cost = 1,
+  ut = 1
+)
+sA2 <- define_state(
+  cost = c1,
+  ut = 1
+)
+sAmax <- define_state(
+  cost = c1+.5,
+  ut = 1.01
+)
+sAmaxx <- define_state(
+  cost = c1 + 1,
+  ut = 1.01
+)
+sAmaxx2 <- define_state(
+  cost = c1 + .6,
+  ut = 1.05
+)
+sB <- define_state(
+  cost = 0,
+  ut = 0
+)
+sX <- define_state(
+  cost = .9,
+  ut = 1.1
+)
+
+param <- define_parameters(
+  rrII = .8,
+  rrIII = .7,
+  c1 = 1
+)
+
+mI <- define_transition(
+  C, .5,
+  0, 1
+)
+mII <- define_transition(
+  C, .5 * rrII,
+  0, 1
+)
+mIII <- define_transition(
+  C, .5 * rrIII,
+  0, 1
+)
+sI <- define_strategy(
+  sA, sB,
+  transition = mI
+)
+sII <- define_strategy(
+  sA2, sB,
+  transition = mII
+)
+sIII <- define_strategy(
+  sAmaxx, sB,
+  transition = mII
+)
+sIV <- define_strategy(
+  sAmax, sB,
+  transition = mIII
+)
+sV <- define_strategy(
+  sX, sB,
+  transition = mI
+)
+sVI <- define_strategy(
+  sAmaxx2, sB,
+  transition = mII
+)
+
+res <- run_model(
+  A=sI, C=sII, D=sIII, F=sIV, B=sV, E=sVI,
+  parameters = param,
+  cycles = 10,
+  cost = cost, effect = ut
+)
+```
+
+We can look at the CE plot to understand what is going on:
+
+```{r}
+plot(res, type = "ce") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed")
+```
+
+The efficiency frontier is B, C, F. A is dominated by B, D by F, and E is under extended domination by C and F. By default the plot is centered on B, the strategy at the root at the efficiency frontier. This can be changed with the `central_strategy` argument (this is just an aesthetic change).
+
+```{r}
+plot(run_model(
+  A=sI, C=sII, D=sIII, F=sIV, B=sV, E=sVI,
+  parameters = param,
+  cycles = 10,
+  cost = cost, effect = ut,
+  central_strategy = "A"
+), type = "ce") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed")
+```
+
+We can look at the summary statistics:
+
+```{r}
+res
+```
+
+The *Values* section reports total absolute values. The *Differences* section reports incremental differences. We can see that D, E and F all take C as a reference. We can alos see there is no incremental differences represented for A.
+
+Let us try a PSA:
+
+```{r}
+dpsa <- define_psa(
+  rrII ~ lognormal(.8, .1),
+  rrIII ~ lognormal(.7, .1),
+  c1 ~ normal(1, .1)
+)
+
+use_cluster(4)
+psa <- run_psa(res, dpsa, 1e3)
+close_cluster()
+```
+
+Classic CE plot (the central model depends on the `central_strategy` defined in `run_model()`):
+
+```{r}
+plot(psa) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed")
+```
+
+And PSA:
+
+```{r}
+plot(psa, type = "ac", max_wtp = 200)
+```
+
+

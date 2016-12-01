@@ -16,7 +16,7 @@ run_psa <- function(model, resample, N) {
     ! is.null(N)
   )
   
-  if (! all(c(".cost", ".effect") %in% names(model))) {
+  if (! all(c(".cost", ".effect") %in% names(get_model_results(model)))) {
     stop("No cost and/or effect defined, probabilistic analysis unavailable.")
   }
   
@@ -24,14 +24,14 @@ run_psa <- function(model, resample, N) {
   
   list_res <- list()
   
-  for (n in get_model_names(model)) {
-    message(sprintf("Resampling model '%s'...", n))
+  for (n in get_strategy_names(model)) {
+    message(sprintf("Resampling strategy '%s'...", n))
     list_res <- c(
       list_res,
       list(
-        eval_model_newdata(
+        eval_strategy_newdata(
           x = model,
-          model = n,
+          strategy = n,
           newdata = newdata) %>% 
           dplyr::rowwise() %>% 
           dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
@@ -41,27 +41,70 @@ run_psa <- function(model, resample, N) {
     )
   }
   
-  names(list_res) <- get_model_names(model)
+  names(list_res) <- get_strategy_names(model)
   index <- seq_len(N)
   
   for (n in names(list_res)) {
-    list_res[[n]]$.model_names <- n
+    list_res[[n]]$.strategy_names <- n
     list_res[[n]]$.index <- index
   }
   
   res <- Reduce(dplyr::bind_rows, list_res)
   
-  res <- dplyr::mutate_(res, .dots = attr(model, "ce"))
+  res <- dplyr::mutate_(res, .dots = get_ce(model))
+  
+  run_model <- res %>% 
+    dplyr::select_(~ - .index) %>% 
+    dplyr::group_by_(".strategy_names") %>%
+    dplyr::summarise_all(mean) %>% 
+    as.data.frame()
   
   structure(
-    res, 
-    class = c("probabilistic", class(res)),
-    model = model
+    list(
+      psa = res,
+      run_model = run_model[! names(run_model) %in% names(newdata)],
+      model = model,
+      N = N,
+      resamp_par = names(newdata)
+    ),
+    class = c("psa", class(res))
   )
 }
 
-get_base_model.probabilistic <- function(x, ...) {
-  get_base_model(attr(x, "model"))
+get_model <- function(x) {
+  UseMethod("get_model")
+}
+
+get_model.psa <- function(x) {
+  x$model
+}
+
+get_model_results.psa <- function(x) {
+  x$run_model
+}
+
+get_cycles.psa <- function(x) {
+  get_cycles(get_model(x))
+}
+
+get_init.psa <- function(x) {
+  get_init(get_model(x))
+}
+
+get_method.psa <- function(x) {
+  get_method(get_model(x))
+}
+
+get_central_strategy.psa <- function(x, ...) {
+  get_central_strategy(get_model(x))
+}
+
+get_noncomparable_strategy.psa <- function(x, ...) {
+  get_noncomparable_strategy(summary(x, ...)$res_comp)
+}
+
+get_root_strategy.psa <- function(x, ...) {
+  get_root_strategy(summary(x, ...)$res_comp)
 }
 
 eval_correlation <- function(x, var_names) {
@@ -108,7 +151,7 @@ eval_resample <- function(resample, N) {
   colnames(list_res) <- names(resample$list_qdist)
   res <- as.data.frame(list_res)
   
-  for (f in attr(resample, "multinom")) {
+  for (f in resample$multinom) {
     res <- f(res)
   }
   res

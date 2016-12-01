@@ -68,6 +68,10 @@ r_multinom <- function(n, total) {
 #' @rdname density
 #' @export
 logitnormal <- function(mu, sigma) {
+  if (! requireNamespace("logitnorm")) {
+    stop("'logitnorm' package required for logitnormal distributions.")
+  }
+  
   list(r_logitnormal(mu, sigma))
 }
 r_logitnormal <- function(mu, sigma) {

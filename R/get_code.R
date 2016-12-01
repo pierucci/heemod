@@ -173,16 +173,16 @@ get_code.run_model <- function(x, name = NULL, sub = FALSE,
   
   if (sub) {
     md <- paste(
-      names(attr(x, "uneval_model_list")),
-      make_names(paste0("m_", names(attr(x, "uneval_model_list")))),
+      names(x$uneval_strategy_list),
+      make_names(paste0("m_", names(x$uneval_strategy_list))),
       sep = " = ",
       collapse = ",\n"
     )
   } else {
     
     md <- paste(
-      names(attr(x, "uneval_model_list")),
-      unlist(lapply(attr(x, "uneval_model_list"),
+      names(x$uneval_strategy_list),
+      unlist(lapply(x$uneval_strategy_list,
                     get_code, depth = depth + 1)),
       sep = " = ",
       collapse = ",\n  "
@@ -196,21 +196,21 @@ get_code.run_model <- function(x, name = NULL, sub = FALSE,
       md,
       ",\n  ",
       "parameters = ",
-      get_code(attr(x, "parameters"), depth = depth + 1),
+      get_code(get_parameters(x), depth = depth + 1),
       ",\n  ",
       "init = ",
-      paste0("c(", paste(attr(x, "init"), collapse = ", "), "),\n  ", collapse = ""),
+      paste0("c(", paste(get_init(x), collapse = ", "), "),\n  ", collapse = ""),
       "cycles = ",
-      attr(x, "cycles"),
+      get_cycles(x),
       ",\n  ",
       "method = ",
-      paste0("\"", attr(x, "method"), "\"", sep = ""),
+      paste0("\"", get_method(x), "\"", sep = ""),
       ",\n  ",
       "cost = ",
-      deparse(attr(x, "ce")[[1]]$expr, width.cutoff = 500L),
+      deparse(get_ce(x)[[1]]$expr, width.cutoff = 500L),
       ",\n  ",
       "effect = ",
-      deparse(attr(x, "ce")[[2]]$expr, width.cutoff = 500L),
+      deparse(get_ce(x)[[2]]$expr, width.cutoff = 500L),
       "\n)"
     ), n_pad = depth * n_space),
     class = "heemod_code"

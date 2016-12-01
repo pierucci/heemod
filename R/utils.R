@@ -123,38 +123,42 @@ make_names <- function(x) {
   gsub("\\.+", "_", make.names(tolower(x)))
 }
 
-#' Check Model Index
+#' Check Strategy Index
 #' 
 #' @param x A result from \code{\link{run_model}}.
-#' @param i A model index, character or numeric.
-#' @param allow_multiple logical. Allow multiple model
+#' @param i A strategy index, character or numeric.
+#' @param allow_multiple logical. Allow multiple strategy
 #'   index?
 #'   
-#' @return Nothing, just throws an error if an incorrect
-#'   model index is used.
+#' @return Strategy names.
 #'   
 #' @keywords internal
-check_model_index <- function(x, i, allow_multiple = FALSE) {
+check_strategy_index <- function(x, i, allow_multiple = FALSE) {
   
   if(length(i) != 1 & ! allow_multiple) {
-    stop("Model index must have length 1.")
+    stop("Strategy index must have length 1.")
   }
   
   if (! (is.character(i) | is.numeric(i))) {
-    stop("Model index must be either numeric or character.")
+    stop("Strategy index must be either numeric or character.")
   }
   
-  if (is.numeric(i) & (any(i > get_model_count(x)) | any(i < 1))) {
-    stop(sprintf("Model index out of range [%i - %i].",
-                 1, get_model_count(x)))
+  if (is.numeric(i) & (any(i > get_strategy_count(x)) | any(i < 1))) {
+    stop(sprintf("Strategy index out of range [%i - %i].",
+                 1, get_strategy_count(x)))
   }
   
-  if (is.character(i) & any(! i %in% get_model_names(x))) {
+  if (is.character(i) & any(! i %in% get_strategy_names(x))) {
     stop(sprintf(
-      "Model index is not the name of a model (%s).",
-      paste(get_model_names(x), collapse = " - ")
+      "Strategy index is not the name of a strategy (%s).",
+      paste(get_strategy_names(x), collapse = " - ")
     ))
   }
+  
+  res <- get_strategy_names(x)
+  names(res) <- res
+  
+  res[i]
 }
 
 #' Weighted Summary
@@ -180,6 +184,9 @@ wtd_summary <- function(x, weights = NULL) {
     res <- rep(NA, 6)
     
   } else {
+    if (! requireNamespace("Hmisc")) {
+      stop("'Hmisc' package required to produce weighted summary.")
+    }
     w_mean <- Hmisc::wtd.mean(x, weights = weights)
     w_q <- Hmisc::wtd.quantile(x, weights = weights,
                                probs = c(0, .25, .5, .75, 1))
@@ -323,7 +330,12 @@ get_tm_pos <- function(row, col, n) {
 }
 
 pretty_names <- function(x) {
-  n <- names(x)
+  if (is_matrix <- inherits(x, "matrix")) {
+    n <- colnames(x)
+  } else {
+    n <- names(x)
+  }
+  
   names(n) <- n
   
   ref <- tibble::tibble(
@@ -332,12 +344,19 @@ pretty_names <- function(x) {
              ".icer", ".dref",
              ".model_names"),
     to = c("Cost", "Effect",
-           "\u0394 Cost", "\u0394 Effect",
+           "Cost Diff.", "Effect Diff.",
            "ICER", "Ref.",
            "Strategy")
   ) %>% 
     dplyr::filter_(~ from %in% n)
   
   n[ref$from] <- ref$to
-  stats::setNames(x, n)
+  
+  if (is_matrix) {
+    colnames(x) <- n
+  } else (
+    names(x) <- n
+  )
+  
+  x
 }

@@ -20,11 +20,13 @@ reach_cluster <- local({
   }
 })
 
-get_cluster <- function()
+get_cluster <- function() {
   reach_cluster(operation = "get")
+}
 
-set_cluster <- function(x)
+set_cluster <- function(x) {
   reach_cluster(operation = "set", value = x)
+}
 
 #' Run \code{heemod} on a Cluster
 #' 
@@ -46,17 +48,23 @@ set_cluster <- function(x)
 #' @name cluster
 #' @param num_cores Number of core.
 #' @param cluster A custom cluster. See details.
+#' @param close Close existing cluster before defining a new
+#'   one?
 #' @param verbose Print cluster info.
 #'   
 #' @return \code{use_cluster} and \code{close_cluster} 
-#'   return \code{TRUE} invisibly in case of success.
-#'   \code{status_cluster} returns \code{TRUE} if a cluster
+#'   return \code{TRUE} invisibly in case of success. 
+#'   \code{status_cluster} returns \code{TRUE} if a cluster 
 #'   is defined, \code{FALSE} otherwise.
 #'   
 #' @export
-use_cluster <- function(num_cores, cluster = NULL) {
+use_cluster <- function(num_cores, cluster = NULL, close = TRUE) {
   if (status_cluster(verbose = FALSE)) {
-    stop("A cluster is already defined, use 'close_cluster()' before defining a new cluster.")
+    if (close) {
+      close_cluster()
+    } else {
+      stop("A cluster is already defined, use 'close_cluster()' before defining a new cluster.")
+    }
   }
   
   if (! is.null(cluster)) {
@@ -104,6 +112,11 @@ status_cluster <- function(verbose = TRUE) {
 #' @rdname cluster
 #' @export
 close_cluster <- function() {
+  if (! status_cluster(verbose = FALSE)) {
+    warning("No cluster defined.")
+    return(invisible(FALSE))
+  }
+  
   catch <- try(reach_cluster(operation = "close"))
   
   if (inherits(catch, "try-error")) {

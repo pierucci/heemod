@@ -45,17 +45,17 @@ get_state_value_names.eval_state_list <- function(x){
 #'   
 #' @keywords internal
 discount_hack <- function(.dots) {
-  f <- function (x) {
+  f <- function (x, env) {
     if (is.atomic(x) || is.name(x)) {
       x
     } else if (is.call(x)) {
-      if (identical(x[[1]], quote(discount))) {
+      if (discount_check(x[[1]], env)) {
         x <- pryr::standardise_call(x)
         x$x <- substitute((.x * rep(1, n())), list(.x = x$x))
       }
-      as.call(lapply(x, f))
+      as.call(lapply(x, f, env = env))
     } else if (is.pairlist(x)) {
-      as.pairlist(lapply(x, f))
+      as.pairlist(lapply(x, f, env = env))
     } else {
       stop(sprintf(
         "Don't know how to handle type %s.",
@@ -67,10 +67,25 @@ discount_hack <- function(.dots) {
     lapply(
       .dots,
       function(x) {
-        x$expr <- f(x$expr)
+        x$expr <- f(x$expr, env = x$env)
         x
       }
     ),
     class = "lazy_dots"
   )
+}
+
+# Ensure only heemod version of discount gets used
+discount_check <- function(x, env) {
+  if (identical(x, quote(discount))) {
+    if (identical(environment(eval(x, envir = env)),
+                  environment(run_model))) {
+      TRUE
+    } else {
+      warning("A version of 'discount()' that is not defined by heemod was found.")
+      FALSE
+    }
+  } else {
+    FALSE
+  }
 }

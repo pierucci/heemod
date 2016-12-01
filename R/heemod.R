@@ -49,14 +49,13 @@
 #' @importFrom stats reorder
 #' @importFrom stats na.omit
 #' @importFrom stats update
+#' @importFrom stats as.formula
+#' @importFrom stats var
+#' @importFrom stats coef
 #'   
 #' @importFrom graphics par
 #'   
-#' @importFrom diagram plotmat
-#'   
 #' @importFrom mvnfast rmvn
-#'   
-#' @importFrom logitnorm qlogitnorm
 #'   
 #' @importFrom ggplot2 ggplot
 #' @importFrom ggplot2 geom_bar
@@ -67,6 +66,7 @@
 #' @importFrom ggplot2 ylab
 #' @importFrom ggplot2 aes
 #' @importFrom ggplot2 xlim
+#' @importFrom ggplot2 "%+replace%"
 #'   
 #' @importFrom tidyr gather_
 #'   
@@ -79,10 +79,6 @@
 #' @importFrom utils write.csv
 #'   
 #' @importFrom tools file_ext
-#' 
-#' @importFrom Hmisc wtd.quantile
-#' @importFrom Hmisc wtd.mean
-#' @importFrom Hmisc wtd.var
 #' 
 #' @importFrom grDevices dev.off
 #' @importFrom grDevices cairo_pdf

@@ -203,34 +203,29 @@ test_that(
       summary(run_model(mod1, mod2,
                          parameters = par1))
     )
-    expect_output(
-      str(run_model(mod1, mod2,
-                     parameters = par1, cost = x, effect = y,
-                     method = "beginning")),
-      '2 obs. of  5 variables:
- $ x           : num  309300 933900
- $ y           : num  283300 891300
- $ .model_names: chr  "I" "II"
- $ .cost       : num  309300 933900
- $ .effect     : num  283300 891300',
-      fixed = TRUE
+    expect_equal(
+      run_model(mod1, mod2,
+                parameters = par1, cost = x, effect = y,
+                method = "beginning")$run_model$.cost,
+      c(309300, 933900)
     )
+    
     s_mod <- summary(
       run_model(
         mod1, mod2,
         parameters = par1, cost = x, effect = y,
         method = "beginning"))
-    expect_length(
-      s_mod, 6
+    expect_equal(
+      s_mod$res_values$x, c(309300, 933900)
     )
-    expect_identical(
-      dim(s_mod$res), c(2L, 2L)
+    expect_equal(
+      s_mod$res_comp$.cost, c(0, 624.6)
     )
-    expect_identical(
-      round(s_mod$res$x), c(309300, 933900)
+    expect_equal(
+      round(s_mod$res_comp$.icer, 3)[2], 1.027
     )
-    expect_identical(
-      round(s_mod$res$y), c(283300, 891300)
+    expect_equal(
+      s_mod$frontier, c("I", "II")
     )
     
     res_b <- run_model(mod1, mod2,
@@ -246,26 +241,27 @@ test_that(
                         parameters = par1, cost = x, effect = y,
                         method = "life-table")
     
-    plot(res_b, type = "counts")
-    plot(res_b, type = "values", value = c("x", "y"))
-    plot(res_b, type = "ce")
+    plot(res_b, result = "counts")
+    plot(res_b, result = "values")
+    plot(res_b, result = "ce")
     
-    expect_output(
-      print(res_b),
-      "1.027303"
+    expect_equal(
+      round(summary(res_b)$res_comp$.icer[2], 3),
+      1.027
     )
-    expect_output(
-      print(res_e),
-      "753"
+    expect_equal(
+      round(summary(res_e)$res_comp$.icer[2], 3),
+      1
     )
-    expect_output(
-      print(res_h),
-      "1.016861"
+    expect_equal(
+      round(summary(res_h)$res_comp$.icer[2], 3),
+      1.017
     )
-    expect_output(
-      print(res_l),
-      "1.012197"
+    expect_equal(
+      round(summary(res_l)$res_comp$.icer[2], 3),
+      1.012
     )
+    
     expect_error(
       run_model(mod1, mod2,
                  parameters = par1, cost = x, effect = y,
@@ -275,21 +271,19 @@ test_that(
                      parameters = par1, cost = x, effect = y,
                      cycles = 5)
     expect_equivalent(
-      round(unlist(get_counts(rm, 1))),
-      c(950, 888, 879, 885, 890, 50, 112, 121, 115, 110)
+      round(get_counts(rm, 1)$count),
+      c(950, 888, 879, 885, 890, 950,
+        888, 879, 885, 890, 50, 112, 
+        121, 115, 110, 50, 112, 121, 115, 110)
     )
-    expect_identical(
-      get_counts(rm, 1),
-      get_counts(rm, "I")
-    )
+    
     expect_equivalent(
       get_init(rm),
       c(1000, 0)
     )
     
-    expect_error(plot(rm, include_states = "C"))
     
-    plot(rm, panels = "by_model")
+    plot(rm, panels = "by_strategy")
     plot(rm, panels = "by_state")
   }
 )
@@ -363,9 +357,8 @@ test_that("Discounting", {
   res <- run_model(mod1, mod2, cycles = 10,
                     parameters = par1, cost = x, effect = y,
                     method = "beginning")
-  expect_output(
-    print(res),
-    "II 3292.352 4193.422 0.7851231"
+  expect_equal(
+    round(summary(res)$res_comp$.icer[2], 3), 0.785
   )
   res1 <- run_model(mod1, mod2, cycles = 10,
                      parameters = par1, cost = x, effect = y,
@@ -373,16 +366,14 @@ test_that("Discounting", {
   res2 <- run_model(mod3, mod2, cycles = 10,
                      parameters = par1, cost = x, effect = y,
                      method = "beginning")
-  expect_output(
-    print(res1),
-    "I  3144649 2942952
-II 6437001 7136374"
+  
+  expect_equal(
+    round(summary(res1)$res_comp$.icer[2], 3), 0.785
   )
-  expect_output(
-    print(res2),
-    "I  3144649 2942952
-II 6437001 7136374"
+  expect_equal(
+    round(summary(res2)$res_comp$.icer[2], 3), 0.785
   )
+  
   
   expect_error(
     run_model(mod1, mod4, cycles = 10,
@@ -435,13 +426,13 @@ test_that(
       cost = x, effect = y)
     
     expect_error(
-      heemod:::check_model_index(res, 1:2)
+      heemod:::check_strategy_index(res, 1:2)
     )
     expect_error(
-      heemod:::check_model_index(res, as.factor("I"))
+      heemod:::check_strategy_index(res, as.factor("I"))
     )
     expect_error(
-      heemod:::check_model_index(res, "a")
+      heemod:::check_strategy_index(res, "a")
     )
   }
 )

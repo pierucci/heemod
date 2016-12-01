@@ -4,13 +4,13 @@
 \alias{compute_icer}
 \title{Compute ICER}
 \usage{
-compute_icer(x, model_order = order(x$.effect))
+compute_icer(x, strategy_order = order(x$.effect))
 }
 \arguments{
 \item{x}{Result of \code{\link{run_model}}.}
 
-\item{model_order}{Order in which the models should be
-sorted. Default: by increasing effect.}
+\item{strategy_order}{Order in which the strategies
+should be sorted. Default: by increasing effect.}
 }
 \value{
 A \code{data.frame} with computed ICER.
