@@ -21,6 +21,8 @@
 #' @param method Counting method.
 #' @param expand_limit A named vector of state expansion
 #'   limits.
+#' @param inflow numeric vector, similar to \code{init}.
+#'   Number of new individuals in each state per cycle.
 #'   
 #' @return An \code{eval_strategy} object (actually a list of 
 #'   evaluated parameters, matrix, states and cycles 
@@ -30,7 +32,7 @@
 #'   
 #' @keywords internal
 eval_strategy <- function(strategy, parameters, cycles, 
-                       init, method, expand_limit) {
+                       init, method, expand_limit, inflow) {
   stopifnot(
     cycles > 0,
     length(cycles) == 1,
@@ -88,6 +90,12 @@ eval_strategy <- function(strategy, parameters, cycles,
       rep(0, cycles)
     )
     
+    inflow <- insert(
+      inflow,
+      which(get_state_names(uneval_matrix) %in% to_expand),
+      rep(0, cycles)
+    )
+    
     for (st in to_expand) {
       uneval_matrix <- expand_state(
         x = uneval_matrix,
@@ -112,7 +120,8 @@ eval_strategy <- function(strategy, parameters, cycles,
   count_table <- compute_counts(
     transition = transition,
     init = init,
-    method = method
+    method = method,
+    inflow = inflow
   )
   
   values <- compute_values(states, count_table)
@@ -156,12 +165,14 @@ eval_strategy <- function(strategy, parameters, cycles,
 #'   model states. Number of individuals in each model state
 #'   at the beginning.
 #' @param method Counting method.
+#' @param inflow numeric vector, similar to \code{init}.
+#'   Number of new individuals in each state per cycle.
 #'   
 #' @return A \code{cycle_counts} object.
 #'   
 #' @keywords internal
 compute_counts <- function(transition, init,
-                           method) {
+                           method, inflow) {
   
   if (! length(init) == get_matrix_order(transition)) {
     stop(sprintf(
@@ -171,8 +182,23 @@ compute_counts <- function(transition, init,
     ))
   }
   
+  if (! length(inflow) == get_matrix_order(transition)) {
+    stop(sprintf(
+      "Length of 'inflow' vector (%i) differs from the number of states (%i).",
+      length(inflow),
+      get_matrix_order(transition)
+    ))
+  }
+  
+  init <- init - inflow
+  # because inflow added from first call to add_and_mult
+  
+  add_and_mult <- function(x, y) {
+    (x + inflow) %*% y
+  }
+  
   list_counts <- Reduce(
-    "%*%",
+    add_and_mult,
     transition,
     init,
     accumulate = TRUE
