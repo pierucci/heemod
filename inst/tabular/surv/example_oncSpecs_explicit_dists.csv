@@ -2,13 +2,10 @@ data,file
 state,example_oncStates.csv
 parameters,example_oncParams.csv
 survivalDataDirectory,survival_data
-data,required_info
 fit_metric,AIC
 fit_name_pfs,PFS.fit
-surv_data_file_pfs,"list(dist_name = ""exp"", rate = 1/50)"
-fit_file_pfs,PFS.surv.fit
+surv_data_file_pfs,"list(A = list(dist_name = ""exp"", rate = 1/25), B = list(dist_name = ""exp"", rate = 1/40))"
 fit_name_ofs,OS.fit
-surv_data_file_ofs,"list(dist_name = ""gamma"", shape = 2, rate = 1/50)"
-fit_file_ofs,OS.surv.fit
+surv_data_file_ofs,"list(A = list(dist_name = ""exp"", rate = 1/75), B = list(dist_name = ""exp"", rate = 1/100))"
 output,output-nomatrix
 options,example_oncOptions.csv

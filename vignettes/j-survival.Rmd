@@ -251,3 +251,33 @@ print(surv_example)
 plot(surv_example$model_runs, type = "values", values = c("cost", "utility"),
       panels = "by_value", free_y = TRUE)
 ```
+
+The overall shape of the curves is similar, but the incremental cost-
+effectiveness ratio changes sign when we use 5000 subjects for each
+survival curve rather than 50.   Naturally, results will be much more
+variable when using smaller data sets than when using larger ones.
+
+Note that in the specification file we limit the distributional assumption
+to only use an exponential distribution.  If the `dists` field is not provided,
+the default set of distributions listed above will be used.
+
+```{r_run_survival_big, echo = FALSE}
+big_surv_example_file <- 
+  system.file("tabular/surv/example_oncSpecs_big_nomatrix_run.csv", package =                    "heemod")
+  print(read.csv(big_surv_example_file, header = TRUE))
+surv_example_big <- run_model_tabular(system.file("tabular/surv", package = "heemod"), "example_oncSpecs_big_nomatrix_run.csv", run_psa = FALSE, run_demo = FALSE, save = FALSE)
+surv_print_big <- print(surv_example_big)
+plot(surv_example_big$model_runs, type = "values", values = c("cost", "utility"),
+      panels = "by_value", free_y = TRUE)
+```
+
+We can obtain similar results to the case with 5000 subjects by 
+supplying the distributions explicitly, using the 
+specification file above.  
+
+```{r_run_survival_explicit, echo = TRUE}
+surv_example_explicit_dist <- run_model_tabular(system.file("tabular/surv", package = "heemod"), "example_oncSpecs_explicit_dists.csv", run_psa = FALSE, run_demo = FALSE, save = FALSE)
+print(surv_example_explicit_dist)
+plot(surv_example_explicit_dist$model_runs, type = "values", values = c("cost", "utility"),
+      panels = "by_value", free_y = TRUE)
+```

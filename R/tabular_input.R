@@ -172,15 +172,26 @@ partitioned_survival_from_tabular <- function(ref, df_env, model_names) {
                          time_col_name = si$time_col_name,
                          censor_col_name = si$censor_col_name,
                          treatment_col_name = si$treatment_col_name,
+                         dists = si$dists,
                          use_envir = df_env)
 
   if(! all(model_names %in% names(surv_inputs[[1]]$OS.fit))){
-    stop(paste("some model names are not included in the survival models:\n",
-               paste(model_names, collapse = ","),
-               "vs.",
-               paste(names(surv_inputs[[1]]$OS.fit), collapse = ","),
-               "\n",
-               "could treatment_col_name be wrong?"))
+    if(inherits(surv_inputs[[1]]$OS.fit[[1]],"flexsurvreg")){
+      stop(paste("some model names are not included in the survival models:\n",
+                 paste(model_names, collapse = ","),
+                 "vs.",
+                 paste(names(surv_inputs[[1]]$OS.fit), collapse = ","),
+                 "\n",
+                 "could treatment_col_name be wrong?"))
+    }
+    if(inherits(surv_inputs[[1]]$OS.fit[[1]], "list")){
+      stop(paste("some model names are not included in the survival models:\n",
+                 paste(model_names, collapse = ","),
+                 "vs.",
+                 paste(names(surv_inputs[[1]]$OS.fit), collapse = ","),
+                 "\n",
+                 "are the distribution lists properly specified?"))
+    }
   }
     
   ## switch the survival information to be by model instead of by fit type
@@ -1189,9 +1200,13 @@ get_survival_input <- function(ref) {
   censor_col_name <- "status"
   treatment_col_name <- "treatment"
   
+  dists <- c("exp", "weibull", "lnorm", "gamma", 
+    "gompertz", "gengamma")
+  
   time_col_index <- grep("time_col_name", ref$data)
   censor_col_index <- grep("censor_col_name", ref$data)
   treatment_col_index <- grep("treatment_col_name", ref$data)
+  dists_index <- grep("dists", ref$data)
   
   if(length(time_col_index) > 1)
     stop("must have at most one time_col_name; default = 'time'")
@@ -1199,13 +1214,19 @@ get_survival_input <- function(ref) {
     stop("must have at most one censor_col_name; default = 'status'")
   if(length(treatment_col_index) > 1)
     stop("must have at most one treatment_col_name; default = 'treatment'")
-
+  if(length(dists_index) > 1)
+    stop(paste('must have at most one line specificying distributions;\n',
+               'default = c("exp", "weibull", "lnorm", "gamma", 
+                           "gompertz", "gengamma")'))
+  
   if(length(time_col_index) == 1)
     time_col_name <- ref[time_col_index, "file"]
   if(length(censor_col_index) == 1)
     censor_col_name <- ref[censor_col_index, "file"]
   if(length(treatment_col_index) == 1)
     treatment_col_name <- ref[treatment_col_index, "file"]
+  if(length(dists_index) ==1)
+    dists <- ref[dists_index, "file"]
     
   surv_data_indices <- grep("surv_data_file", ref$data)
   fit_file_indices <- grep("fit_file", ref$data)
@@ -1264,7 +1285,8 @@ get_survival_input <- function(ref) {
       fit_metric = fit_metric,
       time_col_name = time_col_name,
       censor_col_name = censor_col_name,
-      treatment_col_name = treatment_col_name
+      treatment_col_name = treatment_col_name,
+      dists = dists
           )
   )
   

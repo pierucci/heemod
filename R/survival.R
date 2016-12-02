@@ -39,6 +39,8 @@ survival_from_data <-
            treatment_col_name = "treatment",
            fit_metric = "AIC",
            best_only = TRUE,
+           dists = c("exp", "weibull", "lnorm", "gamma", 
+                     "gompertz", "gengamma"),
            use_envir = NULL){
 
     if(length(data_files) == 0 & length(fit_files) == 0)
@@ -76,8 +78,7 @@ survival_from_data <-
           }
           else{
             surv_models <- f_fit_survival_models(this_data,
-                   dists = c("exp", "weibull", "lnorm", "gamma", 
-                             "gompertz", "gengamma"),
+                   dists = dists,
                    time_col_name = time_col_name, 
                    censor_col_name = censor_col_name, 
                    treatment_col_name = treatment_col_name,
@@ -403,7 +404,8 @@ trans_probs_from_surv.list <-
   function(dist_list,
            use_km_until,
            markov_cycle,
-           markov_cycle_length = 1, ...) {
+           markov_cycle_length = 1,
+           pred_type = c("prob", "surv")) {
     stopifnot("dist_name" %in% names(dist_list))
     this_fn <- paste0("r", dist_list$dist_name)
     correct_names <-
@@ -418,7 +420,10 @@ trans_probs_from_surv.list <-
     args <- as.list(args)
     args[["x"]] <- times_surv
     cumhaz <- do.call(paste0("H", dist_list$dist_name), args)
-    pred_tr_prob <- 1 - (1 / exp(diff(cumhaz)))
+    if(pred_type == "prob")
+      pred_tr_prob <- 1 - (1 / exp(diff(cumhaz)))
+    if(pred_type == "surv")
+      pred_tr_prob <- exp(-cumhaz)[-1]
     pred_tr_prob
   }
 

@@ -703,7 +703,9 @@ test_that(
                    fit_metric = "AIC",
                    time_col_name = "time",
                    censor_col_name = "status",
-                   treatment_col_name = "treatment"
+                   treatment_col_name = "treatment",
+                   dists = c("exp", "weibull", "lnorm", "gamma", 
+                             "gompertz", "gengamma")
               )
               
               expect_identical(get_survival_input(ref_1), input)
