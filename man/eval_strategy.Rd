@@ -65,7 +65,8 @@ heemod:::eval_strategy(
   param,
   init = c(10, 5),
   cycles = 5,
-  method = "end"
+  method = "end",
+  inflow = c(0, 0)
 )
 }
 \keyword{internal}
