@@ -37,12 +37,22 @@ summary.run_model <- function(object, threshold = NULL, ...) {
       dplyr::select_(".strategy_names", ".cost", ".effect") %>% 
       as.data.frame()
     
+    res_nmb_strat <- character()
+    
     for (tr in threshold) {
       res_nmb[format(tr, digits = 2)] <- res_nmb$.effect * tr -
         res_nmb$.cost
+      
+      res_nmb_strat <- c(
+        res_nmb_strat,
+        res_nmb$.strategy_names[res_nmb[format(tr, digits = 2)] ==
+                                  max(res_nmb[format(tr, digits = 2)])][1]
+      )
     }
+  
   } else {
     res_nmb <- NULL
+    res_nmb_strat <- NULL
   }
   
   res_comp <- object %>%
@@ -55,6 +65,7 @@ summary.run_model <- function(object, threshold = NULL, ...) {
       res_values = res_values,
       res_comp = res_comp,
       res_nmb = res_nmb,
+      res_nmb_strat = res_nmb_strat,
       cycles = get_cycles(object),
       init = get_init(object),
       method = get_method(object),
