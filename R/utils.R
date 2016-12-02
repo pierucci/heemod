@@ -184,6 +184,9 @@ wtd_summary <- function(x, weights = NULL) {
     res <- rep(NA, 6)
     
   } else {
+    if (! requireNamespace("Hmisc")) {
+      stop("'Hmisc' package required to produce weighted summary.")
+    }
     w_mean <- Hmisc::wtd.mean(x, weights = weights)
     w_q <- Hmisc::wtd.quantile(x, weights = weights,
                                probs = c(0, .25, .5, .75, 1))

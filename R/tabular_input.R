@@ -173,7 +173,16 @@ partitioned_survival_from_tabular <- function(ref, df_env, model_names) {
                          censor_col_name = si$censor_col_name,
                          treatment_col_name = si$treatment_col_name,
                          use_envir = df_env)
-  
+
+  if(! all(model_names %in% names(surv_inputs[[1]]$OS.fit))){
+    stop(paste("some model names are not included in the survival models:\n",
+               paste(model_names, collapse = ","),
+               "vs.",
+               paste(names(surv_inputs[[1]]$OS.fit), collapse = ","),
+               "\n",
+               "could treatment_col_name be wrong?"))
+  }
+    
   ## switch the survival information to be by model instead of by fit type
   surv_package <- lapply(model_names, function(this_model){
     list(OS_fit = surv_inputs[[1]]$OS.fit[[this_model]],

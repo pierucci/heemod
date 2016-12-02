@@ -443,6 +443,16 @@ get_surv_probs <-
   function(fits, treatment, km_until, markov_cycle, 
            markov_cycle_length,
            pred_type = c("prob", "surv")){
+    if(missing(fits))
+      stop("must specify argument 'fits' in get_surv_probs")
+    if(missing(treatment))
+      stop("must specify argument 'treatment' in get_surv_probs")
+    if(missing(km_until))
+      stop("must specify argument 'km_until' in get_surv_probs")
+    if(missing(markov_cycle))
+      stop("must specify argument 'markov_cycle' in get_surv_probs")
+    if(missing(markov_cycle_length))
+      stop("must specify argument 'markov_cycle_length' in get_surv_probs")
     pred_type <- match.arg(pred_type)
     trans_probs_from_surv(fits[[treatment]], 
                           use_km_until = km_until, 
@@ -492,11 +502,12 @@ compute_counts_part_surv <- function(part_surv_obj,
                                    markov_cycle_length = markov_cycle_length, 
                                    pred_type = "surv")
   res <- cbind(pfs_surv, os_surv - pfs_surv , 
-               rep(0, length(markov_cycle)), 
                1 - os_surv)
-  ## fix the "terminal" state
-  terminal <- c(0, diff(res[, 4]))
-  res[, 3:4] <- cbind(terminal, res[,4] - terminal)  
+  if("terminal" %in% state_names){
+    ## fix the "terminal" state
+    terminal <- c(0, diff(res[, 4]))
+    res[, 3:4] <- cbind(res[, 1:2], terminal, res[,3])
+  }
   res <- res * num_patients
   colnames(res) <- state_names
   res <- data.frame(res)

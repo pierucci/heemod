@@ -685,12 +685,12 @@ test_that(
 
   test_that("getting survival inputs works",
             {
-              ref_1 <- read_file(system.file(
+              ref_1 <- heemod:::read_file(system.file(
                 "tabular/test",
                 "survival_spec_1.csv",
                 package = "heemod"
               ))
-              mixed_order <- read_file(system.file(
+              mixed_order <- heemod:::read_file(system.file(
                 "tabular/test",
                 "survival_spec_2.csv",
                 package = "heemod"
@@ -700,7 +700,10 @@ test_that(
                    fit_names = c("OS.fit", "PFS.fit"),
                    surv_data_files = c("OS.data.csv",
                                        "PFS.data.csv"),
-                   fit_metric = "AIC"
+                   fit_metric = "AIC",
+                   time_col_name = "time",
+                   censor_col_name = "status",
+                   treatment_col_name = "treatment"
               )
               
               expect_identical(get_survival_input(ref_1), input)
