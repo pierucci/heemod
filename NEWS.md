@@ -1,5 +1,10 @@
 # devel
 
+## New features
+
+  * Plot EVPI.
+  * Export PSA files for Sheffield Accelerated Value of Information sofware.
+
 ## Backend changes
 
   * Cleaner handling of clusters.
