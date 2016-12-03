@@ -201,3 +201,14 @@ print.correlation_matrix <- function(x, ...) {
   }
   print(as.table(res), zero.print = "-", ...)
 }
+
+#' @export
+print.resamp_definition <- function(x, ...) {
+  cat(sprintf(
+    "A PSA definition:\n\n%i parameter%s resampled, %i multinomial group%s.\n",
+    length(x$list_qdist),
+    plur(length(x$list_qdist)),
+    length(x$multinom),
+    plur(length(x$multinom))
+    ))
+}
