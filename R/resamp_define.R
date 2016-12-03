@@ -24,7 +24,7 @@
 #' @example inst/examples/example_define_resample.R
 #'   
 define_psa <- function(...,
-                            correlation) {
+                       correlation) {
   .dots <- list(...)
   
   list_input <- lapply(
@@ -173,7 +173,7 @@ define_correlation_ <- function(.dots) {
     cor = unlist(list_res[seq(from = 3, to = length(list_res), by = 3)])
   )
   
-  if (any(res$cor >1) | any(res$cor < -1)) {
+  if (any(res$cor > 1) | any(res$cor < -1)) {
     stop("Correlation values must be between -1 and 1.")
   }
   
@@ -188,3 +188,27 @@ define_correlation_ <- function(.dots) {
   structure(res, class = c("correlation_matrix", class(res)))
 }
 
+#' @export
+print.correlation_matrix <- function(x, ...) {
+  var_names <- unique(c(x$v1, x$v2))
+  res <- diag(length(var_names))
+  colnames(res) <- var_names
+  rownames(res) <- var_names
+  
+  for (i in seq_len(nrow(x))) {
+    res[x$v1[i], x$v2[i]] <- x$cor[i]
+    res[x$v2[i], x$v1[i]] <- x$cor[i]
+  }
+  print(as.table(res), zero.print = "-", ...)
+}
+
+#' @export
+print.resamp_definition <- function(x, ...) {
+  cat(sprintf(
+    "A PSA definition:\n\n%i parameter%s resampled, %i multinomial group%s.\n",
+    length(x$list_qdist),
+    plur(length(x$list_qdist)),
+    length(x$multinom),
+    plur(length(x$multinom))
+    ))
+}
