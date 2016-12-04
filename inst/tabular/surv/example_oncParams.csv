@@ -1,0 +1,8 @@
+parameter,value
+km_until,0
+pfs.tr.A,"get_surv_probs(PFS.fit, ""A"", km_until = km_until, markov_cycle = markov_cycle, markov_cycle_length = 1, pred_type = ""prob"")"
+os.tr.A,"get_surv_probs(OS.fit, ""A"", km_until = km_until, markov_cycle = markov_cycle, markov_cycle_length = 1, pred_type = ""prob"")"
+pfs.tr.B,"get_surv_probs(PFS.fit, ""B"", km_until = km_until, markov_cycle = markov_cycle, markov_cycle_length = 1, pred_type = ""prob"")"
+os.tr.B,"get_surv_probs(OS.fit, ""B"", km_until = km_until, markov_cycle = markov_cycle, markov_cycle_length = 1, pred_type = ""prob"")"
+utility.dr,0.000671233
+cost.dr,0.000671233

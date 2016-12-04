@@ -1,0 +1,15 @@
+.model,from,to,prob
+A,ProgressionFree,ProgressionFree,1 - pfs.tr.A
+A,ProgressionFree,ProgressiveDisease,pfs.tr.A - os.tr.A
+A,ProgressionFree,Terminal,os.tr.A
+A,ProgressiveDisease,ProgressiveDisease,1 - os.tr.A
+A,ProgressiveDisease,Terminal,os.tr.A
+A,Terminal,Death,1
+A,Death,Death,1
+B,ProgressionFree,ProgressionFree,1 - pfs.tr.B
+B,ProgressionFree,ProgressiveDisease,pfs.tr.B - os.tr.B
+B,ProgressionFree,Terminal,os.tr.B
+B,ProgressiveDisease,ProgressiveDisease,1 - os.tr.B
+B,ProgressiveDisease,Terminal,os.tr.B
+B,Terminal,Death,1
+B,Death,Death,1
