@@ -1,11 +1,6 @@
 data,file
 state,example_oncStates.csv
 parameters,example_oncParams.csv
-survivalDataDirectory,survival_data
-fit_metric,AIC
-fit_name_pfs,PFS.fit
-surv_data_file_pfs,"list(A = list(dist_name = ""exp"", rate = 1/25), B = list(dist_name = ""exp"", rate = 1/40))"
-fit_name_ofs,OS.fit
-surv_data_file_ofs,"list(A = list(dist_name = ""exp"", rate = 1/75), B = list(dist_name = ""exp"", rate = 1/100))"
+survivalInformation,survival_info_explicit_dists.csv
 output,output-nomatrix
 options,example_oncOptions.csv

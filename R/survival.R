@@ -10,6 +10,7 @@
 #' @param fit_metric  Once of AIC, BIC, or m2LL
 #' @param best_only should only the best fit for each condition
 #'   be returned?
+#' @param dists the distributions to use to fit the survival function
 #' @param use_envir An environment for the results to be saved in.
 #'
 #' @return A list with two elements:  \itemize{
@@ -19,7 +20,10 @@
 #'    an environment containing the models so they can be referenced to 
 #'    get probabilities.}
 #'    }
-#' @details If data_files is NULL and fit files exists, then fit_files
+#' @details By default, the function fits with six different distribution fucntions:
+#' exponential,  Weibull,  lognormal, Gompertz, gamma, and generalized gamma.
+#' 
+#' If data_files is NULL and fit files exists, then fit_files
 #'   should have the names of files in which survival models are kept.
 #'   If data_files is not NULL, then survival models will be fit from
 #'   the data in data_files (using the \code{flexsurvreg} package), and if fit_files

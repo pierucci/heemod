@@ -29,8 +29,21 @@ library(survival)
 
 ## Changes in the specification file for survival analysis
 To tell `heemod` to use survival data in its analysis,
-we must include some additional elements in the specification
-file.    There are two ways to give the package
+we must include an additional element in the specification
+file.    The new field is `survivalInformation`, as in line 4
+below, and it designates a
+file in the same directory where information on the survival analysis
+can be found.
+```{r spec_file, echo = FALSE}
+onc_file <- 
+system.file("tabular/surv", "example_oncSpecs.csv", package = "heemod")
+onc_spec <- read.csv(onc_file, header = TRUE)
+print(onc_spec, rownames = FALSE)
+```
+
+The new file gives additional arguments required for the survival
+analysis.  
+There are two ways to give the package
 survival models:
 
 * by passing in survival data and information on the model
@@ -40,31 +53,32 @@ survival models:
 
 We will demonstrate each of these in turn.
 
-```{r spec_file, echo = FALSE}
-onc_file <- 
-system.file("tabular/surv", "example_oncSpecs.csv", package = "heemod")
-onc_spec <- read.csv(onc_file, header = TRUE)
-print(onc_spec, rownames = FALSE)
-```
-
-The first new field is `survivalDataDirectory`, which, unsurprisingly, 
-names a directory where survival data can be found.   The data is further
-specified by sets of two or three additional fields.  In the example above,
-which is based on oncology,
-these are in rows 8 - 10 for *PFS*, or progression-free survival, and
-rows 11 - 13 for *OS*, or overall survival.   Each set contains a name
+To provide data to fit, we must first provide `survivalDataDirectory`,
+the directory in which  to find the data.  The data is further
+specified by sets of two or three additional fields.  
+In the example below, which is based on oncology,
+these are in rows 3 - 5 for *PFS*, or progression-free survival, and
+rows 6 - 8 for *OS*, or overall survival.   Each set contains a name
 for the fit, which can later be used to refer to the fit, for example, in
-specifying parameters; the name of the file where survival is to be found, 
+specifying parameters; the name of the file where 
+survival data is to be found, 
 and the name of a file in which to store the fit for later use.  
 The fit name
 is required, and at least one of the other two names must also be given.
+
+```{r surv_file, echo = FALSE}
+surv_file <- 
+system.file("tabular/surv", "survival_info.csv", package = "heemod")
+surv_info <- read.csv(surv_file, header = TRUE)
+print(surv_info, rownames = FALSE)
+```
 
 The names for the three fields are `fit_name_<label>`,
 `surv_data_file_<label>`, and `fit_file_<label>`, where
 `<label>` identifies that the fields go together for a single fit.
 In the example above, the labels used are `pfs` and `os`.  As
 with other elements of the tabular input files, the field name goes in the
-first, or `data` column, and the value goes in the second, `file`,
+first, or `data`, column, and the value goes in the second, `file`,
 column.   
 
 Here are the actions taken depending on which inputs are provided:
@@ -72,7 +86,7 @@ Here are the actions taken depending on which inputs are provided:
 
 |  surv_data    | fit file | actions |
 |:-------:|:---:|---|
-|  Y        |  Y        |  survival models fit, and model saved     |
+|  Y        |  Y        |  survival models fit and saved     |
 |  Y       |  N        |  survival models fit but not saved        |
 |  N       |  Y        |  saved survival models read in |
 |  N       |  N        |  error                                   |
@@ -91,18 +105,24 @@ and `flexsurv` packages.  In general, this means it will come in
 a data frame with columns giving at least event time, censorship status (1 for
 an event and 0 if a subject is lost to observation).  An additional column
 can specify group membership for the subject of each event, for example
-which treatment a subject in a clinical trial was receiving.   Survival
+which treatment a subject in a clinical trial was receiving.
+The default names for these columns are "time", "status", and
+"treatment", though they can be set in the survival information
+file by specifying `time_column_name`, `censor_column_name`, and
+`treatment_column_name` (an example appears below).
+Survival
 analysis in R generally supports left-censorship as well; `heemod` currently
 does not.
 
-When the program is provided with survival data to fit, it fits a model
-for each group specified in the data file.  Six fits are obtained for each 
-group, under (currently)
+When the program is provided with survival data, it fits a model
+for each group specified in the data file.  By default, 
+six fits are obtained under (currently)
 six different distributional assumptions:  exponential (`exp`),
 Weibull (`weibull`), lognormal (`lnorm`), gamma (`gamma`),
 Gompertz (`gompertz`), and generalized gamma (`gengamma`).
 Additional distributions supported by the `flexsurv` package can
-be added.
+be added, or the set limited, by specifying the "dists" field
+in the survival information file.  An example appears below.
 
 The best distribution for each group is selected based on the fit criterion
 in the specification file.  The fit criterion can
@@ -140,15 +160,13 @@ possible, and sometimes desirable, to simulate data and then have the
 program fit a model to the simulated data.
 However, when desired, survival distributions can be specified
 explicitly.   When this is done, the `surv_data_file` field holds,
-instead of a file name, a list, as below in lines 8 and 11 (the lines have
-been moved up compared to the previous specification file because we have
-removed the line for the transition matrix file):
+instead of a file name, a list, as below in lines 4 and 6:
 ```{r spec_file_explicit_dists, echo = FALSE}
-onc_file <- 
-system.file("tabular/surv", "example_oncSpecs_explicit_dists.csv", 
+spec_file <- 
+system.file("tabular/surv", "survival_info_explicit_dists.csv", 
             package = "heemod")
-onc_spec_explicit_dist <- read.csv(onc_file, header = TRUE)
-print(onc_spec_explicit_dist)
+survival_info_explicit_dist <- read.csv(spec_file, header = TRUE)
+print(survival_info_explicit_dist)
 ```
 The code checks which situation it is in by checking whether the 
 first five characters of the value are "list(", which would be 
@@ -164,25 +182,31 @@ the code will throw an error. The distributions supported by
 `flexsurvreg`, and their arguments, can be found in Table 1 of
 [the flexsurvreg vignette](https://cran.r-project.org/web/packages/flexsurv/vignettes/flexsurv.pdf).
 
-The `survivalDataDirectory` field must be supplied even when survival
-distributions are specified explicitly as in this example.
+It is not currently possible to mix data files and explicitly described
+distributions in a single analysis, although we hope to enable it in the
+future.
 
 ## Partitioned survival models ##
 
-As mentioned before, the specification file above does not have a line for
-a transition matrix.   When no transition matrix is specified, 
+A specification that provides survival analysis information need not
+specify a transition matrix.  When no transition matrix is specified, 
 `heemod` will use a partitioned survival model.  A partitioned
 survival model determines the number of subjects dead at a given time
 using the overall survival curve, and the number of progression-free
 patients using the progression-free survival curve.  The number of
 progression-free survivors is, by definition, always less than or equal to
 the number of survivors.  The difference is the number of subjects with
-progressive disease.
+progressive disease.   
 
-One additional special state, `terminal` is avaialable for partitioned
-survival models.   It is a tunnel state corresponding to the first
+Currently, only a three- or four-state model
+can be accepted.  In a three-state model, the states, though they can 
+be assigned any names as usual in the state file, correspond to
+progression-free survival, survival with progressive disease, and death
+as described above.  In a four-state model, a special `terminal` 
+state, can be used.  It is a tunnel state corresponding to the first
 cycle of death.   It is provided to allow for one-time costs assessed
-at time of death.
+at time of death.   It will be populated automatically by the 
+partitioned survival code if the state exists.
 
 In `heemod`, the difference between using a Markov model and using
 a partitioned survival model ends once the state counts at each time are
@@ -256,6 +280,9 @@ The overall shape of the curves is similar, but the incremental cost-
 effectiveness ratio changes sign when we use 5000 subjects for each
 survival curve rather than 50.   Naturally, results will be much more
 variable when using smaller data sets than when using larger ones.
+(Note that 50 or 5000 samples are the number being used to estimate
+the survival models; this is independent of the number of people for
+which a simulation is run, in this case 1000.)
 
 Note that in the specification file we limit the distributional assumption
 to only use an exponential distribution.  If the `dists` field is not provided,

@@ -1,14 +1,7 @@
 data,file
 state,example_oncStates.csv
 parameters,example_oncParams.csv
-survivalDataDirectory,survival_data
+survivalInformation,survival_info.csv
 data,required_info
-fit_metric,AIC
-fit_name_pfs,PFS.fit
-surv_data_file_pfs,PFS.data.csv
-fit_file_pfs,PFS.surv.fit
-fit_name_ofs,OS.fit
-surv_data_file_ofs,OS.data.csv
-fit_file_ofs,OS.surv.fit
 output,output-nomatrix
 options,example_oncOptions.csv

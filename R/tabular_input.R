@@ -143,7 +143,6 @@ gather_model_info <- function(base_dir, ref_file) {
     param_info = param_info,
     output_dir = output_dir,
     demographic_file = demographic_file,
-    # surv_inputs = surv_inputs,
     model_options = model_options
   )
 }
@@ -160,11 +159,20 @@ gather_model_info <- function(base_dir, ref_file) {
 #'   survival).
 #'
 partitioned_survival_from_tabular <- function(ref, df_env, model_names) {
-    si <- get_survival_input(ref) # does some error checking
+    surv_ref_full_file <- ref[ref$data == "survivalInformation", "full_file"]
+    surv_ref_file <- ref[ref$data == "survivalInformation", "file"]
+    ## slightly roundabout way of getting the base location back
+    location <- gsub(paste0(surv_ref_file, "$"),
+                     "",
+                     surv_ref_full_file)
+                     
+    ## does some error checking
+    si <- get_survival_input(read_file(surv_ref_full_file)) 
     
     ## load or fit survival models into the environment
     surv_inputs <-
-      survival_from_data(NULL, ref[ref$data == "survivalDataDirectory", "full_file"],
+      survival_from_data(location, #ref[ref$data == "survivalDataDirectory", "full_file"],
+                         si$surv_data_dir,
                          data_files = si$surv_data_files,
                          fit_files = si$fit_files,
                          fit_names = si$fit_names,
@@ -333,7 +341,7 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   }
   
   surv_info <- NULL
-  if("survivalDataDirectory" %in% ref$data){
+  if("survivalInformation" %in% ref$data){
     if(options()$heemod.verbose) 
       message("** Reading survival model information..")
     surv_info <- 
@@ -1173,12 +1181,12 @@ save_graph <- function(plot, path, file_name) {
 
 #' Make sure survival inputs have the correct formats
 #'
-#' @param ref - data frame from the reference file
+#' @param surv_ref - data frame with survival data information
 #'
 #' @details For survival analysis, we need, for each condition
 #'   (frequently progression-free survival and overall survival)
 #'   at least two, and possibly three, elements represented in
-#'   the reference file.
+#'   the survival reference file.
 #'   \itemize{
 #'     \item{\code{surv_data_file}:  the name of the file 
 #'        with the survival data}
@@ -1194,8 +1202,18 @@ save_graph <- function(plot, path, file_name) {
 #' @return a list with elements \itemize{\item{fit_files},
 #'   \item{fit_names}, \item{surv_data_files}, \item{fit_metric}}.
 #'
-get_survival_input <- function(ref) {
+get_survival_input <- function(surv_ref) {
   
+  if(! identical(names(surv_ref), c("data", "val")))
+    stop(
+      paste("surv_ref must have column names 'data' and 'val'",
+            paste("(actual_names", paste(names(surv_ref),collapse = ", "),
+            ")"
+          )
+      )
+    )
+  surv_data_dir <- 
+    surv_ref[surv_ref$data == "survivalDataDirectory", "val"]
   time_col_name <- "time"
   censor_col_name <- "status"
   treatment_col_name <- "treatment"
@@ -1203,10 +1221,10 @@ get_survival_input <- function(ref) {
   dists <- c("exp", "weibull", "lnorm", "gamma", 
     "gompertz", "gengamma")
   
-  time_col_index <- grep("time_col_name", ref$data)
-  censor_col_index <- grep("censor_col_name", ref$data)
-  treatment_col_index <- grep("treatment_col_name", ref$data)
-  dists_index <- grep("dists", ref$data)
+  time_col_index <- grep("time_col_name", surv_ref$data)
+  censor_col_index <- grep("censor_col_name", surv_ref$data)
+  treatment_col_index <- grep("treatment_col_name", surv_ref$data)
+  dists_index <- grep("dists", surv_ref$data)
   
   if(length(time_col_index) > 1)
     stop("must have at most one time_col_name; default = 'time'")
@@ -1220,33 +1238,33 @@ get_survival_input <- function(ref) {
                            "gompertz", "gengamma")'))
   
   if(length(time_col_index) == 1)
-    time_col_name <- ref[time_col_index, "file"]
+    time_col_name <- surv_ref[time_col_index, "val"]
   if(length(censor_col_index) == 1)
-    censor_col_name <- ref[censor_col_index, "file"]
+    censor_col_name <- surv_ref[censor_col_index, "val"]
   if(length(treatment_col_index) == 1)
-    treatment_col_name <- ref[treatment_col_index, "file"]
+    treatment_col_name <- surv_ref[treatment_col_index, "val"]
   if(length(dists_index) ==1)
-    dists <- ref[dists_index, "file"]
+    dists <- surv_ref[dists_index, "val"]
     
-  surv_data_indices <- grep("surv_data_file", ref$data)
-  fit_file_indices <- grep("fit_file", ref$data)
-  fit_name_indices <- grep("fit_name", ref$data)
+  surv_data_indices <- grep("surv_data_file", surv_ref$data)
+  fit_file_indices <- grep("fit_file", surv_ref$data)
+  fit_name_indices <- grep("fit_name", surv_ref$data)
   
-  surv_data_names <- ref[surv_data_indices, "data"]
-  fit_file_names <- ref[fit_file_indices, "data"]
-  fit_name_names <- ref[fit_name_indices, "data"]
+  surv_data_names <- surv_ref[surv_data_indices, "data"]
+  fit_file_names <- surv_ref[fit_file_indices, "data"]
+  fit_name_names <- surv_ref[fit_name_indices, "data"]
   
-  surv_data_files = as.vector(ref[surv_data_indices, "file"])
-  fit_files = as.vector(ref[fit_file_indices, "file"])
-  fit_names = as.vector(ref[fit_name_indices, "file"])
+  surv_data_files = as.vector(surv_ref[surv_data_indices, "val"])
+  fit_files = as.vector(surv_ref[fit_file_indices, "val"])
+  fit_names = as.vector(surv_ref[fit_name_indices, "val"])
   
-  fit_metric = ref[ref$data == "fit_metric", "file"]
+  fit_metric = surv_ref[surv_ref$data == "fit_metric", "val"]
   
   lff <- length(fit_file_names)
   lsdn <- length(surv_data_names)
   
   if(lff == 0 & lsdn == 0)
-    stop(paste("reference file must define at least one of",
+    stop(paste("survival reference file must define at least one of",
                 "fit_file and surv_data_file for survival analysis"))
   if(lff != 0 & lsdn != 0 & (lff != lsdn))
       stop(paste("when both fit_file and surv_data_name elements are",
@@ -1279,6 +1297,7 @@ get_survival_input <- function(ref) {
   
   return(
     list(
+      surv_data_dir = surv_data_dir, 
       fit_files = fit_files,
       fit_names = fit_names,
       surv_data_files = surv_data_files,

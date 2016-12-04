@@ -13,7 +13,7 @@ trans_probs_from_surv(x, ...)
   markov_cycle, markov_cycle_length = 1, pred_type = c("prob", "surv"))
 
 \method{trans_probs_from_surv}{list}(dist_list, use_km_until, markov_cycle,
-  markov_cycle_length = 1, ...)
+  markov_cycle_length = 1, pred_type = c("prob", "surv"))
 
 compute_counts_part_surv(part_surv_obj, use_km_until, num_patients,
   markov_cycle, markov_cycle_length, state_names)

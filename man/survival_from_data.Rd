@@ -7,6 +7,7 @@
 survival_from_data(base_dir, surv_dir, data_files = NULL, fit_files = NULL,
   fit_names = NULL, time_col_name = "time", censor_col_name = "status",
   treatment_col_name = "treatment", fit_metric = "AIC", best_only = TRUE,
+  dists = c("exp", "weibull", "lnorm", "gamma", "gompertz", "gengamma"),
   use_envir = NULL)
 }
 \arguments{
@@ -27,6 +28,8 @@ survival_from_data(base_dir, surv_dir, data_files = NULL, fit_files = NULL,
 \item{best_only}{should only the best fit for each condition
 be returned?}
 
+\item{dists}{the distributions to use to fit the survival function}
+
 \item{use_envir}{An environment for the results to be saved in.}
 }
 \value{
@@ -42,6 +45,9 @@ A list with two elements:  \itemize{
 Title Get survival analysis curves from data
 }
 \details{
+By default, the function fits with six different distribution fucntions:
+exponential,  Weibull,  lognormal, Gompertz, gamma, and generalized gamma.
+
 If data_files is NULL and fit files exists, then fit_files
   should have the names of files in which survival models are kept.
   If data_files is not NULL, then survival models will be fit from

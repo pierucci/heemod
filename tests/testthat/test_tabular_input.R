@@ -696,7 +696,9 @@ test_that(
                 package = "heemod"
               ))
               input <- 
-                list(fit_files = c("OS.surv.fit", "PFS.surv.fit"),
+                list(
+                  surv_data_dir = "survival_data",
+                  fit_files = c("OS.surv.fit", "PFS.surv.fit"),
                    fit_names = c("OS.fit", "PFS.fit"),
                    surv_data_files = c("OS.data.csv",
                                        "PFS.data.csv"),

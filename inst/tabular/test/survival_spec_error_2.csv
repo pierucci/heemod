@@ -1,9 +1,4 @@
-data,file
-state,HNoncStates.xlsx
-tm,HNoncTransitionProbs.xlsx
-parameters,HNoncParams.xlsx
-survivalDataDirectory,survival_data
-data,required_info
+data,val
 fit_metric,AIC
 fit_name_pfs,PFS.fit
 fit_file_pfs,PFS.surv.fit

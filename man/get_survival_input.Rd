@@ -4,10 +4,10 @@
 \alias{get_survival_input}
 \title{Make sure survival inputs have the correct formats}
 \usage{
-get_survival_input(ref)
+get_survival_input(surv_ref)
 }
 \arguments{
-\item{ref}{- data frame from the reference file}
+\item{surv_ref}{- data frame with survival data information}
 }
 \value{
 a list with elements \itemize{\item{fit_files},
@@ -20,7 +20,7 @@ Make sure survival inputs have the correct formats
 For survival analysis, we need, for each condition
   (frequently progression-free survival and overall survival)
   at least two, and possibly three, elements represented in
-  the reference file.
+  the survival reference file.
   \itemize{
     \item{\code{surv_data_file}:  the name of the file 
        with the survival data}
