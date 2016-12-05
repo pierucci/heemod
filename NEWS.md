@@ -1,4 +1,10 @@
-# devel
+# heemod devel
+
+## New features
+
+  * Plot EVPI.
+  * Export PSA files for Sheffield Accelerated Value of Information sofware.
+  * Individuals can enter the model after the beginning with the `inflow` argument in `run_model()` (mainly for budget impact analysis).
 
 ## Backend changes
 

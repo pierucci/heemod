@@ -237,7 +237,7 @@ A comparison of both strategies can be done with `summary()`. The incremental co
 summary(res_mod)
 ```
 
-The new treatment costs £1706 more per QALY gained.
+The new treatment costs £`r round(summary(res_mod)$res_comp$.icer[2])` more per QALY gained.
 
 It should be noted that this result differs from the original study. This difference is explained by higher population-level all-causes mortality rates in the original study than in the WHO database (used here). See vignette `vignette("i-reproduction", "heemod")` for an exact reproduction of the analysis.
 

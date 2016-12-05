@@ -27,11 +27,11 @@ run_dsa <- function(model, dsa) {
       tab <- eval_strategy_newdata(
         model,
         strategy = n,
-        newdata = dsa
+        newdata = dsa$dsa
       ) 
       tab %>% 
         dplyr::mutate_if(
-          names(tab) %in% attr(dsa, "variables"),
+          names(tab) %in% dsa$variables,
           dplyr::funs(to_text_dots),
           name = FALSE
         )
@@ -44,7 +44,7 @@ run_dsa <- function(model, dsa) {
   
   res <- Reduce(dplyr::bind_rows, list_res) %>% 
     tidyr::gather_(".par_names", ".par_value",
-                   attr(dsa, "variables"), na.rm = TRUE)
+                   dsa$variables, na.rm = TRUE)
   res <- res %>% 
     dplyr::rowwise() %>% 
     dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
@@ -55,7 +55,7 @@ run_dsa <- function(model, dsa) {
   structure(
     list(
       dsa = res,
-      variables = attr(dsa, "variables"),
+      variables = dsa$variables,
       model = model
     ),
     class = c("dsa", class(res))
