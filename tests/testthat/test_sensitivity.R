@@ -7,24 +7,16 @@ test_that(
       b, .5, 1.5
     )
     expect_identical(
-      dim(se1),
+      dim(se1$dsa),
       c(4L, 2L)
     )
     expect_is(
-      se1$a,
+      se1$dsa$a,
       "list"
     )
     expect_s3_class(
-      se1$a[[1]],
+      se1$dsa$a[[1]],
       "lazy"
-    )
-    expect_output(
-      print(se1),
-      "  a  b  
-1 10 -  
-2 45 -  
-3 -  0.5
-4 -  1.5"
     )
     expect_error(
       define_dsa(

@@ -27,7 +27,9 @@ devtools::install_github("pierucci/heemod@devel")
   * Time-varying values attached to states.
   * Microsimulation-like models.
   * Probabilistic uncertainty analysis (PSA).
+  * Expected value of perfect information.
   * Covariance analysis for PSA.
+  * Features for budget impact analysis.
   * Deterministic sensitivity analysis (DSA).
   * Multiple state membership correction methods (life-table, half-cycle, etc.).
   * Demographic analysis to compute population-level results.

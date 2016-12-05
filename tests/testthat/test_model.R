@@ -306,43 +306,43 @@ test_that(
     
     expect_identical(
       dim(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "end")),
+        lm, init = c(10, 0), method = "end", inflow = c(0, 0))),
       c(2L, 2L)
     )
     expect_identical(
       dim(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "beginning")),
+        lm, init = c(10, 0), method = "beginning", inflow = c(0, 0))),
       c(2L, 2L)
     )
     expect_identical(
       dim(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "life-table")),
+        lm, init = c(10, 0), method = "life-table", inflow = c(0, 0))),
       c(2L, 2L)
     )
     expect_identical(
       dim(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "half-cycle")),
+        lm, init = c(10, 0), method = "half-cycle", inflow = c(0, 0))),
       c(2L, 2L)
     )
     
     expect_equivalent(
       unlist(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "end")),
+        lm, init = c(10, 0), method = "end", inflow = c(0, 0))),
       c(10, 5, 0, 5)
     )
     expect_equivalent(
       unlist(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "beginning")),
+        lm, init = c(10, 0), method = "beginning", inflow = c(0, 0))),
       c(5.00, 4.35, 5.00, 5.65)
     )
     expect_equivalent(
       unlist(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "life-table")),
+        lm, init = c(10, 0), method = "life-table", inflow = c(0, 0))),
       c(7.500, 4.675, 2.500, 5.325)
     )
     expect_equivalent(
       unlist(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "half-cycle")),
+        lm, init = c(10, 0), method = "half-cycle", inflow = c(0, 0))),
       c(10.000,  6.525,  5.000,  8.475)
     )
   }

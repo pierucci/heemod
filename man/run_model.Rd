@@ -14,10 +14,11 @@ run_models_(...)
 run_model(..., parameters = define_parameters(), init = c(1000L, rep(0L,
   get_state_number(get_states(list(...)[[1]])) - 1)), cycles = 1,
   method = c("life-table", "beginning", "end", "half-cycle"), cost = NULL,
-  effect = NULL, state_cycle_limit = NULL, central_strategy = NULL)
+  effect = NULL, state_cycle_limit = NULL, central_strategy = NULL,
+  inflow = rep(0L, get_state_number(get_states(list(...)[[1]]))))
 
 run_model_(uneval_strategy_list, parameters, init, cycles, method, cost, effect,
-  state_cycle_limit, central_strategy)
+  state_cycle_limit, central_strategy, inflow)
 }
 \arguments{
 \item{...}{One or more \code{uneval_model} object.}
@@ -26,8 +27,8 @@ run_model_(uneval_strategy_list, parameters, init, cycles, method, cost, effect,
 \code{\link{define_parameters}}.}
 
 \item{init}{numeric vector, same length as number of 
-model states. Number of individuals in each model state
-at the beginning.}
+states. Number of individuals in each state at the
+beginning.}
 
 \item{cycles}{positive integer. Number of Markov Cycles 
 to compute.}
@@ -43,9 +44,12 @@ the cost-effectiveness plane.}
 \item{state_cycle_limit}{Optional expansion limit for 
 \code{state_cycle}, see details.}
 
-\item{central_strategy}{character. The name of the
+\item{central_strategy}{character. The name of the 
 strategy at the center of the cost-effectiveness plane,
 for readability.}
+
+\item{inflow}{numeric vector, similar to \code{init}.
+Number of new individuals in each state per cycle.}
 
 \item{uneval_strategy_list}{List of models, only used by 
 \code{run_model_} to avoid using \code{...}.}

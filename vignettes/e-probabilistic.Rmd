@@ -226,17 +226,22 @@ summary(pm,
         threshold = c(1000, 5000, 6000, 1e4))
 ```
 
+## Result interpretation
+
 The results of the analysis can be plotted on the cost-effectiveness plane. We can see there seem to be little uncertainty on the costs compared to the uncertainty on the effects, resulting in an uncertainty cloud that looks like a line.
 
 ```{r, fig.width = 6, fig.height=4, fig.align='center'}
 plot(pm, type = "ce")
 ```
 
-And as cost-effectiveness acceptability curves:
+And as cost-effectiveness acceptability curves or EVPI:
 
 ```{r, fig.width = 6, fig.align='center'}
 plot(pm, type = "ac", max_wtp = 10000, log_scale = FALSE)
+plot(pm, type = "evpi", max_wtp = 10000, log_scale = FALSE)
 ```
+
+To compute EVPPI the results can also be exported with `export_savi()` in a format compatible with the [SAVI](http://savi.shef.ac.uk/SAVI/) software (Sheffield Accelerated Value of Information).
 
 A covariance analysis can be performed:
 
