@@ -39,7 +39,7 @@ test_that(
     )
     expect_output(
       str(mod1),
-      "List of 3
+      "List of 4
  $ transition",
       fixed = TRUE
     )

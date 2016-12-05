@@ -364,6 +364,7 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
     function(i) {
       create_model_from_tabular(state_info[[i]], tm_info[[i]],
                                 surv_info[[i]],
+                                names(state_info)[i],
                                 df_env = df_env)
     })  
   
@@ -747,6 +748,7 @@ create_options_from_tabular <- function(opt) {
 create_model_from_tabular <- function(state_info,
                                       tm_info,
                                       surv_info,
+                                      strategy_name,
                                       df_env = globalenv()) {
   if(length(tm_info) == 0 & length(surv_info) == 0)
     stop("either a transition matrix (tm_info) or a partitioned
@@ -771,7 +773,8 @@ create_model_from_tabular <- function(state_info,
   
   
   define_strategy_(transition = TM, states = states, 
-                   partitioned_survival = surv_info)
+                   partitioned_survival = surv_info,
+                   strategy_name = strategy_name)
 }
 
 #' Load Data From a Folder Into an Environment

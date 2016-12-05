@@ -4,7 +4,7 @@
 \alias{create_model_from_tabular}
 \title{Create a \code{heemod} Model From Tabular Files Info}
 \usage{
-create_model_from_tabular(state_info, tm_info, surv_info,
+create_model_from_tabular(state_info, tm_info, surv_info, strategy_name,
   df_env = globalenv())
 }
 \arguments{

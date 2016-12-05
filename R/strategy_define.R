@@ -21,6 +21,7 @@
 #' @param partitioned_survival Partitioned survival argument. 
 #'   See \code{\link{survival_from_data}} and 
 #'   \code{\link{partitioned_survival_from_tabular}}.
+#' @param strategy_name name of the strategy, may be used in parameters.
 #' @param transition_matrix Deprecated argument, use
 #'   \code{transition}.
 #'   
@@ -33,7 +34,8 @@
 #' @example inst/examples/example_define_strategy.R
 define_strategy <- function(...,
                             transition = define_transition(),
-                            transition_matrix = NULL) {
+                            transition_matrix = NULL,
+                            strategy_name = NULL) {
   
   if (! is.null(transition_matrix)) {
     warning("Argument 'transition_matrix' is deprecated, use 'transition' instead.")
@@ -44,14 +46,16 @@ define_strategy <- function(...,
   
   define_strategy_(
     transition = transition,
-    states = states
+    states = states,
+    strategy_name = strategy_name
   )
 }
 
 #' @rdname define_strategy
 #' @export
 define_strategy_ <- function(transition, states, 
-                             partitioned_survival = NULL) {
+                             partitioned_survival = NULL,
+                             strategy_name = NULL) {
   
   if(inherits(transition, "uneval_matrix")){
     if (! get_state_number(states) == get_matrix_order(transition)) {
@@ -74,7 +78,8 @@ define_strategy_ <- function(transition, states,
     list(
       transition = transition,
       states = states,
-      partitioned_survival = partitioned_survival
+      partitioned_survival = partitioned_survival,
+      strategy_name = strategy_name
     ), class = "uneval_model")
 }
 
