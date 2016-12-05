@@ -112,8 +112,7 @@ eval_strategy <- function(strategy, parameters, cycles,
   }
   
   parameters <- eval_parameters(parameters,
-                                cycles = cycles,
-                                strategy_name = strategy$strategy_name)
+                                cycles = cycles)
   ##transition <- eval_matrix(uneval_matrix,
   ##                          parameters)
   states <- eval_state_list(uneval_states, parameters)
