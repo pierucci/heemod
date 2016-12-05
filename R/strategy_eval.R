@@ -44,17 +44,21 @@ eval_strategy <- function(strategy, parameters, cycles,
   
   i_parameters <- interp_heemod(parameters)
   
-  i_uneval_matrix <- interp_heemod(
-    uneval_matrix,
-    more = as_expr_list(i_parameters)
-  )
+  td_tm <- FALSE
+  if(inherits(uneval_matrix, "uneval_matrix")){
+    i_uneval_matrix <- interp_heemod(
+      uneval_matrix,
+      more = as_expr_list(i_parameters)
+    )
+    td_tm <- has_state_cycle(i_uneval_matrix)
+  }
   
   i_uneval_states <- interp_heemod(
     uneval_states,
     more = as_expr_list(i_parameters)
   )
   
-  td_tm <- has_state_cycle(i_uneval_matrix)
+ 
   td_st <- has_state_cycle(i_uneval_states)
   
   expand <- any(c(td_tm, td_st))
@@ -111,26 +115,36 @@ eval_strategy <- function(strategy, parameters, cycles,
       )
     }
   }
+  
   parameters <- eval_parameters(parameters,
-<<<<<<< HEAD
                                 cycles = cycles,
                                 strategy_name = strategy$strategy_name)
   ##transition <- eval_matrix(uneval_matrix,
   ##                          parameters)
-=======
-                                cycles = cycles)
-  transition <- eval_matrix(uneval_matrix,
-                            parameters)
->>>>>>> dev
   states <- eval_state_list(uneval_states, parameters)
-  
-  count_table <- compute_counts(
-    transition = transition,
-    init = init,
-    method = method,
-    inflow = inflow
-  )
-  
+  ##if(is.null(uneval_survival)){
+  if(inherits(uneval_matrix, "uneval_matrix")){
+    transition <- eval_matrix(uneval_matrix,
+                              parameters)
+    
+    count_table <- compute_counts(
+      transition = transition,
+      init = init,
+      method = method,
+      inflow = inflow
+    )
+  }
+  else{
+    ## here's where we get all the counts from partitioned survival
+    transition <- "not used - see partitioned_survival"
+    count_table <- 
+      compute_counts_part_surv(strategy$partitioned_survival,
+                               use_km_until = unique(parameters$km_until),
+                               num_patients = sum(init),
+                               markov_cycle = 1:cycles,
+                               markov_cycle_length = 1,
+                               names(init))
+  }
   values <- compute_values(states, count_table)
   
   if (expand) {
