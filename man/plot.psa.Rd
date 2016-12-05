@@ -4,7 +4,7 @@
 \alias{plot.psa}
 \title{Plot Results of Probabilistic Analysis}
 \usage{
-\method{plot}{psa}(x, type = c("ce", "ac", "cov"), max_wtp = 1e+05,
+\method{plot}{psa}(x, type = c("ce", "ac", "cov", "evpi"), max_wtp = 1e+05,
   n = 100, log_scale = TRUE, bw = FALSE, ...)
 }
 \arguments{
@@ -33,6 +33,7 @@ Various plots for Markov models probabilistic analysis.
 \code{type = "ac"} plots cost-effectiveness acceptability
 curves, \code{type = "ce"} plots results on the 
 cost-efficiency plane, \code{type = "cov"} to perform
-covariance analysis on the results.
+covariance analysis on the results, \code{type = "evpi"}
+for expected value of perfect information.
 }
 

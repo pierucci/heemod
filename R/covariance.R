@@ -8,44 +8,11 @@ compute_cov <- function(psa) {
   form_effect <- stats::as.formula(paste(
     ".effect ~", paste(sprintf("s(%s)", psa$resamp_par), collapse = "+")
   ))
-  compute_prop <- function(mod) {
-    n <- attr(mod$terms, "term.labels")
-    if (identical(0, stats::var(mod$y))) {
-      return(
-        rep(0, length(n)) %>% 
-          stats::setNames(n) %>% 
-          as.list() %>% 
-          as.data.frame()
-      )
-    }
-    
-    data_trans <- mgcv::predict.gam(mod, type = "terms") %>% 
-      cbind(y = mod$y) %>% 
-      scale() %>% 
-      as.data.frame() %>% 
-      stats::setNames(c(n, "y"))
-    
-    form <- stats::as.formula(paste(
-      "y ~", paste(n, collapse = "+")
-    ))
-    res <- stats::lm(form, data = data_trans)
-    
-    val <- abs(stats::coef(res)[-1])
-    tot <- sum(val)
-    r2 <- summary(res)$r.squared
-    if (r2 < .99) {
-      warning(sprintf(
-        "Only %.0f%% of variance explained, results may be inaccurate.",
-        r2 * 100
-      ))
-    }
-    as.data.frame(as.list(val / tot * r2))
-  }
   
   psa$psa %>% 
     dplyr::group_by_(".strategy_names") %>% 
     dplyr::do_(
-      ~ compute_prop(mgcv::gam(formula = form_cost, data = .))
+      ~ compute_prop_var(mgcv::gam(formula = form_cost, data = .))
     ) %>% 
     dplyr::mutate(
       .result = "Cost"
@@ -54,7 +21,7 @@ compute_cov <- function(psa) {
       psa$psa %>% 
         dplyr::group_by_(".strategy_names") %>% 
         dplyr::do_(
-          ~ compute_prop(mgcv::gam(formula = form_effect, data = .))
+          ~ compute_prop_var(mgcv::gam(formula = form_effect, data = .))
         ) %>% 
         dplyr::mutate(
           .result = "Effect"
@@ -66,4 +33,38 @@ compute_cov <- function(psa) {
       value_col = ".prop",
       gather_cols = psa$resamp_par
     )
+}
+
+compute_prop_var <- function(mod) {
+  n <- attr(mod$terms, "term.labels")
+  if (identical(0, stats::var(mod$y))) {
+    return(
+      rep(0, length(n)) %>% 
+        stats::setNames(n) %>% 
+        as.list() %>% 
+        as.data.frame()
+    )
+  }
+  
+  data_trans <- mgcv::predict.gam(mod, type = "terms") %>% 
+    cbind(y = mod$y) %>% 
+    scale() %>% 
+    as.data.frame() %>% 
+    stats::setNames(c(n, "y"))
+  
+  form <- stats::as.formula(paste(
+    "y ~", paste(n, collapse = "+")
+  ))
+  res <- stats::lm(form, data = data_trans)
+  
+  val <- abs(stats::coef(res)[-1])
+  tot <- sum(val)
+  r2 <- summary(res)$r.squared
+  if (r2 < .99) {
+    warning(sprintf(
+      "Only %.0f%% of variance explained, results may be inaccurate.",
+      r2 * 100
+    ))
+  }
+  as.data.frame(as.list(val / tot * r2))
 }
