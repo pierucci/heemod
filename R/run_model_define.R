@@ -134,8 +134,6 @@ run_model_ <- function(uneval_strategy_list,
     names(uneval_strategy_list) <- strategy_names
   }
   
-  for(i in seq(along = strategy_names))
-    uneval_strategy_list[[i]]$strategy_name <- strategy_names[i]
   
   if (! list_all_same(lapply(uneval_strategy_list,
                              function(x) sort(get_state_names(x))))) {
