@@ -112,5 +112,23 @@ test_that(
     sort(result7),
     c("Scenario 2", "Scenario 4","Scenario 5", "Scenario 7")
     )
+  
+  
+  # Special Case:       Two Scenarios, both on frontier
+  # Fronteir:           S1, S2
+  # Weakly Dominated:   None
+  # Strongly Dominated: None 
+  test8<-data.frame(.strategy_names=c("Scenario 1","Scenario 2"),
+                    .cost=c(26041,42000),
+                    .effect=c(10.2497,11.1654), stringsAsFactors=FALSE)
+  
+  result8<-get_frontier(test8)
+  expect_identical(
+    sort(result8),
+    c("Scenario 1", "Scenario 2")
+  )
+  
   }
+  
+ 
 )
