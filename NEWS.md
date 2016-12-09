@@ -10,6 +10,10 @@
 
   * Cleaner handling of clusters.
   * Package `diagram`, `Hmisc` and `logitnorm` moved from `Imports` to `Suggests`.
+  
+## Bugfixes
+
+  * Fixed a bug that would return incorrect efficiency frontiers in some situations.
 
 # heemod 0.7.1
 
