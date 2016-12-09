@@ -2,19 +2,38 @@
 % Please edit documentation in R/efficiency_frontier.R
 \name{get_frontier}
 \alias{get_frontier}
-\title{Return Efficiency Frontier}
+\title{Determines the set of model scenarios (strategies) that are on the 
+cost effective frontier.}
 \usage{
-get_frontier(x)
+get_frontier(x, return.all = FALSE, return.icers = FALSE)
 }
 \arguments{
 \item{x}{An \code{eval_strategy_list} object.}
+
+\item{return.all}{Return frontier, weak and strongly dominated strategies. 
+Default is FALSE}
+
+\item{return.icers}{Return the ICERs for the frontier strategies. 
+Default is FALSE}
 }
 \value{
-A vector of model names on the efficiency
+If return.icers and return.all are FALSE then returns a vector of 
+  strategy names on the efficiency.  If return.icers is true then returns a 
+  list with \code{list("frontier" = vector_of_strategy_names, "icers" = vector_of_icers)}.
+  If return.all then the result is a list with \code{list("frontier" = [vector|list]_of_frontier_strategies, "weakly_dominated" = list_of_weakly_dominated_strategies,"dominated" = list_of_strongly_dominated_strategies)}
   frontier.
 }
 \description{
-Return Efficiency Frontier
+This code impliments the algorithm 
+described in "Suen S -c., Goldhaber-Fiebert JD. "An Efficient, 
+Noniterative Method of Identifying the Cost-Effectiveness Frontier". 
+Med. Decis. Mak. 2016;36:132-6.
+}
+\details{
+The algorithm is based on finding the maximum net monitary 
+benefit (NMB) as a function of willingness to pay (WTP).  The 
+minimal grid of WTPs to guarantee all frontier strategies are 
+found is the set of all positive pairwise icers.
 }
 \keyword{internal}
 
