@@ -128,7 +128,63 @@ test_that(
     c("Scenario 1", "Scenario 2")
   )
   
+  
+  # Special Case:       Two Scenarios, first one is dominated
+  # Fronteir:          S2
+  # Weakly Dominated:   None
+  # Strongly Dominated: S1 
+  test9<-data.frame(.strategy_names=c("Scenario 1","Scenario 2"),
+                    .cost=c(26041,21000),
+                    .effect=c(10.2497,11.1654), stringsAsFactors=FALSE)
+  
+  result9<-get_frontier(test9)
+  expect_identical(
+    sort(result9),
+    c("Scenario 2")
+  )
+  
+  
+  # Special Case:       Three Scenarios, dominated by next neighbor
+  # Fronteir:           S3
+  # Weakly Dominated:   None
+  # Strongly Dominated: S1, S2 
+  test10<-data.frame(.strategy_names=c("Scenario 1","Scenario 2","Scenario 3"),
+                    .cost=c(26041,21000,19000),
+                    .effect=c(10.2497,11.1654,11.5), stringsAsFactors=FALSE)
+  
+  result10<-get_frontier(test10)
+  expect_identical(
+    sort(result10),
+    c("Scenario 3")
+  )
+  
+  
+  # Special Case:       Three Scenarios, one dominated by next neighbor
+  # Fronteir:           S3
+  # Weakly Dominated:   None
+  # Strongly Dominated: S1, S2 
+  test11<-data.frame(.strategy_names=c("Scenario 1","Scenario 2","Scenario 3"),
+                     .cost=c(26041,27000,19000),
+                     .effect=c(10.2497,11.1654,11.5), stringsAsFactors=FALSE)
+  
+  result11<-get_frontier(test11)
+  expect_identical(
+    sort(result11),
+    c("Scenario 3")
+  )
+  
+  # Special Case:       Just one strategy
+  # Fronteir:           S1
+  # Weakly Dominated:   None
+  # Strongly Dominated: None
+  test12<-data.frame(.strategy_names=c("Scenario 1"),
+                     .cost=c(26041),
+                     .effect=c(10.2497), stringsAsFactors=FALSE)
+  
+  expect_error(
+    get_frontier(test12),
+    "Must provide more than one strategy to calculate frontier."
+  )
   }
   
- 
 )
