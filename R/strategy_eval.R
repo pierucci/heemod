@@ -190,9 +190,6 @@ compute_counts <- function(transition, init,
     ))
   }
   
-  init <- init - inflow
-  # because inflow added from first call to add_and_mult
-  
   add_and_mult <- function(x, y) {
     (x + inflow) %*% y
   }
