@@ -35,7 +35,7 @@ compute_cov <- function(psa) {
     r2 <- summary(res)$r.squared
     if (r2 < .99) {
       warning(sprintf(
-        "Only %.0f%% of variance explained, results may be inaccurate.",
+        "Only %.1f%% of variance explained, results may be inaccurate.",
         r2 * 100
       ))
     }
