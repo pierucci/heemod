@@ -968,11 +968,12 @@ save_outputs <- function(outputs, output_dir, overwrite) {
   
   ## some csv files
   if (options()$heemod.verbose) message("** Writing tabular outputs to files ...")
-  utils::write.csv(
-    outputs$demographics,
-    file = file.path(output_dir, "icer_by_group.csv"),
-    row.names = FALSE
-  )
+    icer_to_write <- compute_icer(outputs$demographics$updated_model)
+    utils::write.csv(
+      icer_to_write[order(icer_to_write$.index),],
+      file = file.path(output_dir, "icer_by_group.csv"),
+      row.names = FALSE
+    )
   
   all_counts <- 
     do.call("rbind",
@@ -1007,14 +1008,14 @@ save_outputs <- function(outputs, output_dir, overwrite) {
   )
   
   utils::write.csv(
-    as.data.frame(summary(outputs$dsa)),
+    as.data.frame(outputs$dsa$dsa),
     file = file.path(output_dir, "dsa.csv"),
     row.names = FALSE
   )
   
   
   utils::write.csv(
-    outputs$psa,
+    outputs$psa$psa,
     file = file.path(output_dir, "psa_values.csv"),
     row.names = FALSE
   )
