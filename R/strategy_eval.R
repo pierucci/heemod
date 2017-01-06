@@ -30,7 +30,7 @@
 #'   
 #' @keywords internal
 eval_strategy <- function(strategy, parameters, cycles, 
-                       init, method, expand_limit) {
+                          init, method, expand_limit) {
   stopifnot(
     cycles > 0,
     length(cycles) == 1,
@@ -40,7 +40,7 @@ eval_strategy <- function(strategy, parameters, cycles,
   uneval_survival <- get_partitioned_survival(strategy)
   uneval_matrix <- get_matrix(strategy)
   uneval_states <- get_states(strategy)
-
+  
   i_parameters <- interp_heemod(parameters)
   
   i_uneval_matrix <- uneval_matrix
@@ -56,10 +56,12 @@ eval_strategy <- function(strategy, parameters, cycles,
   )
   
   
-  td_tm <- if(inherits(i_uneval_matrix, "uneval_matrix"))
-              has_state_cycle(i_uneval_matrix)
-            else
-              FALSE
+  td_tm <- if(inherits(i_uneval_matrix, "uneval_matrix")) {
+    has_state_cycle(i_uneval_matrix)
+  } else {
+    FALSE
+  }
+  
   td_st <- has_state_cycle(i_uneval_states)
   
   expand <- any(c(td_tm, td_st))
@@ -113,11 +115,10 @@ eval_strategy <- function(strategy, parameters, cycles,
   
   parameters <- eval_parameters(parameters,
                                 cycles = cycles)
-  ##transition <- eval_matrix(uneval_matrix,
-  ##                          parameters)
+  
   states <- eval_state_list(uneval_states, parameters)
-  ##if(is.null(uneval_survival)){
-  if(inherits(uneval_matrix, "uneval_matrix")){
+  
+  if(inherits(uneval_matrix, "uneval_matrix")) {
     transition <- eval_matrix(uneval_matrix,
                               parameters)
     
@@ -126,18 +127,19 @@ eval_strategy <- function(strategy, parameters, cycles,
       init = init,
       method = method
     )
-  }
-  else{
+  } else {
     ## here's where we get all the counts from partitioned survival
-    transition <- "not used - see partitioned_survival"
-    count_table <- 
-      compute_counts_part_surv(strategy$partitioned_survival,
-                               use_km_until = unique(parameters$km_until),
-                               num_patients = sum(init),
-                               markov_cycle = 1:cycles,
-                               markov_cycle_length = 1,
-                               names(init))
+    transition <- NULL
+    count_table <- compute_counts_part_surv(
+      strategy$partitioned_survival,
+      use_km_until = unique(parameters$km_until),
+      num_patients = sum(init),
+      markov_cycle = seq_len(cycles),
+      markov_cycle_length = 1,
+      names(init)
+    )
   }
+  
   values <- compute_values(states, count_table)
   
   if (expand) {
@@ -239,6 +241,75 @@ compute_counts <- function(transition, init,
   
   structure(out, class = c("cycle_counts", class(out)))
   
+}
+
+
+
+#' Compute Count of Individual in Each State per Cycle based
+#' on a partitioned survival model
+#' 
+#' Given a partitioned survival model, returns the number of
+#' individuals per state per cycle.
+#' 
+#' @param part_surv_obj A \code{flexsurvreg} object, or a
+#'   list specifying a distribution.
+#' @param use_km_until  to what time should Kaplan-Meier
+#'   estimates be used? Model predictions will be used
+#'   thereafter.
+#' @param num_patients The number of patients being modeled.
+#'   Survival probabilities are between 0 and 1, so we
+#'   multiply up by num_patients.
+#' @param state_names Name of the states to be assigned to
+#'   the counts.
+#'   
+#' @details See \code{trans_probs_from_surv} for further
+#'   information on \code{part_surv_obj},
+#'   \code{use_km_until}, and the \code{markov_cycle} 
+#'   arguments.
+#' @return A \code{cycle_counts} object.
+#'   
+#' @keywords internal
+#' @rdname trans_probs_from_surv
+compute_counts_part_surv <- function(part_surv_obj, 
+                                     use_km_until,
+                                     num_patients,
+                                     markov_cycle,
+                                     markov_cycle_length,
+                                     state_names) {
+  stopifnot(length(use_km_until) == 1)
+  
+  pfs_surv <- trans_probs_from_surv(
+    part_surv_obj$PFS_fit, 
+    use_km_until = use_km_until,
+    markov_cycle = markov_cycle,
+    markov_cycle_length = markov_cycle_length, 
+    pred_type = "surv"
+  ) 
+  
+  os_surv <- trans_probs_from_surv(
+    part_surv_obj$OS_fit, 
+    use_km_until = use_km_until,
+    markov_cycle = markov_cycle,
+    markov_cycle_length = markov_cycle_length, 
+    pred_type = "surv"
+  )
+  
+  res <- cbind(
+    pfs_surv,
+    os_surv - pfs_surv , 
+    1 - os_surv
+  )
+  if ("terminal" %in% state_names) {
+    ## fix the "terminal" state
+    terminal <- c(0, diff(res[, 4]))
+    res[, 3:4] <- cbind(res[, 1:2], terminal, res[,3])
+  }
+  
+  res <- res * num_patients
+  colnames(res) <- state_names
+  res <- data.frame(res)
+  
+  structure(res, class = c("cycle_counts", class(res)))
 }
 
 #' Compute State Values per Cycle

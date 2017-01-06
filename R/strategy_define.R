@@ -131,9 +131,10 @@ get_state_names.uneval_model <- function(x, ...) {
   get_state_names(get_states(x))
 }
 
-get_partitioned_survival <- function(x){
+get_partitioned_survival <- function(x) {
   UseMethod("get_partitioned_survival")
 }
-get_partitioned_survival.default <- function(x){
+
+get_partitioned_survival.default <- function(x) {
   x$partitioned_survival
 }
