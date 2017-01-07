@@ -148,84 +148,117 @@ dist_from_fits <- function(this_fit){
   attr(this_fit, "dist")
 }
 
+#' Fit Survival Models
 #' 
-#' Fit survival models using different distributions
-#'   
-#' @param survdata Survival data to be used.
-#' @param dists Distributional forms to be considered in fitting using
-#'     \code{flexsurvreg}.  By default, includes exponential, Weibull, 
-#'     lognormal, gamma, gompertz, and generalized gamma.  Kaplan-Meier
-#'     curves will also be stored automatically. 
-#' @param treatment_col_name Name of the column in survdata that holds the
-#'     treatment group names (for example "control", "treatment", "dose1", and 
-#'     so on).
-#' @param time_col_name Name of the column in survdata with event times.
-#' @param censor_col_name Name of the column in survdata with censorship
-#'     indicators.   0:  event observed; 1:  censored.
-#' @param covariate_col_names  Not yet implemented
-#' @param fit_indiv_groups Should groups be fit individually?  Default TRUE.
+#' Fit multiple survival models
+#' 
+#' No objects are returned for the Kaplan-Meier curve; that 
+#' and can be obtained from any of the fitted objects by 
+#' using the \code{summary.flexsurvreg} function with
+#' \code{type = "survival"}.
+#' 
+#' @param x Survival data to be used.
+#' @param dists Distributional forms to be considered in 
+#'   fitting using \code{flexsurvreg}.
+#' @param group Optional treatment group names.
+#' @param time Event times.
+#' @param censor Censorship indicators. 0: event 
+#'   observed; 1: censored.
+#' @param covariates  Not yet implemented.
+#' @param fit_by_group Should groups be also fit 
+#'   individually?
 #' @return a matrix (with dimnames) of flexsurvreg objects, 
-#'     with rows corresponding to
-#'     the distributions, and columns corresponding to groups.
-#' @details  We don't return a special object for the Kaplan-Meier curve; that
-#'     does not depend on the distribution, and can be obtained from
-#'     any of the fitted objects by using the summary.flexsurvreg function
-#'     with type = "survival". 
-fit_survival_models <- function(survdata,
-                                dists = c("exp", "weibull", "lnorm", "gamma", 
-                                          "gompertz", "gengamma"),
-                                time_col_name, 
-                                censor_col_name, 
-                                treatment_col_name,
-                                covariate_col_names = NULL, 
-                                fit_indiv_groups = TRUE){
+#'   with rows corresponding to the distributions, and 
+#'   columns corresponding to groups.
+fit_survival <- function(x,
+                         dists = c("exp", "weibull",
+                                   "lnorm", "gamma", 
+                                   "gompertz", "gengamma"),
+                         time, censor, group = NULL,
+                         covariates = NULL, 
+                         fit_by_group = TRUE) {
   ##
   ## TODO:  so far, covariate_col_names is only a placeholder
   ##  what needs to be decided is whether to allow all combinations
   ##  of covariates, or have people enter the combinations they want,
   ##  or somehow allow both ways (which might be better handled by
   ##  different functions entering in)
-  if(!requireNamespace("flexsurv", quietly = TRUE))
-    stop("flexsurv packaged needed to fit survival models")
-  stopifnot(is.data.frame(survdata))
-  stopifnot(nrow(survdata) > 0)
-  stopifnot(time_col_name %in% names(survdata))
-  stopifnot(censor_col_name %in% names(survdata))
-  stopifnot(treatment_col_name %in% names(survdata))
-  stopifnot(is.null(covariate_col_names) |
-              all(covariate_col_names %in% names(survdata)))
-  ## make a list of the subgroups, and add a group of all together
-  unique_groups <- as.character(unique(survdata[, treatment_col_name]))  
-  groups_list <- c(list(unique_groups))
-  names(groups_list) <- c("all")
-  if(fit_indiv_groups)
-  {
-    groups_list <- c(as.list(unique_groups), list(unique_groups))
-    names(groups_list) <- c(unique_groups, "all")
+  if(!requireNamespace("flexsurv", quietly = TRUE)) {
+    stop("'flexsurv' packaged needed to fit survival models.")
   }
   
-  formula_base_string <- paste("survival::Surv(", time_col_name, ", ", 
-                               censor_col_name, ")",
-                               " ~", sep = "")
+  stopifnot(
+    inherits(x, "data.frame"),
+    nrow(x) > 0,
+    length(time) == 1,
+    length(censor) == 1,
+    time %in% names(x),
+    censor %in% names(x),
+    is.null(group) || length(group) == 1,
+    is.null(group) || group %in% names(x),
+    is.null(covariates) ||
+      all(covariates %in% names(x))
+  )
+  
+  if (! is.null(group)) {
+    ## make a list of subgroups, and add a group of all together
+    groups_list <- list(all = as.character(unique(x[[group]])))
+    
+    if (fit_by_group) {
+      groups_list <- c(
+        stats::setNames(
+          as.list(groups_list$all),
+          groups_list$all
+        ),
+        groups_list)
+    }
+  } else {
+    groups_list <- list(no_group = NULL)
+  }
+  
+  formula_base_string <- paste0(
+    "survival::Surv(", time, ", ", censor, ")", " ~"
+  )
   
   ## cycle through combinations of distributions and subsets,
   ##   getting survival analysis results at each step
-  conditions <- expand.grid(dist = dists, group = names(groups_list),
-                            stringsAsFactors = FALSE)
-  all_res <- 
-    lapply(1:nrow(conditions), function(i){
-      this_group_set <- groups_list[[ conditions[i, "group"] ]]
-      this_data <- 
-        survdata[survdata[[treatment_col_name]] %in% this_group_set,]
-      ## only include the treatment group in the formula
-      ##   if there is more than one treatment in the data set
-      num_treatments <- length(unique(this_data[, treatment_col_name]))
-      if(num_treatments > 1)
-        this_formula <- paste(formula_base_string, treatment_col_name)
-      else
+  conditions <- do.call(
+    expand.grid,
+    Filter(
+      Negate(is.null),
+      list(
+        dist = dists,
+        group = names(groups_list),
+        stringsAsFactors = FALSE
+      )
+    )
+  )
+  
+  all_res <- lapply(
+    seq_len(nrow(conditions)),
+    function(i) {
+      if (! is.null(group)) {
+        this_group_set <- groups_list[[conditions[i, "group"]]]
+        this_data <- x[x[[group]] %in% this_group_set, ]
+        num_treatments <- length(unique(this_data[, group]))
+        if (num_treatments > 1) {
+          ## only include the treatment group in the formula
+          ##   if there is more than one treatment in the data set
+          
+          this_formula <- paste(formula_base_string, group)
+        } else {
+          this_formula <- paste(formula_base_string, "1")
+        }
+      } else {
+        this_data <- x
         this_formula <- paste(formula_base_string, "1")
-      flexsurv::flexsurvreg(stats::as.formula(this_formula), data = this_data,
-                            dist = conditions[i, "dist"])
+      }
+      
+      flexsurv::flexsurvreg(
+        stats::as.formula(this_formula),
+        data = this_data,
+        dist = conditions[i, "dist"]
+      )
     })
   dim(all_res) <- c(length(dists), length(names(groups_list)))
   dimnames(all_res) <- list(dists, names(groups_list))
