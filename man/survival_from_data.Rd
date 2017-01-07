@@ -2,7 +2,7 @@
 % Please edit documentation in R/survival.R
 \name{survival_from_data}
 \alias{survival_from_data}
-\title{Title Get survival analysis curves from data}
+\title{Compute Survival Analysis Curves from Data}
 \usage{
 survival_from_data(base_dir, surv_dir, data_files = NULL, fit_files = NULL,
   fit_names = NULL, time_col_name = "time", censor_col_name = "status",
@@ -13,51 +13,56 @@ survival_from_data(base_dir, surv_dir, data_files = NULL, fit_files = NULL,
 \arguments{
 \item{base_dir}{base directory for the analysis.}
 
-\item{surv_dir}{subdirectory in which survival data and fits are stored.}
+\item{surv_dir}{subdirectory in which survival data and
+fits are stored.}
 
 \item{data_files}{files containing survival data.}
 
 \item{fit_files}{Files containing fits.}
 
-\item{fit_names}{name(s) to save the fits to, if they are being saved in a file}
+\item{fit_names}{name(s) to save the fits to, if they are
+being saved in a file}
 
 \item{time_col_name, censor_col_name, treatment_col_name}{columns to be used in the analysis}
 
 \item{fit_metric}{Once of AIC, BIC, or m2LL}
 
-\item{best_only}{should only the best fit for each condition
-be returned?}
+\item{best_only}{should only the best fit for each
+condition be returned?}
 
-\item{dists}{the distributions to use to fit the survival function}
+\item{dists}{the distributions to use to fit the survival
+function}
 
-\item{use_envir}{An environment for the results to be saved in.}
+\item{use_envir}{An environment for the results to be
+saved in.}
 }
 \value{
-A list with two elements:  \itemize{
-   \item{\code{best_models}, 
-   a list with the fits for each data file passed in; and} 
-   \item{\code{envir}, 
-   an environment containing the models so they can be referenced to 
-   get probabilities.}
-   }
+A list with two elements:  \itemize{ 
+  \item{\code{best_models}, a list with the fits for each
+  data file passed in; and} \item{\code{envir}, an
+  environment containing the models so they can be
+  referenced to get probabilities.} }
 }
 \description{
-Title Get survival analysis curves from data
+Compute Survival Analysis Curves from Data
 }
 \details{
-By default, the function fits with six different distribution fucntions:
-exponential,  Weibull,  lognormal, Gompertz, gamma, and generalized gamma.
-
-If data_files is NULL and fit files exists, then fit_files
-  should have the names of files in which survival models are kept.
-  If data_files is not NULL, then survival models will be fit from
-  the data in data_files (using the \code{flexsurvreg} package), and if fit_files
-  is also not NULL, the survival models will be saved in fit_files.
+By default, the function fits with six different
+  distribution fucntions: exponential,  Weibull, 
+  lognormal, Gompertz, gamma, and generalized gamma.
   
-  If \code{best_only = TRUE}, then \code{best_models} will be a vector
-  of models, one for each group.   
-  If \code{best_only = FALSE}, \code{best_models}
-  will have a matrix of models, with each row corresponding to a 
+  If data_files is NULL and fit files exists, then
+  fit_files should have the names of files in which
+  survival models are kept. If data_files is not NULL,
+  then survival models will be fit from the data in
+  data_files (using the \code{flexsurvreg} package), and
+  if fit_files is also not NULL, the survival models will
+  be saved in fit_files.
+  
+  If \code{best_only = TRUE}, then \code{best_models}
+  will be a vector of models, one for each group. If
+  \code{best_only = FALSE}, \code{best_models} will have
+  a matrix of models, with each row corresponding to a 
   distribution and each column to a group.
 }
 

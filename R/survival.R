@@ -139,6 +139,7 @@ survival_from_data <- function(base_dir, surv_dir, data_files = NULL,
     }
     best_models <- mget(fit_names)
   }
+  
   names(best_models) <- fit_names
   res <- list(best_models, envir = use_envir)
   res
@@ -150,10 +151,10 @@ dist_from_fits <- function(this_fit){
 
 #' Fit Survival Models
 #' 
-#' Fit multiple survival models
+#' Fit multiple survival models, with various distributions.
 #' 
-#' No objects are returned for the Kaplan-Meier curve; that 
-#' and can be obtained from any of the fitted objects by 
+#' No objects are returned for the Kaplan-Meier fit; that 
+#' can be obtained from any of the fitted objects by 
 #' using the \code{summary.flexsurvreg} function with
 #' \code{type = "survival"}.
 #' 
@@ -167,9 +168,12 @@ dist_from_fits <- function(this_fit){
 #' @param covariates  Not yet implemented.
 #' @param fit_by_group Should groups be also fit 
 #'   individually?
-#' @return a matrix (with dimnames) of flexsurvreg objects, 
-#'   with rows corresponding to the distributions, and 
+#'   
+#' @return a matrix of flexsurvreg objects, 
+#'   with rows corresponding to distributions, and 
 #'   columns corresponding to groups.
+#'   
+#' @export
 fit_survival <- function(x,
                          dists = c("exp", "weibull",
                                    "lnorm", "gamma", 
@@ -202,15 +206,14 @@ fit_survival <- function(x,
   
   if (! is.null(group)) {
     ## make a list of subgroups, and add a group of all together
-    groups_list <- list(all = as.character(unique(x[[group]])))
     
     if (fit_by_group) {
-      groups_list <- c(
-        stats::setNames(
-          as.list(groups_list$all),
-          groups_list$all
-        ),
-        groups_list)
+      groups_list <- stats::setNames(
+        as.list(as.character(unique(x[[group]]))),
+        as.character(unique(x[[group]]))
+      )
+    } else {
+      groups_list <- list(all = as.character(unique(x[[group]])))
     }
   } else {
     groups_list <- list(no_group = NULL)
@@ -234,7 +237,7 @@ fit_survival <- function(x,
     )
   )
   
-  all_res <- lapply(
+  res <- lapply(
     seq_len(nrow(conditions)),
     function(i) {
       if (! is.null(group)) {
@@ -260,136 +263,149 @@ fit_survival <- function(x,
         dist = conditions[i, "dist"]
       )
     })
-  dim(all_res) <- c(length(dists), length(names(groups_list)))
-  dimnames(all_res) <- list(dists, names(groups_list))
-  all_res
+  
+  dim(res) <- c(length(dists), length(names(groups_list)))
+  dimnames(res) <- list(dists, names(groups_list))
+  
+  structure(res, class = c("fit_survival", class(res)))
 }
 
-#' Choose the best model out of a set based on a metric.
-#'   
-#' @param surv_fits A list object from \code{f.get.survival.probs} that gives
-#' 		a collection (list) of parametric survival fit object. 
-#' @param metric The metric to choose the model by.
-#' 		Currently supports selecting the best model using one (and only one) of the
-#' 		following metrics:
-#' 			1. "AIC": Akaike information criterion
-#' 			2. "BIC": Bayesian information criterion
-#' 			3. "m2LL": -2*log likelihood
-#' @details
-#' Gets the best survival model, according to a particular metric.
-#' 	Current implementation is limited to selecting the best model
-#' 	 using one (and only one) of the following metrics:
-#' 		1. Akaike information criterion (AIC)
-#' 		2. Bayesian information criterion (BIC)
-#' 		3. -2*log likelihood (-2LL)
-#' @return The best model according to the chosen metric.
-get_best_surv_model <-function(surv_fits,
-                               metric=c("AIC")) {
-  
-  #argument checks
-  stopifnot(length(surv_fits) > 0)
-  stopifnot(length(metric)==1)
-  stopifnot(metric %in% c("AIC","BIC","m2LL"))
-  
-  #order surv_fits by metric priority
-  sorted = surv_fits[order(sapply(surv_fits,'[[',metric))]
-  
-  #return best model
-  best_model <- sorted[[1]]
-  attr(best_model, "dist") <- names(sorted)[1]
-  best_model
-}
-
-#' Transition probabilities from a survival model. 
-#' @param x Either an object of \code{\link[flexsurv]{flexsurvreg}} 
-#'   or a list specifying a distribution and its arguments.
-#' @param surv_fit An object of class \code{\link[flexsurv]{flexsurvreg}} 
-#'   that gives	the parametric survival fit object. 
-#' @param dist_list A list object with \code{dist_name} and other elements
-#'   giving appropriate arguments to \code{dist_name}
-#' @param use_km_until Up to what time should Kaplan-Meier estimates be used?
-#'   Model predictions will be used thereafter.
-#'   See \code{Details}. 
-#' @param markov_cycle The Markov cycles for which to predict.
-#' @param markov_cycle_length The value of a Markov cycle in absolute time units.
-#' @param pred_type either \code{prob}, for transition probabilities, or 
-#'   \code{surv}, for survival
-#' @param ... arguments to be passed through by UseMethod
-#' @details
-#' 	The transition probabilities are estimated from a parametric fit to survival data. 
-#' 	This function is to be used when specifying transition probabilities based on 
-#' 	a survival model.
+#' Return Best Fitting Distribution
 #' 
-#' 	Kaplan-Meier probabilities will be used until time \code{use_km_until}.	
-#' 	For example: if \code{use_km_until = 10},
-#' 	then KM estimates will be used for Markov cycles up to number 9,
-#' 	and model predictions	would be used thereafter.
-#' 	
-#' 	If \code{use_km_until = 0}, then only model probabilities will be used.
-#' 	\code{use_km_until < 0} will produce an error.
-#' 	
-#' 	\code{use_km_until} is used only when an object of class \code{flexsurvreg}
-#' 	  is passed to the function, because when only a distribution with arguments
-#' 	  is passed, there is no Kaplan-Meier curve.
-#'   @return
-#'   Returns the Markov transition probability for the current Markov cycle,
-#' 		as estimated by the Kaplan-Meier curve or from a parametric fit to 
-#' 		survival data, as specified by use_km_until.
-#' 		@examples 
-#' 		trans_probs_from_surv(list(dist_name = "exp", rate = 0.01))
-trans_probs_from_surv <- function(x, ...){
-  UseMethod("trans_probs_from_surv")
+#' Given an object from \code{\link{fit_survival}}, returns 
+#' the best fitting distribution with regard to the given
+#' metric.
+#' 
+#' Gets the best survival fit, according to a particular 
+#' metric. Current metrics are: Akaike information criterion
+#' (\code{AIC}), Bayesian information criterion 
+#' (\code{BIC}), -2*log(likelihood) (\code{m2LL}).
+#' 
+#' @param x Object returned by \code{\link{fit_survival}}.
+#' @param metric Metric to assess model fit.
+#'   
+#' @return The best fitting distribution according to the
+#'   chosen metric.
+get_best_fit <-function(x, metric = c("AIC","BIC","m2LL")) {
+  
+  metric <- match.arg(metric)
+  
+  stopifnot(length(x) > 0)
+  
+  switch(
+    metric,
+    AIC = {
+      mat_fit <- get_AIC(x)
+    },
+    BIC = {
+      mat_fit <- get_BIC(x)
+    },
+    m2LL = {
+      mat_fit <- get_m2LL(x)
+    }
+  )
+  
+  dim(mat_fit) <- dim(x)
+  dimnames(mat_fit) <- dimnames(x)
+  
+  for (i in seq_len(ncol(mat_fit))) {
+    mat_fit[, i] <- order(mat_fit[, i])
+  }
+  
+  res <- rep(rownames(mat_fit),
+             ncol(mat_fit))[as.vector(mat_fit == 1)]
+  names(res) <- colnames(mat_fit)
+  
+  res
 }
 
-#' @rdname trans_probs_from_surv
-trans_probs_from_surv.flexsurvreg <- function(surv_fit,
-                                              use_km_until = 0,
-                                              markov_cycle,
-                                              markov_cycle_length = 1,
-                                              pred_type = c("prob", "surv")) {
-  #argument checks
-  stopifnot(length(surv_fit) > 0)
-  stopifnot(all(markov_cycle > 0))
-  stopifnot(markov_cycle_length > 0)
-  stopifnot(use_km_until >= 0)
-  stopifnot(length(use_km_until <- unique(use_km_until)) == 1)
-  pred_type <- match.arg(pred_type)
+#' Extract Transition Probabilities from a Survival Model
+#' 
+#' Get probabilities from fitted survival models, to be used
+#' by a transition matrix.
+#' 
+#' If \code{use_km_until = 0}, then only model probabilities
+#' will be used.
+#' 
+#' The transition probabilities are estimated from a 
+#' parametric fit to survival data. This function is to be 
+#' used when specifying transition probabilities based on a 
+#' survival model.
+#' 
+#' @param x Either an object of 
+#'   \code{\link[flexsurv]{flexsurvreg}} or a list 
+#'   specifying a distribution and its arguments.
+#' @param cycle The \code{markov_cycle} or 
+#'   \code{state_cycle} for which to predict.
+#' @param km_limit Up to what time should Kaplan-Meier 
+#'   estimates be used? Model predictions will be used 
+#'   thereafter. See \code{Details}.
+#' @param cycle_length The value of a Markov cycle in 
+#'   absolute time units.
+#' @param type either \code{prob}, for transition 
+#'   probabilities, or \code{surv}, for survival
+#' @param ... arguments to be passed to methods.
+#'   
+#' @return Returns the Markov transition probability for the
+#'   cycles.
+#'   
+#' @export
+#' 
+#' @examples 
+#' 		
+#' trans_probs_from_surv(list(dist_name = "exp", rate = 0.01))
+#' 
+get_probabilities <- function(x, ...){
+  UseMethod("get_probabilities")
+}
+
+#' @rdname get_probabilities
+#' @export
+get_probabilities.flexsurvreg <- function(x, cycle,
+                                          km_limit = 0,
+                                          cycle_length = 1,
+                                          type = c("prob", "surv")) {
+  
+  stopifnot(
+    length(x) > 0,
+    all(cycle > 0),
+    cycle_length > 0,
+    km_limit >= 0,
+    length(km_limit) == 1
+  )
+  
+  type <- match.arg(type)
   ##    if(pred_type == "surv" & use_km_until == 0)
   ##      stop('prediction of "surv" only with Kaplan-Meier
   ##           probabilities (use_km_until > 0)')
   
   #get times in absolute (not Markov) units
-  times_surv = markov_cycle_length * c(0, markov_cycle)
+  times_surv <- cycle_length * c(0, cycle)
   
-  preds <- rep(NA, length(markov_cycle))
+  preds <- rep(NA, length(cycle))
   
-  if(use_km_until > 0)
-    use_km_pred <-
-    data.frame(time = c(0, use_km_until + 1e-6),
-               method = c("km", "pred"))
-  else
-    use_km_pred <- data.frame(time = 0, method = "pred")
-  prob_type <- look_up(use_km_pred,
-                       time = markov_cycle,
-                       bin = "time",
-                       value = "method")
-  use_km <- prob_type %in% c("KM", "km")
-  use_pred <- prob_type == "pred"
+  prob_type <- ifelse(
+    cycle <= km_limit,
+    "km", "pred"
+  )
   
-  if (any(use_km)) {
+  use_km <- prob_type == "km"
+  use_pred <- ! use_km
+  
+  if (any(prob_type %in% "km")) {
     ## get KM-based probabilities - code taken from
     ## plot.flexsurvreg
-    mf <- stats::model.frame(surv_fit)
+    mf <- stats::model.frame(x)
     Xraw <- mf[, attr(mf, "covnames.orig"), drop = FALSE]
-    dat <- surv_fit$data
+    dat <- x$data
     isfac <- sapply(Xraw, is.factor)
-    mm <-  as.data.frame(stats::model.matrix(surv_fit))
+    mm <-  as.data.frame(stats::model.matrix(x))
     form <-
       "survival::Surv(dat$Y[,\"start\"],dat$Y[,\"stop\"],dat$Y[,\"status\"]) ~ "
     
     form <- paste(form,
-                  if (surv_fit$ncovs > 0 && all(isfac)) {
-                    paste("mm[,", 1:surv_fit$ncoveffs, "]", collapse = " + ")
+                  if (x$ncovs > 0 && all(isfac)) {
+                    paste("mm[,", 1:x$ncoveffs, "]", collapse = " + ")
                   } else {
                     1})
     form <- stats::as.formula(form)
@@ -399,9 +415,11 @@ trans_probs_from_surv.flexsurvreg <- function(surv_fit,
     max.time = floor(max(dat$Y[, "stop"]))
     times_KM = intersect(times_surv, c(0:max.time))
     ## times_KM <- times_surv
-    km <-
-      summary(survival::survfit(form, data = mm), times = times_KM)
-    if(pred_type == "prob"){
+    km <- summary(
+      survival::survfit(form, data = mm),
+      times = times_KM
+    )
+    if (type == "prob") {
       km_cumhaz <- -log(km$surv)
       km_haz <- diff(km_cumhaz)
       KM_tr_prob <- 1 - exp(-km_haz)
@@ -410,122 +428,131 @@ trans_probs_from_surv.flexsurvreg <- function(surv_fit,
       ## need to check through this more thoroughly
       KM_tr_prob = c(KM_tr_prob, rep(0, delta))
       preds[use_km] <- KM_tr_prob[use_km]
-    } else {
+    } else if (type == "surv") {
       preds[use_km] <- km$surv[-length(km$surv)][use_km]
     }
   }
   
   if (any(use_pred)) {
-    if (inherits(surv_fit, "flexsurvreg")) {
+    if (inherits(x, "flexsurvreg")) {
       #get pred-based probabilities
-      if(pred_type == "prob"){
-        tmp <-
-          as.data.frame(flexsurv::summary.flexsurvreg(surv_fit,
-                                                      t = times_surv,
-                                                      type = "cumhaz"))
+      if(type == "prob") {
+        tmp <- as.data.frame(flexsurv::summary.flexsurvreg(
+          x,
+          t = times_surv,
+          type = "cumhaz")
+        )
         pred_tr_prob <- 1 - exp(-diff(tmp$est))
         preds[use_pred] <- pred_tr_prob[use_pred]
-      }
-      if(pred_type == "surv"){
-        preds[use_pred] <- 
-          flexsurv::summary.flexsurvreg(
-            surv_fit,
-            t = times_surv,
-            type = "survival")[[1]]$est[-1][use_pred]
+      } else if (type == "surv") {
+        preds[use_pred] <- flexsurv::summary.flexsurvreg(
+          x,
+          t = times_surv,
+          type = "survival")[[1]]$est[-1][use_pred]
       }
     }
   }
+  
+  stopifnot(
+    all(! is.na(preds))
+  )
+  
   preds
 }
 
-
-#' @rdname trans_probs_from_surv
-trans_probs_from_surv.list <- function(dist_list,
-                                       use_km_until,
-                                       markov_cycle,
-                                       markov_cycle_length = 1,
-                                       pred_type = c("prob", "surv")) {
-  stopifnot("dist_name" %in% names(dist_list))
-  this_fn <- paste0("r", dist_list$dist_name)
-  correct_names <-
-    all(setdiff(names(dist_list), "dist_name") %in%
-          names(formals(this_fn)))
-  if (!correct_names)
-    stop("the list does not give the correct arguments for the distribution")
+#' @rdname get_probabilities
+#' @export
+get_probabilities.list <- function(x, cycle,
+                                   km_limit = 0,
+                                   cycle_length = 1,
+                                   type = c("prob", "surv")) {
+  type <- match.arg(type)
   
-  times_surv = markov_cycle_length * c(0, markov_cycle)
-  Hfn <- paste0("H", dist_list$dist_name)
-  args <- dist_list[-match("dist_name", names(dist_list))]
+  stopifnot(
+    "dist_name" %in% names(x),
+    all(cycle > 0)
+  )
+  
+  this_fn <- paste0("r", x$dist_name)
+  
+  correct_names <- setdiff(
+    names(x), "dist_name"
+  ) %in% names(formals(this_fn))
+  
+  if (! all(correct_names)) {
+    stop(sprintf(
+      "Incorrect arguments: %s.",
+      paste(setdiff(
+        names(x), "dist_name"
+      )[! correct_names])))
+  }
+  
+  times_surv <- cycle_length * c(0, cycle)
+  Hfn <- get(paste0("H", x$dist_name),
+             envir = asNamespace("flexsurv"))
+  args <- x[- match("dist_name", names(x))]
   args <- as.list(args)
   args[["x"]] <- times_surv
-  cumhaz <- do.call(paste0("H", dist_list$dist_name), args)
-  if(pred_type == "prob")
+  cumhaz <- do.call(Hfn, args)
+  
+  if(type == "prob") {
     pred_tr_prob <- 1 - (1 / exp(diff(cumhaz)))
-  if(pred_type == "surv")
+  } else if (type == "surv") {
     pred_tr_prob <- exp(-cumhaz)[-1]
+  }
+  
   pred_tr_prob
 }
 
-#' Get transition or survival probabilities from fits
-#'
-#' @param fits Fits from \code{flexsurvreg}, or a list specifying 
-#'   distributions
-#' @param treatment The treatment for which probabilities are desired 
-#' @param km_until Up to what time should Kaplan-Meier estimates be used?  
-#' @param markov_cycle The Markov cycles for which to predict.
-#' @param markov_cycle_length The value of a Markov cycle in absolute time units.
-#' @param pred_type "prob" or "surv", depending on which type of prediction
-#'   is desired.
-#'
-#' @return a vector of probabilities
+#' @rdname get_probabilities
 #' @export
-#'
-#' @examples
-get_surv_probs <- function(fits, treatment, km_until, markov_cycle, 
-                           markov_cycle_length,
-                           pred_type = c("prob", "surv")) {
-  if(missing(fits))
-    stop("must specify argument 'fits' in get_surv_probs")
-  if(missing(treatment))
-    stop("must specify argument 'treatment' in get_surv_probs")
-  if(missing(km_until))
-    stop("must specify argument 'km_until' in get_surv_probs")
-  if(missing(markov_cycle))
-    stop("must specify argument 'markov_cycle' in get_surv_probs")
-  if(missing(markov_cycle_length))
-    stop("must specify argument 'markov_cycle_length' in get_surv_probs")
-  pred_type <- match.arg(pred_type)
-  trans_probs_from_surv(
-    fits[[treatment]], 
-    use_km_until = km_until, 
-    markov_cycle = markov_cycle,
-    markov_cycle_length = markov_cycle_length,
-    pred_type = pred_type)
+get_probabilities.fit_survival <- function(x, cycle,
+                                           km_limit = 0,
+                                           cycle_length = 1,
+                                           type = c("prob", "surv"),
+                                           group = NULL,
+                                           metric = c("AIC","BIC","m2LL")) {
+  if (is.null(group) && ! "no_group" %in% colnames(x)) {
+    stop("'group' must be supplied when fit is performed by group.")
+  }
+  
+  type <- match.arg(type)
+  metric <- match.arg(metric)
+  
+  best_fit <- get_best_fit(x, metric = metric)
+  
+  get_probabilities(
+    x[[best_fit[group], group]],
+    cycle = cycle,
+    km_limit = km_limit,
+    cycle_length = cycle_length,
+    type = type
+  )
 }
 
-
-#' Compute Count of Individual in Each State per Cycle
-#'   based on a partitioned survival model
+#' Compute Counts for Partitioned Survival Models
 #' 
-#' Given a partitioned survival model, returns the number of individuals 
-#' per state per cycle.
+#' Compute count of individual in each state per cycle based
+#' on a partitioned survival model.
 #' 
-#' 
-#' @param part_surv_obj A \code{flexsurvreg} object, or a list
-#'   specifying a distribution.  
-#' @param use_km_until  to what time should Kaplan-Meier estimates be used?
-#'   Model predictions will be used thereafter.
-#' @param num_patients The number of patients being modeled.  Survival
-#'   probabilities are between 0 and 1, so we multiply up by num_patients.
-#' @param state_names Name of the states to be assigned to the counts.
+#' @param part_surv_obj A \code{flexsurvreg} object, or a
+#'   list specifying a distribution.
+#' @param km_limit  to what time should Kaplan-Meier
+#'   estimates be used? Model predictions will be used
+#'   thereafter.
+#' @param num_patients The number of patients being modeled.
+#'   Survival probabilities are between 0 and 1, so we
+#'   multiply up by num_patients.
+#' @param state_names Name of the states to be assigned to
+#'   the counts.
 #'   
-#' @details See \code{trans_probs_from_surv} for further information on
-#'   \code{part_surv_obj}, \code{use_km_until}, and the \code{markov_cycle}
+#' @details See \code{trans_probs_from_surv} for further
+#'   information on \code{part_surv_obj},
+#'   \code{use_km_until}, and the \code{markov_cycle} 
 #'   arguments.
 #' @return A \code{cycle_counts} object.
 #'   
 #' @keywords internal
-#' @rdname trans_probs_from_surv
 compute_counts_part_surv <- function(part_surv_obj, 
                                      use_km_until,
                                      num_patients,
@@ -555,53 +582,29 @@ compute_counts_part_surv <- function(part_surv_obj,
   structure(res, class = c("cycle_counts", class(res)))
 }
 
-#' Calculate additional metrics to evaluate fit of survival model.
-#' 
-#' @param surv_fits A list object from \code{\link{f_fit_survival_models}} that gives
-#' 		a collection (list) of parametric survival fit object. 
-#' @param metrics Metrics to calculate.
-#' @return
-#'   A list object of parametric survival fits, containing additional fields for
-#' 		the calculated fit metrics. 
-#' @details Currently calculates only:
-#' 		\itemize{\item Bayesian information criterion (BIC)
-#' 		\item -2*log likelihood (-2LL)}  (Objects come with AIC already calculated.)
-compute_surv_fit_metrics <-
-  function(surv_fits, metrics = c("BIC","m2LL")) {
-    
-    #argument checks
-    stopifnot(length(surv_fits) > 0)
-    stopifnot(all(metrics %in% c("BIC","m2LL")))
-    
-    #get current and previous time step in absolute (not Markov) units
-    for(metric in metrics)
-    {
-      if(metric=="BIC") { surv_fits = get_BIC(surv_fits)}
-      if(metric=="m2LL") { surv_fits = get_m2LL(surv_fits)}
-    }
-    
-    #returns updated survival fits object
-    surv_fits
-  }
-
-
-get_BIC <- function(surv_fits) {
-  out = surv_fits
-  for(i in 1:length(out))
-  {
-    this_BIC <- (-2*getElement(out[[i]], "loglik") +
-                   (log(as.numeric(getElement(out[[i]], "N")))*
-                      getElement(out[[i]], "npars")))
-    out[[i]]$BIC <- this_BIC 
-  }
-  out
+get_AIC <- function(x) {
+  lapply(x, stats::AIC) %>% 
+    unlist()
 }
 
-get_m2LL <- function(surv_fits) {
-  out <- surv_fits
-  for(i in seq_len(out)) {
-    this_m2LL <- - 2 * getElement(out[[i]], "loglik")
-    out[[i]]$m2LL <- this_m2LL 
-  }
-  out
+get_BIC <- function(x) {
+  lapply(
+    x,
+    function(mod) {
+      (-2*getElement(mod, "loglik") +
+         (log(as.numeric(getElement(mod, "N")))*
+            getElement(mod, "npars"))) 
+    }
+  ) %>% 
+    unlist()
+}
+
+get_m2LL <- function(x) {
+  lapply(
+    x,
+    function(mod) {
+      - 2 * getElement(mod, "loglik")
+    }
+  ) %>% 
+    unlist()
 }
