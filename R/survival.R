@@ -535,50 +535,65 @@ get_probabilities.fit_survival <- function(x, cycle,
 #' Compute count of individual in each state per cycle based
 #' on a partitioned survival model.
 #' 
-#' @param part_surv_obj A \code{flexsurvreg} object, or a
-#'   list specifying a distribution.
-#' @param km_limit  to what time should Kaplan-Meier
-#'   estimates be used? Model predictions will be used
+#' The elements of \code{x} should be called \code{pfs} and 
+#' \code{os} for progression-free survival and overall
+#' survival respectively.
+#' 
+#' See \code{\link{get_probabilities}} for further 
+#' information on \code{km_limit}, and the
+#' \code{markov_cycle} arguments.
+#' 
+#' @param x A list of \code{flexsurvreg} objects, or a list
+#'   of lists specifying distributions.
+#' @param km_limit To what time should Kaplan-Meier 
+#'   estimates be used? Model predictions will be used 
 #'   thereafter.
 #' @param num_patients The number of patients being modeled.
-#'   Survival probabilities are between 0 and 1, so we
-#'   multiply up by num_patients.
-#' @param state_names Name of the states to be assigned to
+#' @param state_names Name of the states to be assigned to 
 #'   the counts.
 #'   
-#' @details See \code{trans_probs_from_surv} for further
-#'   information on \code{part_surv_obj},
-#'   \code{use_km_until}, and the \code{markov_cycle} 
-#'   arguments.
 #' @return A \code{cycle_counts} object.
 #'   
 #' @keywords internal
-compute_counts_part_surv <- function(part_surv_obj, 
-                                     use_km_until,
+compute_counts_part_surv <- function(x, km_limit,
                                      num_patients,
                                      markov_cycle, markov_cycle_length,
-                                     state_names){
+                                     state_names) {
+  
   stopifnot(length(use_km_until) == 1)
-  pfs_surv <- trans_probs_from_surv(part_surv_obj$PFS_fit, 
-                                    use_km_until = use_km_until,
-                                    markov_cycle = markov_cycle,
-                                    markov_cycle_length = markov_cycle_length, 
-                                    pred_type = "surv") 
-  os_surv <- trans_probs_from_surv(part_surv_obj$OS_fit, 
-                                   use_km_until = use_km_until,
-                                   markov_cycle = markov_cycle,
-                                   markov_cycle_length = markov_cycle_length, 
-                                   pred_type = "surv")
-  res <- cbind(pfs_surv, os_surv - pfs_surv , 
-               1 - os_surv)
-  if("terminal" %in% state_names){
+  
+  pfs_surv <- get_probabilities(
+    x$pfs, 
+    km_limit = use_km_until,
+    cycle = markov_cycle,
+    cycle_length = markov_cycle_length, 
+    type = "surv"
+  )
+  
+  os_surv <- get_probabilities(
+    x$os, 
+    km_limit = use_km_until,
+    cycle = markov_cycle,
+    cycle_length = markov_cycle_length, 
+    type = "surv"
+  )
+  
+  res <- cbind(
+    pfs_surv,
+    os_surv - pfs_surv, 
+    1 - os_surv
+  )
+  
+  if ("terminal" %in% state_names) {
     ## fix the "terminal" state
     terminal <- c(0, diff(res[, 4]))
     res[, 3:4] <- cbind(res[, 1:2], terminal, res[,3])
   }
+  
   res <- res * num_patients
   colnames(res) <- state_names
   res <- data.frame(res)
+  
   structure(res, class = c("cycle_counts", class(res)))
 }
 

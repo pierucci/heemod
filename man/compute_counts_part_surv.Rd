@@ -4,23 +4,21 @@
 \alias{compute_counts_part_surv}
 \title{Compute Counts for Partitioned Survival Models}
 \usage{
-compute_counts_part_surv(part_surv_obj, use_km_until, num_patients,
-  markov_cycle, markov_cycle_length, state_names)
+compute_counts_part_surv(x, km_limit, num_patients, markov_cycle,
+  markov_cycle_length, state_names)
 }
 \arguments{
-\item{part_surv_obj}{A \code{flexsurvreg} object, or a
-list specifying a distribution.}
+\item{x}{A list of \code{flexsurvreg} objects, or a list
+of lists specifying distributions.}
 
-\item{num_patients}{The number of patients being modeled.
-Survival probabilities are between 0 and 1, so we
-multiply up by num_patients.}
-
-\item{state_names}{Name of the states to be assigned to
-the counts.}
-
-\item{km_limit}{to what time should Kaplan-Meier
-estimates be used? Model predictions will be used
+\item{km_limit}{To what time should Kaplan-Meier 
+estimates be used? Model predictions will be used 
 thereafter.}
+
+\item{num_patients}{The number of patients being modeled.}
+
+\item{state_names}{Name of the states to be assigned to 
+the counts.}
 }
 \value{
 A \code{cycle_counts} object.
@@ -30,10 +28,13 @@ Compute count of individual in each state per cycle based
 on a partitioned survival model.
 }
 \details{
-See \code{trans_probs_from_surv} for further
-  information on \code{part_surv_obj},
-  \code{use_km_until}, and the \code{markov_cycle} 
-  arguments.
+The elements of \code{x} should be called \code{pfs} and 
+\code{os} for progression-free survival and overall
+survival respectively.
+
+See \code{\link{get_probabilities}} for further 
+information on \code{km_limit}, and the
+\code{markov_cycle} arguments.
 }
 \keyword{internal}
 
