@@ -1,6 +1,0 @@
-data,file
-state,example_oncStates.csv
-parameters,example_oncParams.csv
-survivalInformation,survival_info_explicit_dists.csv
-output,output-nomatrix
-options,example_oncOptions.csv

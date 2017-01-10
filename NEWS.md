@@ -1,10 +1,25 @@
 # devel
 
+## New features
+
+  * Transition probabilities from survival models with `get_probs_from_surv()`:
+    * Parametrically defined by `define_survival()`.
+    * Or fitted on data by the `flexsurv` package.
+  * Support for partitioned survival models with `define_part_surv()`.
+
+## Other features
+
+  * Convenience function `rescale_discount_rate()`.
+
 ## Backend changes
 
   * Cleaner handling of clusters.
   * Package `diagram`, `Hmisc` and `logitnorm` moved from `Imports` to `Suggests`.
+  
+## Acknowledments
 
+  * Thanks to [Matthew Wiener](https://github.com/MattWiener).
+  
 # heemod 0.7.1
 
 ## Bugfixes

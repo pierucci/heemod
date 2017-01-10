@@ -5,7 +5,7 @@
 \title{Compute Counts for Partitioned Survival Models}
 \usage{
 compute_counts_part_surv(x, km_limit, num_patients, markov_cycle,
-  markov_cycle_length, state_names)
+  markov_cycle_length = 1)
 }
 \arguments{
 \item{x}{A list of \code{flexsurvreg} objects, or a list

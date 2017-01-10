@@ -3,7 +3,7 @@
 \name{get_probs_from_surv}
 \alias{get_probs_from_surv}
 \alias{get_probs_from_surv.flexsurvreg}
-\alias{get_probs_from_surv.list}
+\alias{get_probs_from_surv.surv_dist}
 \title{Extract Transition Probabilities from a Survival Model}
 \usage{
 get_probs_from_surv(x, ...)
@@ -11,8 +11,8 @@ get_probs_from_surv(x, ...)
 \method{get_probs_from_surv}{flexsurvreg}(x, cycle, km_limit = 0,
   cycle_length = 1, type = c("prob", "surv"))
 
-\method{get_probs_from_surv}{list}(x, cycle, km_limit = 0, cycle_length = 1,
-  type = c("prob", "surv"))
+\method{get_probs_from_surv}{surv_dist}(x, cycle, km_limit = 0,
+  cycle_length = 1, type = c("prob", "surv"))
 }
 \arguments{
 \item{x}{Either a result from 

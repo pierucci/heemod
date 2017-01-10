@@ -6,15 +6,12 @@
 on a partitioned survival model}
 \usage{
 compute_counts_part_surv(x, km_limit, num_patients, markov_cycle,
-  markov_cycle_length, state_names)
+  markov_cycle_length = 1)
 }
 \arguments{
 \item{num_patients}{The number of patients being modeled.
 Survival probabilities are between 0 and 1, so we
 multiply up by num_patients.}
-
-\item{state_names}{Name of the states to be assigned to
-the counts.}
 
 \item{part_surv_obj}{A \code{flexsurvreg} object, or a
 list specifying a distribution.}
@@ -22,6 +19,9 @@ list specifying a distribution.}
 \item{use_km_until}{to what time should Kaplan-Meier
 estimates be used? Model predictions will be used
 thereafter.}
+
+\item{state_names}{Name of the states to be assigned to
+the counts.}
 }
 \value{
 A \code{cycle_counts} object.

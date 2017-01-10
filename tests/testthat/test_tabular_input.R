@@ -336,10 +336,7 @@ test_that(
     )
     
     expect_error(
-      create_model_from_tabular(states1, NULL, NULL, new.env()),
-      "either a transition matrix (tm_info) or a partitioned
-         survival model (surv_info) must be defined",
-      fixed = TRUE
+      create_model_from_tabular(states1, NULL, NULL, new.env())
     )
   }
 )
@@ -682,58 +679,6 @@ test_that(
     
   }
 )
-
-  test_that("getting survival inputs works",
-            {
-              ref_1 <- heemod:::read_file(system.file(
-                "tabular/test",
-                "survival_spec_1.csv",
-                package = "heemod"
-              ))
-              mixed_order <- heemod:::read_file(system.file(
-                "tabular/test",
-                "survival_spec_2.csv",
-                package = "heemod"
-              ))
-              input <- 
-                list(
-                  surv_data_dir = "survival_data",
-                  fit_files = c("OS.surv.fit", "PFS.surv.fit"),
-                   fit_names = c("OS.fit", "PFS.fit"),
-                   surv_data_files = c("OS.data.csv",
-                                       "PFS.data.csv"),
-                   fit_metric = "AIC",
-                   time_col_name = "time",
-                   censor_col_name = "status",
-                   treatment_col_name = "treatment",
-                   dists = c("exp", "weibull", "lnorm", "gamma", 
-                             "gompertz", "gengamma")
-              )
-              
-              expect_identical(get_survival_input(ref_1), input)
-              expect_identical(get_survival_input(mixed_order), input)
-              
-              ref_error_1 <- read_file(system.file(
-                "tabular/test",
-                "survival_spec_error_1.csv",
-                package = "heemod"
-              ))
-              
-              
-        expect_error(get_survival_input(ref_error_1),
-                     "suffixes do not match")
-              
-        ref_error_2 <- read_file(system.file(
-          "tabular/test",
-          "survival_spec_error_2.csv",
-          package = "heemod"
-        ))
-        expect_error(get_survival_input(ref_error_2),
-                     "same number of elements")
-              
-            }
-        )
-  
 
 test_that(
   "safe conversion works", {
