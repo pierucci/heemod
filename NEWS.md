@@ -14,6 +14,7 @@
 ## Bugfixes
 
   * Fixed a bug that would return incorrect efficiency frontiers in some situations.
+  * Fix a failure of tabular input when a column can be read as all numeric.
 
 # heemod 0.7.1
 

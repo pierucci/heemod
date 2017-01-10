@@ -370,17 +370,17 @@ create_states_from_tabular <- function(state_info,
   }
   
   res <- define_state_list_(
-    setNames(lapply(
+    stats::setNames(lapply(
       state_info$.state,
       function(state) {
         define_state_(
           lazyeval::as.lazy_dots(
-            setNames(lapply(
+            stats::setNames(as.character(lapply(
               values,
               function(value) {
                 state_info[[value]][state_info$.state == state]
               }
-            ), values),
+            )), values),
             env = df_env
           )
         )
@@ -421,9 +421,9 @@ create_states_from_tabular <- function(state_info,
 #' @keywords internal
 create_matrix_from_tabular <- function(trans_probs, state_names,
                                        df_env = globalenv()) {
-  if(! inherits(trans_probs, "data.frame"))
+  if(! inherits(trans_probs, "data.frame")) {
     stop("'trans_probs' must be a data frame.")
-  
+  }
   stopifnot(
     all(c("from", "to", "prob") %in% names(trans_probs)),
     length(state_names) > 0
@@ -460,7 +460,7 @@ create_matrix_from_tabular <- function(trans_probs, state_names,
   prob_mat[as.matrix(trans_probs[, c("to", "from")])] <- trans_probs$prob
   
   res <- define_transition_(
-    lazyeval::as.lazy_dots(prob_mat, env = df_env),
+    lazyeval::as.lazy_dots(as.character(prob_mat), env = df_env),
     state_names = state_names
   )
   if (options()$heemod.verbose) print(res)
@@ -498,8 +498,8 @@ create_parameters_from_tabular <- function(param_defs,
   
   parameters <- define_parameters_(
     lazyeval::as.lazy_dots(
-      setNames(
-        lapply(param_defs$value, function(x) x),
+      stats::setNames(
+        as.character(lapply(param_defs$value, function(x) x)),
         param_defs$parameter
       ),
       env = df_env
@@ -527,15 +527,15 @@ create_parameters_from_tabular <- function(param_defs,
     dsa <- define_dsa_(
       par_names = param_sens,
       low_dots = lazyeval::as.lazy_dots(
-        setNames(
-          lapply(low, function(x) x),
+        stats::setNames(
+          as.character(lapply(low, function(x) x)),
           param_sens
         ),
         env = df_env
       ),
       high_dots = lazyeval::as.lazy_dots(
-        setNames(
-          lapply(high, function(x) x),
+        stats::setNames(
+          as.character(lapply(high, function(x) x)),
           param_sens
         ),
         env = df_env
