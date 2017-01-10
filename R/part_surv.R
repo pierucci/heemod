@@ -31,7 +31,7 @@ compute_counts_part_surv <- function(x, km_limit,
   
   stopifnot(length(use_km_until) == 1)
   
-  pfs_surv <- get_probabilities(
+  pfs_surv <- get_probs_from_surv(
     x$pfs, 
     km_limit = km_limit,
     cycle = markov_cycle,
@@ -39,7 +39,7 @@ compute_counts_part_surv <- function(x, km_limit,
     type = "surv"
   )
   
-  os_surv <- get_probabilities(
+  os_surv <- get_probs_from_surv(
     x$os, 
     km_limit = km_limit,
     cycle = markov_cycle,
@@ -47,16 +47,15 @@ compute_counts_part_surv <- function(x, km_limit,
     type = "surv"
   )
   
-  res <- cbind(
-    pfs_surv,
-    os_surv - pfs_surv, 
-    1 - os_surv
+  res <- data.frame(
+    x1 = pfs_surv,
+    x2 = os_surv - pfs_surv, 
+    x3 = 1 - os_surv
   )
   
-  if ("terminal" %in% state_names) {
-    ## fix the "terminal" state
-    terminal <- c(0, diff(res[, 4]))
-    res[, 3:4] <- cbind(res[, 1:2], terminal, res[,3])
+  if (terminal_state) {
+    res$x4 <- diff(c(0, res$x3))
+    res$x3 <- c(0, res$x3[-nrow(res)])
   }
   
   res <- res * num_patients
