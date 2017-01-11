@@ -1,7 +1,6 @@
 #' Extract Transition Probabilities from a Survival Model
 #' 
-#' Get probabilities from fitted survival models, to be used
-#' by a transition matrix or a partitioned survival model.
+#' Get probabilities from survival models.
 #' 
 #' If \code{use_km_until = 0}, then only model probabilities
 #' will be used.
@@ -18,17 +17,12 @@
 #'   absolute time units.
 #' @param type either \code{prob}, for transition 
 #'   probabilities, or \code{surv}, for survival
-#' @param ... arguments to be passed to methods.
+#' @param ... arguments passed to methods.
 #'   
 #' @return Returns the Markov transition probability for the
 #'   cycles.
 #'   
 #' @export
-#' 
-#' @examples 
-#' 		
-#' trans_probs_from_surv(list(dist_name = "exp", rate = 0.01))
-#' 
 get_probs_from_surv <- function(x, ...){
   UseMethod("get_probs_from_surv")
 }
@@ -38,7 +32,8 @@ get_probs_from_surv <- function(x, ...){
 get_probs_from_surv.flexsurvreg <- function(x, cycle,
                                             km_limit = 0,
                                             cycle_length = 1,
-                                            type = c("prob", "surv")) {
+                                            type = c("prob", "surv"),
+                                            ...) {
   
   stopifnot(
     length(x) > 0,
@@ -140,7 +135,8 @@ get_probs_from_surv.flexsurvreg <- function(x, cycle,
 get_probs_from_surv.surv_dist <- function(x, cycle,
                                           km_limit = 0,
                                           cycle_length = 1,
-                                          type = c("prob", "surv")) {
+                                          type = c("prob", "surv"),
+                                          ...) {
   type <- match.arg(type)
   
   stopifnot(

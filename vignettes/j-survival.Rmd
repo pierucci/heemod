@@ -86,7 +86,6 @@ resTM <- run_model(
 plot(resTM)
 ```
 
-
 A partitioned survival model can also be computed:
 
 ```{r warning=FALSE}

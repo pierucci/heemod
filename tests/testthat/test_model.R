@@ -39,7 +39,7 @@ test_that(
     )
     expect_output(
       str(mod1),
-      "List of 3
+      "List of 2
  $ transition",
       fixed = TRUE
     )
@@ -248,7 +248,7 @@ test_that(
       a, 1-a
     )
     
-    res <- heemod:::eval_matrix(mat, par)
+    res <- heemod:::eval_transition(mat, par)
     
     expect_identical(
       round(res[[1]], 2),

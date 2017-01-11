@@ -9,17 +9,17 @@
 get_probs_from_surv(x, ...)
 
 \method{get_probs_from_surv}{flexsurvreg}(x, cycle, km_limit = 0,
-  cycle_length = 1, type = c("prob", "surv"))
+  cycle_length = 1, type = c("prob", "surv"), ...)
 
 \method{get_probs_from_surv}{surv_dist}(x, cycle, km_limit = 0,
-  cycle_length = 1, type = c("prob", "surv"))
+  cycle_length = 1, type = c("prob", "surv"), ...)
 }
 \arguments{
 \item{x}{Either a result from 
 \code{\link[flexsurv]{flexsurvreg}} or
 \code{\link{define_survival}}.}
 
-\item{...}{arguments to be passed to methods.}
+\item{...}{arguments passed to methods.}
 
 \item{cycle}{The \code{markov_cycle} or 
 \code{state_cycle} for which to predict.}
@@ -39,16 +39,10 @@ Returns the Markov transition probability for the
   cycles.
 }
 \description{
-Get probabilities from fitted survival models, to be used
-by a transition matrix or a partitioned survival model.
+Get probabilities from survival models.
 }
 \details{
 If \code{use_km_until = 0}, then only model probabilities
 will be used.
-}
-\examples{
-		
-trans_probs_from_surv(list(dist_name = "exp", rate = 0.01))
-
 }
 
