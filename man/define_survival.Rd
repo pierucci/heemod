@@ -21,7 +21,8 @@ by \code{\link{get_probs_from_surv}}.
 }
 \examples{
 
-define_survival(distribution = "exp", lambda = .5)
+define_survival(distribution = "exp", rate = .5)
+define_survival(distribution = "gompertz", rate = .5, shape = 1)
 
 }
 

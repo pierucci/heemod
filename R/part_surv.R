@@ -1,4 +1,3 @@
-
 #' Compute Counts for Partitioned Survival Models
 #' 
 #' Compute count of individual in each state per cycle based
@@ -29,7 +28,17 @@ compute_counts_part_surv <- function(x, km_limit,
                                      markov_cycle,
                                      markov_cycle_length = 1) {
   
-  stopifnot(length(use_km_until) == 1)
+  stopifnot(
+    length(use_km_until) == 1,
+    length(x$state_names) %in% 3:4,
+    all(names(x$state_names) %in% c(
+      "progression_free",
+      "progression",
+      "terminal",
+      "death"
+    )),
+    ! any(duplicated(names(x$state_names)))
+  )
   
   pfs_surv <- get_probs_from_surv(
     x$pfs, 
@@ -48,19 +57,19 @@ compute_counts_part_surv <- function(x, km_limit,
   )
   
   res <- data.frame(
-    x1 = pfs_surv,
-    x2 = os_surv - pfs_surv, 
-    x3 = 1 - os_surv
+    progression_free = pfs_surv,
+    progression = os_surv - pfs_surv, 
+    death = 1 - os_surv
   )
   
-  if (terminal_state) {
-    res$x4 <- diff(c(0, res$x3))
-    res$x3 <- c(0, res$x3[-nrow(res)])
+  if (length(x$state_names) == 4) {
+    res$terminal <- diff(c(0, res$x3))
+    res$death <- c(0, res$x3[-nrow(res)])
   }
   
   res <- res * num_patients
-  colnames(res) <- state_names
-  res <- data.frame(res)
+  
+  names(res) <- x$state_names[names(res)]
   
   structure(res, class = c("cycle_counts", class(res)))
 }
@@ -70,24 +79,89 @@ compute_counts_part_surv <- function(x, km_limit,
 #' Define a partitioned survival model with progression-free
 #' survival and overall survival.
 #' 
-#' @param pfs Distribution of progression-free survival.
-#' @param os Distribution of overall survival.
-#' @param state_names character vector, optional, length 3. State
-#'   names for original state, progression and death
-#'   respectively.
-#' @param km_limit
+#' @param pfs Result of \code{\link{get_prob_from_surv}} for
+#'   progression-free survival.
+#' @param os Idem for overall survival.
+#' @param state_names named character vector, length 3 or 4.
+#'   State names for progression-free state, progression, 
+#'   (optionally terminal) and death respectively. Elements 
+#'   should be named \code{"progression_free"}, 
+#'   \code{"progression"}, (optionally \code{"terminal"}), 
+#'   and \code{"death"}. See examples.
+#' @param terminal_state Should a terminal state be 
+#'   included? Only used when state names are not provided.
+#' @param .dots Used for NSE, lazy dots with names
+#'   \code{pfs} and \code{os}.
 #'   
-#' @return
+#' @return A \code{part_surv} object.
 #' @export
 #' 
 #' @examples
-define_part_surv <- function(pfs, os, state_names, km_limit) {
+#' probs_pfs <- define_survival("exp", rate = 1)
+#' probs_os <- define_survival("exp", rate = .5)
+#' 
+#' define_part_surv(
+#'   pfs = get_probs_from_surv(probs_pfs, cycle = markov_cycle),
+#'   os = get_probs_from_surv(probs_os, cycle = markov_cycle),
+#'   state_names = c(
+#'     progression_free = "A",
+#'     progression = "B",
+#'     terminal = "C",
+#'     death = "D"
+#'   )
+#' )
+#' #' identical to:
+#' define_part_surv(
+#'   pfs = get_probs_from_surv(probs_pfs, cycle = markov_cycle),
+#'   os = get_probs_from_surv(probs_os, cycle = markov_cycle),
+#'   terminal_state = TRUE
+#' )
+#' 
+define_part_surv <- function(..., state_names,
+                             terminal_state = FALSE) {
+  
   if (missing(state_names)) {
     message("No named state -> generating names.")
-    state_names <- LETTERS[seq_len(3)]
-  } else {
-    if (length(state_names) != 3) {
-      stop("'state_names' should be of length 3.")
-    }
+    state_names <- LETTERS[seq_len(if (terminal_state) 4 else 3)]
+    names(state_names) <- c(
+      "progression_free",
+      "progression",
+      "terminal",
+      "death"
+    )
   }
+  
+  .dots <- lazyeval::lazy_dots(...)
+  
+  define_part_surv_(.dots = .dots, state_names = state_names)
+}
+
+#' @export
+#' @rdname define_part_surv
+define_part_surv_ <- function(.dots, state_names) {
+  
+  stopifnot(
+    length(state_names) %in% 3:4,
+    ! is.null(names(state_names)),
+    all(names(state_names) %in% c(
+      "progression_free",
+      "progression",
+      "terminal",
+      "death"
+    )),
+    ! any(duplicated(names(state_names))),
+    length(.dots) == 2,
+    all(sort(names(.dots)) == c("os", "pfs"))
+  )
+  
+  res <- list(
+    pfs = .dots$pfs,
+    os = .dots$os,
+    state_names = state_names
+  )
+  
+  structure(
+    res,
+    class = "part_surv"
+  )
 }
