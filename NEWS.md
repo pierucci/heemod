@@ -2,9 +2,17 @@
 
 ## New features
 
+  * Transition probabilities from survival models with `get_probs_from_surv()`:
+    * Parametrically defined by `define_survival()`.
+    * Or fitted on data by the `flexsurv` package.
+  * Support for partitioned survival models with `define_part_surv()`.
   * Plot EVPI.
   * Export PSA files for Sheffield Accelerated Value of Information sofware.
   * Individuals can enter the model after the beginning with the `inflow` argument in `run_model()` (mainly for budget impact analysis).
+
+## Other features
+
+  * Convenience function `rescale_discount_rate()`.
 
 ## Backend changes
 
@@ -15,7 +23,11 @@
 
   * Fixed a bug that would return incorrect efficiency frontiers in some situations.
   * Fix a failure of tabular input when a column can be read as all numeric.
+  
+## Acknowledments
 
+  * Thanks to [Matthew Wiener](https://github.com/MattWiener).
+  
 # heemod 0.7.1
 
 ## Bugfixes

@@ -4,10 +4,11 @@
 \alias{compute_counts}
 \title{Compute Count of Individual in Each State per Cycle}
 \usage{
-compute_counts(transition, init, method, inflow)
+compute_counts(x, ...)
 }
 \arguments{
-\item{transition}{An \code{eval_matrix} object.}
+\item{x}{An \code{eval_matrix} or
+\code{eval_part_surv} object.}
 
 \item{init}{numeric vector, same length as number of 
 model states. Number of individuals in each model state

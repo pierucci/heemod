@@ -3,6 +3,7 @@
 \name{interp_heemod}
 \alias{interp_heemod}
 \alias{interp_heemod.default}
+\alias{interp_heemod.part_surv}
 \alias{interp_heemod.state}
 \alias{interp_heemod.uneval_matrix}
 \alias{interp_heemod.uneval_state_list}
@@ -15,6 +16,8 @@ interp_heemod(x, ...)
 \method{interp_heemod}{uneval_matrix}(x, ...)
 
 \method{interp_heemod}{state}(x, ...)
+
+\method{interp_heemod}{part_surv}(x, ...)
 
 \method{interp_heemod}{uneval_state_list}(x, ...)
 }
