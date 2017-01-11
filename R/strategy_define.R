@@ -18,9 +18,6 @@
 #'   \code{\link{define_state}}.
 #' @param states List of states, only used by
 #'   \code{define_strategy_} to avoid using \code{...}.
-#' @param partitioned_survival Partitioned survival argument. 
-#'   See \code{\link{survival_from_data}} and 
-#'   \code{\link{partitioned_survival_from_tabular}}.
 #' @param transition_matrix Deprecated argument, use
 #'   \code{transition}.
 #'   
@@ -50,31 +47,29 @@ define_strategy <- function(...,
 
 #' @rdname define_strategy
 #' @export
-define_strategy_ <- function(transition, states, 
-                             partitioned_survival = NULL) {
+define_strategy_ <- function(transition, states) {
   
-  if(inherits(transition, "uneval_matrix")){
-    if (! get_state_number(states) == get_matrix_order(transition)) {
+  if (! get_state_number(states) == length(get_state_names(transition))) {
     stop(sprintf(
-      "Number of state in model input (%i) differ from number of state in transition matrix (%i).",
+      "Number of state in model input (%i) differ from number of state in transition object (%i).",
       get_state_number(states),
-      get_matrix_order(transition)
+      length(get_state_names(transition))
     ))
   }
   
-    if (! identical(
-      sort(get_state_names(states)),
-      sort(get_state_names(transition))
-    )) {
-      stop("State names in model input differ from transition matrix.")
-    }
+  
+  if (! identical(
+    as.vector(sort(get_state_names(states))),
+    as.vector(sort(get_state_names(transition)))
+  )) {
+    stop("State names differ from transition object.")
   }
   
- structure(
+  
+  structure(
     list(
       transition = transition,
-      states = states,
-      partitioned_survival = partitioned_survival
+      states = states
     ), class = "uneval_model")
 }
 
@@ -89,22 +84,22 @@ define_strategy_ <- function(transition, states,
 #'   object.
 #'   
 #' @keywords internal
-get_matrix <- function(x){
-  UseMethod("get_matrix")
+get_transition <- function(x){
+  UseMethod("get_transition")
 }
 
-get_matrix.default <- function(x){
+get_transition.default <- function(x){
   x$transition
 }
 
-set_matrix <- function(x, m) {
-  UseMethod("set_matrix")
+set_transition <- function(x, m) {
+  UseMethod("set_transition")
 }
 
-set_matrix.default <- function(x, m) {
+set_transition.default <- function(x, m) {
   x$transition <- m
+  x
 }
-
 
 get_states <- function(x){
   UseMethod("get_states")
@@ -120,8 +115,8 @@ set_states <- function(x, s) {
 
 set_states.default <- function(x, s) {
   x$states <- s
+  x
 }
-
 
 get_state_value_names.uneval_model <- function(x) {
   get_state_value_names(get_states(x))
@@ -129,12 +124,4 @@ get_state_value_names.uneval_model <- function(x) {
 
 get_state_names.uneval_model <- function(x, ...) {
   get_state_names(get_states(x))
-}
-
-get_partitioned_survival <- function(x) {
-  UseMethod("get_partitioned_survival")
-}
-
-get_partitioned_survival.default <- function(x) {
-  x$partitioned_survival
 }

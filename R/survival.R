@@ -7,8 +7,8 @@
 #' will be used.
 #' 
 #' @param x Either a result from 
-#'   \code{\link[flexsurv]{flexsurvreg}} or a list 
-#'   specifying a distribution and its arguments.
+#'   \code{\link[flexsurv]{flexsurvreg}} or
+#'   \code{\link{define_survival}}.
 #' @param cycle The \code{markov_cycle} or 
 #'   \code{state_cycle} for which to predict.
 #' @param km_limit Up to what time should Kaplan-Meier 
@@ -105,6 +105,10 @@ get_probs_from_surv.flexsurvreg <- function(x, cycle,
   
   if (any(use_pred)) {
     if (inherits(x, "flexsurvreg")) {
+      if (! requireNamespace("flexsurv")) {
+        stop("'flexsurv' package required.")
+      }
+      
       #get pred-based probabilities
       if(type == "prob") {
         tmp <- as.data.frame(flexsurv::summary.flexsurvreg(
@@ -119,6 +123,8 @@ get_probs_from_surv.flexsurvreg <- function(x, cycle,
           x, t = times_surv,
           type = "survival")[[1]]$est[-1][use_pred]
       }
+    } else {
+      stop("Currently only survivals models fitted with 'flexsurv' are supported.")
     }
   }
   
@@ -132,6 +138,7 @@ get_probs_from_surv.flexsurvreg <- function(x, cycle,
 #' @rdname get_probs_from_surv
 #' @export
 get_probs_from_surv.surv_dist <- function(x, cycle,
+                                          km_limit = 0,
                                           cycle_length = 1,
                                           type = c("prob", "surv")) {
   type <- match.arg(type)
@@ -141,6 +148,10 @@ get_probs_from_surv.surv_dist <- function(x, cycle,
   )
   
   times_surv <- cycle_length * c(0, cycle)
+  
+  if (! requireNamespace("flexsurv")) {
+    stop("'flexsurv' package required.")
+  }
   
   Hf <- get(paste0("H", x$distribution),
              envir = asNamespace("flexsurv"))
@@ -160,15 +171,15 @@ get_probs_from_surv.surv_dist <- function(x, cycle,
 
 #' Define a Survival Distribution
 #' 
-#' Define a parametric survival distribution, to be used
-#' by \code{\link{get_probs_from_surv}}.
-#'
+#' Define a parametric survival distribution.
+#' 
 #' @param distribution A parametric survival distribution.
-#' @param ... Additional distribution parameters (see xxx).
-#'
+#' @param ... Additional distribution parameters (see
+#'   respective distribution help pages).
+#'   
 #' @return A \code{surv_dist} object.
 #' @export
-#'
+#' 
 #' @examples
 #' 
 #' define_survival(distribution = "exp", rate = .5)

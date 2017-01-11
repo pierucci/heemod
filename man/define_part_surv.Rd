@@ -5,11 +5,16 @@
 \alias{define_part_surv_}
 \title{Define Partitioned Survival}
 \usage{
-define_part_surv(..., state_names, terminal_state = FALSE)
+define_part_surv(pfs, os, state_names, terminal_state = FALSE, km_limit = 0,
+  cycle_length = 1)
 
-define_part_surv_(.dots, state_names)
+define_part_surv_(pfs, os, state_names, km_limit = 0, cycle_length = 1)
 }
 \arguments{
+\item{pfs, os}{Either results from 
+\code{\link[flexsurv]{flexsurvreg}} or 
+\code{\link{define_survival}}.}
+
 \item{state_names}{named character vector, length 3 or 4.
 State names for progression-free state, progression, 
 (optionally terminal) and death respectively. Elements 
@@ -20,13 +25,14 @@ and \code{"death"}. See examples.}
 \item{terminal_state}{Should a terminal state be 
 included? Only used when state names are not provided.}
 
-\item{.dots}{Used for NSE, lazy dots with names
-\code{pfs} and \code{os}.}
+\item{km_limit}{Up to what time should Kaplan-Meier
+estimates be used? Model predictions will be used
+thereafter. Either a length 2 vector (for \code{pfs}
+and \code{os} respectively) or a single values (used
+for both distributions).}
 
-\item{pfs}{Result of \code{\link{get_prob_from_surv}} for
-progression-free survival.}
-
-\item{os}{Idem for overall survival.}
+\item{cycle_length}{The value of a Markov cycle in
+absolute time units.}
 }
 \value{
 A \code{part_surv} object.
@@ -36,12 +42,12 @@ Define a partitioned survival model with progression-free
 survival and overall survival.
 }
 \examples{
-probs_pfs <- define_survival("exp", rate = 1)
-probs_os <- define_survival("exp", rate = .5)
+dist_pfs <- define_survival("exp", rate = 1)
+dist_os <- define_survival("exp", rate = .5)
 
 define_part_surv(
-  pfs = get_probs_from_surv(probs_pfs, cycle = markov_cycle),
-  os = get_probs_from_surv(probs_os, cycle = markov_cycle),
+  pfs = dist_pfs,
+  os = dist_os,
   state_names = c(
     progression_free = "A",
     progression = "B",
@@ -49,10 +55,10 @@ define_part_surv(
     death = "D"
   )
 )
-#' identical to:
+# identical to:
 define_part_surv(
-  pfs = get_probs_from_surv(probs_pfs, cycle = markov_cycle),
-  os = get_probs_from_surv(probs_os, cycle = markov_cycle),
+  pfs = dist_pfs,
+  os = dist_os,
   terminal_state = TRUE
 )
 

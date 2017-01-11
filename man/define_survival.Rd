@@ -10,14 +10,14 @@ define_survival(distribution = c("exp", "weibull", "lnorm", "gamma",
 \arguments{
 \item{distribution}{A parametric survival distribution.}
 
-\item{...}{Additional distribution parameters (see xxx).}
+\item{...}{Additional distribution parameters (see
+respective distribution help pages).}
 }
 \value{
 A \code{surv_dist} object.
 }
 \description{
-Define a parametric survival distribution, to be used
-by \code{\link{get_probs_from_surv}}.
+Define a parametric survival distribution.
 }
 \examples{
 

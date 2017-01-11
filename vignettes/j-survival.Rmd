@@ -1,310 +1,118 @@
 ---
-title: "Using the survival analysis features of heemod"
-author: "Matt Wiener"
-date: "November 29, 2016"
-output: 
-     html_document:
-          theme: spacelab
-          toc: true
-          
+title: "Survival models"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true 
 vignette: >
-  %\VignetteIndexEntry{Survival analysis in heemod}
+  %\VignetteIndexEntry{Survival models}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning=FALSE)
-library(knitr)
 library(heemod)
-library(readxl)
-library(dplyr)
-library(ggplot2)
-library(readr)
-library(printr)
+```
+
+Input transition probabilities from defined distributions:
+
+```{r}
+surv_dist1 <- define_survival(
+  distribution = "weibull",
+  shape = 2,
+  scale = 5
+)
+```
+
+From fitted models:
+
+```{r fig.width=6, fig.height=6}
 library(flexsurv)
-library(survival)
 
+fitw <- flexsurvreg(
+  formula = Surv(futime, fustat) ~ 1,
+  data = ovarian, dist = "weibull"
+)
+plot(fitw)
 ```
 
-## Changes in the specification file for survival analysis
-To tell `heemod` to use survival data in its analysis,
-we must include an additional element in the specification
-file.    The new field is `survivalInformation`, as in line 4
-below, and it designates a
-file in the same directory where information on the survival analysis
-can be found.
-```{r spec_file, echo = FALSE}
-onc_file <- 
-system.file("tabular/surv", "example_oncSpecs.csv", package = "heemod")
-onc_spec <- read.csv(onc_file, header = TRUE)
-print(onc_spec, rownames = FALSE)
+For the example we define a simple model with only 1 strategy:
+
+```{r warning=FALSE}
+param <- define_parameters(
+  p1 = get_probs_from_surv(
+    surv_dist1,
+    cycle = markov_cycle # can also be state_cycle
+  ),
+  p2 = get_probs_from_surv(
+    fitw,
+    cycle = markov_cycle,
+    cycle_length = 365, # time is in days in fitw, in years in markov_cycle
+    km_limit = 2 # use KM estimates during the first 2 years
+  )
+)
+
+tm <- define_transition(
+  C, p1, 0,
+  0, C,  p2,
+  0, 0,  C
+)
+
+plot(tm)
+
+sA <-  define_state(
+  cost = 10, ut = 1
+)
+sB <-  define_state(
+  cost = 20, ut = .5
+)
+sC <-  define_state(
+  cost = 0, ut = 0
+)
+
+stratTM <- define_strategy(
+  transition = tm,
+  A = sA, B = sB, C = sC
+)
+
+resTM <- run_model(
+  parameters = param,
+  stratTM,
+  cycles = 10
+)
 ```
 
-The new file gives additional arguments required for the survival
-analysis.  
-There are two ways to give the package
-survival models:
-
-* by passing in survival data and information on the model
-    to be fit; or
-
-* by specifying, in text, a survival distribution with parameters.
-
-We will demonstrate each of these in turn.
-
-To provide data to fit, we must first provide `survivalDataDirectory`,
-the directory in which  to find the data.  The data is further
-specified by sets of two or three additional fields.  
-In the example below, which is based on oncology,
-these are in rows 3 - 5 for *PFS*, or progression-free survival, and
-rows 6 - 8 for *OS*, or overall survival.   Each set contains a name
-for the fit, which can later be used to refer to the fit, for example, in
-specifying parameters; the name of the file where 
-survival data is to be found, 
-and the name of a file in which to store the fit for later use.  
-The fit name
-is required, and at least one of the other two names must also be given.
-
-```{r surv_file, echo = FALSE}
-surv_file <- 
-system.file("tabular/surv", "survival_info.csv", package = "heemod")
-surv_info <- read.csv(surv_file, header = TRUE)
-print(surv_info, rownames = FALSE)
-```
-
-The names for the three fields are `fit_name_<label>`,
-`surv_data_file_<label>`, and `fit_file_<label>`, where
-`<label>` identifies that the fields go together for a single fit.
-In the example above, the labels used are `pfs` and `os`.  As
-with other elements of the tabular input files, the field name goes in the
-first, or `data`, column, and the value goes in the second, `file`,
-column.   
-
-Here are the actions taken depending on which inputs are provided:
-
-
-|  surv_data    | fit file | actions |
-|:-------:|:---:|---|
-|  Y        |  Y        |  survival models fit and saved     |
-|  Y       |  N        |  survival models fit but not saved        |
-|  N       |  Y        |  saved survival models read in |
-|  N       |  N        |  error                                   |
-
-A survival fit will be saved twice - once as an R object, created
-by `save` in a file with suffix `.RData`, 
-and once in a text-based R dump file with suffix `.R`.  Both files
-will be saved in the directory specified in the 
-`survivalDataDirectory` field.  Fits are loaded
-from the saved `.RData` file.
-
-## Fitting survival models
-
-The survival data must come in the format expected by the `survival`
-and `flexsurv` packages.  In general, this means it will come in
-a data frame with columns giving at least event time, censorship status (1 for
-an event and 0 if a subject is lost to observation).  An additional column
-can specify group membership for the subject of each event, for example
-which treatment a subject in a clinical trial was receiving.
-The default names for these columns are "time", "status", and
-"treatment", though they can be set in the survival information
-file by specifying `time_column_name`, `censor_column_name`, and
-`treatment_column_name` (an example appears below).
-Survival
-analysis in R generally supports left-censorship as well; `heemod` currently
-does not.
-
-When the program is provided with survival data, it fits a model
-for each group specified in the data file.  By default, 
-six fits are obtained under (currently)
-six different distributional assumptions:  exponential (`exp`),
-Weibull (`weibull`), lognormal (`lnorm`), gamma (`gamma`),
-Gompertz (`gompertz`), and generalized gamma (`gengamma`).
-Additional distributions supported by the `flexsurv` package can
-be added, or the set limited, by specifying the "dists" field
-in the survival information file.  An example appears below.
-
-The best distribution for each group is selected based on the fit criterion
-in the specification file.  The fit criterion can
-also be specified in the `fit_metric` field, which can take
-on the values `AIC`, `BIC`, or `m2LL`, which represent the
-Akaike information criterion, the Bayes information criterion, and
-minus twice the log likelihood, respectively.  The default is `AIC`.
-
-Once survival models exist, they can be used to define parameters, as in 
-the following rows:
-```{r param_file, echo = FALSE}
-param_file <- 
-system.file("tabular/surv", "example_oncParams.csv", package = "heemod")
-onc_param <- read.csv(param_file, header = TRUE)
-print(onc_param[1:5, c("parameter", "value")], row.names = FALSE)
-```
-The function `get_surv_probs` is available in `heemod`.  The meaning of `km_until` will be explained below.
-
-The parameters can, in turn, be used in the transition matrix, just as
-in `heemod` models without the use of survival analysis.  The fact that
-the relevant parameters are defined in terms of survival analysis makes
-no difference.   Below we show part of a transition matrix.
-```{r transition_file, echo = FALSE}
-tm_file <- 
-system.file("tabular/surv", "example_oncTransitionProbs.csv", package = "heemod")
-onc_tm <- read.csv(tm_file, header = TRUE)
-print(onc_tm[1:7, -1], row.names = FALSE)
+```{r fig.width=6}
+plot(resTM)
 ```
 
 
-## Supplying explicit probability distributions
+A partitioned survival model can also be computed:
 
-Particularly in early modeling, we may not have data to hand.   It is
-possible, and sometimes desirable, to simulate data and then have the 
-program fit a model to the simulated data.
-However, when desired, survival distributions can be specified
-explicitly.   When this is done, the `surv_data_file` field holds,
-instead of a file name, a list, as below in lines 4 and 6:
-```{r spec_file_explicit_dists, echo = FALSE}
-spec_file <- 
-system.file("tabular/surv", "survival_info_explicit_dists.csv", 
-            package = "heemod")
-survival_info_explicit_dist <- read.csv(spec_file, header = TRUE)
-print(survival_info_explicit_dist)
-```
-The code checks which situation it is in by checking whether the 
-first five characters of the value are "list(", which would be 
-invalid as a file name.   The list must have an element `dist_name`,
-which can be
-any distribution name recognized by the `flexsurv` package.   Other
-elements of the list must be arguments of the corresponding 
-distribution, 
-for example `rate` for the exponential distribution and `shape`
-and `rate` for the gamma distribution in rows 8 and 11 above.  If
-argument names don't match the arguments of the corresponding distribution,
-the code will throw an error. The distributions supported by
-`flexsurvreg`, and their arguments, can be found in Table 1 of
-[the flexsurvreg vignette](https://cran.r-project.org/web/packages/flexsurv/vignettes/flexsurv.pdf).
+```{r warning=FALSE}
+surv_dist2 <- define_survival(
+  distribution = "exp",
+  rate = .5
+)
 
-It is not currently possible to mix data files and explicitly described
-distributions in a single analysis, although we hope to enable it in the
-future.
+ps <- define_part_surv(
+  pfs = surv_dist2,
+  os = fitw,
+  km_limit = c(0, 2), # 0 for pfs, 2 for os
+  cycle_length = c(1, 365) # 1 for pfs, 365 for os
+)
 
-## Partitioned survival models ##
+stratPS <- define_strategy(
+  transition = ps,
+  A = sA, B = sB, C = sC
+)
 
-A specification that provides survival analysis information need not
-specify a transition matrix.  When no transition matrix is specified, 
-`heemod` will use a partitioned survival model.  A partitioned
-survival model determines the number of subjects dead at a given time
-using the overall survival curve, and the number of progression-free
-patients using the progression-free survival curve.  The number of
-progression-free survivors is, by definition, always less than or equal to
-the number of survivors.  The difference is the number of subjects with
-progressive disease.   
-
-Currently, only a three- or four-state model
-can be accepted.  In a three-state model, the states, though they can 
-be assigned any names as usual in the state file, correspond to
-progression-free survival, survival with progressive disease, and death
-as described above.  In a four-state model, a special `terminal` 
-state, can be used.  It is a tunnel state corresponding to the first
-cycle of death.   It is provided to allow for one-time costs assessed
-at time of death.   It will be populated automatically by the 
-partitioned survival code if the state exists.
-
-In `heemod`, the difference between using a Markov model and using
-a partitioned survival model ends once the state counts at each time are
-calculated.   Calculation of costs and utilities, and all output, are
-identical.
-
-
-### Kaplan-Meier curves and parametrically modeled survival values ###
-
-When a survival model is fit, we have two possible estimates of survival
-probabilities at any point.  On the one hand, we can use the
-Kaplan-Meier estimate, that is, the portion of people actually surviving
-in the measured data for a given trial.  This estimate is available only
-until the end of the measured data.  On the other hand, we may prefer to
-use the values predicted by a fitted survival model - and, if we want to
-extrapolate beyond the time for which we have data, we have no
-Kaplan-Meier available and must use predictions from a fitted model.  In
-`heemod`, this is controlled by the `km_until` parameter, which, 
-like other parameters, should be specified in the parameter file 
-(for details, see the model specification and tabular input vignettes).
-
-As the name suggests, the Kaplan-Meier curve will be used at all times
-less than `km_until`, and predicted values will be used thereafter.
-Setting `km_until = 0` will use only predicted values, while setting
-`km_until = Inf` (or some number larger than the time under analysis)
-will use only Kaplan-Meier estimates.  If a Kaplan-Meier estimate is
-requested where none is available, an error will be thrown.
-
-The plot below demonstrates the difference between the (black, jagged)
-Kaplan-Meier estimate for the curve and the (red, smooth) predicted
-survival probabilities. (Confidence intervals, which would be plotted by
-default, have been suppressed for clarity.) 
-The upper pair of curves shows overall survival, 
-while the lower pair of curves shows progression-free survival.
-In a case where no transition matrix is given, counts would
-be read off this graph.  `km_until` determines where the counts would
-switch over from the black Kaplan-Meier estimates to the red exponential
-fits. 
-```{r KM_vs_pred, echo = FALSE}
-set.seed(100)
-tempA <- data.frame(time = round(1 + c(rexp(50, rate = 1/25), 
-                                rexp(50, rate = 1/75))),
-                   group = rep(c("PFS", "OS"), each = 50),
-                   status = rep(1, 100))
-tempB <- data.frame(time = round(1 + c(rexp(50, rate = 1/40), 
-                                rexp(50, rate = 1/100))),
-                   group = rep(c("PFS", "OS"), each = 50),
-                   status = rep(1, 100))
-fitA <- flexsurvreg(Surv(time, status) ~ group, data = tempA, dist = "exp")
-fitB <- flexsurvreg(Surv(time, status) ~ group, data = tempB, dist = "exp")
-
-plot(fitA, type = "survival", log = FALSE, ci = FALSE, conf.int = FALSE)
-
+resPS <- run_model(
+  stratPS,
+  cycles = 10
+)
 ```
 
-The OS and PFS data for A and B were written to files in the
-survival_data subdirectory of the `\tabular\surv` subdirectory
-of the package.   This allows us to run the analysis from that
-directory.  Note that in this case we set the argument 
-`treatment_col_name` to `trt` instead of the default `treatment`.
-
-
-```{r_run_survival, echo = TRUE}
-surv_example <- run_model_tabular(system.file("tabular/surv", package = "heemod"), "example_oncSpecs_nomatrix_run.csv", run_psa = FALSE, run_demo = FALSE, save = FALSE)
-print(surv_example)
-plot(surv_example$model_runs, type = "values", values = c("cost", "utility"),
-      panels = "by_value", free_y = TRUE)
-```
-
-The overall shape of the curves is similar, but the incremental cost-
-effectiveness ratio changes sign when we use 5000 subjects for each
-survival curve rather than 50.   Naturally, results will be much more
-variable when using smaller data sets than when using larger ones.
-(Note that 50 or 5000 samples are the number being used to estimate
-the survival models; this is independent of the number of people for
-which a simulation is run, in this case 1000.)
-
-Note that in the specification file we limit the distributional assumption
-to only use an exponential distribution.  If the `dists` field is not provided,
-the default set of distributions listed above will be used.
-
-```{r_run_survival_big, echo = FALSE}
-big_surv_example_file <- 
-  system.file("tabular/surv/example_oncSpecs_big_nomatrix_run.csv", package =                    "heemod")
-  print(read.csv(big_surv_example_file, header = TRUE))
-surv_example_big <- run_model_tabular(system.file("tabular/surv", package = "heemod"), "example_oncSpecs_big_nomatrix_run.csv", run_psa = FALSE, run_demo = FALSE, save = FALSE)
-surv_print_big <- print(surv_example_big)
-plot(surv_example_big$model_runs, type = "values", values = c("cost", "utility"),
-      panels = "by_value", free_y = TRUE)
-```
-
-We can obtain similar results to the case with 5000 subjects by 
-supplying the distributions explicitly, using the 
-specification file above.  
-
-```{r_run_survival_explicit, echo = TRUE}
-surv_example_explicit_dist <- run_model_tabular(system.file("tabular/surv", package = "heemod"), "example_oncSpecs_explicit_dists.csv", run_psa = FALSE, run_demo = FALSE, save = FALSE)
-print(surv_example_explicit_dist)
-plot(surv_example_explicit_dist$model_runs, type = "values", values = c("cost", "utility"),
-      panels = "by_value", free_y = TRUE)
+```{r fig.width=6}
+plot(resPS)
 ```

@@ -42,7 +42,11 @@ check_matrix <- function(x) {
 #'   transition matrices, one per cycle).
 #'   
 #' @keywords internal
-eval_matrix <- function(x, parameters) {
+eval_transition <- function(x, ...) {
+  UseMethod("eval_transition")
+}
+
+eval_transition.uneval_matrix <- function(x, parameters) {
   tab_res <- mutate_(parameters, C = -pi, .dots = x)[names(x)]
   
   n <- get_matrix_order(x)

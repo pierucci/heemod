@@ -37,18 +37,15 @@ eval_strategy <- function(strategy, parameters, cycles,
     all(init >= 0)
   )
   
-  uneval_survival <- get_partitioned_survival(strategy)
-  uneval_matrix <- get_matrix(strategy)
+  uneval_transition <- get_transition(strategy)
   uneval_states <- get_states(strategy)
   
   i_parameters <- interp_heemod(parameters)
   
-  i_uneval_matrix <- uneval_matrix
-  if(inherits(uneval_matrix, "uneval_matrix"))
-    i_uneval_matrix <- interp_heemod(
-      uneval_matrix,
-      more = as_expr_list(i_parameters)
-    )
+  i_uneval_transition <- interp_heemod(
+    uneval_transition,
+    more = as_expr_list(i_parameters)
+  )
   
   i_uneval_states <- interp_heemod(
     uneval_states,
@@ -56,18 +53,21 @@ eval_strategy <- function(strategy, parameters, cycles,
   )
   
   
-  td_tm <- if(inherits(i_uneval_matrix, "uneval_matrix")) {
-    has_state_cycle(i_uneval_matrix)
-  } else {
-    FALSE
-  }
+  td_tm <- has_state_cycle(i_uneval_transition)
   
   td_st <- has_state_cycle(i_uneval_states)
   
+  # no expansion if 
   expand <- any(c(td_tm, td_st))
   
+  
   if (expand) {
-    uneval_matrix <- i_uneval_matrix
+    
+    if (inherits(uneval_transition, "part_surv")) {
+      stop("Cannot use 'state_cycle' with partitionned survival.")
+    }
+    
+    uneval_transition <- i_uneval_transition
     uneval_states <- i_uneval_states
     
     # parameters not needed anymore because of interp
@@ -76,13 +76,13 @@ eval_strategy <- function(strategy, parameters, cycles,
     # from cells to cols
     td_tm <- td_tm %>% 
       matrix(
-        nrow = get_matrix_order(uneval_matrix), 
+        nrow = get_matrix_order(uneval_transition), 
         byrow = TRUE
       ) %>% 
       apply(1, any)
     
     to_expand <- sort(unique(c(
-      get_state_names(uneval_matrix)[td_tm],
+      get_state_names(uneval_transition)[td_tm],
       get_state_names(uneval_states)[td_st]
     )))
     
@@ -93,14 +93,14 @@ eval_strategy <- function(strategy, parameters, cycles,
     
     init <- insert(
       init,
-      which(get_state_names(uneval_matrix) %in% to_expand),
+      which(get_state_names(uneval_transition) %in% to_expand),
       rep(0, cycles)
     )
     
     for (st in to_expand) {
-      uneval_matrix <- expand_state(
-        x = uneval_matrix,
-        state_pos = which(get_state_names(uneval_matrix) == st),
+      uneval_transition <- expand_state(
+        x = uneval_transition,
+        state_pos = which(get_state_names(uneval_transition) == st),
         state_name = st,
         cycles = expand_limit[st]
       )
@@ -118,27 +118,14 @@ eval_strategy <- function(strategy, parameters, cycles,
   
   states <- eval_state_list(uneval_states, parameters)
   
-  if(inherits(uneval_matrix, "uneval_matrix")) {
-    transition <- eval_matrix(uneval_matrix,
-                              parameters)
-    
-    count_table <- compute_counts(
-      transition = transition,
-      init = init,
-      method = method
-    )
-  } else {
-    ## here's where we get all the counts from partitioned survival
-    transition <- NULL
-    count_table <- compute_counts_part_surv(
-      strategy$partitioned_survival,
-      use_km_until = unique(parameters$km_until),
-      num_patients = sum(init),
-      markov_cycle = seq_len(cycles),
-      markov_cycle_length = 1,
-      names(init)
-    )
-  }
+  transition <- eval_transition(uneval_transition,
+                                parameters)
+  
+  count_table <- compute_counts(
+    x = transition,
+    init = init,
+    method = method
+  )
   
   values <- compute_values(states, count_table)
   
@@ -176,7 +163,8 @@ eval_strategy <- function(strategy, parameters, cycles,
 #' each cycle. Alternatively linear interpolation between 
 #' cycles can be performed.
 #' 
-#' @param transition An \code{eval_matrix} object.
+#' @param x An \code{eval_matrix} or
+#'   \code{eval_part_surv} object.
 #' @param init numeric vector, same length as number of 
 #'   model states. Number of individuals in each model state
 #'   at the beginning.
@@ -185,20 +173,25 @@ eval_strategy <- function(strategy, parameters, cycles,
 #' @return A \code{cycle_counts} object.
 #'   
 #' @keywords internal
-compute_counts <- function(transition, init,
-                           method) {
+compute_counts <- function(x, ...) {
+  UseMethod("compute_counts")
+}
+
+#' @export
+compute_counts.eval_matrix <- function(x, init,
+                                       method) {
   
-  if (! length(init) == get_matrix_order(transition)) {
+  if (! length(init) == get_matrix_order(x)) {
     stop(sprintf(
       "Length of 'init' vector (%i) differs from the number of states (%i).",
       length(init),
-      get_matrix_order(transition)
+      get_matrix_order(x)
     ))
   }
   
   list_counts <- Reduce(
     "%*%",
-    transition,
+    x,
     init,
     accumulate = TRUE
   )
@@ -208,12 +201,12 @@ compute_counts <- function(transition, init,
       matrix(
         unlist(list_counts),
         byrow = TRUE,
-        ncol = get_matrix_order(transition)
+        ncol = get_matrix_order(x)
       )
     )
   )
   
-  colnames(res) <- get_state_names(transition)
+  colnames(res) <- get_state_names(x)
   
   n0 <- res[- nrow(res), ]
   n1 <- res[-1, ]
@@ -241,75 +234,6 @@ compute_counts <- function(transition, init,
   
   structure(out, class = c("cycle_counts", class(out)))
   
-}
-
-
-
-#' Compute Count of Individual in Each State per Cycle based
-#' on a partitioned survival model
-#' 
-#' Given a partitioned survival model, returns the number of
-#' individuals per state per cycle.
-#' 
-#' @param part_surv_obj A \code{flexsurvreg} object, or a
-#'   list specifying a distribution.
-#' @param use_km_until  to what time should Kaplan-Meier
-#'   estimates be used? Model predictions will be used
-#'   thereafter.
-#' @param num_patients The number of patients being modeled.
-#'   Survival probabilities are between 0 and 1, so we
-#'   multiply up by num_patients.
-#' @param state_names Name of the states to be assigned to
-#'   the counts.
-#'   
-#' @details See \code{trans_probs_from_surv} for further
-#'   information on \code{part_surv_obj},
-#'   \code{use_km_until}, and the \code{markov_cycle} 
-#'   arguments.
-#' @return A \code{cycle_counts} object.
-#'   
-#' @keywords internal
-#' @rdname trans_probs_from_surv
-compute_counts_part_surv <- function(part_surv_obj, 
-                                     use_km_until,
-                                     num_patients,
-                                     markov_cycle,
-                                     markov_cycle_length,
-                                     state_names) {
-  stopifnot(length(use_km_until) == 1)
-  
-  pfs_surv <- trans_probs_from_surv(
-    part_surv_obj$PFS_fit, 
-    use_km_until = use_km_until,
-    markov_cycle = markov_cycle,
-    markov_cycle_length = markov_cycle_length, 
-    pred_type = "surv"
-  ) 
-  
-  os_surv <- trans_probs_from_surv(
-    part_surv_obj$OS_fit, 
-    use_km_until = use_km_until,
-    markov_cycle = markov_cycle,
-    markov_cycle_length = markov_cycle_length, 
-    pred_type = "surv"
-  )
-  
-  res <- cbind(
-    pfs_surv,
-    os_surv - pfs_surv , 
-    1 - os_surv
-  )
-  if ("terminal" %in% state_names) {
-    ## fix the "terminal" state
-    terminal <- c(0, diff(res[, 4]))
-    res[, 3:4] <- cbind(res[, 1:2], terminal, res[,3])
-  }
-  
-  res <- res * num_patients
-  colnames(res) <- state_names
-  res <- data.frame(res)
-  
-  structure(res, class = c("cycle_counts", class(res)))
 }
 
 #' Compute State Values per Cycle

@@ -11,13 +11,13 @@ get_probs_from_surv(x, ...)
 \method{get_probs_from_surv}{flexsurvreg}(x, cycle, km_limit = 0,
   cycle_length = 1, type = c("prob", "surv"))
 
-\method{get_probs_from_surv}{surv_dist}(x, cycle, cycle_length = 1,
-  type = c("prob", "surv"))
+\method{get_probs_from_surv}{surv_dist}(x, cycle, km_limit = 0,
+  cycle_length = 1, type = c("prob", "surv"))
 }
 \arguments{
 \item{x}{Either a result from 
-\code{\link[flexsurv]{flexsurvreg}} or a list 
-specifying a distribution and its arguments.}
+\code{\link[flexsurv]{flexsurvreg}} or
+\code{\link{define_survival}}.}
 
 \item{...}{arguments to be passed to methods.}
 
