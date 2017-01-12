@@ -32,7 +32,8 @@ run_psa <- function(model, resample, N) {
         eval_strategy_newdata(
           x = model,
           strategy = n,
-          newdata = newdata) %>% 
+          newdata = newdata
+        ) %>% 
           dplyr::rowwise() %>% 
           dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
           dplyr::bind_cols(newdata) %>% 

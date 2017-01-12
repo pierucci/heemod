@@ -21,8 +21,9 @@
 #' @param method Counting method.
 #' @param expand_limit A named vector of state expansion
 #'   limits.
-#' @param inflow numeric vector, similar to \code{init}.
+#' @param inflow Numeric vector, similar to \code{init}.
 #'   Number of new individuals in each state per cycle.
+#' @param strategy_name Name of the strategy.
 #'   
 #' @return An \code{eval_strategy} object (actually a list of 
 #'   evaluated parameters, matrix, states and cycles 
@@ -32,7 +33,8 @@
 #'   
 #' @keywords internal
 eval_strategy <- function(strategy, parameters, cycles, 
-                       init, method, expand_limit, inflow) {
+                          init, method, expand_limit,
+                          inflow, strategy_name) {
   stopifnot(
     cycles > 0,
     length(cycles) == 1,
@@ -122,7 +124,8 @@ eval_strategy <- function(strategy, parameters, cycles,
   }
   
   parameters <- eval_parameters(parameters,
-                                cycles = cycles)
+                                cycles = cycles,
+                                strategy_name = strategy_name)
   
   states <- eval_state_list(uneval_states, parameters)
   

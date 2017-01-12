@@ -47,6 +47,10 @@ eval_transition <- function(x, ...) {
 }
 
 eval_transition.uneval_matrix <- function(x, parameters) {
+  
+  # update calls to dispatch_strategy()
+  x <- dispatch_strategy_hack(x)
+  
   tab_res <- mutate_(parameters, C = -pi, .dots = x)[names(x)]
   
   n <- get_matrix_order(x)

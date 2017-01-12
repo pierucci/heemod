@@ -1,5 +1,9 @@
 # heemod devel
 
+## Breaking changes
+
+  * `strategy` becomes a reserved parameter name.
+
 ## New features
 
   * Transition probabilities from survival models with `get_probs_from_surv()`:
@@ -9,6 +13,7 @@
   * Plot EVPI.
   * Export PSA files for Sheffield Accelerated Value of Information sofware.
   * Individuals can enter the model after the beginning with the `inflow` argument in `run_model()` (mainly for budget impact analysis).
+  * Strategy name can be used to define values with `dispatch_strategy()` or using the `strategy` name (vignettes *homogeneous* and *probabilistic* have been updated to use this feature).
 
 ## Other features
 
@@ -22,7 +27,7 @@
 ## Bugfixes
 
   * Fixed a bug that would return incorrect efficiency frontiers in some situations.
-  * Fix a failure of tabular input when a column can be read as all numeric.
+  * Fixed a failure of tabular input when a column can be read as all numeric.
   
 ## Acknowledments
 

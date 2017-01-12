@@ -4,7 +4,8 @@
 \alias{eval_strategy}
 \title{Evaluate Strategy}
 \usage{
-eval_strategy(strategy, parameters, cycles, init, method, expand_limit, inflow)
+eval_strategy(strategy, parameters, cycles, init, method, expand_limit, inflow,
+  strategy_name)
 }
 \arguments{
 \item{strategy}{An \code{uneval_strategy} object.}
@@ -24,8 +25,10 @@ at the beginning.}
 \item{expand_limit}{A named vector of state expansion
 limits.}
 
-\item{inflow}{numeric vector, similar to \code{init}.
+\item{inflow}{Numeric vector, similar to \code{init}.
 Number of new individuals in each state per cycle.}
+
+\item{strategy_name}{Name of the strategy.}
 }
 \value{
 An \code{eval_strategy} object (actually a list of 
@@ -66,7 +69,8 @@ heemod:::eval_strategy(
   init = c(10, 5),
   cycles = 5,
   method = "end",
-  inflow = c(0, 0)
+  inflow = c(0, 0),
+  strategy_name = "A"
 )
 }
 \keyword{internal}

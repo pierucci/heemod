@@ -13,11 +13,16 @@
 #' @example inst/examples/example_eval_parameters.R
 #'   
 #' @keywords internal
-eval_parameters <- function(x, cycles = 1) {
+eval_parameters <- function(x, cycles = 1,
+                            strategy_name = NA) {
+  # update calls to dispatch_strategy()
+  x <- dispatch_strategy_hack(x)
+  
   # other datastructure?
   res <- dplyr::mutate_(
     tibble::tibble(
-      markov_cycle = seq_len(cycles)
+      markov_cycle = seq_len(cycles),
+      strategy = strategy_name
     ),
     .dots = x
   )

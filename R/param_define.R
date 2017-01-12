@@ -68,7 +68,7 @@ define_parameters_ <- function(.dots) {
 #'   
 #' @keywords internal
 get_parameter_names <- function(x) {
-  names(x)[names(x) != "markov_cycle"]
+  names(x)[! names(x) %in% c("markov_cycle", "strategy")]
 }
 
 
