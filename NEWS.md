@@ -18,6 +18,7 @@
 ## Other features
 
   * Convenience function `rescale_discount_rate()`.
+  * Better error messages at parameter evaluation.
 
 ## Backend changes
 
