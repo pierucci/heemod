@@ -29,6 +29,7 @@
 
   * Fixed a bug that would return incorrect efficiency frontiers in some situations.
   * Fixed a failure of tabular input when a column can be read as all numeric.
+  * Fixed a bug of ICER computations that would return duplicated strategy names in some edge cases.
   
 ## Acknowledments
 

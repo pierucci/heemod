@@ -8,13 +8,26 @@
 #' @keywords internal
 get_frontier <- function(x) {
   # recursive function
-  # gets strategy with lowest icer -> next on frontier
-  # filters strat <= next on frontier
-  # re-apply function on remaining
+  # if  all strat have same effect
+  #     or root strat is more effective
+  #   return less costly
+  # else
+  #   find root strat
+  #   center on root strat
+  #   remove less effective strat
+  #   compute icer from root strat
+  #
+  #   return strats with NaN ICER
+  #
+  #   next strat on frontier: lowest icer & effect
+  #   remove strat less effective than next strat
+  #   recursively apply function on result
+  
   if (stop_frontier(x)) {
-    (x %>% 
-      dplyr::arrange_(~ .cost) %>% 
-      dplyr::filter_(~ .cost == .cost[1]))$.strategy_names
+    sort(
+      (x %>% 
+         dplyr::arrange_(~ .cost) %>% 
+         dplyr::filter_(~ .cost == .cost[1]))$.strategy_names)
   } else {
     bm <- get_root_strategy(x)
     ebm <- x$.effect[x$.strategy_names == bm]
@@ -24,23 +37,27 @@ get_frontier <- function(x) {
     x$.cost <- x$.cost - cbm
     
     x <- x %>% 
-      dplyr::filter_(~ .effect >= 0) %>% 
+      dplyr::filter_(~ .effect >= 0) %>% # not needed in theory
       dplyr::mutate_(
         .icer = ~ .cost / .effect
       ) %>% 
       dplyr::arrange_(.dots = list(~.icer, ~ .effect))
     
-    enext <- dplyr::slice(x, 1)$.effect
+    enext <- dplyr::slice(x, 1)$.effect # relies on NaN last sorting
     
     x_res <- x %>% dplyr::filter_(
       substitute(.effect >= enext,
                  list(enext = enext)))
-    
-    c((dplyr::filter_(x, ~ is.na(.icer)))$.strategy_names,
+    # 0/0 = NaN = NA
+    # x/0 = Inf != NA
+    # is.na(.icer) excludes same effect more cost
+    c(sort((dplyr::filter_(x, ~ is.na(.icer)))$.strategy_names),
       get_frontier(x_res))
   }
 }
 
 stop_frontier <- function(x) {
-  length(unique(x$.effect)) == 1
+  length(unique(x$.effect)) == 1 ||
+    get_root_strategy(x) %in% 
+    (dplyr::filter_(x, ~ .effect == max(.effect)))$.strategy_names
 }
