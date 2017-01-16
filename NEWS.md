@@ -27,9 +27,8 @@
   
 ## Bugfixes
 
-  * Fixed a bug that would return incorrect efficiency frontiers in some situations.
+  * Fixed bugs that would return incorrect efficiency frontiers in some situations, or would return duplicated strategy names in some edge cases (thanks to [Vince Daniels](https://github.com/daniels4321)).
   * Fixed a failure of tabular input when a column can be read as all numeric.
-  * Fixed a bug of ICER computations that would return duplicated strategy names in some edge cases (thanks to [Vince Daniels](https://github.com/daniels4321)).
   
 ## Acknowledments
 
