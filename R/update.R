@@ -69,8 +69,10 @@ update.run_model <- function(object, newdata, ...) {
     suppressMessages({
       list_res <- c(
         list_res,
-        list(eval_strategy_newdata(object, strategy = n, 
-                                   newdata = newdata))
+        list(eval_strategy_newdata(
+          object, strategy = n, 
+          newdata = newdata
+        ))
       )
     })
   }

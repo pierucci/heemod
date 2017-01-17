@@ -30,12 +30,12 @@ Define the values characterising a Markov Model state for
 }
 \details{
 As with \code{\link{define_parameters}}, state values are
-defined sequencially. Later state definition can thus
-only refer to values defined earlier.
+defined sequentially. Later state definition can thus
+refer only to values defined earlier.
 
 For the \code{modify} function, existing values are 
-modified, no new values can be added. Values order 
-matters since only values defined earlier can be 
+modified, no new values can be added. Value order 
+matters, since only values defined earlier can be 
 referenced in later expressions.
 }
 \examples{

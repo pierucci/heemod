@@ -8,13 +8,13 @@ create_model_from_tabular(state_info, tm_info, surv_info, strategy_name,
   df_env = globalenv())
 }
 \arguments{
-\item{df_env}{An environment containing external data.}
-
-\item{state_file}{A state tabular file (file path or 
+\item{state_info}{A state tabular file (file path or 
 parsed file).}
 
-\item{tm_file}{A transition matrix tabular file (file 
+\item{tm_info}{A transition matrix tabular file (file 
 path or parsed file).}
+
+\item{df_env}{An environment containing external data.}
 }
 \value{
 A \code{heemod} model as returned by 

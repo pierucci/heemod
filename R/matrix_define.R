@@ -10,17 +10,18 @@
 #' with the matrix through \code{\link{define_strategy}}; 
 #' then in the environment where the matrix was defined.
 #' 
-#' Matric cells are listed by row.
+#' Matrix cells are listed by row.
 #' 
-#' The completary probability of all other row probabilities
+#' The complementary probability of all other row probabilities
+#' (that is, 1 - sum(other_probabilities))
 #' can be conveniently reffered as \code{C}.
 #' 
 #' Only matrix size is checked during this step (the matrix 
 #' must be square). Other conditions (such as row sums being
 #' equal to 1) are tested later, during model evaluation.
 #' 
-#' For the \code{modify} function existing matrix cells are 
-#' replaced with the new expression. Cells are referenced by
+#' The \code{modify} function replaces existing matrix cells
+#' with the new expression. Cells are referenced by
 #' name. Cell naming follows the \code{cell_x_y} convention,
 #' with \code{x} being the row number and \code{y} the 
 #' column number.

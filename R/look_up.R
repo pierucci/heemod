@@ -3,16 +3,18 @@
 #' A convenience function to easily look for values in a 
 #' data frame.
 #' 
-#' This function is mostly used to extract population 
-#' informations (such as mortality rates), given some 
-#' individual caracteristics.
+#' This function is mostly used to extract 
+#' information (such as mortality rates), given some 
+#' individual characteristics.
 #' 
-#' If binning is activated, numeric individual 
-#' characteristics are matched to the corresponding 
-#' reference value that is directly inferior.
+#' If binning is activated for a numeric variable, 
+#' each bin is considered to go from
+#' one explicitly given value to the next.  If binning is not
+#' activated, only values that are explicitly mentioned can be
+#' referenced; other values will cause an error.
 #' 
 #' @param data A reference data frame.
-#' @param value The value to extract ffrom the reference 
+#' @param value The value to extract from the reference 
 #'   data frame.
 #' @param ... Individual characteristics, should be named 
 #'   like the columns of \code{data}.
@@ -20,7 +22,7 @@
 #'   binned, or character vector giving the names of
 #'   variables to bin (see examples).
 #'   
-#' @return A vector of values, same lenght as \code{...}.
+#' @return A vector of values, same length as \code{...}.
 #' @export
 #' 
 #' @example inst/examples/example_look_up.R

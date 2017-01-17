@@ -134,10 +134,10 @@ test_that(
     e_par1 <- heemod:::eval_parameters(
       par1, 10
     )
-    e_mat <- heemod:::eval_matrix(
+    e_mat <- heemod:::eval_transition(
       mat1, e_par1
     )
-    e_matC <- heemod:::eval_matrix(
+    e_matC <- heemod:::eval_transition(
       matC, e_par1
     )
     e_par2 <- heemod:::eval_parameters(
@@ -146,12 +146,12 @@ test_that(
     e_par3 <- heemod:::eval_parameters(
       par2, 10, "S2"
     )
-    e_mat_p2 <- heemod:::eval_matrix(
+    e_mat_p2 <- heemod:::eval_transition(
       mat1, e_par2
     )
-    e_matC_p2 <- heemod:::eval_matrix(
+    e_matC_p2 <- heemod:::eval_transition(
       matC, e_par2)
-    e_mat_p3 <- heemod:::eval_matrix(
+    e_mat_p3 <- heemod:::eval_transition(
       mat1, e_par3
     )
     expect_output(

@@ -137,7 +137,6 @@ gather_model_info <- function(base_dir, ref_file) {
     )
   }
   
-
   list(
     models = models,
     param_info = param_info,
@@ -147,69 +146,6 @@ gather_model_info <- function(base_dir, ref_file) {
   )
 }
 
-#' Create a partitioned survival model object from tabular input
-#'
-#' @param ref Name of the reference file.
-#' @param df_env an environment in which survival results will be stored
-#' @param model_names names of the models
-#'
-#' @return a list, with one element for each model.  Each element of
-#'   the list is also a list, with one element for each survival
-#'   fit (for example, one for overall survival and one for progression-free)
-#'   survival).
-#'
-partitioned_survival_from_tabular <- function(ref, df_env, model_names) {
-    surv_ref_full_file <- ref[ref$data == "survivalInformation", "full_file"]
-    surv_ref_file <- ref[ref$data == "survivalInformation", "file"]
-    ## slightly roundabout way of getting the base location back
-    location <- gsub(paste0(surv_ref_file, "$"),
-                     "",
-                     surv_ref_full_file)
-                     
-    ## does some error checking
-    si <- get_survival_input(read_file(surv_ref_full_file)) 
-    
-    ## load or fit survival models into the environment
-    surv_inputs <-
-      survival_from_data(location, #ref[ref$data == "survivalDataDirectory", "full_file"],
-                         si$surv_data_dir,
-                         data_files = si$surv_data_files,
-                         fit_files = si$fit_files,
-                         fit_names = si$fit_names,
-                         fit_metric = si$fit_metric,
-                         time_col_name = si$time_col_name,
-                         censor_col_name = si$censor_col_name,
-                         treatment_col_name = si$treatment_col_name,
-                         dists = si$dists,
-                         use_envir = df_env)
-
-  if(! all(model_names %in% names(surv_inputs[[1]]$OS.fit))){
-    if(inherits(surv_inputs[[1]]$OS.fit[[1]],"flexsurvreg")){
-      stop(paste("some model names are not included in the survival models:\n",
-                 paste(model_names, collapse = ","),
-                 "vs.",
-                 paste(names(surv_inputs[[1]]$OS.fit), collapse = ","),
-                 "\n",
-                 "could treatment_col_name be wrong?"))
-    }
-    if(inherits(surv_inputs[[1]]$OS.fit[[1]], "list")){
-      stop(paste("some model names are not included in the survival models:\n",
-                 paste(model_names, collapse = ","),
-                 "vs.",
-                 paste(names(surv_inputs[[1]]$OS.fit), collapse = ","),
-                 "\n",
-                 "are the distribution lists properly specified?"))
-    }
-  }
-    
-  ## switch the survival information to be by model instead of by fit type
-  surv_package <- lapply(model_names, function(this_model){
-    list(OS_fit = surv_inputs[[1]]$OS.fit[[this_model]],
-         PFS_fit = surv_inputs[[1]]$PFS.fit[[this_model]])
-  })
-  names(surv_package) <- model_names
-  surv_package
-}
 
 
 #' Evaluate Models From a Tabular Source
@@ -300,7 +236,7 @@ eval_models_from_tabular <- function(inputs,
 ##  if(! is.null(inputs$model_options$num_cores)) {
 ##    close_cluster()
 ##  }
-  
+
   list(
     models = inputs$models,
     model_runs = model_runs,
@@ -329,11 +265,11 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   
   ## to accomodate partitioned survival models, we will allow for
   ##   the possibility that there is no transition matrix ...
-  if (options()$heemod.verbose) message("*** Reading TM...")
   tm_info <- NULL
   tm_file <- ref$full_file[ref$data == "tm"]
   if(length(tm_file) > 0 && file.exists(tm_file)){
-      tm_info <- read_file(ref$full_file[ref$data == "tm"])
+    if (options()$heemod.verbose) message("*** Reading TM...")
+    tm_info <- read_file(ref$full_file[ref$data == "tm"])
     tm_info <- parse_multi_spec(
       tm_info,
       group_vars = c("from", "to")
@@ -345,9 +281,11 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
     if(options()$heemod.verbose) 
       message("** Reading survival model information..")
     surv_info <- 
-      partitioned_survival_from_tabular(ref, df_env, names(state_info))
+      partitioned_survival_from_tabular(ref, df_env, 
+                                        state_names = get_state_names(tm_info), 
+                                        model_names = names(state_info))
   }
-  
+
    if (!is.null(tm_info) && length(pb <- setdiff(names(state_info), names(tm_info)))) {
     stop(sprintf(
       "Mismatching model names between TM file and state file: %s.",
@@ -408,12 +346,12 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
 create_states_from_tabular <- function(state_info,
                                        df_env = globalenv()) {
   
-  if(! inherits(state_info, "data.frame"))
+  if(! inherits(state_info, "data.frame")) {
     stop("'state_info' must be a data frame.")
-  
-  if(!(".state" %in% names(state_info)))
+  }
+  if(!(".state" %in% names(state_info))) {
     stop("'.state' should be a column name.")
-  
+  }
   if (any(duplicated(state_info$.state))) {
     stop(sprintf(
       "Duplicated state names: %s.",
@@ -460,17 +398,17 @@ create_states_from_tabular <- function(state_info,
   }
   
   res <- define_state_list_(
-    setNames(lapply(
+    stats::setNames(lapply(
       state_info$.state,
       function(state) {
         define_state_(
           lazyeval::as.lazy_dots(
-            setNames(lapply(
+            stats::setNames(as.character(lapply(
               values,
               function(value) {
                 state_info[[value]][state_info$.state == state]
               }
-            ), values),
+            )), values),
             env = df_env
           )
         )
@@ -511,9 +449,9 @@ create_states_from_tabular <- function(state_info,
 #' @keywords internal
 create_matrix_from_tabular <- function(trans_probs, state_names,
                                        df_env = globalenv()) {
-  if(! inherits(trans_probs, "data.frame"))
+  if(! inherits(trans_probs, "data.frame")) {
     stop("'trans_probs' must be a data frame.")
-  
+  }
   stopifnot(
     all(c("from", "to", "prob") %in% names(trans_probs)),
     length(state_names) > 0
@@ -550,7 +488,7 @@ create_matrix_from_tabular <- function(trans_probs, state_names,
   prob_mat[as.matrix(trans_probs[, c("to", "from")])] <- trans_probs$prob
   
   res <- define_transition_(
-    lazyeval::as.lazy_dots(prob_mat, env = df_env),
+    lazyeval::as.lazy_dots(as.character(prob_mat), env = df_env),
     state_names = state_names
   )
   if (options()$heemod.verbose) print(res)
@@ -590,8 +528,8 @@ create_parameters_from_tabular <- function(param_defs,
   
   parameters <- define_parameters_(
     lazyeval::as.lazy_dots(
-      setNames(
-        lapply(param_defs$value, function(x) x),
+      stats::setNames(
+        as.character(lapply(param_defs$value, function(x) x)),
         param_defs$parameter
       ),
       env = df_env
@@ -619,15 +557,15 @@ create_parameters_from_tabular <- function(param_defs,
     dsa <- define_dsa_(
       par_names = param_sens,
       low_dots = lazyeval::as.lazy_dots(
-        setNames(
-          lapply(low, function(x) x),
+        stats::setNames(
+          as.character(lapply(low, function(x) x)),
           param_sens
         ),
         env = df_env
       ),
       high_dots = lazyeval::as.lazy_dots(
-        setNames(
-          lapply(high, function(x) x),
+        stats::setNames(
+          as.character(lapply(high, function(x) x)),
           param_sens
         ),
         env = df_env
@@ -735,9 +673,9 @@ create_options_from_tabular <- function(opt) {
 #' Calls \code{\link{create_states_from_tabular}} and
 #' \code{\link{create_matrix_from_tabular}}.
 #' 
-#' @param state_file A state tabular file (file path or 
+#' @param state_info A state tabular file (file path or 
 #'   parsed file).
-#' @param tm_file A transition matrix tabular file (file 
+#' @param tm_info A transition matrix tabular file (file 
 #'   path or parsed file).
 #' @param df_env An environment containing external data.
 #' 
@@ -760,7 +698,7 @@ create_model_from_tabular <- function(state_info,
     stop("'tm_info' must be a data frame if defined.")
 ##  if(!is.null(surv_info) && ! inherits(surv_info, "data.frame"))
 ##    stop("'surv_info' must be a data frame if defined.")
-  
+
   if (options()$heemod.verbose) message("**** Defining state list...")
   states <- create_states_from_tabular(state_info,
                                        df_env = df_env)
@@ -771,7 +709,7 @@ create_model_from_tabular <- function(state_info,
     TM <- create_matrix_from_tabular(tm_info, get_state_names(states),
                                      df_env = df_env)
   
-  
+
   define_strategy_(transition = TM, states = states, 
                    partitioned_survival = surv_info,
                    strategy_name = strategy_name)
@@ -794,8 +732,9 @@ create_model_from_tabular <- function(state_info,
 #'   
 #' @keywords internal
 create_df_from_tabular <- function(df_dir, df_envir) {
-  if(! file.exists(df_dir))
+  if(! file.exists(df_dir)) {
     stop(paste(df_dir, "does not exist."))
+  }
   
   all_files <- list.files(df_dir, full.names = TRUE)
   
@@ -1082,11 +1021,12 @@ save_outputs <- function(outputs, output_dir, overwrite) {
   
   ## some csv files
   if (options()$heemod.verbose) message("** Writing tabular outputs to files ...")
-  utils::write.csv(
-    outputs$demographics,
-    file = file.path(output_dir, "icer_by_group.csv"),
-    row.names = FALSE
-  )
+    icer_to_write <- compute_icer(outputs$demographics$updated_model)
+    utils::write.csv(
+      icer_to_write[order(icer_to_write$.index),],
+      file = file.path(output_dir, "icer_by_group.csv"),
+      row.names = FALSE
+    )
   
   all_counts <- 
     do.call("rbind",
@@ -1121,14 +1061,14 @@ save_outputs <- function(outputs, output_dir, overwrite) {
   )
   
   utils::write.csv(
-    as.data.frame(summary(outputs$dsa)),
+    as.data.frame(outputs$dsa$dsa),
     file = file.path(output_dir, "dsa.csv"),
     row.names = FALSE
   )
   
   
   utils::write.csv(
-    outputs$psa,
+    outputs$psa$psa,
     file = file.path(output_dir, "psa_values.csv"),
     row.names = FALSE
   )
@@ -1182,134 +1122,3 @@ save_graph <- function(plot, path, file_name) {
 }
 
 
-#' Make sure survival inputs have the correct formats
-#'
-#' @param surv_ref - data frame with survival data information
-#'
-#' @details For survival analysis, we need, for each condition
-#'   (frequently progression-free survival and overall survival)
-#'   at least two, and possibly three, elements represented in
-#'   the survival reference file.
-#'   \itemize{
-#'     \item{\code{surv_data_file}:  the name of the file 
-#'        with the survival data}
-#'     \item{\code{fit_file}: the name of a file with fits.  If
-#'     \code{surv_data_file} is not provided, the fit will
-#'     be read in from this file; if \code{surv_data_file}
-#'     is provided, the fit will be written into this file.}
-#'     \item{\code{fit_name}:  name to give the survival fit so
-#'     that it can be referred to to extract probabilities.}
-#'     } 
-#' At least one of \code{surv_data_file} and \code{fit_file}
-#'   must be provided.
-#' @return a list with elements \itemize{\item{fit_files},
-#'   \item{fit_names}, \item{surv_data_files}, \item{fit_metric}}.
-#'
-get_survival_input <- function(surv_ref) {
-  
-  if(! identical(names(surv_ref), c("data", "val")))
-    stop(
-      paste("surv_ref must have column names 'data' and 'val'",
-            paste("(actual_names", paste(names(surv_ref),collapse = ", "),
-            ")"
-          )
-      )
-    )
-  surv_data_dir <- 
-    surv_ref[surv_ref$data == "survivalDataDirectory", "val"]
-  time_col_name <- "time"
-  censor_col_name <- "status"
-  treatment_col_name <- "treatment"
-  
-  dists <- c("exp", "weibull", "lnorm", "gamma", 
-    "gompertz", "gengamma")
-  
-  time_col_index <- grep("time_col_name", surv_ref$data)
-  censor_col_index <- grep("censor_col_name", surv_ref$data)
-  treatment_col_index <- grep("treatment_col_name", surv_ref$data)
-  dists_index <- grep("dists", surv_ref$data)
-  
-  if(length(time_col_index) > 1)
-    stop("must have at most one time_col_name; default = 'time'")
-  if(length(censor_col_index) > 1)
-    stop("must have at most one censor_col_name; default = 'status'")
-  if(length(treatment_col_index) > 1)
-    stop("must have at most one treatment_col_name; default = 'treatment'")
-  if(length(dists_index) > 1)
-    stop(paste('must have at most one line specificying distributions;\n',
-               'default = c("exp", "weibull", "lnorm", "gamma", 
-                           "gompertz", "gengamma")'))
-  
-  if(length(time_col_index) == 1)
-    time_col_name <- surv_ref[time_col_index, "val"]
-  if(length(censor_col_index) == 1)
-    censor_col_name <- surv_ref[censor_col_index, "val"]
-  if(length(treatment_col_index) == 1)
-    treatment_col_name <- surv_ref[treatment_col_index, "val"]
-  if(length(dists_index) ==1)
-    dists <- surv_ref[dists_index, "val"]
-    
-  surv_data_indices <- grep("surv_data_file", surv_ref$data)
-  fit_file_indices <- grep("fit_file", surv_ref$data)
-  fit_name_indices <- grep("fit_name", surv_ref$data)
-  
-  surv_data_names <- surv_ref[surv_data_indices, "data"]
-  fit_file_names <- surv_ref[fit_file_indices, "data"]
-  fit_name_names <- surv_ref[fit_name_indices, "data"]
-  
-  surv_data_files = as.vector(surv_ref[surv_data_indices, "val"])
-  fit_files = as.vector(surv_ref[fit_file_indices, "val"])
-  fit_names = as.vector(surv_ref[fit_name_indices, "val"])
-  
-  fit_metric = surv_ref[surv_ref$data == "fit_metric", "val"]
-  
-  lff <- length(fit_file_names)
-  lsdn <- length(surv_data_names)
-  
-  if(lff == 0 & lsdn == 0)
-    stop(paste("survival reference file must define at least one of",
-                "fit_file and surv_data_file for survival analysis"))
-  if(lff != 0 & lsdn != 0 & (lff != lsdn))
-      stop(paste("when both fit_file and surv_data_name elements are",
-                 "specified,\nshould have the same number of elements"))
-  
-  if(length(fit_names) != max(lff, lsdn))
-    stop(paste("ref file should have the same number of fit_name", 
-               "elements as fit_file or surv_data_file elements"))
-
-  suffixes <- cbind(surv_data_names, fit_name_names, fit_file_names)
-
-  suffixes <- gsub("fit_file", "", suffixes)
-  suffixes <- gsub("fit_name", "", suffixes)
-  suffixes <- gsub("surv_data_file", "", suffixes)
-  
-  
-  for (i in 1:ncol(suffixes))
-    suffixes[, i] <- sort(suffixes[, i])
-  num_suffixes <- apply(suffixes, 1, function(x) {
-    length(unique(x))
-  })
-  if (any(num_suffixes != 1)){
-    print(table(suffixes))
-    stop("suffixes do not match")
-  }
-  
-  fit_files <- fit_files[order(fit_file_names)]
-  fit_names <- fit_names[order(fit_name_names)]
-  surv_data_files <- surv_data_files[order(surv_data_names)]
-  
-  return(
-    list(
-      surv_data_dir = surv_data_dir, 
-      fit_files = fit_files,
-      fit_names = fit_names,
-      surv_data_files = surv_data_files,
-      fit_metric = fit_metric,
-      time_col_name = time_col_name,
-      censor_col_name = censor_col_name,
-      treatment_col_name = treatment_col_name,
-      dists = dists
-          )
-  )
-  
-}

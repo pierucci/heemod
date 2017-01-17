@@ -103,6 +103,9 @@ check_names <- function(x) {
   if (any("C" %in% x)) {
     stop("'C' is a reserved name.")
   }
+  if (any("strategy" %in% x)) {
+    stop("'strategy' is a reserved name.")
+  }
   if (any(grepl("^\\.", x))) {
     stop("Names starting with '.' are reserved.")
   }

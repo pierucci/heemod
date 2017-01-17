@@ -32,8 +32,8 @@ define_strategy_(transition, states, partitioned_survival = NULL,
 \item{states}{List of states, only used by
 \code{define_strategy_} to avoid using \code{...}.}
 
-\item{partitioned_survival}{Partitioned survival argument. 
-See \code{\link{survival_from_data}} and 
+\item{partitioned_survival}{Partitioned survival argument.
+See \code{\link{survival_from_data}} and
 \code{\link{partitioned_survival_from_tabular}}.}
 }
 \value{
@@ -44,7 +44,7 @@ An object of class \code{uneval_model} (a list
 \description{
 Combine information on parameters, transition matrix and
 states defined through \code{\link{define_parameters}},
-\code{\link{define_transition}} and 
+\code{\link{define_transition}} and
 \code{\link{define_state}} respectively.
 }
 \details{
