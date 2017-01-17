@@ -5,7 +5,7 @@
 \alias{run_model_}
 \alias{run_models}
 \alias{run_models_}
-\title{Run one or more Markov Model}
+\title{Run Markov Model}
 \usage{
 run_models(...)
 
@@ -27,7 +27,7 @@ run_model_(uneval_strategy_list, parameters, init, cycles, method, cost, effect,
 \code{\link{define_parameters}}.}
 
 \item{init}{numeric vector, same length as number of 
-states. Number of individuals in each state at the
+states. Number of individuals in each state at the 
 beginning.}
 
 \item{cycles}{positive integer. Number of Markov Cycles 
@@ -48,7 +48,7 @@ the cost-effectiveness plane.}
 strategy at the center of the cost-effectiveness plane,
 for readability.}
 
-\item{inflow}{numeric vector, similar to \code{init}.
+\item{inflow}{numeric vector, similar to \code{init}. 
 Number of new individuals in each state per cycle.}
 
 \item{uneval_strategy_list}{List of models, only used by 
@@ -58,30 +58,27 @@ Number of new individuals in each state per cycle.}
 A list of evaluated models with computed values.
 }
 \description{
-Runs one or more unevaluated Markov Models. When more 
-than one model is provided, all models should have the 
-same states and state value names.
+Runs one or more strategy. When more than one strategy is
+provided, all strategies should have the same states and 
+state value names.
 }
 \details{
-A usual situation where more than one model needs to be 
-run is when comparing different care startegies.
-
-In order to compute comparisons Markov Models must be 
-similar (same states and state value names). Thus models 
-should only differ through parameters, transition matrix 
-cell values and values attached to states (but not state 
-value names).
+In order to compute comparisons strategies must be 
+similar (same states and state value names). Thus 
+strategies can only differ through transition matrix cell
+values and values attached to states (but not state value
+names).
 
 The initial number of individuals in each state and the 
-number of cycle will be the same for all models.
+number of cycle will be the same for all strategies
 
 \code{state_cycle_limit} can be specified in 3 different 
 ways: 1. As a single value: the limit is applied to all 
-states in all models. 2. As a named vector (where names 
-are state names): the limits are applied to the given 
-state names, for all models. 3. As a named list of named 
-vectors: the limits are applied to the given state names 
-for the given models.
+states in all strategies. 2. As a named vector (where
+names are state names): the limits are applied to the
+given state names, for all strategies. 3. As a named list
+of named vectors: the limits are applied to the given
+state names for the given strategies.
 }
 \examples{
 # running a single model
