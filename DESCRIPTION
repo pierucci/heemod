@@ -44,3 +44,5 @@ Suggests: diagram,
 		      survival,
           testthat,
           triangle
+URL: https://github.com/pierucci/heemod, https://pierucci.org
+BugReports: https://github.com/pierucci/heemod/issues
