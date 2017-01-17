@@ -112,7 +112,6 @@ gather_model_info <- function(base_dir, ref_file) {
       df_env
     )
   }
-
   ## note - the environment df_env gets included directly
   ##   into param_info, so anything that will load anything
   ##   into that environment needs to come before this statement
@@ -136,6 +135,7 @@ gather_model_info <- function(base_dir, ref_file) {
       params = param_info$params
     )
   }
+  
   
   list(
     models = models,
@@ -233,10 +233,6 @@ eval_models_from_tabular <- function(inputs,
     demo_res <- stats::update(model_runs, inputs$demographic_file)
   }
   
-##  if(! is.null(inputs$model_options$num_cores)) {
-##    close_cluster()
-##  }
-
   list(
     models = inputs$models,
     model_runs = model_runs,
@@ -275,7 +271,6 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
       group_vars = c("from", "to")
     )
   }
-  
   surv_info <- NULL
   if("survivalInformation" %in% ref$data){
     if(options()$heemod.verbose) 
@@ -709,7 +704,6 @@ create_model_from_tabular <- function(state_info,
     TM <- create_matrix_from_tabular(tm_info, get_state_names(states),
                                      df_env = df_env)
   
-
   define_strategy_(transition = TM, states = states, 
                    partitioned_survival = surv_info,
                    strategy_name = strategy_name)

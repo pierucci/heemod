@@ -67,10 +67,9 @@ define_strategy_ <- function(transition,
     
     if (!identical(as.vector(sort(get_state_names(states))),
                    as.vector(sort(get_state_names(transition))))) {
-      stop("State names differ from transition matrix.")
+      stop("State names differ from transition object.")
     }
   }
-  
   
   structure(
     list(
@@ -111,7 +110,7 @@ set_transition.default <- function(x, m) {
   x
 }
 
-get_states <- function(x) {
+get_states <- function(x){
   UseMethod("get_states")
 }
 

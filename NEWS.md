@@ -29,11 +29,12 @@
 
   * Fixed a bug that would return incorrect efficiency frontiers in some situations.
   * Fixed a failure of tabular input when a column can be read as all numeric.
+  * Fixed a bug of ICER computations that would return duplicated strategy names in some edge cases (thanks to [Vince Daniels](https://github.com/daniels4321)).
   
 ## Acknowledments
 
-  * Thanks to [Matthew Wiener](https://github.com/MattWiener).
-  
+  * Thanks to [Matthew Wiener](https://github.com/MattWiener) for the survival analysis code.
+
 # heemod 0.7.1
 
 ## Bugfixes

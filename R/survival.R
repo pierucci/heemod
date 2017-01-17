@@ -1,4 +1,3 @@
-
 #' Extract Transition Probabilities from a Survival Model
 #' 
 #' Get probabilities from survival models.
@@ -207,7 +206,7 @@ define_survival <- function(distribution = c("exp", "weibull",
       }
     env_f <- asNamespace("flexsurv")
     }
-  
+
   rf <- get(paste0("r", distribution),
             envir = env_f)
   

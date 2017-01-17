@@ -69,7 +69,7 @@ eval_strategy <- function(strategy, parameters, cycles,
   if (expand) {
     
     if (inherits(uneval_transition, "part_surv")) {
-      stop("Cannot use 'state_cycle' with partitioned survival.")
+      stop("Cannot use 'state_cycle' with partitionned survival.")
     }
     
     uneval_transition <- i_uneval_transition
@@ -107,13 +107,7 @@ eval_strategy <- function(strategy, parameters, cycles,
       which(get_state_names(uneval_transition) %in% to_expand),
       rep(0, cycles)
     )
-    
-    inflow <- insert(
-      inflow,
-      which(get_state_names(uneval_transition) %in% to_expand),
-      rep(0, cycles)
-    )
-    
+
     for (st in to_expand) {
       uneval_transition <- expand_state(
         x = uneval_transition,
@@ -129,11 +123,10 @@ eval_strategy <- function(strategy, parameters, cycles,
       )
     }
   }
-  
   parameters <- eval_parameters(parameters,
                                 cycles = cycles,
                                 strategy_name = strategy_name)
-  
+
   states <- eval_state_list(uneval_states, parameters)
   transition <- eval_transition(uneval_transition,
                                 parameters)

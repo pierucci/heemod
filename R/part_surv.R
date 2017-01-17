@@ -92,7 +92,7 @@ define_part_surv <- function(pfs, os, state_names,
       stop("length of state_names must be 3 or 4")
   
   }
-  
+
   define_part_surv_(
     pfs = lazyeval::lazy_(substitute(pfs), env = parent.frame()),
     os = lazyeval::lazy_(substitute(os), env = parent.frame()),
