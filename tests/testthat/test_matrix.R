@@ -130,10 +130,10 @@ test_that(
     e_par1 <- heemod:::eval_parameters(
       par1, 10
     )
-    e_mat <- heemod:::eval_matrix(
+    e_mat <- heemod:::eval_transition(
       mat1, e_par1
     )
-    e_matC <- heemod:::eval_matrix(
+    e_matC <- heemod:::eval_transition(
       matC, e_par1
     )
     expect_output(

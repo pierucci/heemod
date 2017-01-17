@@ -22,7 +22,7 @@
 #'   
 #' @keywords internal
 eval_strategy_newdata <- function(x, strategy = 1, newdata) {
-  check_strategy_index(x = x, i = strategy)
+  strategy <- check_strategy_index(x = x, i = strategy)
   
   cycles <- get_cycles(x)
   init <- get_init(x)
@@ -45,12 +45,11 @@ eval_strategy_newdata <- function(x, strategy = 1, newdata) {
     parallel::clusterExport(
       cl, 
       c("uneval_strategy", "old_parameters", "pnewdata", 
-        "cycles", "init", "method"),
+        "cycles", "init", "method", "strategy"),
       envir = environment()
     )
     
     pieces <- parallel::parLapply(cl, pnewdata, function(newdata) {
-      
       newdata %>% 
         dplyr::rowwise() %>% 
         dplyr::do_(
@@ -61,7 +60,8 @@ eval_strategy_newdata <- function(x, strategy = 1, newdata) {
             cycles = cycles,
             init = init,
             inflow = inflow,
-            method = method
+            method = method,
+            strategy_name = strategy
           )
         ) %>% 
         dplyr::ungroup() %>% 
@@ -83,7 +83,8 @@ eval_strategy_newdata <- function(x, strategy = 1, newdata) {
           cycles = cycles,
           init = init,
           method = method,
-          inflow = inflow
+          inflow = inflow,
+          strategy_name = strategy
         )
       ) %>% 
       dplyr::ungroup() %>% 
@@ -96,7 +97,7 @@ eval_strategy_newdata <- function(x, strategy = 1, newdata) {
 }
 
 eval_newdata <- function(new_parameters, strategy, old_parameters,
-                         cycles, init, method, inflow) {
+                         cycles, init, method, inflow, strategy_name) {
   
   new_parameters <- Filter(
     function(x) all(! is.na(x)),
@@ -116,6 +117,7 @@ eval_newdata <- function(new_parameters, strategy, old_parameters,
     cycles = cycles,
     init = init,
     method = method,
-    inflow = inflow
+    inflow = inflow,
+    strategy_name = strategy_name
   )
 }

@@ -78,55 +78,39 @@ mat_trans_comb <- define_transition(
 State definition remains the same in this example.
 
 ```{r}
-A_mono <- define_state(
-  cost_health = cost_A,
-  cost_drugs = cost_zido,
-  cost_total = discount(cost_health + cost_drugs, .06),
-  life_year = 1
-)
-B_mono <- define_state(
-  cost_health = cost_B,
-  cost_drugs = cost_zido,
-  cost_total = discount(cost_health + cost_drugs, .06),
-  life_year = 1
-)
-C_mono <- define_state(
-  cost_health = cost_C,
-  cost_drugs = cost_zido,
-  cost_total = discount(cost_health + cost_drugs, .06),
-  life_year = 1
-)
-D_mono <- define_state(
-  cost_health = 0,
-  cost_drugs = 0,
-  cost_total = discount(cost_health + cost_drugs, .06),
-  life_year = 0
-)
-
-A_comb <- define_state(
-  cost_health = cost_A,
-  cost_drugs = cost_zido + cost_lami,
-  cost_total = discount(cost_health + cost_drugs, .06),
-  life_year = 1
-)
-B_comb <- define_state(
-  cost_health = cost_B,
-  cost_drugs = cost_zido + cost_lami,
-  cost_total = discount(cost_health + cost_drugs, .06),
-  life_year = 1
-)
-C_comb <- define_state(
-  cost_health = cost_C,
-  cost_drugs = cost_zido + cost_lami,
-  cost_total = discount(cost_health + cost_drugs, .06),
-  life_year = 1
-)
-D_comb <- define_state(
-  cost_health = 0,
-  cost_drugs = 0,
-  cost_total = discount(cost_health + cost_drugs, .06),
-  life_year = 0
-)
+state_A <- define_state(
+    cost_health = 2756,
+    cost_drugs = dispatch_strategy(
+      mono = cost_zido,
+      comb = cost_zido + cost_lami
+    ),
+    cost_total = discount(cost_health + cost_drugs, .06),
+    life_year = 1
+  )
+state_B <- define_state(
+    cost_health = 3052,
+    cost_drugs = dispatch_strategy(
+      mono = cost_zido,
+      comb = cost_zido + cost_lami
+    ),
+    cost_total = discount(cost_health + cost_drugs, .06),
+    life_year = 1
+  )
+state_C <- define_state(
+    cost_health = 9007,
+    cost_drugs = dispatch_strategy(
+      mono = cost_zido,
+      comb = cost_zido + cost_lami
+    ),
+    cost_total = discount(cost_health + cost_drugs, .06),
+    life_year = 1
+  )
+state_D <- define_state(
+    cost_health = 0,
+    cost_drugs = 0,
+    cost_total = discount(cost_health + cost_drugs, .06),
+    life_year = 0
+  )
 ```
 
 Strategies must be first defined and run as in a standard deterministic analysis.
@@ -134,18 +118,18 @@ Strategies must be first defined and run as in a standard deterministic analysis
 ```{r}
 strat_mono <- define_strategy(
   transition = mat_trans_mono,
-  A_mono,
-  B_mono,
-  C_mono,
-  D_mono
+  state_A,
+  state_B,
+  state_C,
+  state_D
 )
 
 strat_comb <- define_strategy(
   transition = mat_trans_comb,
-  A_comb,
-  B_comb,
-  C_comb,
-  D_comb
+  state_A,
+  state_B,
+  state_C,
+  state_D
 )
 
 res_mod <- run_model(

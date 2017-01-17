@@ -229,6 +229,13 @@ test_that(
       heemod:::create_parameters_from_tabular(pb_par)
     )
     
+    pb_par2 <- pb_par
+    names(pb_par2)[1] <- "param"
+    expect_error(
+      heemod:::create_parameters_from_tabular(pb_par2),
+      "parameter file must include the column 'parameter'"
+    )
+    
     pb_par <- structure(list(
       parameter = c("lngamma", "gamma"),
       value = c("0.3740968", 
@@ -326,6 +333,10 @@ test_that(
       heemod:::read_file(
         system.file("tabular/test/wrong_ext.tab", package = "heemod")
       )
+    )
+    
+    expect_error(
+      create_model_from_tabular(states1, NULL, NULL, new.env())
     )
   }
 )

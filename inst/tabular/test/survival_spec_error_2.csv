@@ -1,0 +1,8 @@
+data,val
+fit_metric,AIC
+fit_name_pfs,PFS.fit
+fit_file_pfs,PFS.surv.fit
+fit_name_ofs,OS.fit
+surv_data_file_pfs,PFS.data.csv
+fit_file_ofs,OS.surv.fit
+output,output

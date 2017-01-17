@@ -199,7 +199,8 @@ run_model_ <- function(uneval_strategy_list,
       cycles = cycles,
       method = method,
       expand_limit = state_cycle_limit[[n]],
-      inflow = inflow
+      inflow = inflow,
+      strategy_name = n
     )
   }
   

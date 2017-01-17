@@ -1,16 +1,39 @@
 # heemod devel
 
+## Breaking changes
+
+  * `strategy` becomes a reserved parameter name.
+
 ## New features
 
+  * Transition probabilities from survival models with `get_probs_from_surv()`:
+    * Parametrically defined by `define_survival()`.
+    * Or fitted on data by the `flexsurv` package.
+  * Support for partitioned survival models with `define_part_surv()`.
   * Plot EVPI.
   * Export PSA files for Sheffield Accelerated Value of Information sofware.
   * Individuals can enter the model after the beginning with the `inflow` argument in `run_model()` (mainly for budget impact analysis).
+  * Strategy name can be used to define values with `dispatch_strategy()` or using the `strategy` name (vignettes *homogeneous* and *probabilistic* have been updated to use this feature).
+
+## Other features
+
+  * Convenience function `rescale_discount_rate()`.
+  * Better error messages at parameter evaluation.
 
 ## Backend changes
 
   * Cleaner handling of clusters.
   * Package `diagram`, `Hmisc` and `logitnorm` moved from `Imports` to `Suggests`.
+  
+## Bugfixes
 
+  * Fixed bugs that would return incorrect efficiency frontiers in some situations, or would return duplicated strategy names in some edge cases (thanks to [Vince Daniels](https://github.com/daniels4321)).
+  * Fixed a failure of tabular input when a column can be read as all numeric.
+  
+## Acknowledments
+
+  * Thanks to [Matthew Wiener](https://github.com/MattWiener) for the survival analysis code.
+  
 # heemod 0.7.1
 
 ## Bugfixes

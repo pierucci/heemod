@@ -74,15 +74,7 @@ test_that(
     )
     expect_output(
       str(e_par1),
-      "10 obs. of  3 variables:
- $ markov_cycle: int  1 2 3 4 5 6 7 8 9 10
- $ a           : num  2 2 2 2 2 2 2 2 2 2
- $ b           : num  2 4 6 8 10 12 14 16 18 20",
-      fixed = TRUE
-    )
-    expect_output(
-      str(e_par1),
-      "10 obs\\. of  3 variables"
+      "10 obs\\. of  4 variables"
     )
     expect_equal(
       get_parameter_names(e_par1),

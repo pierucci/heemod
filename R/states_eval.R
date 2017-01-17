@@ -15,6 +15,9 @@ eval_state_list <- function(x, parameters) {
   f <- function(x) {
     x <- discount_hack(x)
     
+    # update calls to dispatch_strategy()
+    x <- dispatch_strategy_hack(x)
+    
     # bottleneck!
     dplyr::mutate_(parameters, .dots = x)[c("markov_cycle",
                                             names(x))]
@@ -32,7 +35,7 @@ get_state_value_names.eval_state_list <- function(x){
 
 #' Hack to Work Around a Discounting Issue
 #' 
-#' This function is a hack to avoid a problem with
+#' This function is a hack to avoid a problem with 
 #' discounting when the argument is a constant.
 #' 
 #' The hack consists in replacing calls to
@@ -63,15 +66,18 @@ discount_hack <- function(.dots) {
     }
   }
   
-  structure(
-    lapply(
-      .dots,
-      function(x) {
-        x$expr <- f(x$expr, env = x$env)
-        x
-      }
-    ),
-    class = "lazy_dots"
+  do.call(
+    structure,
+    c(list(
+      .Data = lapply(
+        .dots,
+        function(x) {
+          x$expr <- f(x$expr, env = x$env)
+          x
+        }
+      )),
+      attributes(.dots)
+    )
   )
 }
 
@@ -79,7 +85,7 @@ discount_hack <- function(.dots) {
 discount_check <- function(x, env) {
   if (identical(x, quote(discount))) {
     if (identical(environment(eval(x, envir = env)),
-                  environment(run_model))) {
+                  asNamespace("heemod"))) {
       TRUE
     } else {
       warning("A version of 'discount()' that is not defined by heemod was found.")

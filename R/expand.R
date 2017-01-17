@@ -8,6 +8,11 @@ has_state_cycle.uneval_matrix <- function(x, ...) {
 }
 
 #' @export
+has_state_cycle.part_surv <- function(x, ...) {
+  FALSE
+}
+
+#' @export
 has_state_cycle.uneval_state_list <- function(x, ...) {
   unlist(lapply(x, has_state_cycle))
 }
@@ -188,6 +193,12 @@ interp_heemod.uneval_matrix <- function(x, ...) {
 interp_heemod.state <- function(x, ...) {
   res <- interp_heemod.default(x, ...)
   define_state_(res)
+}
+
+#' @export
+#' @rdname interp_heemod
+interp_heemod.part_surv <- function(x, ...) {
+  x
 }
 
 #' @export
