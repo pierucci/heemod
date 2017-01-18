@@ -674,6 +674,16 @@ test_that(
       c("tbl_df", "tbl", "data.frame")
     )
 
+    expect_identical(
+      names(result$demographics),
+      c("updated_model", "newdata", "model",
+        "combined_model", "has_weights", "weights")
+    )
+    expect_identical(
+      class(result$demographics$updated_model),
+      c("tbl_df", "tbl", "data.frame")
+    )
+
     expect_output(
       print(result$model_runs),
       "-223.3065   0.04426563 -5044.693",
