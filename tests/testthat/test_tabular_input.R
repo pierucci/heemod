@@ -654,6 +654,26 @@ test_that(
         "psa","demographics")
     )
     
+        ## make sure structure of dsa and psa objects haven't 
+    ## changed too much (so we don't get problems with output)
+    expect_identical(
+      names(result$dsa),
+            c("dsa", "variables", "model")
+    )
+    expect_identical(
+      class(result$dsa$dsa),
+      c("tbl_df", "tbl", "data.frame")
+    )
+    
+    expect_identical(
+      names(result$psa),
+      c("psa", "run_model", "model", "N", "resamp_par")
+    )
+    expect_identical(
+      class(result$psa$psa),
+      c("tbl_df", "tbl", "data.frame")
+    )
+
     expect_output(
       print(result$model_runs),
       "-223.3065   0.04426563 -5044.693",
