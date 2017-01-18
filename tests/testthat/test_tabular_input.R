@@ -336,7 +336,10 @@ test_that(
     )
     
     expect_error(
-      create_model_from_tabular(states1, NULL, NULL, new.env())
+      create_model_from_tabular(states1, NULL, NULL, new.env()),
+      "either a transition matrix (tm_info) or a partitioned
+         survival model (surv_info) must be defined",
+      fixed = TRUE
     )
   }
 )
@@ -682,6 +685,14 @@ test_that(
     expect_identical(
       class(result$demographics$updated_model),
       c("tbl_df", "tbl", "data.frame")
+    )
+    expect_equal(
+      round(as.numeric(result$dsa$dsa[1,1:2]), 2),
+      c(201310.42, 14660.95)
+    )
+    expect_equal(
+      as.numeric(result$demographics$updated_model[1, 1:3]),
+      c(46809.972, 4533.945, 82)
     )
 
     expect_output(
