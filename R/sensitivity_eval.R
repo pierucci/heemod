@@ -3,7 +3,6 @@
 #' @param model An evaluated Markov model.
 #' @param dsa An object returned by 
 #'   \code{\link{define_dsa}}.
-#' @param sensitivity Deprecated, use \code{dsa} instead.
 #'   
 #' @return A \code{data.frame} with one row per model and 
 #'   parameter value.

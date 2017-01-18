@@ -3,6 +3,7 @@
 ## Breaking changes
 
   * `strategy` becomes a reserved parameter name.
+  * Counting method `"half-cycle"` is deprecated.
 
 ## New features
 

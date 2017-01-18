@@ -18,8 +18,6 @@
 #'   \code{\link{define_state}}.
 #' @param states List of states, only used by
 #'   \code{define_strategy_} to avoid using \code{...}.
-#' @param transition_matrix Deprecated argument, use
-#'   \code{transition}.
 #'   
 #' @return An object of class \code{uneval_model} (a list
 #'   containing the unevaluated parameters, matrix and
@@ -29,14 +27,8 @@
 #' 
 #' @example inst/examples/example_define_strategy.R
 define_strategy <- function(...,
-                            transition = define_transition(),
-                            transition_matrix = NULL) {
-  
-  if (! is.null(transition_matrix)) {
-    warning("Argument 'transition_matrix' is deprecated, use 'transition' instead.")
-    transition <- transition_matrix
-  }
-  
+                            transition = define_transition()) {
+
   states <- define_state_list_(list(...))
   
   define_strategy_(
