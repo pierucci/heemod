@@ -34,7 +34,7 @@
 ## Acknowledments
 
   * Thanks to [Matthew Wiener](https://github.com/MattWiener) for the survival analysis code.
-  
+
 # heemod 0.7.1
 
 ## Bugfixes

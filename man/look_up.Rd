@@ -16,24 +16,26 @@ like the columns of \code{data}.}
 binned, or character vector giving the names of
 variables to bin (see examples).}
 
-\item{value}{The value to extract ffrom the reference 
+\item{value}{The value to extract from the reference 
 data frame.}
 }
 \value{
-A vector of values, same lenght as \code{...}.
+A vector of values, same length as \code{...}.
 }
 \description{
 A convenience function to easily look for values in a 
 data frame.
 }
 \details{
-This function is mostly used to extract population 
-informations (such as mortality rates), given some 
-individual caracteristics.
+This function is mostly used to extract 
+information (such as mortality rates), given some 
+individual characteristics.
 
-If binning is activated, numeric individual 
-characteristics are matched to the corresponding 
-reference value that is directly inferior.
+If binning is activated for a numeric variable, 
+each bin is considered to go from
+one explicitly given value to the next.  If binning is not
+activated, only values that are explicitly mentioned can be
+referenced; other values will cause an error.
 }
 \examples{
 tempdf <- expand.grid(arg1 = c("A", "B", "C"), arg2 = 1:4, arg3 = 1:5)
@@ -47,7 +49,7 @@ look_up(
   arg3 = c(-1, 1, 1, 2, 3)
 )
 
-# binning doesnt catch values lesser than the smaller
+# binning doesn't catch values smaller than the smallest
 # reference value
 look_up(
   data = tempdf,
@@ -57,7 +59,7 @@ look_up(
   arg3 = c(-1, 1, 1, 2, 3),
   bin = TRUE
 )
-# bin can alos be given as a charater vector
+# bin can also be given as a character vector
 # to avoid binning all numeric variables
 look_up(
   data = tempdf,
@@ -72,7 +74,7 @@ age_related_df <- data.frame(age = 10 * 0:9, decade = 1:10)
 
 look_up(age_related_df, age = c(0, 10, 20), value = "decade")
 
-# binning might help in the situation
+# binning lets us look up values not mentioned in the data frame
 look_up(age_related_df, age = c(5, 15, 23.5), 
         value = "decade")
 look_up(age_related_df, age = c(5, 15, 23.5), 

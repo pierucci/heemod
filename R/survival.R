@@ -183,7 +183,8 @@ get_probs_from_surv.surv_dist <- function(x, cycle,
 #' 
 define_survival <- function(distribution = c("exp", "weibull",
                                              "lnorm", "gamma", 
-                                             "gompertz", "gengamma"),
+                                             "gompertz", "gengamma",
+                                             "beta", "triangle"),
                             ...) {
   
   distribution <- match.arg(distribution)
@@ -191,20 +192,29 @@ define_survival <- function(distribution = c("exp", "weibull",
   list_arg <- list(...)
   
   if (distribution %in% c("exp", "weibull",
-                          "lnorm", "gamma")) {
+                          "lnorm", "gamma", "beta")) {
     env_f <- asNamespace("stats")
-  } else {
-    if (! requireNamespace("flexsurv")) {
-      stop("'flexsurv' package required.")
+  } 
+  if(distribution == "triangle"){
+      if( ! requireNamespace("triangle"))
+        stop("'triangle' package required.")
+      env_f <- asNamespace("triangle")
     }
+  if(distribution %in% c("gompertz", "gengamma")){
+      if (! requireNamespace("flexsurv")) {
+        stop("'flexsurv' package required.")
+      }
     env_f <- asNamespace("flexsurv")
-  }
-  
+    }
+
   rf <- get(paste0("r", distribution),
             envir = env_f)
   
   names_fun <- setdiff(names(list_arg), "distribution")
   names_par <- setdiff(names(formals(rf)), "n")
+  
+  if(any(names_fun == ""))
+     stop("all arguments to the distribution must be named")
   
   correct_names <- names_fun %in% names_par
   
@@ -222,4 +232,149 @@ define_survival <- function(distribution = c("exp", "weibull",
     ),
     class = "surv_dist"
   )
+}
+
+#' Get transition or survival probabilities from fits
+#'
+#' @param fits Fits from \code{flexsurvreg}, or a list specifying 
+#'   distributions
+#' @param treatment The treatment for which probabilities are desired 
+#' @param km_until Up to what time should Kaplan-Meier estimates be used?  
+#' @param markov_cycle The Markov cycles for which to predict.
+#' @param markov_cycle_length The value of a Markov cycle in absolute time units.
+#' @param pred_type "prob" or "surv", depending on which type of prediction
+#'   is desired.
+#'
+#' @return a vector of probabilities
+#' @export
+#'
+#' @examples
+get_surv_probs <-
+  function(fits, treatment, km_until, markov_cycle, 
+           markov_cycle_length,
+           pred_type = c("prob", "surv")){
+    if(missing(fits))
+      stop("must specify argument 'fits' in get_surv_probs")
+    if(missing(treatment))
+      stop("must specify argument 'treatment' in get_surv_probs")
+    if(missing(km_until))
+      stop("must specify argument 'km_until' in get_surv_probs")
+    if(missing(markov_cycle))
+      stop("must specify argument 'markov_cycle' in get_surv_probs")
+    if(missing(markov_cycle_length))
+      stop("must specify argument 'markov_cycle_length' in get_surv_probs")
+    pred_type <- match.arg(pred_type)
+    get_probs_from_surv(fits[[treatment]], 
+                          use_km_until = km_until, 
+                          markov_cycle = markov_cycle,
+                          markov_cycle_length = markov_cycle_length,
+                          pred_type = pred_type)
+  }
+
+
+#' Compute Count of Individual in Each State per Cycle
+#'   based on a partitioned survival model
+#' 
+#' Given a partitioned survival model, returns the number of individuals 
+#' per state per cycle.
+#' 
+#' 
+#' @param part_surv_obj A \code{flexsurvreg} object, or a list
+#'   specifying a distribution.  
+#' @param use_km_until  to what time should Kaplan-Meier estimates be used?
+#'   Model predictions will be used thereafter.
+#' @param num_patients The number of patients being modeled.  Survival
+#'   probabilities are between 0 and 1, so we multiply up by num_patients.
+#' @param state_names Name of the states to be assigned to the counts.
+#'   
+#' @details See \code{get_probs_from_surv} for further information on
+#'   \code{part_surv_obj}, \code{use_km_until}, and the \code{markov_cycle}
+#'   arguments.
+#' @return A \code{cycle_counts} object.
+#'   
+#' @keywords internal
+#' @rdname get_probs_from_surv
+
+compute_counts_part_surv <- function(part_surv_obj, 
+                                     use_km_until,
+                                     num_patients,
+                                     markov_cycle, markov_cycle_length,
+                                     state_names){
+  stopifnot(length(use_km_until) == 1)
+  pfs_surv <- get_probs_from_surv(part_surv_obj$PFS_fit, 
+                                    use_km_until = use_km_until,
+                                    markov_cycle = markov_cycle,
+                                    markov_cycle_length = markov_cycle_length, 
+                                    pred_type = "surv") 
+  os_surv <- get_probs_from_surv(part_surv_obj$OS_fit, 
+                                   use_km_until = use_km_until,
+                                   markov_cycle = markov_cycle,
+                                   markov_cycle_length = markov_cycle_length, 
+                                   pred_type = "surv")
+  res <- cbind(pfs_surv, os_surv - pfs_surv , 
+               1 - os_surv)
+  if("terminal" %in% state_names){
+    ## fix the "terminal" state
+    terminal <- c(0, diff(res[, 4]))
+    res[, 3:4] <- cbind(res[, 1:2], terminal, res[,3])
+  }
+  res <- res * num_patients
+  colnames(res) <- state_names
+  res <- data.frame(res)
+  structure(res, class = c("cycle_counts", class(res)))
+}
+
+
+#'
+#' Calculate additional metrics to evaluate fit of survival model.
+#' 
+#' @param surv_fits A list object from \code{\link{f_fit_survival_models}} that gives
+#' 		a collection (list) of parametric survival fit object. 
+#' @param metrics Metrics to calculate.
+#' @return
+#'   A list object of parametric survival fits, containing additional fields for
+#' 		the calculated fit metrics. 
+#' @details Currently calculates only:
+#' 		\itemize{\item Bayesian information criterion (BIC)
+#' 		\item -2*log likelihood (-2LL)}  (Objects come with AIC already calculated.)
+
+f_calc_surv_fit_metrics <-
+  function(surv_fits, metrics = c("BIC","m2LL")) {
+    
+    #argument checks
+    stopifnot(length(surv_fits) > 0)
+    stopifnot(all(metrics %in% c("BIC","m2LL")))
+    
+    #get current and previous time step in absolute (not Markov) units
+    for(metric in metrics)
+    {
+      if(metric=="BIC") { surv_fits = get_BIC(surv_fits)}
+      if(metric=="m2LL") { surv_fits = get_m2LL(surv_fits)}
+    }
+    
+    #returns updated survival fits object
+    surv_fits
+  }
+
+
+get_BIC <- function(surv_fits)
+{
+  out = surv_fits
+  for(i in 1:length(out))
+  {
+    this_BIC = (-2*getElement(out[[i]], "loglik") + (log(as.numeric(getElement(out[[i]], "N")))*getElement(out[[i]], "npars")))
+    out[[i]]$BIC <- this_BIC 
+  }
+  out
+}
+
+get_m2LL <- function(surv_fits)
+{
+  out = surv_fits
+  for(i in 1:length(out))
+  {
+    this_m2LL = -2*getElement(out[[i]], "loglik")
+    out[[i]]$m2LL <- this_m2LL 
+  }
+  out
 }

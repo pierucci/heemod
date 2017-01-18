@@ -46,18 +46,19 @@ eval_strategy <- function(strategy, parameters, cycles,
   
   i_parameters <- interp_heemod(parameters)
   
-  i_uneval_transition <- interp_heemod(
-    uneval_transition,
-    more = as_expr_list(i_parameters)
-  )
-  
+  td_tm <- FALSE
+  if(inherits(uneval_transition, "uneval_matrix")){
+    i_uneval_transition <- interp_heemod(
+      uneval_transition,
+      more = as_expr_list(i_parameters)
+    )
+    td_tm <- has_state_cycle(i_uneval_transition)
+  }
+
   i_uneval_states <- interp_heemod(
     uneval_states,
     more = as_expr_list(i_parameters)
   )
-  
-  
-  td_tm <- has_state_cycle(i_uneval_transition)
   
   td_st <- has_state_cycle(i_uneval_states)
   
@@ -106,7 +107,7 @@ eval_strategy <- function(strategy, parameters, cycles,
       which(get_state_names(uneval_transition) %in% to_expand),
       rep(0, cycles)
     )
-    
+
     for (st in to_expand) {
       uneval_transition <- expand_state(
         x = uneval_transition,
@@ -122,23 +123,20 @@ eval_strategy <- function(strategy, parameters, cycles,
       )
     }
   }
-  
   parameters <- eval_parameters(parameters,
                                 cycles = cycles,
                                 strategy_name = strategy_name)
-  
+
   states <- eval_state_list(uneval_states, parameters)
-  
   transition <- eval_transition(uneval_transition,
                                 parameters)
-  
-  count_table <- compute_counts(
-    x = transition,
-    init = init,
-    method = method,
-    inflow = inflow
-  )
-  
+    
+    count_table <- compute_counts(
+      x = transition,
+      init = init,
+      method = method,
+      inflow = inflow
+    )
   values <- compute_values(states, count_table)
   
   if (expand) {
@@ -195,7 +193,6 @@ compute_counts <- function(x, ...) {
 compute_counts.eval_matrix <- function(x, init,
                                        method, inflow,
                                        ...) {
-  
   if (! length(init) == get_matrix_order(x)) {
     stop(sprintf(
       "Length of 'init' vector (%i) differs from the number of states (%i).",
@@ -211,6 +208,10 @@ compute_counts.eval_matrix <- function(x, init,
       get_matrix_order(x)
     ))
   }
+  
+### not sure about this line
+  init <- init - inflow
+  # because inflow added from first call to add_and_mult
   
   add_and_mult <- function(x, y) {
     (x + inflow) %*% y

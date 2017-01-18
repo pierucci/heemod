@@ -9,7 +9,7 @@ look_up(
   arg3 = c(-1, 1, 1, 2, 3)
 )
 
-# binning doesnt catch values lesser than the smaller
+# binning doesn't catch values smaller than the smallest
 # reference value
 look_up(
   data = tempdf,
@@ -19,7 +19,7 @@ look_up(
   arg3 = c(-1, 1, 1, 2, 3),
   bin = TRUE
 )
-# bin can alos be given as a charater vector
+# bin can also be given as a character vector
 # to avoid binning all numeric variables
 look_up(
   data = tempdf,
@@ -34,7 +34,7 @@ age_related_df <- data.frame(age = 10 * 0:9, decade = 1:10)
 
 look_up(age_related_df, age = c(0, 10, 20), value = "decade")
 
-# binning might help in the situation
+# binning lets us look up values not mentioned in the data frame
 look_up(age_related_df, age = c(5, 15, 23.5), 
         value = "decade")
 look_up(age_related_df, age = c(5, 15, 23.5), 

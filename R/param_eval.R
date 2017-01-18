@@ -53,7 +53,7 @@ eval_parameters <- function(x, cycles = 1,
     param_name <- get_parameter_names(x)[param_num]
     
     stop(sprintf(
-      "Error in parameter: %s.", param_name),
+      "Error evaluating parameter: %s.", param_name),
       call. = FALSE)
   }
   

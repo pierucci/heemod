@@ -57,15 +57,9 @@ vswitch.default <- function(x, ...) {
 #'   )
 #' )
 dispatch_strategy <- function(.strategy, ...) {
-  .dots <- list(...)
+  .dots <- lazyeval::lazy_dots(...)
   if (is.null(names(.dots)) || any(is.na(names(.dots)))) {
     stop("All arguments to 'dispatch_strategy()' must be named.")
-  }
-  if (! is.character(.strategy)) {
-    stop("'.strategy' must be a character vector.")
-  }
-  if (any(is.na(.strategy))) {
-    stop("Missing data in '.strategy'.")
   }
   vswitch(.strategy, ...)
 }

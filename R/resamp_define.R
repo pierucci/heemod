@@ -5,9 +5,9 @@
 #' analysis of Markov models.
 #' 
 #' If no correlation matrix is specified parameters are 
-#' assumed to be independant.
+#' assumed to be independent.
 #' 
-#' The correlation patrix need only be specified for 
+#' The correlation matrix need only be specified for 
 #' correlated parameters.
 #' 
 #' @param ... Formulas defining parameter distributions.
@@ -18,7 +18,7 @@
 #'   
 #' @return An object of class \code{resamp_definition}. 
 #'   Contains \code{list_qdist}, a list of quantile 
-#'   functions and \code{correlation} a correlation matrix.
+#'   functions and \code{correlation}, a correlation matrix.
 #' @export
 #' 
 #' @example inst/examples/example_define_resample.R

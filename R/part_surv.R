@@ -21,6 +21,7 @@
 #'   for both distributions).
 #' @param cycle_length The value of a Markov cycle in
 #'   absolute time units.
+#' @param part_surv_obj a partial survival object to be modified.
 #'   
 #' @return A \code{part_surv} object.
 #' @export
@@ -73,7 +74,25 @@ define_part_surv <- function(pfs, os, state_names,
   } else if (terminal_state) {
     warning("Argument 'terminal_state' ignored when state names are given.")
   }
+  if(is.null(names(state_names))){
+    if(length(state_names) == 3)
+      names(state_names) <- c(
+        "progression_free",
+        "progression",
+        "death"
+      )
+    if(length(state_names) == 4)
+      names(state_names) <- c(
+        "progression_free",
+        "progression",
+        "terminal",
+        "death"
+      )
+    if(!(length(state_names) %in% c(3,4)) )
+      stop("length of state_names must be 3 or 4")
   
+  }
+
   define_part_surv_(
     pfs = lazyeval::lazy_(substitute(pfs), env = parent.frame()),
     os = lazyeval::lazy_(substitute(os), env = parent.frame()),
@@ -130,6 +149,42 @@ define_part_surv_ <- function(pfs, os, state_names,
     class = "part_surv"
   )
 }
+
+
+#' @rdname define_part_surv
+#' @export
+#'
+#' @examples
+#' dist_pfs <- define_survival("exp", rate = 1)
+#' dist_os <- define_survival("exp", rate = .5)
+#' 
+#' ps1 <- define_part_surv(
+#'   pfs = dist_pfs,
+#'   os = dist_os,
+#'   terminal_state = TRUE
+#' )
+#' 
+#' ps2 <- modify_part_surv(
+#'   ps1,
+#'   km_limit = c(20, 20),
+#'   )
+
+modify_part_surv <- function(part_surv_obj, 
+                             km_limit = NULL,
+                             cycle_length = NULL){
+  stopifnot(inherits(part_surv_obj, "part_surv"))
+  if(!is.null(km_limit))
+    part_surv_obj$km_limit <- km_limit
+  if(!is.null(cycle_length))
+    part_surv_obj$cycle_length <- cycle_length
+  define_part_surv_(
+    pfs = part_surv_obj$pfs,
+    os = part_surv_obj$os,
+    state_names = part_surv_obj$state_names,
+    km_limit = part_surv_obj$km_limit,
+    cycle_length = part_surv_obj$cycle_length)
+}
+
 
 get_state_names.part_surv <- function(x) {
   x$state_names

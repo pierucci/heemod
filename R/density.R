@@ -11,6 +11,11 @@
 #' @param sdlog SD on the log scale.
 #' @param mu Mean on the lgit scale.
 #' @param sigma SD on the logit scale.
+#' @param shape1 for beta distribution
+#' @param shape2 for beta distribution
+#' @param lower lower bound of triangular distribution.
+#' @param upper upper bound of triangular distribution.
+#' @param peak peak of triangular distribution.
 #'   
 #' @export
 normal <- function(mean, sd) {
@@ -77,3 +82,30 @@ logitnormal <- function(mu, sigma) {
 r_logitnormal <- function(mu, sigma) {
   function(x) logitnorm::qlogitnorm(p = x, mu = mu, sigma = sigma)
 }
+
+#' @rdname density
+#' @export
+beta <- function(shape1, shape2){
+  list(r_beta(shape1, shape2))
+}
+r_beta <- function(shape1, shape2){
+  function(x){stats::qbeta(p = x, shape1 = shape1, shape2 = shape2)}
+}
+
+#' @rdname density
+#' @export
+triangle <- function(lower, upper, peak = (lower + upper)/2) {
+  if (! requireNamespace("triangle")) {
+    stop("'triangle' package required for logitnormal distributions.")
+  }
+  stopifnot(peak >= lower,
+            upper >= peak,
+            upper > lower
+            )
+  list(r_triangle(lower, upper, peak))
+}
+r_triangle <- function(lower, upper, peak) {
+  function(x) triangle::qtriangle(p = x, a = lower, b = upper, c = peak)
+}
+
+

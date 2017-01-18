@@ -117,6 +117,10 @@ test_that(
       a = .1,
       b = 1 / (markov_cycle + 1)
     )
+    par2 <- define_parameters(
+      a = ifelse(strategy == "S1", 0.1, 0.2),
+      b = 1 / (markov_cycle + 1)
+    )
     mat1 <- define_transition(
       state_names = c("X1", "X2"),
       1-a, a,
@@ -136,6 +140,20 @@ test_that(
     e_matC <- heemod:::eval_transition(
       matC, e_par1
     )
+    e_par2 <- heemod:::eval_parameters(
+      par2, 10, "S1"
+    )
+    e_par3 <- heemod:::eval_parameters(
+      par2, 10, "S2"
+    )
+    e_mat_p2 <- heemod:::eval_transition(
+      mat1, e_par2
+    )
+    e_matC_p2 <- heemod:::eval_transition(
+      matC, e_par2)
+    e_mat_p3 <- heemod:::eval_transition(
+      mat1, e_par3
+    )
     expect_output(
       str(e_mat),
       'List of 10
@@ -153,6 +171,26 @@ test_that(
  - attr(*, "state_names")= chr [1:2] "X1" "X2"',
       fixed = TRUE
     )
+    
+    expect_output(
+      str(e_mat_p3),
+      'List of 10
+ $ : num [1:2, 1:2] 0.8 0.5 0.2 0.5
+ $ : num [1:2, 1:2] 0.8 0.667 0.2 0.333
+ $ : num [1:2, 1:2] 0.8 0.75 0.2 0.25
+ $ : num [1:2, 1:2] 0.8 0.8 0.2 0.2
+ $ : num [1:2, 1:2] 0.8 0.833 0.2 0.167
+ $ : num [1:2, 1:2] 0.8 0.857 0.2 0.143
+ $ : num [1:2, 1:2] 0.8 0.875 0.2 0.125
+ $ : num [1:2, 1:2] 0.8 0.889 0.2 0.111
+ $ : num [1:2, 1:2] 0.8 0.9 0.2 0.1
+ $ : num [1:2, 1:2] 0.8 0.9091 0.2 0.0909
+ - attr(*, "class")= chr [1:2] "eval_matrix" "list"
+ - attr(*, "state_names")= chr [1:2] "X1" "X2"',
+      fixed = TRUE
+    )
+    
+    
     expect_output(
       print(e_mat),
       'An evaluated transition matrix, 2 states, 10 markov cycles.
@@ -176,6 +214,8 @@ X2
       get_matrix_order(e_mat), 2
     )
     expect_equal(e_mat, e_matC)
+    expect_equal(e_mat_p2, e_matC_p2)
+    expect_equal(e_mat, e_mat_p2)
   }
 )
 

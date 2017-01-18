@@ -336,7 +336,10 @@ test_that(
     )
     
     expect_error(
-      create_model_from_tabular(states1, NULL, NULL, new.env())
+      create_model_from_tabular(states1, NULL, NULL, new.env()),
+      "either a transition matrix (tm_info) or a partitioned
+         survival model (surv_info) must be defined",
+      fixed = TRUE
     )
   }
 )
@@ -679,6 +682,29 @@ test_that(
     
   }
 )
+
+  test_that("running defined by strategies gets same results",
+            {
+              result <- run_model_tabular(
+                location = system.file("tabular/thr", package = "heemod"),
+                save = FALSE, overwrite = FALSE, run_psa = FALSE
+              )
+              result_strategy <- run_model_tabular(
+                location = system.file("tabular/thr", package = "heemod"),
+                "REFERENCE_strategy.csv",
+                save = FALSE, overwrite = FALSE, run_psa = FALSE
+              )
+              
+              expect_identical(get_counts(result$model_runs, "new"),
+                               get_counts(result_strategy$model_runs, "new")
+              )
+              expect_identical(result$demographics$updated_model,
+                               result_strategy$demographics$updated_model
+              )
+                           
+            }
+  )
+
 
 test_that(
   "safe conversion works", {

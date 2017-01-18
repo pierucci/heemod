@@ -3,12 +3,15 @@
 \name{define_part_surv}
 \alias{define_part_surv}
 \alias{define_part_surv_}
+\alias{modify_part_surv}
 \title{Define Partitioned Survival}
 \usage{
 define_part_surv(pfs, os, state_names, terminal_state = FALSE, km_limit = 0,
   cycle_length = 1)
 
 define_part_surv_(pfs, os, state_names, km_limit = 0, cycle_length = 1)
+
+modify_part_surv(part_surv_obj, km_limit = NULL, cycle_length = NULL)
 }
 \arguments{
 \item{pfs, os}{Either results from 
@@ -33,6 +36,8 @@ for both distributions).}
 
 \item{cycle_length}{The value of a Markov cycle in
 absolute time units.}
+
+\item{part_surv_obj}{a partial survival object to be modified.}
 }
 \value{
 A \code{part_surv} object.
@@ -62,5 +67,18 @@ define_part_surv(
   terminal_state = TRUE
 )
 
+dist_pfs <- define_survival("exp", rate = 1)
+dist_os <- define_survival("exp", rate = .5)
+
+ps1 <- define_part_surv(
+  pfs = dist_pfs,
+  os = dist_os,
+  terminal_state = TRUE
+)
+
+ps2 <- modify_part_surv(
+  ps1,
+  km_limit = c(20, 20),
+  )
 }
 
