@@ -112,7 +112,6 @@ gather_model_info <- function(base_dir, ref_file) {
       df_env
     )
   }
-  
   ## note - the environment df_env gets included directly
   ##   into param_info, so anything that will load anything
   ##   into that environment needs to come before this statement
@@ -146,6 +145,7 @@ gather_model_info <- function(base_dir, ref_file) {
     model_options = model_options
   )
 }
+
 
 #' Evaluate Models From a Tabular Source
 #' 
@@ -232,10 +232,6 @@ eval_models_from_tabular <- function(inputs,
     demo_res <- stats::update(model_runs, inputs$demographic_file)
   }
   
-  ##  if(! is.null(inputs$model_options$num_cores)) {
-  ##    close_cluster()
-  ##  }
-  
   list(
     models = inputs$models,
     model_runs = model_runs,
@@ -264,14 +260,27 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   
   ## to accomodate partitioned survival models, we will allow for
   ##   the possibility that there is no transition matrix ...
-  if (options()$heemod.verbose) message("*** Reading TM...")
-  
-  tm_info <- parse_multi_spec(
-    read_file(ref$full_file[ref$data == "tm"]),
-    group_vars = c("from", "to")
-  )
-  
-  if (length(pb <- setdiff(names(state_info), names(tm_info)))) {
+  tm_info <- NULL
+  tm_file <- ref$full_file[ref$data == "tm"]
+  if(length(tm_file) > 0 && file.exists(tm_file)){
+    if (options()$heemod.verbose) message("*** Reading TM...")
+    tm_info <- read_file(ref$full_file[ref$data == "tm"])
+    tm_info <- parse_multi_spec(
+      tm_info,
+      group_vars = c("from", "to")
+    )
+  }
+  surv_info <- NULL
+  if("survivalInformation" %in% ref$data){
+    if(options()$heemod.verbose) 
+      message("** Reading survival model information..")
+    surv_info <- 
+      partitioned_survival_from_tabular(ref, df_env, 
+                                        state_names = get_state_names(tm_info), 
+                                        model_names = names(state_info))
+  }
+
+   if (!is.null(tm_info) && length(pb <- setdiff(names(state_info), names(tm_info)))) {
     stop(sprintf(
       "Mismatching model names between TM file and state file: %s.",
       paste(pb, collapse = ", ")
@@ -279,12 +288,15 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   }
   
   tm_info <- tm_info[names(state_info)]
+  surv_info <- surv_info[names(state_info)]
   
   if (options()$heemod.verbose) message("*** Defining models...")
   models <- lapply(
     seq_along(state_info),
     function(i) {
       create_model_from_tabular(state_info[[i]], tm_info[[i]],
+                                surv_info[[i]],
+                                names(state_info)[i],
                                 df_env = df_env)
     })  
   
@@ -667,28 +679,33 @@ create_options_from_tabular <- function(opt) {
 #' @keywords internal
 create_model_from_tabular <- function(state_info,
                                       tm_info,
+                                      surv_info,
+                                      strategy_name,
                                       df_env = globalenv()) {
-  if(length(tm_info) == 0) {
-    stop("A transition matrix must be defined.")
-  }
-  
-  if(! inherits(state_info, "data.frame")) {
+  if(length(tm_info) == 0 & length(surv_info) == 0)
+    stop("either a transition matrix (tm_info) or a partitioned
+         survival model (surv_info) must be defined")
+  if(! inherits(state_info, "data.frame"))
     stop("'state_info' must be a data frame.")
-  }
-  
-  if(!is.null(tm_info) && ! inherits(tm_info, "data.frame")) {
-    stop("'tm_info' must be a data frame.")
-  }
-  
+
+  if(!is.null(tm_info) && ! inherits(tm_info, "data.frame"))
+    stop("'tm_info' must be a data frame if defined.")
+##  if(!is.null(surv_info) && ! inherits(surv_info, "data.frame"))
+##    stop("'surv_info' must be a data frame if defined.")
+
   if (options()$heemod.verbose) message("**** Defining state list...")
   states <- create_states_from_tabular(state_info,
                                        df_env = df_env)
   if (options()$heemod.verbose) message("**** Defining TM...")
+ 
+  TM <- "undefined"
+  if(!is.null(tm_info))
+    TM <- create_matrix_from_tabular(tm_info, get_state_names(states),
+                                     df_env = df_env)
   
-  TM <- create_matrix_from_tabular(tm_info, get_state_names(states),
-                                   df_env = df_env)
-  
-  define_strategy_(transition = TM, states = states)
+  define_strategy_(transition = TM, states = states, 
+                   partitioned_survival = surv_info,
+                   strategy_name = strategy_name)
 }
 
 #' Load Data From a Folder Into an Environment
@@ -715,12 +732,11 @@ create_df_from_tabular <- function(df_dir, df_envir) {
   all_files <- list.files(df_dir, full.names = TRUE)
   
   ## work around an annoyance around open files in windows
-  if(.Platform$OS.type == "windows") {
-    part_files <- list.files(df_dir, full.names = FALSE)
-    accidental_files <- grep("^~.*\\.xlsx?", part_files)
-    if(length(accidental_files) > 0) {
-      all_files <- all_files[- accidental_files]
-    }
+  if(.Platform$OS.type == "windows"){
+     part_files <- list.files(df_dir, full.names = FALSE)
+     accidental_files <- grep("^~.*\\.xlsx?", part_files)
+     if(length(accidental_files) > 0)
+       all_files <- all_files[-accidental_files]
   }
   
   obj_names <- all_files %>% 
@@ -998,11 +1014,12 @@ save_outputs <- function(outputs, output_dir, overwrite) {
   
   ## some csv files
   if (options()$heemod.verbose) message("** Writing tabular outputs to files ...")
-  utils::write.csv(
-    outputs$demographics,
-    file = file.path(output_dir, "icer_by_group.csv"),
-    row.names = FALSE
-  )
+    icer_to_write <- compute_icer(outputs$demographics$updated_model)
+    utils::write.csv(
+      icer_to_write[order(icer_to_write$.index),],
+      file = file.path(output_dir, "icer_by_group.csv"),
+      row.names = FALSE
+    )
   
   all_counts <- 
     do.call("rbind",
@@ -1037,14 +1054,14 @@ save_outputs <- function(outputs, output_dir, overwrite) {
   )
   
   utils::write.csv(
-    as.data.frame(summary(outputs$dsa)),
+    as.data.frame(outputs$dsa$dsa),
     file = file.path(output_dir, "dsa.csv"),
     row.names = FALSE
   )
   
   
   utils::write.csv(
-    outputs$psa,
+    outputs$psa$psa,
     file = file.path(output_dir, "psa_values.csv"),
     row.names = FALSE
   )
@@ -1096,3 +1113,5 @@ save_graph <- function(plot, path, file_name) {
   print(plot)
   grDevices::dev.off()
 }
+
+

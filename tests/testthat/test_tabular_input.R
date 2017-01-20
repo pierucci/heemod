@@ -336,7 +336,10 @@ test_that(
     )
     
     expect_error(
-      create_model_from_tabular(states1, NULL, NULL, new.env())
+      create_model_from_tabular(states1, NULL, NULL, new.env()),
+      "either a transition matrix (tm_info) or a partitioned
+         survival model (surv_info) must be defined",
+      fixed = TRUE
     )
   }
 )
@@ -654,6 +657,44 @@ test_that(
         "psa","demographics")
     )
     
+        ## make sure structure of dsa and psa objects haven't 
+    ## changed too much (so we don't get problems with output)
+    expect_identical(
+      names(result$dsa),
+            c("dsa", "variables", "model")
+    )
+    expect_identical(
+      class(result$dsa$dsa),
+      c("tbl_df", "tbl", "data.frame")
+    )
+    
+    expect_identical(
+      names(result$psa),
+      c("psa", "run_model", "model", "N", "resamp_par")
+    )
+    expect_identical(
+      class(result$psa$psa),
+      c("tbl_df", "tbl", "data.frame")
+    )
+
+    expect_identical(
+      names(result$demographics),
+      c("updated_model", "newdata", "model",
+        "combined_model", "has_weights", "weights")
+    )
+    expect_identical(
+      class(result$demographics$updated_model),
+      c("tbl_df", "tbl", "data.frame")
+    )
+    expect_equal(
+      round(as.numeric(result$dsa$dsa[1,1:2]), 2),
+      c(201310.42, 14660.95)
+    )
+    expect_equal(
+      as.numeric(result$demographics$updated_model[1, 1:3]),
+      c(46809.972, 4533.945, 82)
+    )
+
     expect_output(
       print(result$model_runs),
       "-223.3065   0.04426563 -5044.693",
