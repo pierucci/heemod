@@ -645,6 +645,7 @@ test_that(
   "Running model from files works.", {
     result <- run_model_tabular(
       location = system.file("tabular/thr", package = "heemod"),
+      run_psa = TRUE, run_demo = TRUE,
       save = TRUE, overwrite = TRUE
     )
     
