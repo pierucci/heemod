@@ -29,8 +29,15 @@ define_psa <- function(...,
   
   list_input <- lapply(
     .dots,
-    function(x) eval(attr(stats::terms(x), "variables")[[3]])
-  )
+    function(x) {
+      terms <- attr(stats::terms(x), "variables")
+      if(length(terms) < 3){
+        stop(paste("there is a problem in the definition of the psa",
+                   "distribution for parameter",
+                   as.character(terms[2])))
+      }
+      eval(terms[[3]])
+  })
   
   list_qdist <- unlist(
     list_input,
