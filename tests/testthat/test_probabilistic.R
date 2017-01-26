@@ -171,6 +171,12 @@ test_that(
       )
     )
     expect_error(
+      define_psa(
+        x ~ normal(60, 10),
+        y ~ 0),
+      "there is a problem in the definition of the psa distribution for parameter y"
+      )
+    expect_error(
       define_correlation(age_init, cost_init, .4, .5)
     )
     expect_error(
