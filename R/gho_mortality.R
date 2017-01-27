@@ -23,6 +23,7 @@
 #' @param pool Pool female and male mortality rates?
 #' @param local Fetch mortality data from package cached 
 #'   data?
+#' @param verbose Verbose mode?
 #'   
 #' @return This function should be used within 
 #'   \code{\link{define_transition}} or 
@@ -37,28 +38,30 @@
 #' 
 get_who_mr_ <- function(age, sex = NULL, country,
                         year = "latest", pool = FALSE,
-                        local = FALSE) {
+                        local = FALSE, verbose = FALSE) {
   if (is.null(sex) && ! pool) {
     stop("'sex' must be provided for non-pooled results.")
   }
   if (! local) {
-    message("Fetching mortality data from WHO server.")
+    if (verbose) message("Fetching mortality data from WHO server.")
     mr_data <- try(get_gho_mr(
       country = country,
       year = as.character(year),
-      pool = pool
+      pool = pool,
+      verbose = verbose
     ), silent = TRUE)
     
     if (inherits(mr_data, "try-error"))
-      message("Failed to fetch mortality data from WHO server.")
+      warning("Failed to fetch mortality data from WHO server.")
   }
   
   if (local || inherits(mr_data, "try-error")) {
-    message("Fetching mortality data from package cached data.")
+    if (verbose) message("Fetching mortality data from package cached data.")
     mr_data <- get_package_mr(
       country = country,
       year = as.character(year),
-      pool = pool
+      pool = pool,
+      verbose = verbose
     )
   }
   
@@ -85,7 +88,7 @@ get_who_mr <- memoise::memoise(
   ~ memoise::timeout(options()$heemod.memotime)
 )
 
-get_gho_mr <- function(country, year, pool) {
+get_gho_mr <- function(country, year, pool, verbose) {
   mr_data <- rgho::get_gho_data(
     dimension = "GHO",
     code = "LIFE_0000000029",
@@ -98,7 +101,7 @@ get_gho_mr <- function(country, year, pool) {
   
   if (year == "latest") {
     study_year <- max(years)
-    message(sprintf("Using latest year: %s", study_year))
+    if (verbose) message(sprintf("Using latest year: %s", study_year))
     
   } else if (! year %in% years) {
     stop(sprintf(
@@ -154,7 +157,7 @@ pool_data <- function(mr_data, country, year) {
   })
 }
 
-get_package_mr <- function(country, year, pool) {
+get_package_mr <- function(country, year, pool, verbose) {
   if (! country %in% names(list_morta)) {
     stop(sprintf(
       "No local data available for country '%s'.",
@@ -169,7 +172,7 @@ get_package_mr <- function(country, year, pool) {
       list_morta[[country]]$year
     ))
   }
-  message(sprintf(
+  if (verbose) message(sprintf(
     "Using cached data from year %s.",
     list_morta[[country]]$year
   ))

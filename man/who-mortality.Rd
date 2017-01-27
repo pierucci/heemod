@@ -7,10 +7,10 @@
 \title{Use WHO Mortality Rate}
 \usage{
 get_who_mr_(age, sex = NULL, country, year = "latest", pool = FALSE,
-  local = FALSE)
+  local = FALSE, verbose = FALSE)
 
 get_who_mr(age, sex = NULL, country, year = "latest", pool = FALSE,
-  local = FALSE)
+  local = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{age}{age as a continuous variable.}
@@ -28,6 +28,8 @@ get_who_mr(age, sex = NULL, country, year = "latest", pool = FALSE,
 
 \item{local}{Fetch mortality data from package cached 
 data?}
+
+\item{verbose}{Verbose mode?}
 }
 \value{
 This function should be used within 
