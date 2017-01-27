@@ -247,6 +247,12 @@ compute_counts.eval_matrix <- function(x, init,
       out <- n0
     },
     "half-cycle" = {
+      warning(
+        "Method 'half-cycle' is deprecated and will be removed soon.\n",
+        "Consider using the 'life-table' method instead.\n",
+        "See https://github.com/pierucci/heemod/issues/173 for a discussion of the reasons.",
+        call. = FALSE
+      )
       out <- n1
       out[1, ] <- out[1, ] + init / 2
       out[nrow(out), ] <- out[nrow(out), ] + out[nrow(out), ] / 2

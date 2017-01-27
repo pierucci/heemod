@@ -101,7 +101,7 @@ test_that(
     expect_equal(
       round(summary(ndt2)$res_comp$.cost[2]), 27511
     )
-
+    
     expect_equal(
       res2,
       structure(
@@ -169,6 +169,13 @@ test_that(
           .4, 1
         ), byrow = TRUE, ncol = 2)
       )
+    )
+    expect_error(
+      define_psa(
+        x ~ normal(60, 10),
+        y ~ 0
+      ),
+      "Incorrect PSA distribution definition"
     )
     expect_error(
       define_correlation(age_init, cost_init, .4, .5)

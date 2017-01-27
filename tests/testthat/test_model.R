@@ -320,8 +320,8 @@ test_that(
       c(2L, 2L)
     )
     expect_identical(
-      dim(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "half-cycle", inflow = c(0, 0))),
+      suppressWarnings(dim(heemod:::compute_counts(
+        lm, init = c(10, 0), method = "half-cycle", inflow = c(0, 0)))),
       c(2L, 2L)
     )
     
@@ -341,8 +341,8 @@ test_that(
       c(7.500, 4.675, 2.500, 5.325)
     )
     expect_equivalent(
-      unlist(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "half-cycle", inflow = c(0, 0))),
+      suppressWarnings(unlist(heemod:::compute_counts(
+        lm, init = c(10, 0), method = "half-cycle", inflow = c(0, 0)))),
       c(10.000,  6.525,  5.000,  8.475)
     )
   }

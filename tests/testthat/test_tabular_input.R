@@ -132,6 +132,13 @@ test_that(
         "REFERENCE.csv"),
       "newzzz"
     )
+    expect_error(
+      heemod:::gather_model_info(
+        system.file("tabular/test", package = "heemod"),
+        "REFERENCE_1probmissing.csv"),
+      "Undefined probabilities"
+    )
+    
     dup_state <- structure(list(
       .model = c("standard", "standard", "standard", 
                  "standard", "standard"),
@@ -645,6 +652,7 @@ test_that(
   "Running model from files works.", {
     result <- run_model_tabular(
       location = system.file("tabular/thr", package = "heemod"),
+      run_psa = TRUE, run_demo = TRUE,
       save = TRUE, overwrite = TRUE
     )
     

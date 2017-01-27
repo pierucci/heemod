@@ -3,6 +3,7 @@
 ## Breaking changes
 
   * `strategy` becomes a reserved parameter name.
+  * Counting method `"half-cycle"` is deprecated.
 
 ## New features
 
@@ -27,12 +28,12 @@
   
 ## Bugfixes
 
-  * Fixed a bug that would return incorrect efficiency frontiers in some situations.
+  * Fixed bugs that would return incorrect efficiency frontiers in some situations, or would return duplicated strategy names in some edge cases (thanks to [Vince Daniels](https://github.com/daniels4321)).
   * Fixed a failure of tabular input when a column can be read as all numeric.
   
 ## Acknowledments
 
-  * Thanks to [Matthew Wiener](https://github.com/MattWiener).
+  * Thanks to [Matthew Wiener](https://github.com/MattWiener) for the survival analysis code.
   
 # heemod 0.7.1
 

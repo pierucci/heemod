@@ -18,8 +18,6 @@
 #'   \code{\link{define_state}}.
 #' @param states List of states, only used by
 #'   \code{define_strategy_} to avoid using \code{...}.
-#' @param transition_matrix Deprecated argument, use
-#'   \code{transition}.
 #'   
 #' @return An object of class \code{uneval_model} (a list
 #'   containing the unevaluated parameters, matrix and
@@ -29,14 +27,8 @@
 #' 
 #' @example inst/examples/example_define_strategy.R
 define_strategy <- function(...,
-                            transition = define_transition(),
-                            transition_matrix = NULL) {
-  
-  if (! is.null(transition_matrix)) {
-    warning("Argument 'transition_matrix' is deprecated, use 'transition' instead.")
-    transition <- transition_matrix
-  }
-  
+                            transition = define_transition()) {
+
   states <- define_state_list_(list(...))
   
   define_strategy_(
@@ -49,7 +41,7 @@ define_strategy <- function(...,
 #' @export
 define_strategy_ <- function(transition, states) {
   
-  if (! get_state_number(states) == length(get_state_names(transition))) {
+  if (! get_state_number(states) == get_state_number(transition)) {
     stop(sprintf(
       "Number of state in model input (%i) differ from number of state in transition object (%i).",
       get_state_number(states),
@@ -57,14 +49,12 @@ define_strategy_ <- function(transition, states) {
     ))
   }
   
-  
   if (! identical(
     as.vector(sort(get_state_names(states))),
     as.vector(sort(get_state_names(transition)))
   )) {
     stop("State names differ from transition object.")
   }
-  
   
   structure(
     list(

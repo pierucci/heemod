@@ -29,8 +29,14 @@ define_psa <- function(...,
   
   list_input <- lapply(
     .dots,
-    function(x) eval(attr(stats::terms(x), "variables")[[3]])
-  )
+    function(x) {
+      terms <- attr(stats::terms(x), "variables")
+      if(length(terms) < 3){
+        stop("Incorrect PSA distribution definition for parameter: ",
+             as.character(terms[2]))
+      }
+      eval(terms[[3]])
+    })
   
   list_qdist <- unlist(
     list_input,
@@ -210,5 +216,5 @@ print.resamp_definition <- function(x, ...) {
     plur(length(x$list_qdist)),
     length(x$multinom),
     plur(length(x$multinom))
-    ))
+  ))
 }

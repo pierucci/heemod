@@ -8,10 +8,13 @@ Authors@R: c(
     person("Zdenek", "Kabat", role = "ctb"),
     person("Vojtech", "Filipec", role = "ctb")
     )
-Description: Health Economic Evaluation Modelling.
-  Markov models (decision trees, homogeneous and non-homogeneous)
-  for health economic evaluation. Model comparison,
-  sensitivity and probabilistic analysis.
+Description: Toolset for Health Economic Evaluation Modelling
+    for decision trees or cohort simulations. Provides a simple
+    and consistent interface for Markov models specification,
+    comparison, sensitivity and probabilistic analysis, input of
+    survival models, etc. Models with time varying properties
+    (non-homogeneous Markov models and semi-Markov models)
+    are supported.
 Depends: R (>= 3.2.2)
 Imports:  dplyr,
           ggplot2 (>= 2.2.0),

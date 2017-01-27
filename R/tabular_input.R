@@ -280,7 +280,17 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   
   tm_info <- tm_info[names(state_info)]
   
-  if (options()$heemod.verbose) message("*** Defining models...")
+  tab_undefined <- do.call("rbind", tm_info) %>% 
+    dplyr::filter_(~ is.na(prob))
+  
+  if (nrow(tab_undefined) > 0) {
+    rownames(tab_undefined) <- NULL
+    print(tab_undefined)
+    stop("Undefined probabilities in the transition matrix (see above).")
+  }
+  
+  
+if (options()$heemod.verbose) message("*** Defining models...")
   models <- lapply(
     seq_along(state_info),
     function(i) {
@@ -998,53 +1008,36 @@ save_outputs <- function(outputs, output_dir, overwrite) {
   
   ## some csv files
   if (options()$heemod.verbose) message("** Writing tabular outputs to files ...")
-  utils::write.csv(
-    outputs$demographics,
-    file = file.path(output_dir, "icer_by_group.csv"),
-    row.names = FALSE
-  )
   
-  all_counts <- 
-    do.call("rbind",
-            lapply(get_strategy_names(outputs$model_runs),
-                   function(this_name){
-                     data.frame(.model = this_name,
-                                get_counts(outputs$model_runs, m = this_name))
-                   }
-            )
+  if (! is.null(outputs$demographics)) {
+    utils::write.csv(
+      summary(outputs$demographics)$scaled_results,
+      file = file.path(output_dir, "icer_by_group.csv"),
+      row.names = FALSE
     )
-  
+  }
+
   utils::write.csv(
-    all_counts,
+    get_counts(outputs$model_runs),
     file = file.path(output_dir, "state_counts.csv"),
     row.names = FALSE
   )
-  
-  all_values <- 
-    do.call("rbind",
-            lapply(get_strategy_names(outputs$model_runs),
-                   function(this_name){
-                     data.frame(.model = this_name,
-                                get_values(outputs$model_runs, m = this_name))
-                   }
-            )
-    )
-  
+
   utils::write.csv(
-    all_values,
+    get_values(outputs$model_runs),
     file = file.path(output_dir, "cycle_values.csv"),
     row.names = FALSE
   )
   
   utils::write.csv(
-    as.data.frame(summary(outputs$dsa)),
+    summary(outputs$dsa)$res_comp,
     file = file.path(output_dir, "dsa.csv"),
     row.names = FALSE
   )
   
   
   utils::write.csv(
-    outputs$psa,
+    outputs$psa$psa,
     file = file.path(output_dir, "psa_values.csv"),
     row.names = FALSE
   )
