@@ -280,7 +280,15 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   
   tm_info <- tm_info[names(state_info)]
   
-  if (options()$heemod.verbose) message("*** Defining models...")
+  undefined <- subset(do.call("rbind", tm_info), is.na(prob))
+  if(nrow(undefined) > 0){
+    rownames(undefined) <- NULL
+    print(undefined)
+    stop("some probabilities in the transition matrix are undefined (see above)")
+  }
+  
+  
+if (options()$heemod.verbose) message("*** Defining models...")
   models <- lapply(
     seq_along(state_info),
     function(i) {

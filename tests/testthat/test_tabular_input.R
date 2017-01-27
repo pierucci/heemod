@@ -132,6 +132,13 @@ test_that(
         "REFERENCE.csv"),
       "newzzz"
     )
+    expect_error(
+      heemod:::gather_model_info(
+        system.file("tabular/test", package = "heemod"),
+        "REFERENCE_1probmissing.csv"),
+      "some probabilities in the transition matrix are undefined"
+    )
+    
     dup_state <- structure(list(
       .model = c("standard", "standard", "standard", 
                  "standard", "standard"),
