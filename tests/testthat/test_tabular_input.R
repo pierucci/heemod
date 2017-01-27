@@ -136,7 +136,7 @@ test_that(
       heemod:::gather_model_info(
         system.file("tabular/test", package = "heemod"),
         "REFERENCE_1probmissing.csv"),
-      "some probabilities in the transition matrix are undefined"
+      "Undefined probabilities"
     )
     
     dup_state <- structure(list(

@@ -280,11 +280,13 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   
   tm_info <- tm_info[names(state_info)]
   
-  undefined <- subset(do.call("rbind", tm_info), is.na(prob))
-  if(nrow(undefined) > 0){
-    rownames(undefined) <- NULL
-    print(undefined)
-    stop("some probabilities in the transition matrix are undefined (see above)")
+  tab_undefined <- do.call("rbind", tm_info) %>% 
+    dplyr::filter_(~ is.na(prob))
+  
+  if (nrow(tab_undefined) > 0) {
+    rownames(tab_undefined) <- NULL
+    print(tab_undefined)
+    stop("Undefined probabilities in the transition matrix (see above).")
   }
   
   
