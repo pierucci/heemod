@@ -161,7 +161,8 @@ eval_strategy <- function(strategy, parameters, cycles,
       counts = count_table,
       values = values,
       init = init,
-      cycles = cycles
+      cycles = cycles,
+      expand_limit = expand_limit
     ),
     class = c("eval_strategy")
   )

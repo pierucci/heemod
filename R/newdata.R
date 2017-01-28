@@ -30,6 +30,7 @@ eval_strategy_newdata <- function(x, strategy = 1, newdata) {
   method <- get_method(x)
   old_parameters <- get_parameters(x)
   uneval_strategy <- x$uneval_strategy_list[[strategy]]
+  expand_limit <- get_expand_limit(x, strategy)
   
   if (status_cluster(verbose = FALSE)) {
     cl <- get_cluster()
@@ -61,7 +62,8 @@ eval_strategy_newdata <- function(x, strategy = 1, newdata) {
             init = init,
             inflow = inflow,
             method = method,
-            strategy_name = strategy
+            strategy_name = strategy,
+            expand_limit = expand_limit
           )
         ) %>% 
         dplyr::ungroup() %>% 
@@ -84,7 +86,8 @@ eval_strategy_newdata <- function(x, strategy = 1, newdata) {
           init = init,
           method = method,
           inflow = inflow,
-          strategy_name = strategy
+          strategy_name = strategy,
+          expand_limit = expand_limit
         )
       ) %>% 
       dplyr::ungroup() %>% 
@@ -97,7 +100,8 @@ eval_strategy_newdata <- function(x, strategy = 1, newdata) {
 }
 
 eval_newdata <- function(new_parameters, strategy, old_parameters,
-                         cycles, init, method, inflow, strategy_name) {
+                         cycles, init, method, inflow,
+                         strategy_name, expand_limit) {
   
   new_parameters <- Filter(
     function(x) all(! is.na(x)),
@@ -118,6 +122,7 @@ eval_newdata <- function(new_parameters, strategy, old_parameters,
     init = init,
     method = method,
     inflow = inflow,
-    strategy_name = strategy_name
+    strategy_name = strategy_name,
+    expand_limit = expand_limit
   )
 }
