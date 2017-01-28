@@ -221,7 +221,7 @@ eval_models_from_tabular <- function(inputs,
     if (options()$heemod.verbose) message("** Running PSA...")
     model_psa <- run_psa(
       model_runs,
-      resample = inputs$param_info$psa_params,
+      psa = inputs$param_info$psa_params,
       N = inputs$model_options$n
     )
   }

@@ -4,10 +4,10 @@
 \alias{eval_resample}
 \title{Evaluate Resampling Definition}
 \usage{
-eval_resample(resample, N)
+eval_resample(psa, N)
 }
 \arguments{
-\item{resample}{A \code{\link{define_psa}} object.}
+\item{psa}{A \code{\link{define_psa}} object.}
 
 \item{N}{> 0. Number of simulation to run.}
 }

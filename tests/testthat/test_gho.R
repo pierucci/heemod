@@ -54,11 +54,11 @@ test_that(
       get_who_mr(age = c(1, NA), sex = rep(c("MLE", "FMLE"), 50),
                  country = "FRA"))
     expect_error(
-      get_who_mr(age = 0:99, sex = rep(c("MLE", "FMLE"), 50),
-                 country = "XXXX"))
+      suppressWarnings(get_who_mr(age = 0:99, sex = rep(c("MLE", "FMLE"), 50),
+                 country = "XXXX")))
     expect_error(
-      get_who_mr(age = 0:99, sex = rep(c("MLE", "FMLE"), 50),
-                 country = "FRA", year = 2050))
+      suppressWarnings(get_who_mr(age = 0:99, sex = rep(c("MLE", "FMLE"), 50),
+                 country = "FRA", year = 2050)))
     expect_error(
       get_who_mr(
         age = 0:99,

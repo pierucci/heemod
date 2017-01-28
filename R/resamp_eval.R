@@ -1,16 +1,23 @@
 #' Run Probabilistic Uncertainty Analysis
 #' 
 #' @param model The result of \code{\link{run_model}}.
-#' @param resample Resampling distribution for parameters 
-#'   defined by \code{\link{define_psa}}.
+#' @param psa Resampling distribution for parameters defined
+#'   by \code{\link{define_psa}}.
+#' @param resample Deprecated. Resampling distribution for
+#'   parameters defined by \code{\link{define_psa}}.
 #' @param N > 0. Number of simulation to run.
-#' 
+#'   
 #' @return A list with one \code{data.frame} per model.
 #' @export
 #' 
 #' @example inst/examples/example_run_psa.R
 #'   
-run_psa <- function(model, resample, N) {
+run_psa <- function(model, psa, N, resample) {
+  if (! missing(resample)) {
+    warning("Argument 'resample' is deprecated, use 'psa' instead.")
+    psa <- resample
+  }
+  
   stopifnot(
     N > 0,
     ! is.null(N)
@@ -20,7 +27,7 @@ run_psa <- function(model, resample, N) {
     stop("No cost and/or effect defined, probabilistic analysis unavailable.")
   }
   
-  newdata <- eval_resample(resample, N)
+  newdata <- eval_resample(psa, N)
   
   list_res <- list()
   
@@ -122,37 +129,37 @@ eval_correlation <- function(x, var_names) {
 
 #' Evaluate Resampling Definition
 #' 
-#' @param resample A \code{\link{define_psa}} object.
+#' @param psa A \code{\link{define_psa}} object.
 #' @param N > 0. Number of simulation to run.
 #'   
 #' @return A \code{data.frame} of resampled values with on 
 #'   column per parameter and \code{N} rows.
 #'   
 #' @keywords internal
-eval_resample <- function(resample, N) {
+eval_resample <- function(psa, N) {
   
   mat_p <- stats::pnorm(
     mvnfast::rmvn(
       n = N,
-      mu = rep(0, length(resample$list_qdist)),
-      sigma = resample$correlation
+      mu = rep(0, length(psa$list_qdist)),
+      sigma = psa$correlation
     )
   )
   
   list_res <- mapply(
     function(i, f) f(mat_p[, i]),
     seq_len(ncol(mat_p)),
-    resample$list_qdist
+    psa$list_qdist
   )
   
   if (length(dim(list_res)) < 2) {
     list_res <- matrix(list_res, ncol = length(list_res))
   }
   
-  colnames(list_res) <- names(resample$list_qdist)
+  colnames(list_res) <- names(psa$list_qdist)
   res <- as.data.frame(list_res)
   
-  for (f in resample$multinom) {
+  for (f in psa$multinom) {
     res <- f(res)
   }
   res

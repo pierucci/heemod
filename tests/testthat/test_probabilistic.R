@@ -68,18 +68,18 @@ test_that(
     
     set.seed(1)
     # with run_model result
-    ndt1 <- run_psa(res2, resample = rsp1, N = 10)
-    ndt2 <- run_psa(res2, resample = rsp1, N = 1)
+    ndt1 <- run_psa(res2, psa = rsp1, N = 10)
+    ndt2 <- run_psa(res2, psa = rsp1, N = 1)
     
     expect_error(
-      run_psa(res2, resample = rsp1, N = NULL)
+      run_psa(res2, psa = rsp1, N = NULL)
     )
     
     plot(ndt1, type = "ce")
     plot(ndt1, type = "ac")
     
     set.seed(1)
-    ndt3 <- run_psa(res2, resample = rsp2, N = 10)
+    ndt3 <- run_psa(res2, psa = rsp2, N = 10)
     
     x <- define_psa(
       rate1 + rate2 + rate3 ~ multinom(10, 50, 40),
@@ -158,7 +158,7 @@ test_that(
       cycles = 10,
       method = "beginning"
     ))
-    expect_error(run_psa(res3, resample = rsp2, N = 10))
+    expect_error(run_psa(res3, psa = rsp2, N = 10))
     expect_error(
       define_psa(
         age_init ~ normal(60, 10),
