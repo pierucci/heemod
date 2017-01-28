@@ -5,6 +5,11 @@
 #' If \code{use_km_until = 0}, then only model probabilities
 #' will be used.
 #' 
+#' The results of \code{get_probs_from_surv} are memoised for
+#' \code{options("heemod.memotime")} (default: 1 hour) to
+#' increase resampling performance.
+#' 
+#' @name get_probs_from_surv
 #' @param x Either a result from 
 #'   \code{\link[flexsurv]{flexsurvreg}} or
 #'   \code{\link{define_survival}}.
@@ -23,13 +28,13 @@
 #'   cycles.
 #'   
 #' @export
-get_probs_from_surv <- function(x, ...){
-  UseMethod("get_probs_from_surv")
+get_probs_from_surv_ <- function(x, ...){
+  UseMethod("get_probs_from_surv_")
 }
 
 #' @rdname get_probs_from_surv
 #' @export
-get_probs_from_surv.flexsurvreg <- function(x, cycle,
+get_probs_from_surv_.flexsurvreg <- function(x, cycle,
                                             km_limit = 0,
                                             cycle_length = 1,
                                             type = c("prob", "surv"),
@@ -132,7 +137,7 @@ get_probs_from_surv.flexsurvreg <- function(x, cycle,
 
 #' @rdname get_probs_from_surv
 #' @export
-get_probs_from_surv.surv_dist <- function(x, cycle,
+get_probs_from_surv_.surv_dist <- function(x, cycle,
                                           km_limit = 0,
                                           cycle_length = 1,
                                           type = c("prob", "surv"),
@@ -164,6 +169,13 @@ get_probs_from_surv.surv_dist <- function(x, cycle,
   
   res
 }
+
+#' @rdname get_probs_from_surv
+#' @export
+get_probs_from_surv <- memoise::memoise(
+  get_probs_from_surv_,
+  ~ memoise::timeout(options()$heemod.memotime)
+)
 
 #' Define a Survival Distribution
 #' 
