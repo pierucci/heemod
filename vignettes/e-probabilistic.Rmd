@@ -198,7 +198,7 @@ Now that the distributions of parameters are set we can simply run the probabili
 ```{r}
 pm <- run_psa(
   model = res_mod,
-  resample = rsp,
+  psa = rsp,
   N = 100
 )
 ```

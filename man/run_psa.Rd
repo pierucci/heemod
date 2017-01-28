@@ -4,15 +4,18 @@
 \alias{run_psa}
 \title{Run Probabilistic Uncertainty Analysis}
 \usage{
-run_psa(model, resample, N)
+run_psa(model, psa, N, resample)
 }
 \arguments{
 \item{model}{The result of \code{\link{run_model}}.}
 
-\item{resample}{Resampling distribution for parameters 
-defined by \code{\link{define_psa}}.}
+\item{psa}{Resampling distribution for parameters defined
+by \code{\link{define_psa}}.}
 
 \item{N}{> 0. Number of simulation to run.}
+
+\item{resample}{Deprecated. Resampling distribution for
+parameters defined by \code{\link{define_psa}}.}
 }
 \value{
 A list with one \code{data.frame} per model.
@@ -82,6 +85,6 @@ rsp <- define_psa(
 
 # with run_model result
 # (only 10 resample for speed)
-ndt1 <- run_psa(res2, resample = rsp, N = 10)
+ndt1 <- run_psa(res2, psa = rsp, N = 10)
 }
 
