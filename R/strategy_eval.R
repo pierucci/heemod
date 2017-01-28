@@ -96,17 +96,19 @@ eval_strategy <- function(strategy, parameters, cycles,
       paste(to_expand, collapse = ", ")
     ))
     
-    init <- insert(
-      init,
-      which(get_state_names(uneval_transition) %in% to_expand),
-      rep(0, cycles)
-    )
-    
-    inflow <- insert(
-      inflow,
-      which(get_state_names(uneval_transition) %in% to_expand),
-      rep(0, cycles)
-    )
+    for (st in to_expand) {
+      init <- insert(
+        init,
+        which(get_state_names(uneval_transition) == st),
+        rep(0, expand_limit[st])
+      )
+      
+      inflow <- insert(
+        inflow,
+        which(get_state_names(uneval_transition) == st),
+        rep(0, expand_limit[st])
+      )
+    }
     
     for (st in to_expand) {
       uneval_transition <- expand_state(
@@ -144,7 +146,7 @@ eval_strategy <- function(strategy, parameters, cycles,
   
   if (expand) {
     for (st in to_expand) {
-      exp_cols <- sprintf(".%s_%i", st, seq_len(cycles+1))
+      exp_cols <- sprintf(".%s_%i", st, seq_len(expand_limit[st] + 1))
       
       count_table[[st]] <- rowSums(count_table[exp_cols])
       count_table <- count_table[-which(names(count_table) %in% exp_cols)]
