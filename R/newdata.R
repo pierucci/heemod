@@ -49,9 +49,35 @@ eval_strategy_newdata <- function(x, strategy = 1, newdata) {
         "cycles", "init", "method", "strategy"),
       envir = environment()
     )
+    suppressMessages(
+      pieces <- parallel::parLapply(cl, pnewdata, function(newdata) {
+        newdata %>% 
+          dplyr::rowwise() %>% 
+          dplyr::do_(
+            .mod = ~ eval_newdata(
+              .,
+              strategy = uneval_strategy,
+              old_parameters = old_parameters,
+              cycles = cycles,
+              init = init,
+              inflow = inflow,
+              method = method,
+              strategy_name = strategy,
+              expand_limit = expand_limit
+            )
+          ) %>% 
+          dplyr::ungroup() %>% 
+          dplyr::bind_cols(
+            newdata
+          )
+      })
+    )
+    res <- do.call("rbind", pieces)
+    rownames(res) <- NULL
     
-    pieces <- parallel::parLapply(cl, pnewdata, function(newdata) {
-      newdata %>% 
+  } else {
+    suppressMessages(
+      res <- newdata %>% 
         dplyr::rowwise() %>% 
         dplyr::do_(
           .mod = ~ eval_newdata(
@@ -60,8 +86,8 @@ eval_strategy_newdata <- function(x, strategy = 1, newdata) {
             old_parameters = old_parameters,
             cycles = cycles,
             init = init,
-            inflow = inflow,
             method = method,
+            inflow = inflow,
             strategy_name = strategy,
             expand_limit = expand_limit
           )
@@ -70,31 +96,7 @@ eval_strategy_newdata <- function(x, strategy = 1, newdata) {
         dplyr::bind_cols(
           newdata
         )
-    })
-    res <- do.call("rbind", pieces)
-    rownames(res) <- NULL
-    
-  } else {
-    res <- newdata %>% 
-      dplyr::rowwise() %>% 
-      dplyr::do_(
-        .mod = ~ eval_newdata(
-          .,
-          strategy = uneval_strategy,
-          old_parameters = old_parameters,
-          cycles = cycles,
-          init = init,
-          method = method,
-          inflow = inflow,
-          strategy_name = strategy,
-          expand_limit = expand_limit
-        )
-      ) %>% 
-      dplyr::ungroup() %>% 
-      dplyr::bind_cols(
-        newdata
-      )
-    
+    )
   }
   res
 }
