@@ -368,10 +368,10 @@ to_dots <- function(x) {
   stopifnot(is.list(x))
   
   f <- function(x) {
-    if (inherits(x, "character")) {
+    if (inherits(x, "character") || inherits(x, "factor")) {
       structure(
         list(
-          expr = x,
+          expr = as.character(x),
           env = globalenv()
         ),
         class = "lazy"
