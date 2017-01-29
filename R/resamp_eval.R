@@ -70,7 +70,7 @@ run_psa <- function(model, psa, N, resample) {
   structure(
     list(
       psa = res,
-      run_model = run_model[! names(run_model) %in% names(newdata)],
+      run_model = run_model[names(get_model_results(model))],
       model = model,
       N = N,
       resamp_par = names(newdata)
