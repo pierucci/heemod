@@ -306,5 +306,39 @@ test_that(
     expect_equivalent(
       res1$run_model, res2$run_model
     )
+    
+    
+    f <- function(x) {
+      abs(sin(x)) / 2
+    }
+    f(1:10)
+    mat_mc <- define_transition(
+      C, f(markov_cycle),
+      0, 1
+    )
+    mat_sc <- define_transition(
+      C, f(state_cycle),
+      0, 1
+    )
+    sA <- define_state(c = 1, e = 1)
+    sB <- define_state(c = 0, e = 0)
+    
+    strat_mc <- define_strategy(
+      transition = mat_mc,
+      sA, sB
+    )
+    strat_sc <- define_strategy(
+      transition = mat_sc,
+      sA, sB
+    )
+    res <- summary(run_model(
+      strat_sc, strat_mc,
+      cycles = 10,
+      cost = c, effect = e
+    ))
+    
+    expect_identical(
+      res$res_comp$.icer[2], NaN
+    )
   }
 )

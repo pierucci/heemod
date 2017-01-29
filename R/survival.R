@@ -50,7 +50,7 @@ get_probs_from_surv_.flexsurvreg <- function(x, cycle,
   
   type <- match.arg(type)
   
-  times_surv <- cycle_length * c(0, cycle)
+  times_surv <- cycle_length * c(min(cycle) - 1, cycle)
   
   res <- rep(NA, length(cycle))
   
@@ -148,7 +148,7 @@ get_probs_from_surv_.surv_dist <- function(x, cycle,
     all(cycle > 0)
   )
   
-  times_surv <- cycle_length * c(0, cycle)
+  times_surv <- cycle_length * c(min(cycle) - 1, cycle)
   
   if (! requireNamespace("flexsurv")) {
     stop("'flexsurv' package required.")
