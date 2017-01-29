@@ -38,7 +38,7 @@ run_dsa <- function(model, dsa) {
       )
     list_res <- c(
       list_res,
-      res
+      list(res)
     )
   }
   
