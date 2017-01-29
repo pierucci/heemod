@@ -174,9 +174,12 @@ print.summary_dsa <- function(x, ...) {
   cat(paste(c("Parameters:", v), collapse = "\n  -"))
   cat("\n\nSensitivity analysis:\n\n")
   
-  rn <- paste(x$res_comp$.strategy_names,
-              x$res_comp$.par_names, "=",
-              x$res_comp$.par_value)
+  rn <- sprintf(
+    "%s, %s = %s",
+    x$res_comp$.strategy_names,
+    x$res_comp$.par_names,
+    x$res_comp$.par_value
+  )
   
   x <- dplyr::select_(x$res_comp, ~ - .par_names,
                       ~ - .par_value,
