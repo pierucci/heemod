@@ -363,3 +363,25 @@ pretty_names <- function(x) {
   
   x
 }
+
+to_dots <- function(x) {
+  stopifnot(is.list(x))
+  
+  f <- function(x) {
+    if (inherits(x, "character")) {
+      structure(
+        list(
+          expr = x,
+          env = globalenv()
+        ),
+        class = "lazy"
+      )
+    } else {
+      x
+    }
+  }
+  
+  lazyeval::as.lazy_dots(
+    lapply(x, f)
+  )
+}

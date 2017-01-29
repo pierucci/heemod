@@ -108,7 +108,7 @@ eval_newdata <- function(new_parameters, strategy, old_parameters,
     new_parameters
   )
   
-  lazy_new_param <- lazyeval::as.lazy_dots(new_parameters)
+  lazy_new_param <- to_dots(new_parameters)
   
   parameters <- utils::modifyList(
     old_parameters,
