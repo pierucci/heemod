@@ -67,5 +67,6 @@ for the given quantiles. See examples
 define_distribution(
   function(x) stats::qexp(p = x, rate = 0.5)
 )
+
 }
 
