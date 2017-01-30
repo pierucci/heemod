@@ -30,6 +30,10 @@ their correlation structure for probabilistic uncertainty
 analysis of Markov models.
 }
 \details{
+The distributions must be defined within \code{heemod} 
+(see \link[=distributions]{this list}), or defined with
+\code{\link{define_distribution}}.
+
 If no correlation matrix is specified parameters are 
 assumed to be independant.
 

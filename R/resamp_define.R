@@ -4,6 +4,10 @@
 #' their correlation structure for probabilistic uncertainty
 #' analysis of Markov models.
 #' 
+#' The distributions must be defined within \code{heemod} 
+#' (see \link[=distributions]{this list}), or defined with
+#' \code{\link{define_distribution}}.
+#' 
 #' If no correlation matrix is specified parameters are 
 #' assumed to be independant.
 #' 
@@ -35,7 +39,7 @@ define_psa <- function(...,
         stop("Incorrect PSA distribution definition for parameter: ",
              as.character(terms[2]))
       }
-      eval(terms[[3]])
+      eval(terms[[3]], envir = asNamespace("heemod"))
     })
   
   list_qdist <- unlist(
