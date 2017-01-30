@@ -4,7 +4,7 @@
 \alias{export_savi}
 \title{Export PSA Results for SAVI}
 \usage{
-export_savi(x, folder = "~")
+export_savi(x, folder = ".")
 }
 \arguments{
 \item{x}{PSA result.}
@@ -16,7 +16,7 @@ Nothing. Creates 3 files.
 }
 \description{
 Export the result of a PSA in a format compatible with 
-Sheffield Accelerated Value of Information sofware.
+Sheffield Accelerated Value of Information software.
 }
 \details{
 This function saves 3 files at the path given by
