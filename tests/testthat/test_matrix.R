@@ -80,6 +80,8 @@ test_that(
     test_mat <- array(0, dim = c(2, 2, 2))
     test_mat[1,,] <- c(1, -1, 0, 2)
     test_mat[2,,] <- c(1, 0, 1, 1)
+    attr(test_mat, "state_names") <- c("A", "B")
+    class(test_mat) <- c("eval_matrix")
     
     expect_error(
       check_matrix(test_mat),
