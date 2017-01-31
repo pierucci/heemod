@@ -34,7 +34,11 @@ the plot.}
 memberships (corrected) by cycle, \code{type = "ce"}
 plots models on the cost-efficiency plane with the
 efficiency frontier, and \code{type = "values"} state
-values per cycle.}
+values per cycle.
+
+When \code{states} is specified, the states will be turned into
+a factor with the ordering given in the variable, so that
+plotting order can be controlled.}
 }
 \value{
 A \code{ggplot2} object.
