@@ -15,13 +15,22 @@
 #'   
 #' @keywords internal
 check_matrix <- function(x) {
+  stopifnot(length(dim(x)) == 3)
   if (! isTRUE(all.equal(
     range(rowSums(x, dims = 2)),
     c(1, 1)))) {
+    problem_rows <- which(rowSums(x, dims = 2) != 1, arr.ind = TRUE)
+      dimnames(problem_rows) <- list(NULL, c("cycle", "from"))
+    print("problem rows:")
+    print(problem_rows)
     stop("Not all transition matrix rows sum to 1.")
   }
   
   if (! all(x >= 0 & x <= 1)) {
+    problem <- which(x < 0 | x > 1, arr.ind = TRUE)
+    dimnames(problem) <- list(NULL, c("cycle", "from", "to")[(4 - ncol(problem)):3])
+    print("indices of probabilities < 0 or > 1:")
+    print(problem)
     stop("Some transition probabilities are outside the interval [0 - 1].")
   }
 }

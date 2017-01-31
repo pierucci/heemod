@@ -76,30 +76,23 @@ test_that(
       .6, .4
     )
     plot(mat1)
+
+    test_mat <- array(0, dim = c(2, 2, 2))
+    test_mat[1,,] <- c(1, -1, 0, 2)
+    test_mat[2,,] <- c(1, 0, 1, 1)
+    
     expect_error(
-      check_matrix(
-        matrix(
-          c(1, 0, 1, 1),
-          nrow = 2
-        )
-      )
+      check_matrix(test_mat),
+      "rows sum to 1"
     )
+    test_mat[2,1, 2] <- 0
     expect_error(
-      check_matrix(
-        matrix(
-          c(1, 0, 1, 1),
-          nrow = 2
-        )
-      )
+      check_matrix(test_mat),
+      "outside the interval [0 - 1]",
+      fixed = TRUE
     )
-    expect_error(
-      check_matrix(
-        matrix(
-          c(1, -1, 0, 2),
-          nrow = 2
-        )
-      )
-    )
+    
+    
     expect_equal(
       heemod:::get_matrix_order(mat1),
       2
