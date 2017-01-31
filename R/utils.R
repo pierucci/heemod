@@ -363,3 +363,56 @@ pretty_names <- function(x) {
   
   x
 }
+
+to_dots <- function(x) {
+  stopifnot(is.list(x))
+  
+  f <- function(x) {
+    if (inherits(x, "character") || inherits(x, "factor")) {
+      structure(
+        list(
+          expr = as.character(x),
+          env = globalenv()
+        ),
+        class = "lazy"
+      )
+    } else {
+      x
+    }
+  }
+  
+  lazyeval::as.lazy_dots(
+    lapply(x, f)
+  )
+}
+
+#' Ensure Value is a Correct Probability
+#' 
+#' Ensure the value returned is a correct probability
+#' between 0 and 1.
+#' 
+#' Values less than 0 are set to 0, values more than 1 are
+#' set to 1.
+#' 
+#' @param x A probability vector that may take values
+#'   outside the 0-1 range
+#' @param warn Throw warnings when values are corrected?
+#'   
+#' @return A correct probability vector.
+#' @export
+#' 
+#' @examples
+#' 
+#' p(c(-.1, 0, .5, 1, 1.1))
+p <- function(x, warn = FALSE) {
+  x1 <- x > 1
+  x0 <- x < 0
+  if (warn) {
+    warning(sprintf(
+      "Probabilities out of range corrected at position%s: %s.",
+      plur(sum(x0 | x1)),
+      paste(which(x0 | x1), collapse = ", ")
+    ))
+  }
+  ifelse(x1, 1, ifelse(x0, 0, x))
+}

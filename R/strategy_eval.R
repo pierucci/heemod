@@ -91,21 +91,25 @@ eval_strategy <- function(strategy, parameters, cycles,
     )))
     
     message(sprintf(
-      "Detected use of 'state_cycle', expanding states: %s.",
+      "%s: detected use of 'state_cycle', expanding state%s: %s.",
+      strategy_name,
+      plur(length(to_expand)),
       paste(to_expand, collapse = ", ")
     ))
     
-    init <- insert(
-      init,
-      which(get_state_names(uneval_transition) %in% to_expand),
-      rep(0, cycles)
-    )
-    
-    inflow <- insert(
-      inflow,
-      which(get_state_names(uneval_transition) %in% to_expand),
-      rep(0, cycles)
-    )
+    for (st in to_expand) {
+      init <- insert(
+        init,
+        which(get_state_names(uneval_transition) == st),
+        rep(0, expand_limit[st])
+      )
+      
+      inflow <- insert(
+        inflow,
+        which(get_state_names(uneval_transition) == st),
+        rep(0, expand_limit[st])
+      )
+    }
     
     for (st in to_expand) {
       uneval_transition <- expand_state(
@@ -143,7 +147,7 @@ eval_strategy <- function(strategy, parameters, cycles,
   
   if (expand) {
     for (st in to_expand) {
-      exp_cols <- sprintf(".%s_%i", st, seq_len(cycles+1))
+      exp_cols <- sprintf(".%s_%i", st, seq_len(expand_limit[st] + 1))
       
       count_table[[st]] <- rowSums(count_table[exp_cols])
       count_table <- count_table[-which(names(count_table) %in% exp_cols)]
@@ -158,7 +162,8 @@ eval_strategy <- function(strategy, parameters, cycles,
       counts = count_table,
       values = values,
       init = init,
-      cycles = cycles
+      cycles = cycles,
+      expand_limit = expand_limit
     ),
     class = c("eval_strategy")
   )

@@ -185,3 +185,66 @@ test_that(
     expect_identical(round(x$res_comp$.icer), .icer)
   }
 )
+
+test_that(
+  "sensitivity expression inputs", {
+    
+    param <- define_parameters(
+      p1 = .5,
+      p2 = .2,
+      r = .05
+    )
+    mod1 <- define_strategy(
+      transition = define_transition(
+        C, p1,
+        p2, C
+      ),
+      define_state(
+        cost = discount(543, r),
+        ly = 1
+      ),
+      define_state(
+        cost = discount(432, r),
+        ly = .5
+      )
+    )
+    
+    mod2 <- define_strategy(
+      transition = define_transition(
+        C, p1,
+        p2, C
+      ),
+      define_state(
+        cost = 789,
+        ly = 1
+      ),
+      define_state(
+        cost = 456,
+        ly = .8
+      )
+    )
+    
+    res2 <- run_model(
+      mod1, mod2,
+      parameters = param,
+      init = c(100, 0),
+      cycles = 10,
+      cost = cost,
+      effect = ly
+    )
+    
+    ds <- define_dsa(
+      p1, .1, .9,
+      p2, p1 * .5, p1,
+      r, .05, .1
+    )
+    
+    
+    x <- summary(run_dsa(res2, ds))
+    
+    .icer <- c(NA, 3988, NA, 668, NA, 1634, NA,
+               1086, NA, 978, NA, 1300)
+    
+    expect_identical(round(x$res_comp$.icer), .icer)
+  }
+)

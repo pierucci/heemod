@@ -20,22 +20,27 @@ run_dsa <- function(model, dsa) {
   method <- get_method(model)
   strategy_names <- get_strategy_names(model)
   
-  list_res <- lapply(
-    strategy_names,
-    function(n) {
-      tab <- eval_strategy_newdata(
-        model,
-        strategy = n,
-        newdata = dsa$dsa
-      ) 
-      tab %>% 
-        dplyr::mutate_if(
-          names(tab) %in% dsa$variables,
-          dplyr::funs(to_text_dots),
-          name = FALSE
-        )
-    }
-  )
+  list_res <- list()
+  for (n in strategy_names) {
+    message(sprintf(
+      "Running DSA on strategy '%s'...", n
+    ))
+    tab <- eval_strategy_newdata(
+      model,
+      strategy = n,
+      newdata = dsa$dsa
+    ) 
+    res <- tab %>% 
+      dplyr::mutate_if(
+        names(tab) %in% dsa$variables,
+        dplyr::funs(to_text_dots),
+        name = FALSE
+      )
+    list_res <- c(
+      list_res,
+      list(res)
+    )
+  }
   
   for (i in seq_along(strategy_names)) {
     list_res[[i]]$.strategy_names <- strategy_names[i]

@@ -30,6 +30,20 @@ test_that("Probabilities are calculated correctly", {
                              c(9, 1, 10)))
   expect_equal(round(fit_probs, 4),
                rep(0.0328, 20))
+  
+  su <- define_survival(
+    distribution = "weibull",
+    shape = 1.5,
+    scale = 5
+  )
+  
+  expect_identical(
+    get_probs_from_surv(su, cycle = 1:2),
+    c(
+      get_probs_from_surv(su, cycle = 1),
+      get_probs_from_surv(su, cycle = 2)
+    )
+  )
 })
 
 test_that("input errors are caught", {

@@ -91,7 +91,13 @@ plot.psa <- function(x, type = c("ce", "ac", "cov", "evpi"),
                              )) +
         ggplot2::geom_line() +
         ggplot2::xlab("Willingness to pay") +
-        ggplot2::ylab("EVPI")
+        ggplot2::ylab("EVPI") +
+        ggplot2::ylim(0, NA)
+      
+      if (log_scale) {
+        res <- res +
+          ggplot2::scale_x_log10()
+      }
       
       res
     },

@@ -5,7 +5,8 @@ compute_evpi <- function(x, wtp_thresholds) {
       tibble::tibble(
         .ceac = wtp_thresholds,
         .key = 1,
-        .strategy_choice = summary(x, threshold = wtp_thresholds)$res_nmb_strat
+        .strategy_choice = summary(
+          x, threshold = wtp_thresholds)$res_nmb_strat
       ),
       by = ".key"
     ) %>% 
@@ -28,7 +29,7 @@ compute_evpi <- function(x, wtp_thresholds) {
 #' Export PSA Results for SAVI
 #' 
 #' Export the result of a PSA in a format compatible with 
-#' Sheffield Accelerated Value of Information sofware.
+#' Sheffield Accelerated Value of Information software.
 #' 
 #' This function saves 3 files at the path given by
 #' \code{folder}: \code{param.csv}, the parameter values,
@@ -43,7 +44,7 @@ compute_evpi <- function(x, wtp_thresholds) {
 #'   
 #' @return Nothing. Creates 3 files.
 #' @export
-export_savi <- function(x, folder = "~") {
+export_savi <- function(x, folder = ".") {
   res <- x$psa[c(x$resamp_par, ".cost", ".effect", ".strategy_names")] %>% 
     tidyr::gather_(
       key_col = ".key",

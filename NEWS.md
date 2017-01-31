@@ -4,6 +4,8 @@
 
   * `strategy` becomes a reserved parameter name.
   * Counting method `"half-cycle"` is deprecated.
+  * `resample` arguement in`run_psa()` renamed to `psa`.
+  * Probability distributions for PSA were renamed, see `?distributions`.
 
 ## New features
 
@@ -20,6 +22,7 @@
 
   * Convenience function `rescale_discount_rate()`.
   * Better error messages at parameter evaluation.
+  * `p()` ensures it argument is a correct probability by coercing values less than 0 and greater than 1 to 0 and 1 respectively.
 
 ## Backend changes
 
@@ -28,8 +31,12 @@
   
 ## Bugfixes
 
-  * Fixed bugs that would return incorrect efficiency frontiers in some situations, or would return duplicated strategy names in some edge cases (thanks to [Vince Daniels](https://github.com/daniels4321)).
-  * Fixed a failure of tabular input when a column can be read as all numeric.
+  * Fixed sevral bugs that would return incorrect efficiency frontiers in some situations, or would return duplicated strategy names in some edge cases (thanks to [Vince Daniels](https://github.com/daniels4321)).
+  * Fixed a failure of tabular input when a column could be read as all numeric.
+  * Character variables from `newdata` as expressions were abusively parsed as lazy expressions.
+  * `newdata` now handles factor variables.
+  * `state_cycle_limit` was not passed to PSA, DSA, or updating.
+  * PSA and DSA tabular files were not saved.
   
 ## Acknowledments
 

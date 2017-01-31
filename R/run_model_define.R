@@ -455,3 +455,12 @@ get_method.run_model <- function(x) {
 get_state_names.run_model <- function(x, ...) {
   get_state_names(x$uneval_strategy_list[[1]])
 }
+
+get_expand_limit <- function(x, strategy) {
+  strategy <- check_strategy_index(x, strategy)
+  get_eval_strategy_list(x)[[strategy]]$expand_limit
+}
+
+get_eval_strategy_list <- function(x) {
+  x$eval_strategy_list
+}

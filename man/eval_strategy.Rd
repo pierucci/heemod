@@ -70,7 +70,8 @@ heemod:::eval_strategy(
   cycles = 5,
   method = "end",
   inflow = c(0, 0),
-  strategy_name = "A"
+  strategy_name = "A",
+  expand_limit = c(A = 5, B = 5)
 )
 }
 \keyword{internal}

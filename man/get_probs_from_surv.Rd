@@ -2,17 +2,20 @@
 % Please edit documentation in R/survival.R
 \name{get_probs_from_surv}
 \alias{get_probs_from_surv}
-\alias{get_probs_from_surv.flexsurvreg}
-\alias{get_probs_from_surv.surv_dist}
+\alias{get_probs_from_surv_}
+\alias{get_probs_from_surv_.flexsurvreg}
+\alias{get_probs_from_surv_.surv_dist}
 \title{Extract Transition Probabilities from a Survival Model}
 \usage{
+get_probs_from_surv_(x, ...)
+
+\method{get_probs_from_surv_}{flexsurvreg}(x, cycle, km_limit = 0,
+  cycle_length = 1, type = c("prob", "surv"), ...)
+
+\method{get_probs_from_surv_}{surv_dist}(x, cycle, km_limit = 0,
+  cycle_length = 1, type = c("prob", "surv"), ...)
+
 get_probs_from_surv(x, ...)
-
-\method{get_probs_from_surv}{flexsurvreg}(x, cycle, km_limit = 0,
-  cycle_length = 1, type = c("prob", "surv"), ...)
-
-\method{get_probs_from_surv}{surv_dist}(x, cycle, km_limit = 0,
-  cycle_length = 1, type = c("prob", "surv"), ...)
 }
 \arguments{
 \item{x}{Either a result from 
@@ -44,5 +47,9 @@ Get probabilities from survival models.
 \details{
 If \code{use_km_until = 0}, then only model probabilities
 will be used.
+
+The results of \code{get_probs_from_surv} are memoised for
+\code{options("heemod.memotime")} (default: 1 hour) to
+increase resampling performance.
 }
 
