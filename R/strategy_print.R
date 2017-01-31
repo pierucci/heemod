@@ -38,6 +38,10 @@ print.uneval_model <- function(x, ...) {
 #' efficiency frontier, and \code{type = "values"} state
 #' values per cycle.
 #' 
+#' When \code{states} is specified, the states will be turned into
+#' a factor with the ordering given in the variable, so that
+#' plotting order can be controlled.
+#' 
 #' @return A \code{ggplot2} object.
 #' 
 #' @example inst/examples/example_plot.run_model.R
@@ -81,6 +85,7 @@ plot.run_model <- function(x, type = c("counts", "ce", "values"),
           ))
         }
         tab <- tab[tab$state_names %in% states, ]
+        tab$state_names <- factor(tab$state_names, levels = states)
       }
       
       if (! is.null(strategy)) {
