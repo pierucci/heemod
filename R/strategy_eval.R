@@ -91,7 +91,8 @@ eval_strategy <- function(strategy, parameters, cycles,
     )))
     
     message(sprintf(
-      "Detected use of 'state_cycle', expanding state%s: %s.",
+      "%s: detected use of 'state_cycle', expanding state%s: %s.",
+      strategy_name,
       plur(length(to_expand)),
       paste(to_expand, collapse = ", ")
     ))

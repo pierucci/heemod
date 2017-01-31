@@ -5,6 +5,7 @@
   * `strategy` becomes a reserved parameter name.
   * Counting method `"half-cycle"` is deprecated.
   * `resample` arguement in`run_psa()` renamed to `psa`.
+  * Probability distributions for PSA were renamed, see `?distributions`.
 
 ## New features
 
