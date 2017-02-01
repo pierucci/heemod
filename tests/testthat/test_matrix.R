@@ -77,24 +77,28 @@ test_that(
     )
     plot(mat1)
 
-    test_mat <- array(0, dim = c(2, 2, 2))
-    test_mat[1,,] <- c(1, -1, 0, 2)
-    test_mat[2,,] <- c(1, 0, 1, 1)
-    attr(test_mat, "state_names") <- c("A", "B")
-    class(test_mat) <- c("eval_matrix")
+    test_array <- array(0, dim = c(2, 2, 2))
+    test_array[1,,] <- c(1, -1, 0, 2)
+    test_array[2,,] <- c(1, 0, 1, 1)
+    attr(test_array, "state_names") <- c("A", "B")
     
     expect_error(
-      check_matrix(test_mat),
+      check_matrix(test_array),
       "rows sum to 1"
     )
-    test_mat[2,1, 2] <- 0
+    test_array[2,1, 2] <- 0
     expect_error(
-      check_matrix(test_mat),
+      check_matrix(test_array),
       "outside the interval [0 - 1]",
       fixed = TRUE
     )
     
-    
+    class(test_array) <- "not an array"
+    expect_error(
+      check_matrix(test_array),
+      'inherits(x, "array")',
+      fixed = TRUE
+    )
     expect_equal(
       heemod:::get_matrix_order(mat1),
       2
