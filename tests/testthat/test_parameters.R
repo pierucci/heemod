@@ -108,3 +108,38 @@ test_that(
     )
   }
 )
+
+test_that(
+  "we catch infinite parameters",
+  {
+    par1 <- define_parameters(
+      a = 2,
+      b = 1 / (markov_cycle - 3)
+    )
+    options(heemod.inf_parameter = "ignore")
+    e_par1 <- heemod:::eval_parameters(
+      par1, 5
+    )
+    expect_equal(
+      as.numeric(unlist(e_par1[,"b"])),
+      1/(-2:2)
+    )
+    options(heemod.inf_parameter = "warning")
+    expect_warning(
+      e_par1 <- heemod:::eval_parameters(
+        par1, 5
+      ),
+      "infinite parameter values"
+    )
+    options(heemod.inf_parameter = "stop")
+    expect_error(
+      e_par1 <- heemod:::eval_parameters(
+        par1, 5
+      ),
+      "infinite parameter values"
+    )
+    
+    
+    
+  }
+)

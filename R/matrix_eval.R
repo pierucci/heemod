@@ -15,13 +15,28 @@
 #'   
 #' @keywords internal
 check_matrix <- function(x) {
+  stopifnot(inherits(x, "array"))
+  stopifnot(length(dim(x)) == 3)
   if (! isTRUE(all.equal(
     range(rowSums(x, dims = 2)),
     c(1, 1)))) {
+    problem_rows <- which(rowSums(x, dims = 2) != 1, arr.ind = TRUE)
+    problem_rows <- data.frame(cycle = problem_rows[,1], 
+                               state = get_state_names(x)[problem_rows[,2]])
+    print("problem rows:")
+    print(problem_rows)
     stop("Not all transition matrix rows sum to 1.")
   }
   
   if (! all(x >= 0 & x <= 1)) {
+    problem <- which(x < 0 | x > 1, arr.ind = TRUE)
+    problem <- data.frame(problem)
+    names(problem) <- c("cycle", "from", "to")
+    states <- get_state_names(x)
+    problem$from <- states[problem$from]
+    problem$to <- states[problem$to]
+    print("indices of probabilities < 0 or > 1:")
+    print(problem)
     stop("Some transition probabilities are outside the interval [0 - 1].")
   }
 }
@@ -63,7 +78,8 @@ eval_transition.uneval_matrix <- function(x, parameters) {
     array_res[i,,] <- t(array_res[i,,])
   }
   
-  array_res <- replace_C(array_res)
+  array_res <- structure(replace_C(array_res),
+                         state_names = get_state_names(x))
   
   check_matrix(array_res)
   
@@ -97,6 +113,9 @@ replace_C <- function(x) {
 }
 
 get_state_names.eval_matrix <- function(x, ...){
+  attr(x, "state_names")
+}
+get_state_names.array <- function(x, ...){
   attr(x, "state_names")
 }
 

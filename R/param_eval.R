@@ -31,9 +31,22 @@ eval_parameters <- function(x, cycles = 1,
     )
   )
   
+  if({use_fn <- options()$heemod.inf_parameter} != "ignore"){
+    if(any(these_are_inf <- sapply(res, is.infinite))){
+      inf_param_nums <- unique(which(these_are_inf, arr.ind = TRUE)[,2])
+      inf_param_names <- names(res)[inf_param_nums]
+      get(use_fn)(paste("infinite parameter values:",
+                    paste(inf_param_names, collapse = ", "),
+                   ";\n",
+                   "See the option heemod.inf_parameter, which",
+                   "can be 'ignore', 'warning', or 'stop' (the default)"
+                    )
+              )
+    }
+  }
   ## if we run into an error, figure out which parameter caused it -
-  ##    unfortunately I don't know a better way to do that than to
-  ##    go through sublists until we hit the error and then back up
+  ##    this is efficient enough unless we have a parameter that's
+  ##    very expensive to calculate.
   if (inherits(res, "try-error")) {
     long_res <- lapply(
       seq_along(x),
