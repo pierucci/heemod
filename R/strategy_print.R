@@ -159,6 +159,7 @@ plot.run_model <- function(x, type = c("counts", "ce", "values"),
           ))
         }
         tab <- tab[tab$value_names %in% values, ]
+        tab$value_names <- factor(tab$value_names, levels = values)
       }
       
       if (! is.null(strategy)) {
