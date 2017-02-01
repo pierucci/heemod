@@ -17,15 +17,26 @@
 check_matrix <- function(x) {
   stopifnot(inherits(x, "array"))
   stopifnot(length(dim(x)) == 3)
+  
   if (! isTRUE(all.equal(
     range(rowSums(x, dims = 2)),
     c(1, 1)))) {
     problem_rows <- which(rowSums(x, dims = 2) != 1, arr.ind = TRUE)
-    problem_rows <- data.frame(cycle = problem_rows[,1], 
+    problem_rows <- data.frame(
+      cycle = problem_rows[,1], 
                                state = get_state_names(x)[problem_rows[,2]])
-    print("problem rows:")
-    print(problem_rows)
-    stop("Not all transition matrix rows sum to 1.")
+    problem_rows <- format.data.frame(problem_rows, justify = "left")
+    
+    stop(sprintf(
+      "Not all transition matrix rows sum to 1:\n%s",
+      paste(sprintf(
+        "cycle: %s, state: %s",
+        problem_rows[,1],
+        get_state_names(x)[problem_rows[,2]]),
+        collapse = "\n")
+    ))
+    
+    
   }
   
   if (! all(x >= 0 & x <= 1)) {
@@ -35,9 +46,16 @@ check_matrix <- function(x) {
     states <- get_state_names(x)
     problem$from <- states[problem$from]
     problem$to <- states[problem$to]
-    print("indices of probabilities < 0 or > 1:")
-    print(problem)
-    stop("Some transition probabilities are outside the interval [0 - 1].")
+    problem <- format.data.frame(problem, justify = "left")
+    
+    stop(sprintf(
+      "Some transition probabilities are outside the interval [0 - 1]:\n%s",
+      paste(sprintf(
+        "cycle: %s, from: %s, to: %s",
+        problem$cycle, problem$from, problem$to),
+        collapse = "\n")
+    ))
+    
   }
 }
 

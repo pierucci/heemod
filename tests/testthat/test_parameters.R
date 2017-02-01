@@ -128,18 +128,13 @@ test_that(
     expect_warning(
       e_par1 <- heemod:::eval_parameters(
         par1, 5
-      ),
-      "infinite parameter values"
+      )
     )
     options(heemod.inf_parameter = "stop")
     expect_error(
       e_par1 <- heemod:::eval_parameters(
         par1, 5
-      ),
-      "infinite parameter values"
+      )
     )
-    
-    
-    
   }
 )

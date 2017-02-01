@@ -23,6 +23,8 @@
   * Convenience function `rescale_discount_rate()`.
   * Better error messages at parameter evaluation.
   * `p()` ensures it argument is a correct probability by coercing values less than 0 and greater than 1 to 0 and 1 respectively.
+  * More informative error messages for incorrect matrices.
+  * Infinite parameter values generate an error.
 
 ## Backend changes
 
