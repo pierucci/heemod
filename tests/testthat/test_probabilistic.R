@@ -82,8 +82,8 @@ test_that(
     ndt3 <- run_psa(res2, psa = rsp2, N = 10)
     
     x <- define_psa(
-      rate1 + rate2 + rate3 ~ multinom(10, 50, 40),
-      a + b ~ multinom(15, 30)
+      rate1 + rate2 + rate3 ~ multinomial(10, 50, 40),
+      a + b ~ multinomial(15, 30)
     )
     
     set.seed(1)
@@ -133,8 +133,8 @@ test_that(
     
     rsp3 <- define_psa(
       age_init ~ lognormal(60, 10),
-      cost_init ~ make_gamma (1000, 100),
-      p_trans ~ prop(.5, 100),
+      cost_init ~ gamma (1000, 100),
+      p_trans ~ binomial(.5, 100),
       a ~ logitnormal(1, 1)
     )
     set.seed(1)
