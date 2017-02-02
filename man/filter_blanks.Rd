@@ -21,4 +21,3 @@ readability, this function ensures those rows are
 removed.
 }
 \keyword{internal}
-

@@ -18,4 +18,3 @@ An \code{uneval_matrix} or \code{uneval_matrix}
 Works on both unevaluated and evaluated models.
 }
 \keyword{internal}
-

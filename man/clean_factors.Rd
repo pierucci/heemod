@@ -16,4 +16,3 @@ A data frame.
 Convert Data Frame Factor Variables to Character
 }
 \keyword{internal}
-

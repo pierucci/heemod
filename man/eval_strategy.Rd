@@ -75,4 +75,3 @@ heemod:::eval_strategy(
 )
 }
 \keyword{internal}
-

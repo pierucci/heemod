@@ -2,12 +2,12 @@
 % Please edit documentation in R/get_code.R
 \name{get_code}
 \alias{get_code}
-\alias{get_code.run_model}
-\alias{get_code.state}
-\alias{get_code.uneval_matrix}
-\alias{get_code.uneval_model}
 \alias{get_code.uneval_parameters}
+\alias{get_code.uneval_matrix}
+\alias{get_code.state}
 \alias{get_code.uneval_state_list}
+\alias{get_code.uneval_model}
+\alias{get_code.run_model}
 \title{Display the Code to Generate an Object}
 \usage{
 get_code(x, ...)
@@ -67,4 +67,3 @@ m <- define_transition(
 
 get_code(m)
 }
-

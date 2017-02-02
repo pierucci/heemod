@@ -23,4 +23,3 @@ Models are ordered by effectiveness and ICER are computed
 sequencially.
 }
 \keyword{internal}
-

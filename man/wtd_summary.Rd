@@ -24,4 +24,3 @@ If \code{weights} is \code{NULL} an unweighted summar is
 returned.
 }
 \keyword{internal}
-

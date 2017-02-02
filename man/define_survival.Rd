@@ -25,4 +25,3 @@ define_survival(distribution = "exp", rate = .5)
 define_survival(distribution = "gompertz", rate = .5, shape = 1)
 
 }
-

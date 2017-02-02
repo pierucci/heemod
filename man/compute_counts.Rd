@@ -34,4 +34,3 @@ each cycle. Alternatively linear interpolation between
 cycles can be performed.
 }
 \keyword{internal}
-

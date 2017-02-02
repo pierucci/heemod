@@ -24,4 +24,3 @@ The hack consists in replacing calls to
 \code{.strategy_name} is not already defined.
 }
 \keyword{internal}
-

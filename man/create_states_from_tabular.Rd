@@ -41,4 +41,3 @@ analysis. For more information see the vignette:
 \code{vignette("file-input", package = "heemod")}.
 }
 \keyword{internal}
-

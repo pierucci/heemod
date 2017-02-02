@@ -12,4 +12,3 @@ consistent interface for Markov models specification and
 comparison. Non-homogeneous Markov models (with time
 varying properties) are supported.
 }
-

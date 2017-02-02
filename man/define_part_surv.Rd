@@ -63,4 +63,3 @@ define_part_surv(
 )
 
 }
-

@@ -18,4 +18,3 @@ A character vector of state names.
 Retrieve state names from an object containing states.
 }
 \keyword{internal}
-

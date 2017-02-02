@@ -27,4 +27,3 @@ results.
 The official SAVI website can be found at this URL: 
 http://http://savi.shef.ac.uk/SAVI/
 }
-

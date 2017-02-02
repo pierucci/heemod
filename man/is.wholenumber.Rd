@@ -19,4 +19,3 @@ A logical scalar.
 Check Wholenumbers
 }
 \keyword{internal}
-

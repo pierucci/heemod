@@ -21,4 +21,3 @@ Reserved names are \code{markov_cycle} and anything
 starting with \code{.}.
 }
 \keyword{internal}
-
