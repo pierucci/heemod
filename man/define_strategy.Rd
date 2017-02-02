@@ -35,7 +35,7 @@ This function checks whether the objects are compatible
 in the same model (same state names...).
 
 State values and transition probabilities referencing
-\code{state_cycle} are automatically expanded to implicit
+\code{state_time} are automatically expanded to implicit
 tunnel states.
 }
 \examples{

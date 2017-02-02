@@ -13,7 +13,7 @@
 #' The initial number of individuals in each state and the 
 #' number of cycle will be the same for all strategies
 #' 
-#' \code{state_cycle_limit} can be specified in 3 different 
+#' \code{state_time_limit} can be specified in 3 different 
 #' ways: 1. As a single value: the limit is applied to all 
 #' states in all strategies. 2. As a named vector (where
 #' names are state names): the limits are applied to the
@@ -36,8 +36,8 @@
 #' @param method Counting method.
 #' @param uneval_strategy_list List of models, only used by 
 #'   \code{run_model_} to avoid using \code{...}.
-#' @param state_cycle_limit Optional expansion limit for 
-#'   \code{state_cycle}, see details.
+#' @param state_time_limit Optional expansion limit for 
+#'   \code{state_time}, see details.
 #' @param central_strategy character. The name of the 
 #'   strategy at the center of the cost-effectiveness plane,
 #'   for readability.
@@ -56,7 +56,7 @@ run_model <- function(...,
                       method = c("life-table", "beginning", "end",
                                  "half-cycle"),
                       cost = NULL, effect = NULL,
-                      state_cycle_limit = NULL,
+                      state_time_limit = NULL,
                       central_strategy = NULL,
                       inflow = rep(0L, get_state_number(get_states(list(...)[[1]])))) {
   
@@ -72,7 +72,7 @@ run_model <- function(...,
     method = method,
     cost = lazyeval::lazy_(substitute(cost), env = parent.frame()),
     effect = lazyeval::lazy_(substitute(effect), env = parent.frame()),
-    state_cycle_limit = state_cycle_limit,
+    state_time_limit = state_time_limit,
     central_strategy = central_strategy,
     inflow = inflow
   )
@@ -86,7 +86,7 @@ run_model_ <- function(uneval_strategy_list,
                        cycles,
                        method,
                        cost, effect,
-                       state_cycle_limit,
+                       state_time_limit,
                        central_strategy,
                        inflow) {
   if (length(uneval_strategy_list) == 0) {
@@ -178,8 +178,8 @@ run_model_ <- function(uneval_strategy_list,
     stop("Names of 'inflow' must be similar to 'init'.")
   }
   
-  state_cycle_limit <- complete_scl(
-    state_cycle_limit,
+  state_time_limit <- complete_stl(
+    state_time_limit,
     state_names = get_state_names(uneval_strategy_list[[1]]),
     strategy_names = names(uneval_strategy_list),
     cycles = cycles
@@ -194,7 +194,7 @@ run_model_ <- function(uneval_strategy_list,
       init = init, 
       cycles = cycles,
       method = method,
-      expand_limit = state_cycle_limit[[n]],
+      expand_limit = state_time_limit[[n]],
       inflow = inflow,
       strategy_name = n
     )

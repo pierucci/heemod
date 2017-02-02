@@ -19,6 +19,7 @@ eval_parameters <- function(x, cycles = 1,
   x <- dispatch_strategy_hack(x)
   
   start_tibble <- tibble::tibble(
+    model_time = seq_len(cycles),
     markov_cycle = seq_len(cycles),
     strategy = strategy_name
   )

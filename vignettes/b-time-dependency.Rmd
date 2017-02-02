@@ -19,7 +19,7 @@ In more complex Markov models state values or transition probabilities can vary 
   1. depend on how long __the entire model__ has been running (model-time dependency);
   2. depend on how long __an individual__ has been in a given  __state__ (state-time dependency).
   
-These two situations can be modelled using the `markov_cycle` and `state_cycle` variables, respectively.
+These two situations can be modelled using the `model_time` (or its alias `markov_cycle`) and `state_time` variables, respectively.
 
 ## How to specifiy time-dependency
 
@@ -29,28 +29,28 @@ Both variables can be used in `define_parameters()`, `define_state()`, or `defin
 
 ```{r}
 define_parameters(
-  mr = exp(- state_cycle * lambda),
-  age = 50 + markov_cycle
+  mr = exp(- state_time * lambda),
+  age = 50 + model_time
 )
 
 define_state(
-  cost = 100 - state_cycle,
+  cost = 100 - state_time,
   effect = 10
 )
 
 f <- function(x) abs(sin(x))
 
 define_transition(
-  C,  f(state_cycle),
+  C,  f(state_time),
   .1, .9
 )
 ```
 
 ## Details
 
-Using `markov_cycle` in a model does not change the execution speed of the analysis. On the other hand adding `state_cycle` may slow down the analysis, especially if the model is run for many cycles **and** a transition probability depends on `state_cycle`.^[In this situation the complexity is proportional to the square of the number of cycles.]
+Using `model_time` in a model does not change the execution speed of the analysis. On the other hand adding `state_time` may slow down the analysis, especially if the model is run for many cycles **and** a transition probability depends on `state_time`.^[In this situation the complexity is proportional to the square of the number of cycles.]
 
-To mitigate this drawback it is possible to limit the number of state expansion with `state_cycle_limit`. Because most time-varying values reach an asymptotic value quite fast, it is unnecessary to expand the states any further. The last cycle value is repeated until the end.
+To mitigate this drawback it is possible to limit the number of state expansion with `state_time_limit`. Because most time-varying values reach an asymptotic value quite fast, it is unnecessary to expand the states any further. The last cycle value is repeated until the end.
 
 The limit can be defined globally, per state, or per model and state. In the following example probabilities are kept constant after *10* cycles for state **B** and *20* cycles for state **D** in strategy **I**, and *15* cycles in state **B** in strategy **II**.
 

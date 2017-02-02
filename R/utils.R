@@ -97,8 +97,14 @@ check_names <- function(x) {
   if (any("markov_cycle" %in% x)) {
     stop("'markov_cycle' is a reserved name.")
   }
+  if (any("model_time" %in% x)) {
+    stop("'model_time' is a reserved name.")
+  }
   if (any("state_cycle" %in% x)) {
     stop("'state_cycle' is a reserved name.")
+  }
+  if (any("state_time" %in% x)) {
+    stop("'state_time' is a reserved name.")
   }
   if (any("C" %in% x)) {
     stop("'C' is a reserved name.")
