@@ -50,7 +50,7 @@ triangle(lower, upper, peak = (lower + upper)/2)
 
 \item{...}{Dirichlet distribution parameters.}
 
-\item{mu}{Mean on the lgit scale.}
+\item{mu}{Mean on the logit scale.}
 
 \item{sigma}{SD on the logit scale.}
 

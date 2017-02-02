@@ -20,7 +20,7 @@
 #' @param size Size of sample used to estimate proportion.
 #' @param meanlog Mean on the log scale.
 #' @param sdlog SD on the log scale.
-#' @param mu Mean on the lgit scale.
+#' @param mu Mean on the logit scale.
 #' @param sigma SD on the logit scale.
 #' @param x A distribution function, see details.
 #' @param shape1 for beta distribution
@@ -132,7 +132,7 @@ r_beta <- function(shape1, shape2){
 #' @export
 triangle <- function(lower, upper, peak = (lower + upper)/2) {
   if (! requireNamespace("triangle")) {
-    stop("'triangle' package required for logitnormal distributions.")
+    stop("'triangle' package required for triangle distributions.")
   }
   stopifnot(peak >= lower,
             upper >= peak,
