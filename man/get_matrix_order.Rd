@@ -20,4 +20,3 @@ A generic that works both with \code{uneval_matrix} and
 For internal use.
 }
 \keyword{internal}
-

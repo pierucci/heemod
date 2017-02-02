@@ -3,9 +3,9 @@
 \name{interp_heemod}
 \alias{interp_heemod}
 \alias{interp_heemod.default}
-\alias{interp_heemod.part_surv}
-\alias{interp_heemod.state}
 \alias{interp_heemod.uneval_matrix}
+\alias{interp_heemod.state}
+\alias{interp_heemod.part_surv}
 \alias{interp_heemod.uneval_state_list}
 \title{Interpolate Lazy Dots}
 \usage{
@@ -42,4 +42,3 @@ interpolated using the first, the third using the
 interpolated first two, and so on.
 }
 \keyword{internal}
-

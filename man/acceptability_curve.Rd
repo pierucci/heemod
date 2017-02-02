@@ -23,4 +23,3 @@ A data frame with columns \code{.ceac} (the
 Acceptability Curve from Probabilistic Analysis
 }
 \keyword{internal}
-

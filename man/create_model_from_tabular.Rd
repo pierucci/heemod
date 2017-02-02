@@ -24,4 +24,3 @@ Calls \code{\link{create_states_from_tabular}} and
 \code{\link{create_matrix_from_tabular}}.
 }
 \keyword{internal}
-

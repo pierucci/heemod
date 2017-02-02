@@ -87,4 +87,3 @@ rsp <- define_psa(
 # (only 10 resample for speed)
 ndt1 <- run_psa(res2, psa = rsp, N = 10)
 }
-

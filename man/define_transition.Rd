@@ -120,4 +120,3 @@ define_transition(
   -1, 2
 )
 }
-

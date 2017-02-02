@@ -64,4 +64,3 @@ heemod:::eval_strategy_newdata(
 )
 }
 \keyword{internal}
-

@@ -58,4 +58,3 @@ define_psa(
   a + b ~ multinom(15, 30)
 )
 }
-

@@ -30,4 +30,3 @@ discount(rep(10, 5), .02, first = FALSE)
 
 }
 \keyword{internal}
-

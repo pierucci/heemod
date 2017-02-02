@@ -60,4 +60,3 @@ define_strategy(
   s2 = s2
 )
 }
-

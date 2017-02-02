@@ -22,4 +22,3 @@ The hack consists in replacing calls to
 ensure \code{x} is recycled to the correct length.
 }
 \keyword{internal}
-

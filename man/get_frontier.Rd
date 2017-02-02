@@ -17,4 +17,3 @@ A vector of model names on the efficiency
 Return Efficiency Frontier
 }
 \keyword{internal}
-

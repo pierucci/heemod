@@ -34,4 +34,3 @@ time-invariant.
   ## 3\% annual discount rate to (approximately) weekly 
   rescale_discount_rate(0.03, 52, 1)
 }
-

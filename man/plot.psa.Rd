@@ -36,4 +36,3 @@ cost-efficiency plane, \code{type = "cov"} to perform
 covariance analysis on the results, \code{type = "evpi"}
 for expected value of perfect information.
 }
-
