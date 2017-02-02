@@ -111,16 +111,23 @@ test_that(
     ## test that we get expected error with expanded states
     par1 <- define_parameters(a = ifelse(state_cycle == 3, 1.1, 0.5))
     mat1 <- define_transition(a, C, 0.2, 0.8, state_names = c("A","B"))
+    
     A1 <- define_state(cost = 1, utility = 1)
     B1 <- define_state(cost = 2, utility = 2)
     st1 <- define_strategy(A = A1, B = B1, transition = mat1)
-    expect_error(run_model(st1, init = c(100, 0), cycles = 5, parameters = par1),
-                 "outside the interval [0 - 1]",
-                 fixed = TRUE)
+    
+    expect_error(run_model(
+      st1, init = c(100, 0), cycles = 5, parameters = par1
+    ),
+    "outside the interval [0 - 1]",
+    fixed = TRUE)
     ## and that it works without the error
     par1 <- define_parameters(a = ifelse(state_cycle == 3, 0.4, 0.5))
-    run_model(st1, init = c(100, 0), cycles = 5, parameters = par1,
-                           cost = cost, effect = utility)
+    
+    expect_identical(
+      class(run_model(st1, init = c(100, 0), cycles = 5, parameters = par1,
+              cost = cost, effect = utility))[1],
+      "run_model")
   }
 )
 
@@ -202,7 +209,7 @@ test_that(
     sample_mod <- define_strategy(transition = sampleTM, A = A,
                                   B = B, C = C)
     res <- run_model(sample_mod, cost = cost, effect = utility,
-                      method = "beginning")
+                     method = "beginning")
     
     
     expect_equal(

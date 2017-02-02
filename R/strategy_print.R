@@ -80,7 +80,7 @@ plot.run_model <- function(x, type = c("counts", "ce", "values"),
       if (! is.null(states)) {
         if (any(pb <- ! states %in% get_state_names(x))) {
           stop(sprintf(
-            "Some state do not exist: %s.",
+            "Some states do not exist: %s.",
             paste(states[pb], collapse = ", ")
           ))
         }
@@ -154,11 +154,12 @@ plot.run_model <- function(x, type = c("counts", "ce", "values"),
       if (! is.null(values)) {
         if (any(pb <- ! values %in% get_state_value_names(x))) {
           stop(sprintf(
-            "Some state do not exist: %s.",
+            "Some values do not exist: %s.",
             paste(values[pb], collapse = ", ")
           ))
         }
         tab <- tab[tab$value_names %in% values, ]
+        tab$value_names <- factor(tab$value_names, levels = values)
       }
       
       if (! is.null(strategy)) {
