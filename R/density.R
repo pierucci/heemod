@@ -120,7 +120,6 @@ define_distribution <- function(x) {
 }
 
 #' @rdname distributions
-#' @export
 beta <- function(shape1, shape2){
   list(r_beta(shape1, shape2))
 }
@@ -129,7 +128,6 @@ r_beta <- function(shape1, shape2){
 }
 
 #' @rdname distributions
-#' @export
 triangle <- function(lower, upper, peak = (lower + upper)/2) {
   if (! requireNamespace("triangle")) {
     stop("'triangle' package required for triangle distributions.")
