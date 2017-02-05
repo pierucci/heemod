@@ -117,3 +117,11 @@ modify_.uneval_parameters <- function(.OBJECT, .dots) {
   
   utils::modifyList(.OBJECT, .dots)
 }
+
+#' @export
+define_inflow <- function(...) {
+  # placeholder
+  # eventually should be like
+  # define_parameters()
+  c(...)
+}
