@@ -21,7 +21,7 @@ NULL
 
 #' @export
 #' @rdname probability
-prob_to_prob <- function(p, to = 1, from = 1) {
+rescale_prob <- function(p, to = 1, from = 1) {
   stopifnot(
     p >= 0,
     p <= 1,
@@ -30,6 +30,12 @@ prob_to_prob <- function(p, to = 1, from = 1) {
   )
   r <- - log(1 - p) / from
   rate_to_prob(r, to = to)
+}
+
+#' @export
+prob_to_prob <- function(...) {
+  warning("'prob_to_prob' is deprecated, use 'rescale_prob()' instead.")
+  rescale_prob(...)
 }
 
 #' @export

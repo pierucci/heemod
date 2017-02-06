@@ -2,13 +2,13 @@
 % Please edit documentation in R/transform.R
 \name{probability}
 \alias{probability}
-\alias{prob_to_prob}
+\alias{rescale_prob}
 \alias{rate_to_prob}
 \alias{or_to_prob}
 \alias{rr_to_prob}
 \title{Convenience Functions to Compute Probabilities}
 \usage{
-prob_to_prob(p, to = 1, from = 1)
+rescale_prob(p, to = 1, from = 1)
 
 rate_to_prob(r, to = 1, per = 1)
 
