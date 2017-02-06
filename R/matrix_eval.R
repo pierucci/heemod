@@ -32,7 +32,7 @@ check_matrix <- function(x) {
       paste(sprintf(
         "cycle: %s, state: %s",
         problem_rows[,1],
-        get_state_names(x)[problem_rows[,2]]),
+        problem_rows[,2]),
         collapse = "\n")
     ))
     
