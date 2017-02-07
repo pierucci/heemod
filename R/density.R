@@ -28,11 +28,6 @@
 #' @param upper upper bound of triangular distribution.
 #' @param peak peak of triangular distribution.
 #' @param x A distribution function, see details.
-#' @param shape1 for beta distribution
-#' @param shape2 for beta distribution
-#' @param lower lower bound of triangular distribution.
-#' @param upper upper bound of triangular distribution.
-#' @param peak peak of triangular distribution.
 #'   
 #' @examples 
 #' define_distribution(

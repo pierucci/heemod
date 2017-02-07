@@ -71,16 +71,6 @@ triangle(lower, upper, peak = (lower + upper)/2)
 \item{peak}{peak of triangular distribution.}
 
 \item{x}{A distribution function, see details.}
-
-\item{shape1}{for beta distribution}
-
-\item{shape2}{for beta distribution}
-
-\item{lower}{lower bound of triangular distribution.}
-
-\item{upper}{upper bound of triangular distribution.}
-
-\item{peak}{peak of triangular distribution.}
 }
 \description{
 Define a distribution for PSA parameters.
