@@ -37,4 +37,3 @@ plot.
 Plot type \code{simple} plots variations of single strategy 
 values, while \code{difference} plots incremental values.
 }
-

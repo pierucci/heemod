@@ -25,4 +25,3 @@ This functions has been heavily optimized, and thus can
 be difficult to read. Good luck...
 }
 \keyword{internal}
-

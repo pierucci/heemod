@@ -24,4 +24,3 @@ Checks whether all rows sum to 1 and all probabilities
 are between 0 and 1.
 }
 \keyword{internal}
-

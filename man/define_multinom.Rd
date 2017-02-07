@@ -17,4 +17,3 @@ An object of class \code{multinomial}.
 Define That Parameters Belong to the Same Multinomial 
 Distribution
 }
-

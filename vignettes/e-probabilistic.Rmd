@@ -175,7 +175,7 @@ Proportions follow a binomial distribution that can be estimated by giving the m
 
 Finally multinomial distributions are declared with the number of individuals in each group in the sample used to estimate the proportions. These proportions follow a Dirichlet distribution:
 
-  * `p_AA + p_AB + p_AC + p_AD ~ multinom(721, 202, 67, 10)`
+  * `p_AA + p_AB + p_AC + p_AD ~ multinomial(721, 202, 67, 10)`
 
 ```{r}
 rsp <- define_psa(
@@ -187,7 +187,7 @@ rsp <- define_psa(
   
   p_CD_base ~ prop(prob = .25, size = 40),
   
-  p_AA_base + p_AB_base + p_AC_base + p_AD_base ~ multinom(721, 202, 67, 10)
+  p_AA_base + p_AB_base + p_AC_base + p_AD_base ~ multinomial(721, 202, 67, 10)
 )
 ```
 

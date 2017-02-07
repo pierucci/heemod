@@ -5,6 +5,7 @@
 \alias{get_probs_from_surv_}
 \alias{get_probs_from_surv_.flexsurvreg}
 \alias{get_probs_from_surv_.surv_dist}
+\alias{get_probs_from_surv}
 \title{Extract Transition Probabilities from a Survival Model}
 \usage{
 get_probs_from_surv_(x, ...)
@@ -52,4 +53,3 @@ The results of \code{get_probs_from_surv} are memoised for
 \code{options("heemod.memotime")} (default: 1 hour) to
 increase resampling performance.
 }
-

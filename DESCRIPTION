@@ -16,7 +16,7 @@ Description: Toolset for Health Economic Evaluation Modelling
     (non-homogeneous Markov models and semi-Markov models)
     are supported.
 Depends: R (>= 3.2.2)
-Imports:  dplyr,
+Imports: dplyr,
           ggplot2 (>= 2.2.0),
           graphics,
           grDevices,
@@ -33,7 +33,7 @@ Imports:  dplyr,
 License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.0
 Suggests: diagram,
           flexsurv,
           Hmisc,
@@ -45,6 +45,7 @@ Suggests: diagram,
           readxl,
           rmarkdown,
           survival,
-          testthat
+          testthat,
+          triangle
 URL: https://github.com/pierucci/heemod, https://pierucci.org
 BugReports: https://github.com/pierucci/heemod/issues

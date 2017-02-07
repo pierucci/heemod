@@ -29,4 +29,3 @@ param <- define_parameters(
 heemod:::eval_parameters(param, cycles = 15)
 }
 \keyword{internal}
-

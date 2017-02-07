@@ -18,4 +18,3 @@ A character vector of state value names.
 Return Names of State Values
 }
 \keyword{internal}
-

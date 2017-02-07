@@ -31,4 +31,3 @@ heemod:::insert(letters, c(0, 5, 26), c("xxx", "yyy"))
 
 }
 \keyword{internal}
-

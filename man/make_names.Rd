@@ -18,4 +18,3 @@ converts characters to lower case and replaces \code{.}
 by \code{_}.
 }
 \keyword{internal}
-

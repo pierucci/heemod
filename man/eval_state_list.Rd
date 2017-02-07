@@ -22,4 +22,3 @@ An \code{eval_states} object, a list with one
 Evaluate Markov Model States
 }
 \keyword{internal}
-

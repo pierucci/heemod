@@ -19,4 +19,3 @@ plur_y(x)
 Returns "s" if x > 1
 }
 \keyword{internal}
-

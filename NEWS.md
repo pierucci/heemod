@@ -17,6 +17,7 @@
   * Export PSA files for Sheffield Accelerated Value of Information sofware.
   * Individuals can enter the model after the beginning with the `inflow` argument in `run_model()` (mainly for budget impact analysis).
   * Strategy name can be used to define values with `dispatch_strategy()` or using the `strategy` name (vignettes *homogeneous* and *probabilistic* have been updated to use this feature).
+  * Beta and triangle distribution for PSA.
 
 ## Other features
 

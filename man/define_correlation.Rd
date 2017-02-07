@@ -34,4 +34,3 @@ cm <- define_correlation(
   )
 
 }
-
