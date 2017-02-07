@@ -1,0 +1,200 @@
+---
+title: "Calibrating `heemod` models"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Calibrating heemod models}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r, echo=FALSE, include=FALSE}
+library(heemod)
+library(dplyr)
+library(optimx)
+```
+ 
+The parameters for health economic models can be difficult to measure, either
+because they cannot be observed directly, as in the number of infections caused
+by a single infected individual, or because appropriate data are not systematically
+gathered in the area of interest.  While some parameter values can be reasonably
+assumed to be similar from one  country to another, for example, others may vary.
+It is sometimes useful to find values of particular parameters that allow the
+model to match, as closely as possible, the observed epidemiology in a country.
+_Model calibration_ is the search for appropriate value of initially unknown parameters
+that allow the model to match the counts in particular states at particular times.
+
+In order to perform calibration, the user must provide:
+
+1. A heemod \code{run_model} object;
+
+2. The names of the parameters of the model to calibrate, that is, 
+the parameters for which we seek appropriate values;
+
+3.  Specifications of the model outcomes we will try to match.  The outcomes must
+be counts in different states, or combinations of counts.   We will describe the
+form of the specification below.
+
+4.  The target values we would like the model outcomes to match.
+ 
+
+The specification object is a data frame with four columns:
+
+* group:  a group marker (conveniently, but not necessarily, integers starting at 1).
+
+* strategy_name:  counts from which strategy in the model?
+
+* cycles_to_sum:  counts at which cycles?
+
+* states_to_sum:  counts from which states?
+  
+As an example, we once again read in the THR model:
+```{r fit_thr}
+thr <- run_model_tabular(
+  location = system.file("tabular/thr", package = "heemod")
+)
+```
+and look at the results we get using the actual parameters:
+```{r}
+thr_res <- get_counts(thr$model_runs)
+thr_res %>% filter(.strategy_names == "standard" & markov_cycle == 40)
+thr_res %>% filter(.strategy_names == "new" & markov_cycle == 40)
+```
+
+Below is a data frame that says that we want to check the number of
+people in the `RevisionTHR` state, at cycle 40, in both the standard
+strategy and the new strategy.
+```{r}
+thr_matching_df <- data.frame(
+  group = c(1, 2),
+  strategy_name = c("standard", "new"),
+  cycles_to_sum = c(40, 40),
+  states_to_sum = c("RevisionTHR", "RevisionTHR")
+)
+print(thr_matching_df)
+```
+We see from the results above that the counts we want to match have
+values of 0.2815893 and 0.07751708.  In a real example, of course, we would 
+probably not have values measured to many decimal places, but we won't worry
+about that in this example.
+
+Each group can involve only one strategy, but can have multiple cycles to sum
+and states to sum.   For example, we could define
+```{r}
+thr_matching_df_2 <- data.frame(
+  group = c(1, 2, 2),
+  strategy_name = c("standard", "new", "new"),
+  cycles_to_sum = c(40, 40, 41),
+  states_to_sum = c("RevisionTHR", "RevisionTHR", "RevisionTHR")
+)
+```
+in order to match the sum of the counts in state `RevisionTHR`
+at cycles 40 and 41 in the new strategy, and just the count in
+the 40th cycle in the standard strategy.  In this case, the first
+target value would be compared to the count in cycle 40 only for the
+standard strategy, and the second target value would be compared to
+the sum of the counts in cycles 40 and 41 for the new strategy.
+
+We will calibrate  the `lngamma` and `np1` (the logarithm of relative risk)
+parameters, which have true values of 0.3740968 and -1.344474 respectively.
+Note that we've set an upper limit of 0.5 on each parameter - if exponents are
+allowed to get too large, the computation can blow up.  In this case, we could
+relax the limit on `np1`, but because of how `gamma` is used in the model,
+we do need a tight limit on `lngamma`.   Because we specify limits, we use the
+"L-BFGS-B" method.   The "convcode" column gives the convergence code for the package;
+0 indicates convergence.  More information on available optimization methods, 
+convergence messages, and much more can be found in
+the documentation for package [optimx](https://CRAN.R-project.org/package=optimx).
+
+```{r calibrate_on_count}
+set.seed(20)
+initial_values <- cbind(lngamma = runif(5, -2, 0.5),
+                        np1 = runif(5, -2, 0))
+nm_calib <- calibrate_model(thr$model_runs,
+                              param_names = c("lngamma", "np1"),
+                              matching_df = thr_matching_df,
+                              target_values = c(0.2815893, 0.07751708),
+                              method = c("L-BFGS-B"),
+                              initial_values = initial_values,
+                              lower = c(-Inf, -Inf),
+                              upper = c(0.5, 0.5)
+)
+print(nm_calib)
+```
+
+It is entirely possible to specify too little information to determine parameters.
+Here we repeat the example above, but specify only one count, from the standard treatment,
+instead of one from standard and one from new.
+Because the problem is underspecified, there are many local minima, and optimizations may
+not converge at all.  In this case, we can determine `lngamma` but not `np1`: 
+```{r calibrate_on_count_underspecified}
+set.seed(20)
+initial_values <- cbind(lngamma = runif(5, -2, 0.5),
+                        np1 = runif(5, -2, 0))
+nm_calib_under <- calibrate_model(thr$model_runs,
+                              param_names = c("lngamma", "np1"),
+                              matching_df = thr_matching_df[1,,drop = FALSE],
+                              target_values = c(0.2815893),
+                              method = c("L-BFGS-B"),
+                              initial_values = initial_values,
+                              lower = c(-Inf, -Inf),
+                              upper = c(0.5, 0.5)
+)
+print(nm_calib_under)
+```
+It makes sense that we cannot measure relative risk,
+because we have not included any information from the new treatment.
+
+Frequently we will not have count estimates we want to match from a single group, but
+only across a whole population.  It is possible to run calibration on a value averaged
+across demographics by including a `demographics` argument as below.  The computation
+time for running an analysis across demogrpahics is approximately linear in the number 
+of demographic groups, and therefore optimizing on a quantity averaged over many
+demogrpahic groups can become _very_ computationally expensive.  For this example,
+we use only two of the five initial values used above.
+
+```{r, eval = FALSE, calibrate_on_demographic}
+demo_matching_df <- data.frame(group = c(1, 2), strategy_name = c("new", "standard"), 
+                               cycles_to_sum = 40, states_to_sum = "RevisionTHR")
+demo_calib <- calibrate_model(
+  thr$model_runs,
+  param_names = c("lngamma", "np1"),
+  matching_df = demo_matching_df,
+  target_values = c(0.15949201, 0.4837098), 
+  initial_values = initial_values[1:2,],
+  method = "L-BFGS-B",
+  demographics = data.frame(thr$demographics$newdata, .weights = thr$demographics$weights),
+  lower = rep(-Inf, 2),
+  upper = c(0.5, 1)
+  )
+print(demo_calib)
+```
+
+The calculation above is time-consuming, so we've set it not to run.   Here is the output:
+ 
+method      | lngamma      |    np1       |   value       |   convcode
+------------|:--------------:|:--------------:|:---------------:|------------
+L-BFGS-B	  | 0.3740948	  | -1.344462	    | 1.524759e-11	| 0
+L-BFGS-B	  | 0.3740949	  | -1.344463	    | 1.463545e-11	| 0
+
+
+Calibration uses optimization to minimize the sum of squared errors between
+calculated and desired values, and so is subject to all the many difficulties
+of optimization.  Different optimization methods, for example
+Nelder-Mead (which does not require gradients) and BFGS or conjugate gradient methods,
+which do require gradients but can approximate them numerically, may work better for different problems.  
+It may be impossible to evaluate the function at badly-specified
+initial parameter values (for example, if a negative initial value is given for
+a parameter that must be positive); using box limits on some parameters may help with this.
+Some attempted optimizations may not converge.
+Even if the calibration converges from different initial values, it may not
+converge to the same parameter values every time, as for `malecoef` in the THR
+example.  In this case, the function is insensitive to `malecoef` because the
+base case we are running is female; in general, an underconstrained model can
+have different parameter sets that fit equally well.
+For these and other reasons, the user is advised to carefully check the
+results of optimizations.
+
+
