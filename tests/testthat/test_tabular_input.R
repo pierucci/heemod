@@ -101,6 +101,26 @@ test_that(
   }
 )
 
+test_that("can read multinomial parameters from file",
+          {
+            from_input <- 
+              define_psa(p_AA ~binomial(.7, 1000), 
+                         p_AB + p_AC + p_AD ~ multinomial(202, 67, 10))
+            from_file <-
+              create_parameters_from_tabular(read_file(system.file(
+                "tabular/test",
+                "example_multinom_params.csv",
+                package = "heemod"
+              )))
+            ## can't test identity because of environments, so test results
+            set.seed(5)
+            from_input_draws <- eval_resample(from_input, 10)
+            set.seed(5)
+            from_file_draws <- eval_resample(from_file$psa_params, 10)
+            expect_identical(from_input_draws, from_file_draws)
+          }
+)
+
 test_that(
   "Bad state file input is caught.", {
     expect_error(
