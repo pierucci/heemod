@@ -1,12 +1,44 @@
-compute_cov <- function(psa, k = 7) {
+compute_cov <- function(psa, k, k_default = 10) {
   if (! requireNamespace("mgcv")) {
     stop("'mgcv' package required for covariance analysis.")
   }
+  
+  max_k <- psa$psa %>% 
+    dplyr::select_(.dots = c(psa$resamp_par), ".strategy_names") %>% 
+    dplyr::group_by_(".strategy_names") %>% 
+    dplyr::summarise_all(dplyr::n_distinct) %>% 
+    dplyr::summarise_all(min) %>% 
+    dplyr::select_(~ - .strategy_names) %>% 
+    unlist()
+  
+  default_k <- ifelse(
+    max_k < k_default,
+    max_k, k_default
+  )
+  
+  if (missing(k)) {
+    default_k
+  } else {
+    stopifnot(all(names(k) %in% psa$resamp_par))
+    if (any(pb <- default_k[names(k)] < k)) {
+      warning(sprintf(
+        "Number of distinct values < k: %s.",
+        paste(names(k)[pb], collapse = ", ")
+      ))
+    }
+    default_k[names(k)] <- k
+  }
+  
+  
+  x_side <- paste(
+    sprintf("s(%s, k = %i)", psa$resamp_par, default_k),
+    collapse = "+")
+  
   form_cost <- stats::as.formula(paste(
-    ".cost ~", paste(sprintf("s(%s, k = %i)", psa$resamp_par, k), collapse = "+")
+    ".cost ~", x_side
   ))
   form_effect <- stats::as.formula(paste(
-    ".effect ~", paste(sprintf("s(%s, k = %i)", psa$resamp_par, k), collapse = "+")
+    ".effect ~", x_side
   ))
   
   psa$psa %>% 
