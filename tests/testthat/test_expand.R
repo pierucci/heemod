@@ -5,10 +5,10 @@ sn <- LETTERS[1:5]
 mn <- c("I", "II", "III")
 
 test_that(
-  "complete_scl works", {
+  "complete_stl works", {
     
     expect_identical(
-      heemod:::complete_scl(NULL, sn, mn, 10),
+      heemod:::complete_stl(NULL, sn, mn, 10),
       structure(list(I = structure(
         c(10, 10, 10, 10, 10),
         .Names = c("A",  "B", "C", "D", "E")),
@@ -23,7 +23,7 @@ test_that(
     )
     
     expect_identical(
-      heemod:::complete_scl(5, sn, mn, 10),
+      heemod:::complete_stl(5, sn, mn, 10),
       structure(list(I = structure(
         c(5, 5, 5, 5, 5), .Names = c("A", "B", "C", "D", "E")),
         II = structure(
@@ -36,7 +36,7 @@ test_that(
     )
     
     expect_identical(
-      heemod:::complete_scl(c(B = 5), sn, mn, 10),
+      heemod:::complete_stl(c(B = 5), sn, mn, 10),
       structure(list(
         I = structure(
           c(10, 5, 10, 10, 10),
@@ -54,7 +54,7 @@ test_that(
     )
     
     expect_identical(
-      heemod:::complete_scl(c(A = 5, E = 8), sn, mn, 10),
+      heemod:::complete_stl(c(A = 5, E = 8), sn, mn, 10),
       structure(list(I = structure(
         c(5, 10, 10, 10, 8), .Names = c("A", 
                                         "B", "C", "D", "E")),
@@ -68,7 +68,7 @@ test_that(
     )
     
     expect_identical(
-      heemod:::complete_scl(
+      heemod:::complete_stl(
         list(
           I = c(A = 5, E = 8),
           III = c(B = 2, C = 4)
@@ -90,40 +90,40 @@ test_that(
 )
 
 test_that(
-  "complete_scl throws errors", {
+  "complete_stl throws errors", {
     
     expect_error(
-      heemod:::complete_scl(-1, sn, mn, 10)
+      heemod:::complete_stl(-1, sn, mn, 10)
     )
     expect_error(
-      heemod:::complete_scl(NA, sn, mn, 10)
+      heemod:::complete_stl(NA, sn, mn, 10)
     )
     expect_error(
-      heemod:::complete_scl(11, sn, mn, 10)
+      heemod:::complete_stl(11, sn, mn, 10)
     )
     expect_error(
-      heemod:::complete_scl(5.5, sn, mn, 10)
-    )
-    
-    expect_error(
-      heemod:::complete_scl(c(A = 1, B = -1), sn, mn, 10)
-    )
-    expect_error(
-      heemod:::complete_scl(c(A = 1, B = NA), sn, mn, 10)
-    )
-    expect_error(
-      heemod:::complete_scl(c(A = 1, B = 11), sn, mn, 10)
-    )
-    expect_error(
-      heemod:::complete_scl(c(A = 1, B = 5.5), sn, mn, 10)
+      heemod:::complete_stl(5.5, sn, mn, 10)
     )
     
     expect_error(
-      heemod:::complete_scl(c(A = 1, G = 5), sn, mn, 10)
+      heemod:::complete_stl(c(A = 1, B = -1), sn, mn, 10)
+    )
+    expect_error(
+      heemod:::complete_stl(c(A = 1, B = NA), sn, mn, 10)
+    )
+    expect_error(
+      heemod:::complete_stl(c(A = 1, B = 11), sn, mn, 10)
+    )
+    expect_error(
+      heemod:::complete_stl(c(A = 1, B = 5.5), sn, mn, 10)
     )
     
     expect_error(
-      heemod:::complete_scl(
+      heemod:::complete_stl(c(A = 1, G = 5), sn, mn, 10)
+    )
+    
+    expect_error(
+      heemod:::complete_stl(
         list(
           I = c(A = 5, E = 8),
           III = c(B = 2, C = -1)
@@ -131,7 +131,7 @@ test_that(
         sn, mn, 10)
     )
     expect_error(
-      heemod:::complete_scl(
+      heemod:::complete_stl(
         list(
           I = c(A = 5, E = 8),
           III = c(B = 2, C = NA)
@@ -139,7 +139,7 @@ test_that(
         sn, mn, 10)
     )
     expect_error(
-      heemod:::complete_scl(
+      heemod:::complete_stl(
         list(
           I = c(A = 5, E = 8),
           III = c(B = 2, C = 11)
@@ -147,7 +147,7 @@ test_that(
         sn, mn, 10)
     )
     expect_error(
-      heemod:::complete_scl(
+      heemod:::complete_stl(
         list(
           I = c(A = 5, E = 8),
           III = c(B = 2, C = 5.5)
@@ -156,7 +156,7 @@ test_that(
     )
 
     expect_error(
-      heemod:::complete_scl(
+      heemod:::complete_stl(
         list(
           I = c(A = 5, E = 8),
           III = c(B = 2, G = 5)
@@ -164,7 +164,7 @@ test_that(
         sn, mn, 10)
     )
     expect_error(
-      heemod:::complete_scl(
+      heemod:::complete_stl(
         list(
           I = c(A = 5, E = 8),
           VIII = c(B = 2, C = 5)
@@ -184,7 +184,7 @@ test_that(
     )
     tm_exp <- define_transition(
       .4, .6,
-      C, f(state_cycle)
+      C, f(state_time)
     )
     
     sA <- define_state(
@@ -196,7 +196,7 @@ test_that(
       e = 9
     )
     sA_exp <- define_state(
-      c = f(state_cycle),
+      c = f(state_time),
       e = 7
     )
     
@@ -256,7 +256,7 @@ test_that(
       ),
       cycles = 10,
       cost = c, effect = e,
-      state_cycle_limit = c(A = 3, B = 8)
+      state_time_limit = c(A = 3, B = 8)
     )
     expect_equivalent(
       round(unlist(res$run_model[c(".cost", ".effect")]), 2),
@@ -270,7 +270,7 @@ test_that(
       ),
       cycles = 10,
       cost = c, effect = e,
-      state_cycle_limit = 5
+      state_time_limit = 5
     )
     res2 <- run_model(
       define_strategy(
@@ -279,7 +279,7 @@ test_that(
       ),
       cycles = 10,
       cost = c, effect = e,
-      state_cycle_limit = c(A = 5, B = 5)
+      state_time_limit = c(A = 5, B = 5)
     )
     expect_equivalent(
       res1$run_model, res2$run_model
@@ -292,7 +292,7 @@ test_that(
       ),
       cycles = 10,
       cost = c, effect = e,
-      state_cycle_limit = c(B = 7)
+      state_time_limit = c(B = 7)
     )
     res2 <- run_model(
       define_strategy(
@@ -301,7 +301,7 @@ test_that(
       ),
       cycles = 10,
       cost = c, effect = e,
-      state_cycle_limit = c(A = 10, B = 7)
+      state_time_limit = c(A = 10, B = 7)
     )
     expect_equivalent(
       res1$run_model, res2$run_model
@@ -317,7 +317,7 @@ test_that(
       0, 1
     )
     mat_sc <- define_transition(
-      C, f(state_cycle),
+      C, f(state_time),
       0, 1
     )
     sA <- define_state(c = 1, e = 1)

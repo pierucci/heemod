@@ -26,7 +26,7 @@ get_probs_from_surv(x, ...)
 \item{...}{arguments passed to methods.}
 
 \item{cycle}{The \code{markov_cycle} or 
-\code{state_cycle} for which to predict.}
+\code{state_time} for which to predict.}
 
 \item{km_limit}{Up to what time should Kaplan-Meier 
 estimates be used? Model predictions will be used 

@@ -49,7 +49,7 @@ summary.run_model <- function(object, threshold = NULL, ...) {
                                   max(res_nmb[format(tr, digits = 2)])][1]
       )
     }
-  
+    
   } else {
     res_nmb <- NULL
     res_nmb_strat <- NULL
@@ -143,13 +143,19 @@ scale.run_model <- function(x, center = TRUE, scale = TRUE) {
 #' sequencially.
 #' 
 #' @param x Result of \code{\link{run_model}}.
-#' @param strategy_order Order in which the strategies
+#' @param strategy_order Order in which the strategies 
 #'   should be sorted. Default: by increasing effect.
+#' @param threshold ICER threshold for net monetary benefit
+#'   computation.
 #'   
 #' @return A \code{data.frame} with computed ICER.
 #'   
 #' @keywords internal
-compute_icer <- function(x, strategy_order = order(x$.effect)) {
+compute_icer <- function(x, strategy_order = order(x$.effect),
+                         threshold = 3e4) {
+  
+  stopifnot(length(threshold) == 1)
+  
   ef <- get_frontier(x)
   tab <- x[strategy_order, ]
   
@@ -157,21 +163,28 @@ compute_icer <- function(x, strategy_order = order(x$.effect)) {
   tab$.dcost <- NA
   tab$.deffect <- NA
   tab$.dref <- NA
+  tab$.nmb <- NA
+  tab$.dnmb <- NA
   
   for (i in seq_len(nrow(tab))) {
     if (i == 1) {
       tab$.icer[i] <- NA
+      tab$.nmb[i] <- tab$.effect[i] * threshold - tab$.cost[i]
+      ref_nmb <- tab$.nmb[i]
       ref_cost <- tab$.cost[i]
       ref_effect <- tab$.effect[i]
       ref_name <- tab$.strategy_names[i]
       
     } else {
+      tab$.nmb[i] <- tab$.effect[i] * threshold - tab$.cost[i]
+      tab$.dnmb[i] <- tab$.nmb[i] - ref_nmb
       tab$.dcost[i] <- tab$.cost[i] - ref_cost
       tab$.deffect[i] <- tab$.effect[i] - ref_effect
       tab$.icer[i] <- tab$.dcost[i] / tab$.deffect[i]
       tab$.dref[i] <- ref_name
       
       if (tab$.strategy_names[i] %in% ef) {
+        ref_nmb <- tab$.nmb[i]
         ref_cost <- tab$.cost[i]
         ref_effect <- tab$.effect[i]
         ref_name <- tab$.strategy_names[i]

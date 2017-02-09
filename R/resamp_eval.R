@@ -75,7 +75,7 @@ run_psa <- function(model, psa, N, resample) {
       N = N,
       resamp_par = names(newdata)
     ),
-    class = c("psa", class(res))
+    class = c("psa", class(list()))
   )
 }
 

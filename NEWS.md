@@ -6,6 +6,9 @@
   * Counting method `"half-cycle"` is deprecated.
   * `resample` arguement in`run_psa()` renamed to `psa`.
   * Probability distributions for PSA were renamed, see `?distributions`.
+  * `state_cycle` renamed to `state_time`, added a `model_time` alias to `markov_cycle`.
+  * The `inflow` argument for budget impact analysis is specified with `define_inflow()`.
+  * `prob_to_prob()`=>`rescale_prob()`.
 
 ## New features
 
@@ -18,12 +21,13 @@
   * Individuals can enter the model after the beginning with the `inflow` argument in `run_model()` (mainly for budget impact analysis).
   * Strategy name can be used to define values with `dispatch_strategy()` or using the `strategy` name (vignettes *homogeneous* and *probabilistic* have been updated to use this feature).
   * Beta and triangle distribution for PSA.
+  * Covariance analysis on strategy differences.
 
 ## Other features
 
   * Convenience function `rescale_discount_rate()`.
   * Better error messages at parameter evaluation.
-  * `p()` ensures it argument is a correct probability by coercing values less than 0 and greater than 1 to 0 and 1 respectively.
+  * `combine_probs()`: given several independent probabilities of an event, return the final probability of the event.
   * More informative error messages for incorrect matrices.
   * Infinite parameter values generate an error.
 

@@ -181,13 +181,13 @@ Finally multinomial distributions are declared with the number of individuals in
 rsp <- define_psa(
   rr ~ lognormal(mean = .509, sdlog = .173),
   
-  cost_A ~ make_gamma(mean = 2756, sd = sqrt(2756)),
-  cost_B ~ make_gamma(mean = 3052, sd = sqrt(3052)),
-  cost_C ~ make_gamma(mean = 9007, sd = sqrt(9007)),
+  cost_A ~ gamma(mean = 2756, sd = sqrt(2756)),
+  cost_B ~ gamma(mean = 3052, sd = sqrt(3052)),
+  cost_C ~ gamma(mean = 9007, sd = sqrt(9007)),
   
-  p_CD_base ~ prop(prob = .25, size = 40),
+  p_CD_mono ~ binomial(prob = .25, size = 40),
   
-  p_AA_base + p_AB_base + p_AC_base + p_AD_base ~ multinomial(721, 202, 67, 10)
+  p_AA_mono + p_AB_mono + p_AC_mono + p_AD_mono ~ multinomial(721, 202, 67, 10)
 )
 ```
 
@@ -227,10 +227,16 @@ plot(pm, type = "evpi", max_wtp = 10000, log_scale = FALSE)
 
 To compute EVPPI the results can also be exported with `export_savi()` in a format compatible with the [SAVI](http://savi.shef.ac.uk/SAVI/) software (Sheffield Accelerated Value of Information).
 
-A covariance analysis can be performed:
+A covariance analysis can be performed on strategy results:
 
 ```{r, fig.width = 6, fig.height = 4, fig.align='center'}
 plot(pm, type = "cov")
+```
+
+Or on the difference between strategies:
+
+```{r, fig.width = 4, fig.height = 4, fig.align='center'}
+plot(pm, type = "cov", diff = TRUE, threshold = 5000)
 ```
 
 As usual plots can be modified with the standard `ggplot2` syntax.

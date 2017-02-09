@@ -57,9 +57,9 @@ eval_strategy <- function(strategy, parameters, cycles,
   )
   
   
-  td_tm <- has_state_cycle(i_uneval_transition)
+  td_tm <- has_state_time(i_uneval_transition)
   
-  td_st <- has_state_cycle(i_uneval_states)
+  td_st <- has_state_time(i_uneval_states)
   
   # no expansion if 
   expand <- any(c(td_tm, td_st))
@@ -68,7 +68,7 @@ eval_strategy <- function(strategy, parameters, cycles,
   if (expand) {
     
     if (inherits(uneval_transition, "part_surv")) {
-      stop("Cannot use 'state_cycle' with partitionned survival.")
+      stop("Cannot use 'state_time' with partitionned survival.")
     }
     
     uneval_transition <- i_uneval_transition
@@ -91,7 +91,7 @@ eval_strategy <- function(strategy, parameters, cycles,
     )))
     
     message(sprintf(
-      "%s: detected use of 'state_cycle', expanding state%s: %s.",
+      "%s: detected use of 'state_time', expanding state%s: %s.",
       strategy_name,
       plur(length(to_expand)),
       paste(to_expand, collapse = ", ")

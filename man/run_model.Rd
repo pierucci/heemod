@@ -8,11 +8,11 @@
 run_model(..., parameters = define_parameters(), init = c(1000L, rep(0L,
   get_state_number(get_states(list(...)[[1]])) - 1)), cycles = 1,
   method = c("life-table", "beginning", "end", "half-cycle"), cost = NULL,
-  effect = NULL, state_cycle_limit = NULL, central_strategy = NULL,
+  effect = NULL, state_time_limit = NULL, central_strategy = NULL,
   inflow = rep(0L, get_state_number(get_states(list(...)[[1]]))))
 
 run_model_(uneval_strategy_list, parameters, init, cycles, method, cost, effect,
-  state_cycle_limit, central_strategy, inflow)
+  state_time_limit, central_strategy, inflow)
 }
 \arguments{
 \item{...}{One or more \code{uneval_model} object.}
@@ -35,8 +35,8 @@ cost-effectiveness plane.}
 \item{effect}{Names or expression to compute effect on 
 the cost-effectiveness plane.}
 
-\item{state_cycle_limit}{Optional expansion limit for 
-\code{state_cycle}, see details.}
+\item{state_time_limit}{Optional expansion limit for 
+\code{state_time}, see details.}
 
 \item{central_strategy}{character. The name of the 
 strategy at the center of the cost-effectiveness plane,
@@ -66,7 +66,7 @@ names).
 The initial number of individuals in each state and the 
 number of cycle will be the same for all strategies
 
-\code{state_cycle_limit} can be specified in 3 different 
+\code{state_time_limit} can be specified in 3 different 
 ways: 1. As a single value: the limit is applied to all 
 states in all strategies. 2. As a named vector (where
 names are state names): the limits are applied to the
