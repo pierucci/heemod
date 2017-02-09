@@ -1,4 +1,4 @@
-# heemod devel
+# heemod 0.8.0
 
 ## Breaking changes
 
