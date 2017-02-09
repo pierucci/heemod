@@ -3,7 +3,7 @@ library(heemod)
 library(dplyr)
 
 countries <- get_gho_codes(dimension = "COUNTRY") %>% 
-  filter_attrs(WORLD_BANK_INCOME_GROUP == "High-income")
+  filter_gho(WORLD_BANK_INCOME_GROUP == "High-income")
 
 get_latest_morta <- function(country) {
   message(country)
