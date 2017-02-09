@@ -43,7 +43,7 @@ probabilities estimated on a different timeframe.
 \examples{
 # convert 5-year probability 
 # to 1-year probability
-prob_to_prob(p = .65, from = 5)
+rescale_prob(p = .65, from = 5)
 
 # convert 1-year probability 
 # to 1-month probability

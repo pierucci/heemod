@@ -1,12 +1,12 @@
-compute_cov <- function(psa) {
+compute_cov <- function(psa, k = 7) {
   if (! requireNamespace("mgcv")) {
     stop("'mgcv' package required for covariance analysis.")
   }
   form_cost <- stats::as.formula(paste(
-    ".cost ~", paste(sprintf("s(%s)", psa$resamp_par), collapse = "+")
+    ".cost ~", paste(sprintf("s(%s, k = %i)", psa$resamp_par, k), collapse = "+")
   ))
   form_effect <- stats::as.formula(paste(
-    ".effect ~", paste(sprintf("s(%s)", psa$resamp_par), collapse = "+")
+    ".effect ~", paste(sprintf("s(%s, k = %i)", psa$resamp_par, k), collapse = "+")
   ))
   
   psa$psa %>% 

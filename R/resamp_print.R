@@ -15,7 +15,7 @@
 #'   100 may take significant time).
 #' @param log_scale Show willingness to pay on a log scale?
 #' @param bw Black & white plot for publications?
-#' @param ... Additional arguments passed to \code{plot}.
+#' @param ... Additional arguments, depends on \code{type}.
 #'   
 #' @return A \code{ggplot2} object.
 #' @export
@@ -102,7 +102,7 @@ plot.psa <- function(x, type = c("ce", "ac", "cov", "evpi"),
       res
     },
     cov = {
-      tab <- compute_cov(x) %>% 
+      tab <- compute_cov(x, ...) %>% 
         dplyr::mutate_(
           .prop = ~ .prop * 100
         )

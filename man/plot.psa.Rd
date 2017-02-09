@@ -21,7 +21,7 @@
 
 \item{bw}{Black & white plot for publications?}
 
-\item{...}{Additional arguments passed to \code{plot}.}
+\item{...}{Additional arguments, depends on \code{type}.}
 }
 \value{
 A \code{ggplot2} object.
