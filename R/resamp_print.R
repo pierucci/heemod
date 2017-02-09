@@ -14,6 +14,8 @@
 #' @param n Number of CECA points to estimate (values above
 #'   100 may take significant time).
 #' @param log_scale Show willingness to pay on a log scale?
+#' @param diff Logical, perform covariance analysis on strategy
+#'  differences?
 #' @param bw Black & white plot for publications?
 #' @param ... Additional arguments, depends on \code{type}.
 #'   
@@ -23,6 +25,7 @@
 plot.psa <- function(x, type = c("ce", "ac", "cov", "evpi"),
                      max_wtp = 1e5,
                      n = 100, log_scale = TRUE,
+                     diff = FALSE,
                      bw = FALSE, ...) {
   type <- match.arg(type)
   
@@ -102,7 +105,7 @@ plot.psa <- function(x, type = c("ce", "ac", "cov", "evpi"),
       res
     },
     cov = {
-      tab <- compute_cov(x, ...) %>% 
+      tab <- compute_cov(x, diff = diff, ...) %>% 
         dplyr::mutate_(
           .prop = ~ .prop * 100
         )

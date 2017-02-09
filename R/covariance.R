@@ -1,9 +1,19 @@
-compute_cov <- function(psa, k, k_default = 10) {
+compute_cov <- function(psa, diff = FALSE, k, k_default = 10) {
   if (! requireNamespace("mgcv")) {
     stop("'mgcv' package required for covariance analysis.")
   }
   
-  max_k <- psa$psa %>% 
+  if (diff) {
+    tab_psa <- psa$psa %>%
+      dplyr::group_by_(~ .index) %>%
+      dplyr::do_(~ compute_icer(.)) %>%
+      dplyr::filter_(~ ! is.na(.dref)) %>% 
+      dplyr::ungroup()
+  } else {
+    tab_psa <- psa$psa
+  }
+  
+  max_k <- tab_psa %>% 
     dplyr::select_(.dots = c(psa$resamp_par), ".strategy_names") %>% 
     dplyr::group_by_(".strategy_names") %>% 
     dplyr::summarise_all(dplyr::n_distinct) %>% 
@@ -41,7 +51,13 @@ compute_cov <- function(psa, k, k_default = 10) {
     ".effect ~", x_side
   ))
   
-  psa$psa %>% 
+  if (diff) {
+    form_icer <- stats::as.formula(paste(
+      ".icer ~", x_side
+    ))
+  }
+  
+  res <- tab_psa %>% 
     dplyr::group_by_(".strategy_names") %>% 
     dplyr::do_(
       ~ compute_prop_var(mgcv::gam(formula = form_cost, data = .))
@@ -50,7 +66,7 @@ compute_cov <- function(psa, k, k_default = 10) {
       .result = "Cost"
     ) %>% 
     dplyr::bind_rows(
-      psa$psa %>% 
+      tab_psa %>% 
         dplyr::group_by_(".strategy_names") %>% 
         dplyr::do_(
           ~ compute_prop_var(mgcv::gam(formula = form_effect, data = .))
@@ -58,7 +74,23 @@ compute_cov <- function(psa, k, k_default = 10) {
         dplyr::mutate(
           .result = "Effect"
         )
-    ) %>% 
+    )
+  
+  if (diff) {
+    res <- res %>% 
+      dplyr::bind_rows(
+        tab_psa %>% 
+          dplyr::group_by_(".strategy_names") %>% 
+          dplyr::do_(
+            ~ compute_prop_var(mgcv::gam(formula = form_icer, data = .))
+          ) %>% 
+          dplyr::mutate(
+            .result = "ICER"
+          )
+      )
+  }
+  
+  res %>% 
     dplyr::ungroup() %>% 
     tidyr::gather_(
       key_col = ".par_names",
