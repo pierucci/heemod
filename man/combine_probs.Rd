@@ -24,6 +24,6 @@ independent!
 
 (p1 <- runif(5))
 (p2 <- runif(5))
-p(p1, p2)
+combine_probs(p1, p2)
 
 }

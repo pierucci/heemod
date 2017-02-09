@@ -3,12 +3,15 @@
 \name{probability}
 \alias{probability}
 \alias{rescale_prob}
+\alias{prob_to_prob}
 \alias{rate_to_prob}
 \alias{or_to_prob}
 \alias{rr_to_prob}
 \title{Convenience Functions to Compute Probabilities}
 \usage{
 rescale_prob(p, to = 1, from = 1)
+
+prob_to_prob(...)
 
 rate_to_prob(r, to = 1, per = 1)
 
@@ -22,6 +25,8 @@ rr_to_prob(rr, p)
 \item{to}{Compute probability for that timeframe.}
 
 \item{from}{Timeframe of the original probability.}
+
+\item{...}{For deprecated functions.}
 
 \item{r}{Rate.}
 

@@ -13,6 +13,7 @@
 #' @param from Timeframe of the original probability.
 #' @param per Number of person-time corresponding to the
 #'   rate.
+#' @param ... For deprecated functions.
 #'   
 #' @return A probability.
 #'   
@@ -33,6 +34,7 @@ rescale_prob <- function(p, to = 1, from = 1) {
 }
 
 #' @export
+#' @rdname probability
 prob_to_prob <- function(...) {
   warning("'prob_to_prob' is deprecated, use 'rescale_prob()' instead.")
   rescale_prob(...)
@@ -128,7 +130,7 @@ rescale_discount_rate <- function(x, from, to) {
 #' 
 #' (p1 <- runif(5))
 #' (p2 <- runif(5))
-#' p(p1, p2)
+#' combine_probs(p1, p2)
 #' 
 combine_probs <- function(...) {
   combine_probs_(list(...))
