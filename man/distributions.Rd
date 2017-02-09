@@ -8,6 +8,8 @@
 \alias{binomial}
 \alias{multinomial}
 \alias{logitnormal}
+\alias{beta}
+\alias{triangle}
 \alias{poisson}
 \alias{define_distribution}
 \alias{beta}
@@ -26,6 +28,10 @@ binomial(prob, size)
 multinomial(...)
 
 logitnormal(mu, sigma)
+
+beta(shape1, shape2)
+
+triangle(lower, upper, peak = (lower + upper)/2)
 
 poisson(mean)
 
@@ -54,8 +60,6 @@ triangle(lower, upper, peak = (lower + upper)/2)
 
 \item{sigma}{SD on the logit scale.}
 
-\item{x}{A distribution function, see details.}
-
 \item{shape1}{for beta distribution}
 
 \item{shape2}{for beta distribution}
@@ -65,6 +69,8 @@ triangle(lower, upper, peak = (lower + upper)/2)
 \item{upper}{upper bound of triangular distribution.}
 
 \item{peak}{peak of triangular distribution.}
+
+\item{x}{A distribution function, see details.}
 }
 \description{
 Define a distribution for PSA parameters.

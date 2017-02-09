@@ -574,19 +574,19 @@ create_parameters_from_tabular <- function(param_defs,
     param_psa <- param_defs$parameter[! is.na(param_defs$psa)]
     distrib_psa <- stats::na.omit(param_defs$psa)
     
-    psa <- do.call(
-      define_psa,
-      lapply(
-        seq_along(param_psa),
-        function(i) {
-          substitute(
-            rhs ~ lhs,
-            list(
-              rhs = as.name(param_psa[i]),
-              lhs = parse(text = distrib_psa[i])[[1]]))
-        }
+    psa <- 
+      do.call(define_psa,    
+              lapply(
+                seq_along(param_psa),
+                function(i) {
+                  substitute(
+                    lhs ~ rhs,
+                    list(
+                      lhs = parse(text = param_psa[i])[[1]],
+                      rhs = parse(text = distrib_psa[i])[[1]]))
+                }
+              )
       )
-    )
     
   }
   
