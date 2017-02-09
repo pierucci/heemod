@@ -38,9 +38,10 @@ compute_cov <- function(psa, diff = FALSE, k, k_default = 10) {
   }
   
   if (sum(default_k) >= psa$N) {
-    warning(
-      "Not enough PSA data. Consider lowering 'k_default' of running more simulations."
-    )
+    warning(sprintf(
+      "Not enough PSA data (%i present, at least %i needed). Consider lowering 'k_default' of running more simulations.",
+      psa$N, sum(default_k)
+    ))
   }
   
   x_side <- paste(
