@@ -6,7 +6,7 @@
   * Counting method `"half-cycle"` is deprecated.
   * `resample` arguement in`run_psa()` renamed to `psa`.
   * Probability distributions for PSA were renamed, see `?distributions`.
-  * `state_cycle` renamed to `state_time`, `model_time` alias to `markov_cycle`.
+  * `state_cycle` renamed to `state_time`, added a `model_time` alias to `markov_cycle`.
   * The `inflow` argument for budget impact analysis is specified with `define_inflow()`.
   * `prob_to_prob()`=>`rescale_prob()`.
 
