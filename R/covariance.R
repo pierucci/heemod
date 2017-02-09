@@ -26,9 +26,7 @@ compute_cov <- function(psa, diff = FALSE, k, k_default = 10) {
     max_k, k_default
   )
   
-  if (missing(k)) {
-    default_k
-  } else {
+  if (! missing(k)) {
     stopifnot(all(names(k) %in% psa$resamp_par))
     if (any(pb <- default_k[names(k)] < k)) {
       warning(sprintf(
@@ -39,6 +37,11 @@ compute_cov <- function(psa, diff = FALSE, k, k_default = 10) {
     default_k[names(k)] <- k
   }
   
+  if (sum(default_k) >= psa$N) {
+    warning(
+      "Not enough PSA data. Consider lowering 'k_default' of running more simulations."
+    )
+  }
   
   x_side <- paste(
     sprintf("s(%s, k = %i)", psa$resamp_par, default_k),
