@@ -4,7 +4,7 @@
 
   * `strategy` becomes a reserved parameter name.
   * Counting method `"half-cycle"` is deprecated.
-  * `resample` arguement in`run_psa()` renamed to `psa`.
+  * `resample` arguement in `run_psa()` renamed to `psa`.
   * Probability distributions for PSA were renamed, see `?distributions`.
   * `state_cycle` renamed to `state_time`, added a `model_time` alias to `markov_cycle`.
   * The `inflow` argument for budget impact analysis is specified with `define_inflow()`.
@@ -20,14 +20,15 @@
   * Export PSA files for Sheffield Accelerated Value of Information sofware.
   * Individuals can enter the model after the beginning with the `inflow` argument in `run_model()` (mainly for budget impact analysis).
   * Strategy name can be used to define values with `dispatch_strategy()` or using the `strategy` name (vignettes *homogeneous* and *probabilistic* have been updated to use this feature).
-  * Beta and triangle distribution for PSA.
-  * Covariance analysis on strategy differences.
+  * Beta and triangle distributions for PSA.
+  * Custom distributions can be defined.
+  * Covariance analysis on strategy differences, more options for `gam()` fitting.
 
 ## Other features
 
   * Convenience function `rescale_discount_rate()`.
   * Better error messages at parameter evaluation.
-  * `combine_probs()`: given several independent probabilities of an event, return the final probability of the event.
+  * `combine_probs()`: given several independent probabilities of an event, return the total probability of the event.
   * More informative error messages for incorrect matrices.
   * Infinite parameter values generate an error.
 
@@ -40,14 +41,14 @@
 
   * Fixed sevral bugs that would return incorrect efficiency frontiers in some situations, or would return duplicated strategy names in some edge cases (thanks to [Vince Daniels](https://github.com/daniels4321)).
   * Fixed a failure of tabular input when a column could be read as all numeric.
-  * Character variables from `newdata` as expressions were abusively parsed as lazy expressions.
+  * Character variables from `newdata` were mistakenly parsed as lazy expressions.
   * `newdata` now handles factor variables.
   * `state_cycle_limit` was not passed to PSA, DSA, or updating.
   * PSA and DSA tabular files were not saved.
   
 ## Acknowledments
 
-  * Thanks to [Matthew Wiener](https://github.com/MattWiener) for the survival analysis code.
+  * Thanks to [Matthew Wiener](https://github.com/MattWiener), especially for the survival analysis code.
   
 # heemod 0.7.1
 
