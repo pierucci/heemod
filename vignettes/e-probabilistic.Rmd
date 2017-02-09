@@ -236,7 +236,7 @@ plot(pm, type = "cov")
 Or on the difference between strategies:
 
 ```{r, fig.width = 4, fig.height = 4, fig.align='center'}
-plot(pm, type = "cov", diff = TRUE)
+plot(pm, type = "cov", diff = TRUE, threshold = 0)
 ```
 
 As usual plots can be modified with the standard `ggplot2` syntax.

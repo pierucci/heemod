@@ -5,7 +5,7 @@
 \title{Plot Results of Probabilistic Analysis}
 \usage{
 \method{plot}{psa}(x, type = c("ce", "ac", "cov", "evpi"), max_wtp = 1e+05,
-  n = 100, log_scale = TRUE, bw = FALSE, ...)
+  n = 100, log_scale = TRUE, diff = FALSE, threshold, bw = FALSE, ...)
 }
 \arguments{
 \item{x}{Result from \code{\link{run_model}}.}
@@ -14,10 +14,16 @@
 
 \item{max_wtp}{Maximal willingness to pay.}
 
-\item{n}{Number of CECA points to estimate (values above
+\item{n}{Number of CECA points to estimate (values above 
 100 may take significant time).}
 
 \item{log_scale}{Show willingness to pay on a log scale?}
+
+\item{diff}{Logical, perform covariance analysis on
+strategy differences?}
+
+\item{threshold}{When \code{diff = TRUE}, threshlod value
+for net monetary benefit computation.}
 
 \item{bw}{Black & white plot for publications?}
 
@@ -32,7 +38,7 @@ Various plots for Markov models probabilistic analysis.
 \details{
 \code{type = "ac"} plots cost-effectiveness acceptability
 curves, \code{type = "ce"} plots results on the 
-cost-efficiency plane, \code{type = "cov"} to perform
-covariance analysis on the results, \code{type = "evpi"}
+cost-efficiency plane, \code{type = "cov"} to perform 
+covariance analysis on the results, \code{type = "evpi"} 
 for expected value of perfect information.
 }

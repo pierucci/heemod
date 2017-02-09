@@ -4,13 +4,16 @@
 \alias{compute_icer}
 \title{Compute ICER}
 \usage{
-compute_icer(x, strategy_order = order(x$.effect))
+compute_icer(x, strategy_order = order(x$.effect), threshold = 30000)
 }
 \arguments{
 \item{x}{Result of \code{\link{run_model}}.}
 
-\item{strategy_order}{Order in which the strategies
+\item{strategy_order}{Order in which the strategies 
 should be sorted. Default: by increasing effect.}
+
+\item{threshold}{ICER threshold for net monetary benefit
+computation.}
 }
 \value{
 A \code{data.frame} with computed ICER.

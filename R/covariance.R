@@ -1,4 +1,4 @@
-compute_cov <- function(psa, diff = FALSE, k, k_default = 10) {
+compute_cov <- function(psa, diff = FALSE, k, k_default = 10, threshold) {
   if (! requireNamespace("mgcv")) {
     stop("'mgcv' package required for covariance analysis.")
   }
@@ -6,7 +6,9 @@ compute_cov <- function(psa, diff = FALSE, k, k_default = 10) {
   if (diff) {
     tab_psa <- psa$psa %>%
       dplyr::group_by_(~ .index) %>%
-      dplyr::do_(~ compute_icer(.)) %>%
+      dplyr::do_(~ compute_icer(
+        ., strategy_order = order(get_effect(get_model(psa))),
+        threshold = threshold)) %>%
       dplyr::filter_(~ ! is.na(.dref)) %>% 
       dplyr::ungroup()
   } else {
@@ -56,8 +58,15 @@ compute_cov <- function(psa, diff = FALSE, k, k_default = 10) {
   ))
   
   if (diff) {
-    form_icer <- stats::as.formula(paste(
-      ".icer ~", x_side
+    form_cost <- stats::as.formula(paste(
+      ".dcost ~", x_side
+    ))
+    form_effect <- stats::as.formula(paste(
+      ".deffect ~", x_side
+    ))
+    
+    form_nmb <- stats::as.formula(paste(
+      ".dnmb ~", x_side
     ))
   }
   
@@ -86,10 +95,10 @@ compute_cov <- function(psa, diff = FALSE, k, k_default = 10) {
         tab_psa %>% 
           dplyr::group_by_(".strategy_names") %>% 
           dplyr::do_(
-            ~ compute_prop_var(mgcv::gam(formula = form_icer, data = .))
+            ~ compute_prop_var(mgcv::gam(formula = form_nmb, data = .))
           ) %>% 
           dplyr::mutate(
-            .result = "ICER"
+            .result = "NMB"
           )
       )
   }
@@ -126,6 +135,16 @@ compute_prop_var <- function(mod) {
   res <- stats::lm(form, data = data_trans)
   
   val <- abs(stats::coef(res)[-1])
+  
+  if (any(is.na(val))) {
+    warning(sprintf(
+      "Parameter%s excluded because of perfect collinearity: %s.",
+      plur(sum(is.na(val))),
+      paste(names(val)[is.na(val)], collapse = ", ")
+    ))
+    val[is.na(val)] <- 0
+  }
+  
   tot <- sum(val)
   r2 <- summary(res)$r.squared
   if (r2 < .99) {
