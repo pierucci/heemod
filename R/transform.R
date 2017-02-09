@@ -13,6 +13,7 @@
 #' @param from Timeframe of the original probability.
 #' @param per Number of person-time corresponding to the
 #'   rate.
+#' @param ... For deprecated functions.
 #'   
 #' @return A probability.
 #'   
@@ -21,7 +22,7 @@ NULL
 
 #' @export
 #' @rdname probability
-prob_to_prob <- function(p, to = 1, from = 1) {
+rescale_prob <- function(p, to = 1, from = 1) {
   stopifnot(
     p >= 0,
     p <= 1,
@@ -30,6 +31,13 @@ prob_to_prob <- function(p, to = 1, from = 1) {
   )
   r <- - log(1 - p) / from
   rate_to_prob(r, to = to)
+}
+
+#' @export
+#' @rdname probability
+prob_to_prob <- function(...) {
+  warning("'prob_to_prob' is deprecated, use 'rescale_prob()' instead.")
+  rescale_prob(...)
 }
 
 #' @export
@@ -103,4 +111,31 @@ rr_to_prob <- function(rr, p) {
 #'   rescale_discount_rate(0.03, 52, 1)
 rescale_discount_rate <- function(x, from, to) {
   ((1 + x) ^ (to / from)) -1
+}
+
+#' Combine Probabilities
+#' 
+#' Given several independent probabilities of an event, 
+#' return the final probability of the event.
+#' 
+#' This function is only correct if the probabilities are
+#' independent!
+#' 
+#' @param ... Probability vectors.
+#'   
+#' @return A probability vector.
+#' @export
+#' 
+#' @examples
+#' 
+#' (p1 <- runif(5))
+#' (p2 <- runif(5))
+#' combine_probs(p1, p2)
+#' 
+combine_probs <- function(...) {
+  combine_probs_(list(...))
+}
+
+combine_probs_ <- function(x) {
+  1 - Reduce("*", lapply(x, function(x) {1 - x}))
 }

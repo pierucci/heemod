@@ -74,7 +74,7 @@ test_that(
     )
     expect_output(
       str(e_par1),
-      "10 obs\\. of  4 variables"
+      "10 obs\\. of  5 variables"
     )
     expect_equal(
       get_parameter_names(e_par1),

@@ -165,4 +165,3 @@ triangle <- function(lower, upper, peak = (lower + upper)/2) {
 r_triangle <- function(lower, upper, peak) {
   function(x) triangle::qtriangle(p = x, a = lower, b = upper, c = peak)
 }
-

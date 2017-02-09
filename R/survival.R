@@ -14,7 +14,7 @@
 #'   \code{\link[flexsurv]{flexsurvreg}} or
 #'   \code{\link{define_survival}}.
 #' @param cycle The \code{markov_cycle} or 
-#'   \code{state_cycle} for which to predict.
+#'   \code{state_time} for which to predict.
 #' @param km_limit Up to what time should Kaplan-Meier 
 #'   estimates be used? Model predictions will be used 
 #'   thereafter. See \code{Details}.
