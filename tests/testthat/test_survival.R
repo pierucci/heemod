@@ -76,7 +76,7 @@ test_that("Probabilities are calculated correctly", {
   )
   
   expect_equal(
-    get_probs_from_surv(hSplineDist, times, type="surv"),
+    get_probs_from_surv(nSplineDist, times, type="surv"),
     flexsurv::psurvspline(times, gamma = gammas, knots = knots, scale="normal", lower.tail=F)
   )
   
@@ -87,7 +87,7 @@ test_that("Probabilities are calculated correctly", {
   )
   
   expect_equal(
-    get_probs_from_surv(hSplineDist, times, type="surv"),
+    get_probs_from_surv(oSplineDist, times, type="surv"),
     flexsurv::psurvspline(times, gamma = gammas, knots = knots, scale="odds", lower.tail=F)
   )
   

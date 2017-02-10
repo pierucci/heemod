@@ -7,7 +7,10 @@
 define_spline_survival(scale = c("hazard", "odds", "normal"), ...)
 }
 \arguments{
-\item{scale}{"hazard", "odds", or "normal", as described in flexsurvspline. With the default of no knots in addition to the boundaries, this model reduces to the Weibull, log-logistic and log-normal respectively. The scale must be common to all times.}
+\item{scale}{"hazard", "odds", or "normal", as described in
+flexsurvspline. With the default of no knots in addition to 
+the boundaries, this model reduces to the Weibull, log-logistic
+and log-normal respectively. The scale must be common to all times.}
 
 \item{...}{Additional distribution parameters (see
 respective distribution help pages).}
@@ -20,7 +23,11 @@ Define a restricted cubic spline parametric survival distribution.
 }
 \examples{
 
-define_spline_survival(scale = "hazard", gamma = c(-18.3122, 2.7511, 0.2292), knots=c(4.276666, 6.470800, 7.806289))
-define_spline_survival(scale = "odds", gamma = c(-18.5809, 2.7973, 0.2035), knots=c(4.276666, 6.470800, 7.806289))
+define_spline_survival(scale = "hazard", 
+gamma = c(-18.3122, 2.7511, 0.2292), 
+knots=c(4.276666, 6.470800, 7.806289))
+define_spline_survival(scale = "odds", 
+gamma = c(-18.5809, 2.7973, 0.2035), 
+knots=c(4.276666, 6.470800, 7.806289))
 
 }
