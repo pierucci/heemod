@@ -5,7 +5,7 @@
 \title{Define a Survival Distribution}
 \usage{
 define_survival(distribution = c("exp", "weibull", "lnorm", "gamma",
-  "gompertz", "gengamma"), ...)
+  "gompertz", "gengamma", "llogis", "genf"), ...)
 }
 \arguments{
 \item{distribution}{A parametric survival distribution.}

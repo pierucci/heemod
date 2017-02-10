@@ -203,7 +203,7 @@ define_survival <- function(distribution = c("exp", "weibull",
   list_arg <- list(...)
   
   if (distribution %in% c("exp", "weibull",
-                          "lnorm", "gamma","llogis","genf")) {
+                          "lnorm", "gamma")) {
     env_f <- asNamespace("stats")
   } else {
     if (! requireNamespace("flexsurv")) {
@@ -212,11 +212,11 @@ define_survival <- function(distribution = c("exp", "weibull",
     env_f <- asNamespace("flexsurv")
   }
   
-  rf <- get(paste0("r", distribution),
+  pf <- get(paste0("p", distribution),
             envir = env_f)
   
   names_fun <- setdiff(names(list_arg), "distribution")
-  names_par <- setdiff(names(formals(rf)), "n")
+  names_par <- setdiff(names(formals(pf)), "n")
   
   correct_names <- names_fun %in% names_par
   

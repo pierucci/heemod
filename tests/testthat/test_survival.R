@@ -44,6 +44,77 @@ test_that("Probabilities are calculated correctly", {
       get_probs_from_surv(su, cycle = 2)
     )
   )
+  
+  times = seq(from=10,to=100,by=10)
+  
+  llScale = 1.3
+  llShape = 0.6
+  
+  mu = 1.5
+  sigma = 0.45
+  P = 0.25
+  Q = 0.1
+  
+  gammas = c(-18.3122, 2.7511, 0.2292)
+  knots = c(4.276666, 6.470800, 7.806289)
+  
+  hSplineDist = define_spline_survival(
+    gamma = gammas,
+    knots = knots,
+    scale="hazard"
+  )
+  
+  expect_equal(
+    get_probs_from_surv(hSplineDist, times, type="surv"),
+    flexsurv::psurvspline(times, gamma = gammas, knots = knots, scale="hazard", lower.tail=F)
+  )
+  
+  nSplineDist = define_spline_survival(
+    gamma = gammas,
+    knots = knots,
+    scale="normal"
+  )
+  
+  expect_equal(
+    get_probs_from_surv(hSplineDist, times, type="surv"),
+    flexsurv::psurvspline(times, gamma = gammas, knots = knots, scale="normal", lower.tail=F)
+  )
+  
+  oSplineDist = define_spline_survival(
+    gamma = gammas,
+    knots = knots,
+    scale="odds"
+  )
+  
+  expect_equal(
+    get_probs_from_surv(hSplineDist, times, type="surv"),
+    flexsurv::psurvspline(times, gamma = gammas, knots = knots, scale="odds", lower.tail=F)
+  )
+  
+  genfSurvDist = define_survival(
+    distribution = "genf",
+    mu = mu,
+    sigma = sigma,
+    P = P,
+    Q = Q
+  )
+  
+  expect_equal(
+    get_probs_from_surv(genfSurvDist, times, type="surv"),
+    flexsurv::pgenf(times, mu=mu, sigma=sigma, P=P, Q=Q, lower.tail=F)
+  )
+  
+  llSurvDist = define_survival(
+    distribution = "llogis",
+    shape = llShape,
+    scale = llScale
+  )
+  
+  expect_equal(
+    get_probs_from_surv(llSurvDist, times, type="surv"),
+    flexsurv::pllogis(times, shape=llShape, scale=llScale, lower.tail=F)
+  )
+  
 })
 
 test_that("input errors are caught", {
