@@ -31,6 +31,7 @@
   * `combine_probs()`: given several independent probabilities of an event, return the total probability of the event.
   * More informative error messages for incorrect matrices.
   * Infinite parameter values generate an error.
+  * New parameters can be added with `modify()`.
 
 ## Backend changes
 
