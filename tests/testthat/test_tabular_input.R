@@ -101,6 +101,26 @@ test_that(
   }
 )
 
+test_that("can read multinomial parameters from file",
+          {
+            from_input <- 
+              define_psa(p_AA ~binomial(.7, 1000), 
+                         p_AB + p_AC + p_AD ~ multinomial(202, 67, 10))
+            from_file <-
+              create_parameters_from_tabular(read_file(system.file(
+                "tabular/test",
+                "example_multinom_params.csv",
+                package = "heemod"
+              )))
+            ## can't test identity because of environments, so test results
+            set.seed(5)
+            from_input_draws <- eval_resample(from_input, 10)
+            set.seed(5)
+            from_file_draws <- eval_resample(from_file$psa_params, 10)
+            expect_identical(from_input_draws, from_file_draws)
+          }
+)
+
 test_that(
   "Bad state file input is caught.", {
     expect_error(
@@ -132,6 +152,13 @@ test_that(
         "REFERENCE.csv"),
       "newzzz"
     )
+    expect_error(
+      heemod:::gather_model_info(
+        system.file("tabular/test", package = "heemod"),
+        "REFERENCE_1probmissing.csv"),
+      "Undefined probabilities"
+    )
+    
     dup_state <- structure(list(
       .model = c("standard", "standard", "standard", 
                  "standard", "standard"),
@@ -227,6 +254,13 @@ test_that(
     
     expect_error(
       heemod:::create_parameters_from_tabular(pb_par)
+    )
+    
+    pb_par2 <- pb_par
+    names(pb_par2)[1] <- "param"
+    expect_error(
+      heemod:::create_parameters_from_tabular(pb_par2),
+      "parameter file must include the column 'parameter'"
     )
     
     pb_par <- structure(list(
@@ -326,6 +360,10 @@ test_that(
       heemod:::read_file(
         system.file("tabular/test/wrong_ext.tab", package = "heemod")
       )
+    )
+    
+    expect_error(
+      create_model_from_tabular(states1, NULL, NULL, new.env())
     )
   }
 )
@@ -634,6 +672,7 @@ test_that(
   "Running model from files works.", {
     result <- run_model_tabular(
       location = system.file("tabular/thr", package = "heemod"),
+      run_psa = TRUE, run_demo = TRUE,
       save = TRUE, overwrite = TRUE
     )
     

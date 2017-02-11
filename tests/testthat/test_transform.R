@@ -4,11 +4,11 @@ context("Transformation functions")
 test_that(
   "Transformation functions produce correct results", {
     expect_equal(
-      round(prob_to_prob(.6, from = 3, to = 1), 2),
+      round(rescale_prob(.6, from = 3, to = 1), 2),
       .26
     )
     expect_equal(
-      round(prob_to_prob(.3, from = 5, to = 1), 4),
+      round(rescale_prob(.3, from = 5, to = 1), 4),
       .0689
     )
     expect_equal(

@@ -43,4 +43,3 @@ column give the names of the files (located in
 information - or, in the case of \code{data}, the 
 directory containing the tables to be loaded.
 }
-

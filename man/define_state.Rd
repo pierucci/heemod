@@ -45,4 +45,3 @@ st <- define_state(
 )
 st
 }
-

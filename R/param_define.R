@@ -68,7 +68,8 @@ define_parameters_ <- function(.dots) {
 #'   
 #' @keywords internal
 get_parameter_names <- function(x) {
-  names(x)[names(x) != "markov_cycle"]
+  names(x)[! names(x) %in% c("markov_cycle", "strategy",
+                             "model_time")]
 }
 
 
@@ -105,14 +106,29 @@ modify.uneval_parameters <- function(.OBJECT, ...) {
 modify_.uneval_parameters <- function(.OBJECT, .dots) {
   
   check_names(names(.dots))
-  # !mod!
-  # message d'erreur informatif quand parametres pas dans
-  # bon ordre
-  #
-  
-  stopifnot(
-    all(names(.dots) %in% names(.OBJECT))
-  )
   
   utils::modifyList(.OBJECT, .dots)
+}
+
+
+#' Define Inflow for a BIA
+#' 
+#' This function is a placeholder.
+#' 
+#' This function only takes constant values. Eventually
+#' time-dependant expression will be accepted (with
+#' model-time dependency only).
+#' 
+#' @param ... Name-value pairs of expressions definig
+#'   inflow.
+#'   
+#' @return An object similar to the return value of
+#'   \code{\link{define_parameters}}.
+#' @export
+#' 
+define_inflow <- function(...) {
+  # placeholder
+  # eventually should be like
+  # define_parameters()
+  c(...)
 }

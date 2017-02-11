@@ -3,8 +3,8 @@
 #' Check whether a matrix fullfills the conditions to be a 
 #' transition matrix.
 #' 
-#' This function is called by \code{\link{eval_matrix}} and 
-#' should not be used directly.
+#' This function is called by \code{\link{eval_transition}}
+#' and should not be used directly.
 #' 
 #' Checks whether all rows sum to 1 and all probabilities 
 #' are between 0 and 1.
@@ -15,14 +15,47 @@
 #'   
 #' @keywords internal
 check_matrix <- function(x) {
+  stopifnot(inherits(x, "array"))
+  stopifnot(length(dim(x)) == 3)
+  
   if (! isTRUE(all.equal(
     range(rowSums(x, dims = 2)),
     c(1, 1)))) {
-    stop("Not all transition matrix rows sum to 1.")
+    problem_rows <- which(rowSums(x, dims = 2) != 1, arr.ind = TRUE)
+    problem_rows <- data.frame(
+      cycle = problem_rows[,1], 
+                               state = get_state_names(x)[problem_rows[,2]])
+    problem_rows <- format.data.frame(problem_rows, justify = "left")
+    
+    stop(sprintf(
+      "Not all transition matrix rows sum to 1:\n%s",
+      paste(sprintf(
+        "cycle: %s, state: %s",
+        problem_rows[,1],
+        problem_rows[,2]),
+        collapse = "\n")
+    ))
+    
+    
   }
   
   if (! all(x >= 0 & x <= 1)) {
-    stop("Some transition probabilities are outside the interval [0 - 1].")
+    problem <- which(x < 0 | x > 1, arr.ind = TRUE)
+    problem <- data.frame(problem)
+    names(problem) <- c("cycle", "from", "to")
+    states <- get_state_names(x)
+    problem$from <- states[problem$from]
+    problem$to <- states[problem$to]
+    problem <- format.data.frame(problem, justify = "left")
+    
+    stop(sprintf(
+      "Some transition probabilities are outside the interval [0 - 1]:\n%s",
+      paste(sprintf(
+        "cycle: %s, from: %s, to: %s",
+        problem$cycle, problem$from, problem$to),
+        collapse = "\n")
+    ))
+    
   }
 }
 
@@ -42,7 +75,15 @@ check_matrix <- function(x) {
 #'   transition matrices, one per cycle).
 #'   
 #' @keywords internal
-eval_matrix <- function(x, parameters) {
+eval_transition <- function(x, ...) {
+  UseMethod("eval_transition")
+}
+
+eval_transition.uneval_matrix <- function(x, parameters) {
+  
+  # update calls to dispatch_strategy()
+  x <- dispatch_strategy_hack(x)
+  
   tab_res <- mutate_(parameters, C = -pi, .dots = x)[names(x)]
   
   n <- get_matrix_order(x)
@@ -55,7 +96,8 @@ eval_matrix <- function(x, parameters) {
     array_res[i,,] <- t(array_res[i,,])
   }
   
-  array_res <- replace_C(array_res)
+  array_res <- structure(replace_C(array_res),
+                         state_names = get_state_names(x))
   
   check_matrix(array_res)
   
@@ -89,6 +131,9 @@ replace_C <- function(x) {
 }
 
 get_state_names.eval_matrix <- function(x, ...){
+  attr(x, "state_names")
+}
+get_state_names.array <- function(x, ...){
   attr(x, "state_names")
 }
 

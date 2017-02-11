@@ -22,13 +22,15 @@
 #'   
 #' @keywords internal
 eval_strategy_newdata <- function(x, strategy = 1, newdata) {
-  check_strategy_index(x = x, i = strategy)
+  strategy <- check_strategy_index(x = x, i = strategy)
   
   cycles <- get_cycles(x)
   init <- get_init(x)
+  inflow <- get_inflow(x)
   method <- get_method(x)
   old_parameters <- get_parameters(x)
   uneval_strategy <- x$uneval_strategy_list[[strategy]]
+  expand_limit <- get_expand_limit(x, strategy)
   
   if (status_cluster(verbose = FALSE)) {
     cl <- get_cluster()
@@ -44,13 +46,38 @@ eval_strategy_newdata <- function(x, strategy = 1, newdata) {
     parallel::clusterExport(
       cl, 
       c("uneval_strategy", "old_parameters", "pnewdata", 
-        "cycles", "init", "method"),
+        "cycles", "init", "method", "strategy"),
       envir = environment()
     )
+    suppressMessages(
+      pieces <- parallel::parLapply(cl, pnewdata, function(newdata) {
+        newdata %>% 
+          dplyr::rowwise() %>% 
+          dplyr::do_(
+            .mod = ~ eval_newdata(
+              .,
+              strategy = uneval_strategy,
+              old_parameters = old_parameters,
+              cycles = cycles,
+              init = init,
+              inflow = inflow,
+              method = method,
+              strategy_name = strategy,
+              expand_limit = expand_limit
+            )
+          ) %>% 
+          dplyr::ungroup() %>% 
+          dplyr::bind_cols(
+            newdata
+          )
+      })
+    )
+    res <- do.call("rbind", pieces)
+    rownames(res) <- NULL
     
-    pieces <- parallel::parLapply(cl, pnewdata, function(newdata) {
-      
-      newdata %>% 
+  } else {
+    suppressMessages(
+      res <- newdata %>% 
         dplyr::rowwise() %>% 
         dplyr::do_(
           .mod = ~ eval_newdata(
@@ -59,48 +86,31 @@ eval_strategy_newdata <- function(x, strategy = 1, newdata) {
             old_parameters = old_parameters,
             cycles = cycles,
             init = init,
-            method = method
+            method = method,
+            inflow = inflow,
+            strategy_name = strategy,
+            expand_limit = expand_limit
           )
         ) %>% 
         dplyr::ungroup() %>% 
         dplyr::bind_cols(
           newdata
         )
-    })
-    res <- do.call("rbind", pieces)
-    rownames(res) <- NULL
-    
-  } else {
-    res <- newdata %>% 
-      dplyr::rowwise() %>% 
-      dplyr::do_(
-        .mod = ~ eval_newdata(
-          .,
-          strategy = uneval_strategy,
-          old_parameters = old_parameters,
-          cycles = cycles,
-          init = init,
-          method = method
-        )
-      ) %>% 
-      dplyr::ungroup() %>% 
-      dplyr::bind_cols(
-        newdata
-      )
-    
+    )
   }
   res
 }
 
 eval_newdata <- function(new_parameters, strategy, old_parameters,
-                         cycles, init, method) {
+                         cycles, init, method, inflow,
+                         strategy_name, expand_limit) {
   
   new_parameters <- Filter(
     function(x) all(! is.na(x)),
     new_parameters
   )
   
-  lazy_new_param <- lazyeval::as.lazy_dots(new_parameters)
+  lazy_new_param <- to_dots(new_parameters)
   
   parameters <- utils::modifyList(
     old_parameters,
@@ -112,6 +122,9 @@ eval_newdata <- function(new_parameters, strategy, old_parameters,
     parameters = parameters,
     cycles = cycles,
     init = init,
-    method = method
+    method = method,
+    inflow = inflow,
+    strategy_name = strategy_name,
+    expand_limit = expand_limit
   )
 }

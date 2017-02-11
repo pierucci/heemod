@@ -1,6 +1,6 @@
 Package: heemod
 Title: Models for Health Economic Evaluation
-Version: 0.7.1
+Version: 0.8.0
 Authors@R: c(
     person("Antoine", "Filipovic-Pierucci", email = "pierucci@gmail.com", role = c("aut", "cre")),
     person("Kevin", "Zarca", email = "kevin.zarca@urc-eco.fr", role = "aut"),
@@ -8,19 +8,19 @@ Authors@R: c(
     person("Zdenek", "Kabat", role = "ctb"),
     person("Vojtech", "Filipec", role = "ctb")
     )
-Description: Health Economic Evaluation Modelling.
-  Markov models (decision trees, homogeneous and non-homogeneous)
-  for health economic evaluation. Model comparison,
-  sensitivity and probabilistic analysis.
+Description: Health Economic Evaluation Modelling:
+    decision trees and cohort simulations. Provides a simple
+    and consistent interface for Markov models specification,
+    comparison, sensitivity and probabilistic analysis, input of
+    survival models, etc. Models with time varying properties
+    (non-homogeneous Markov models and semi-Markov models)
+    are supported.
 Depends: R (>= 3.2.2)
-Imports:  diagram,
-          dplyr,
+Imports: dplyr,
           ggplot2 (>= 2.2.0),
           graphics,
           grDevices,
-          Hmisc,
           lazyeval,
-          logitnorm,
           memoise,
           mvnfast,
           pryr,
@@ -33,13 +33,19 @@ Imports:  diagram,
 License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 5.0.1
-Suggests: knitr,
+RoxygenNote: 6.0.0
+Suggests: diagram,
+          flexsurv,
+          Hmisc,
+          knitr,
+          logitnorm,
           parallel,
           formatR,
           mgcv,
           readxl,
           rmarkdown,
-          testthat
+          survival,
+          testthat,
+          triangle
 URL: https://github.com/pierucci/heemod, https://pierucci.org
 BugReports: https://github.com/pierucci/heemod/issues

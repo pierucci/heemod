@@ -50,7 +50,7 @@ get_who_mr_ <- function(age, sex = NULL, country,
     ), silent = TRUE)
     
     if (inherits(mr_data, "try-error"))
-      message("Failed to fetch mortality data from WHO server.")
+      warning("Failed to fetch mortality data from WHO server.")
   }
   
   if (local || inherits(mr_data, "try-error")) {

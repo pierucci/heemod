@@ -113,6 +113,9 @@ gather_model_info <- function(base_dir, ref_file) {
     )
   }
   
+  ## note - the environment df_env gets included directly
+  ##   into param_info, so anything that will load anything
+  ##   into that environment needs to come before this statement
   if (options()$heemod.verbose) message("** Reading parameters..")
   param_info <- create_parameters_from_tabular(
     read_file(ref$full_file[ref$data == "parameters"]),
@@ -133,6 +136,7 @@ gather_model_info <- function(base_dir, ref_file) {
       params = param_info$params
     )
   }
+  
   
   list(
     models = models,
@@ -192,6 +196,9 @@ eval_models_from_tabular <- function(inputs,
   
   if (! is.null(inputs$model_options$num_cores)) {
     use_cluster(inputs$model_options$num_cores)
+    on.exit(
+      close_cluster()
+    )
   }
   
   if (options()$heemod.verbose) message("** Running models...")
@@ -214,7 +221,7 @@ eval_models_from_tabular <- function(inputs,
     if (options()$heemod.verbose) message("** Running PSA...")
     model_psa <- run_psa(
       model_runs,
-      resample = inputs$param_info$psa_params,
+      psa = inputs$param_info$psa_params,
       N = inputs$model_options$n
     )
   }
@@ -225,9 +232,9 @@ eval_models_from_tabular <- function(inputs,
     demo_res <- stats::update(model_runs, inputs$demographic_file)
   }
   
-  if(! is.null(inputs$model_options$num_cores)) {
-    close_cluster()
-  }
+  ##  if(! is.null(inputs$model_options$num_cores)) {
+  ##    close_cluster()
+  ##  }
   
   list(
     models = inputs$models,
@@ -255,7 +262,10 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
     group_vars = ".state"
   )
   
+  ## to accomodate partitioned survival models, we will allow for
+  ##   the possibility that there is no transition matrix ...
   if (options()$heemod.verbose) message("*** Reading TM...")
+  
   tm_info <- parse_multi_spec(
     read_file(ref$full_file[ref$data == "tm"]),
     group_vars = c("from", "to")
@@ -270,13 +280,23 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   
   tm_info <- tm_info[names(state_info)]
   
-  if (options()$heemod.verbose) message("*** Defining models...")
+  tab_undefined <- do.call("rbind", tm_info) %>% 
+    dplyr::filter_(~ is.na(prob))
+  
+  if (nrow(tab_undefined) > 0) {
+    rownames(tab_undefined) <- NULL
+    print(tab_undefined)
+    stop("Undefined probabilities in the transition matrix (see above).")
+  }
+  
+  
+if (options()$heemod.verbose) message("*** Defining models...")
   models <- lapply(
     seq_along(state_info),
     function(i) {
       create_model_from_tabular(state_info[[i]], tm_info[[i]],
                                 df_env = df_env)
-    })
+    })  
   
   names(models) <- names(state_info)
   
@@ -318,12 +338,12 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
 create_states_from_tabular <- function(state_info,
                                        df_env = globalenv()) {
   
-  if(! inherits(state_info, "data.frame"))
+  if(! inherits(state_info, "data.frame")) {
     stop("'state_info' must be a data frame.")
-  
-  if(!(".state" %in% names(state_info)))
+  }
+  if(!(".state" %in% names(state_info))) {
     stop("'.state' should be a column name.")
-  
+  }
   if (any(duplicated(state_info$.state))) {
     stop(sprintf(
       "Duplicated state names: %s.",
@@ -370,17 +390,17 @@ create_states_from_tabular <- function(state_info,
   }
   
   res <- define_state_list_(
-    setNames(lapply(
+    stats::setNames(lapply(
       state_info$.state,
       function(state) {
         define_state_(
           lazyeval::as.lazy_dots(
-            setNames(lapply(
+            stats::setNames(as.character(lapply(
               values,
               function(value) {
                 state_info[[value]][state_info$.state == state]
               }
-            ), values),
+            )), values),
             env = df_env
           )
         )
@@ -421,9 +441,9 @@ create_states_from_tabular <- function(state_info,
 #' @keywords internal
 create_matrix_from_tabular <- function(trans_probs, state_names,
                                        df_env = globalenv()) {
-  if(! inherits(trans_probs, "data.frame"))
+  if(! inherits(trans_probs, "data.frame")) {
     stop("'trans_probs' must be a data frame.")
-  
+  }
   stopifnot(
     all(c("from", "to", "prob") %in% names(trans_probs)),
     length(state_names) > 0
@@ -460,7 +480,7 @@ create_matrix_from_tabular <- function(trans_probs, state_names,
   prob_mat[as.matrix(trans_probs[, c("to", "from")])] <- trans_probs$prob
   
   res <- define_transition_(
-    lazyeval::as.lazy_dots(prob_mat, env = df_env),
+    lazyeval::as.lazy_dots(as.character(prob_mat), env = df_env),
     state_names = state_names
   )
   if (options()$heemod.verbose) print(res)
@@ -490,6 +510,8 @@ create_parameters_from_tabular <- function(param_defs,
                                            df_env = globalenv()) {
   if(! inherits(param_defs, "data.frame"))
     stop("'param_defs' must be a data frame.")
+  if(! "parameter" %in% names(param_defs))
+    stop("parameter file must include the column 'parameter'")
   
   if (xor("low" %in% names(param_defs),
           "high" %in% names(param_defs))) {
@@ -498,8 +520,8 @@ create_parameters_from_tabular <- function(param_defs,
   
   parameters <- define_parameters_(
     lazyeval::as.lazy_dots(
-      setNames(
-        lapply(param_defs$value, function(x) x),
+      stats::setNames(
+        as.character(lapply(param_defs$value, function(x) x)),
         param_defs$parameter
       ),
       env = df_env
@@ -527,15 +549,15 @@ create_parameters_from_tabular <- function(param_defs,
     dsa <- define_dsa_(
       par_names = param_sens,
       low_dots = lazyeval::as.lazy_dots(
-        setNames(
-          lapply(low, function(x) x),
+        stats::setNames(
+          as.character(lapply(low, function(x) x)),
           param_sens
         ),
         env = df_env
       ),
       high_dots = lazyeval::as.lazy_dots(
-        setNames(
-          lapply(high, function(x) x),
+        stats::setNames(
+          as.character(lapply(high, function(x) x)),
           param_sens
         ),
         env = df_env
@@ -546,25 +568,25 @@ create_parameters_from_tabular <- function(param_defs,
   if ("psa" %in% names(param_defs)) {
     
     if (all(is.na(param_defs$psa))) {
-      stop("Non non-missing values in column 'psa'.")
+      stop("No non-missing values in column 'psa'.")
     }
     
     param_psa <- param_defs$parameter[! is.na(param_defs$psa)]
     distrib_psa <- stats::na.omit(param_defs$psa)
     
-    psa <- do.call(
-      define_psa,
-      lapply(
-        seq_along(param_psa),
-        function(i) {
-          substitute(
-            rhs ~ lhs,
-            list(
-              rhs = as.name(param_psa[i]),
-              lhs = parse(text = distrib_psa[i])[[1]]))
-        }
+    psa <- 
+      do.call(define_psa,    
+              lapply(
+                seq_along(param_psa),
+                function(i) {
+                  substitute(
+                    lhs ~ rhs,
+                    list(
+                      lhs = parse(text = param_psa[i])[[1]],
+                      rhs = parse(text = distrib_psa[i])[[1]]))
+                }
+              )
       )
-    )
     
   }
   
@@ -593,7 +615,7 @@ create_options_from_tabular <- function(opt) {
   
   if (any(ukn_opt <- ! opt$option %in% allowed_opt)) {
     stop(sprintf(
-      "Unkmown options: %s.",
+      "Unknown options: %s.",
       paste(opt$option[ukn_opt], collapse = ", ")
     ))
   }
@@ -643,9 +665,9 @@ create_options_from_tabular <- function(opt) {
 #' Calls \code{\link{create_states_from_tabular}} and
 #' \code{\link{create_matrix_from_tabular}}.
 #' 
-#' @param state_file A state tabular file (file path or 
+#' @param state_info A state tabular file (file path or 
 #'   parsed file).
-#' @param tm_file A transition matrix tabular file (file 
+#' @param tm_info A transition matrix tabular file (file 
 #'   path or parsed file).
 #' @param df_env An environment containing external data.
 #' 
@@ -653,20 +675,27 @@ create_options_from_tabular <- function(opt) {
 #'   \code{\link{define_strategy}}.
 #'   
 #' @keywords internal
-create_model_from_tabular <- function(state_file,
-                                      tm_file,
+create_model_from_tabular <- function(state_info,
+                                      tm_info,
                                       df_env = globalenv()) {
-  if(! inherits(state_file, "data.frame"))
-    stop("'state_file' must be a data frame.")
-  if(! inherits(tm_file, "data.frame"))
-    stop("'tm_file' must be a data frame.")
+  if(length(tm_info) == 0) {
+    stop("A transition matrix must be defined.")
+  }
+  
+  if(! inherits(state_info, "data.frame")) {
+    stop("'state_info' must be a data frame.")
+  }
+  
+  if(!is.null(tm_info) && ! inherits(tm_info, "data.frame")) {
+    stop("'tm_info' must be a data frame.")
+  }
   
   if (options()$heemod.verbose) message("**** Defining state list...")
-  states <- create_states_from_tabular(state_file,
+  states <- create_states_from_tabular(state_info,
                                        df_env = df_env)
   if (options()$heemod.verbose) message("**** Defining TM...")
   
-  TM <- create_matrix_from_tabular(tm_file, get_state_names(states),
+  TM <- create_matrix_from_tabular(tm_info, get_state_names(states),
                                    df_env = df_env)
   
   define_strategy_(transition = TM, states = states)
@@ -689,10 +718,21 @@ create_model_from_tabular <- function(state_file,
 #'   
 #' @keywords internal
 create_df_from_tabular <- function(df_dir, df_envir) {
-  if(! file.exists(df_dir))
+  if(! file.exists(df_dir)) {
     stop(paste(df_dir, "does not exist."))
+  }
   
   all_files <- list.files(df_dir, full.names = TRUE)
+  
+  ## work around an annoyance around open files in windows
+  if(.Platform$OS.type == "windows") {
+    part_files <- list.files(df_dir, full.names = FALSE)
+    accidental_files <- grep("^~.*\\.xlsx?", part_files)
+    if(length(accidental_files) > 0) {
+      all_files <- all_files[- accidental_files]
+    }
+  }
+  
   obj_names <- all_files %>% 
     basename %>% 
     tools::file_path_sans_ext()
@@ -968,53 +1008,36 @@ save_outputs <- function(outputs, output_dir, overwrite) {
   
   ## some csv files
   if (options()$heemod.verbose) message("** Writing tabular outputs to files ...")
-  utils::write.csv(
-    outputs$demographics,
-    file = file.path(output_dir, "icer_by_group.csv"),
-    row.names = FALSE
-  )
   
-  all_counts <- 
-    do.call("rbind",
-            lapply(get_strategy_names(outputs$model_runs),
-                   function(this_name){
-                     data.frame(.model = this_name,
-                                get_counts(outputs$model_runs, m = this_name))
-                   }
-            )
+  if (! is.null(outputs$demographics)) {
+    utils::write.csv(
+      summary(outputs$demographics)$scaled_results,
+      file = file.path(output_dir, "icer_by_group.csv"),
+      row.names = FALSE
     )
-  
+  }
+
   utils::write.csv(
-    all_counts,
+    get_counts(outputs$model_runs),
     file = file.path(output_dir, "state_counts.csv"),
     row.names = FALSE
   )
-  
-  all_values <- 
-    do.call("rbind",
-            lapply(get_strategy_names(outputs$model_runs),
-                   function(this_name){
-                     data.frame(.model = this_name,
-                                get_values(outputs$model_runs, m = this_name))
-                   }
-            )
-    )
-  
+
   utils::write.csv(
-    all_values,
+    get_values(outputs$model_runs),
     file = file.path(output_dir, "cycle_values.csv"),
     row.names = FALSE
   )
   
   utils::write.csv(
-    as.data.frame(summary(outputs$dsa)),
+    summary(outputs$dsa)$res_comp,
     file = file.path(output_dir, "dsa.csv"),
     row.names = FALSE
   )
   
   
   utils::write.csv(
-    outputs$psa,
+    outputs$psa$psa,
     file = file.path(output_dir, "psa_values.csv"),
     row.names = FALSE
   )

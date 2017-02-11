@@ -13,7 +13,7 @@ discount_hack(.dots)
 A modified state object.
 }
 \description{
-This function is a hack to avoid a problem with
+This function is a hack to avoid a problem with 
 discounting when the argument is a constant.
 }
 \details{
@@ -22,4 +22,3 @@ The hack consists in replacing calls to
 ensure \code{x} is recycled to the correct length.
 }
 \keyword{internal}
-

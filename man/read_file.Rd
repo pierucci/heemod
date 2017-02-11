@@ -16,4 +16,3 @@ A \code{data.frame}.
 Columns starting with '.comment' are ignored.
 }
 \keyword{internal}
-

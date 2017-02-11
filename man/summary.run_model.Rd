@@ -21,4 +21,3 @@ A \code{summary_run_model} object.
 \description{
 Summarise Markov Model Results
 }
-

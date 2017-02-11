@@ -2,7 +2,7 @@
 
 [![Travis-CI Build Status](https://travis-ci.org/pierucci/heemod.svg?branch=devel)](https://travis-ci.org/pierucci/heemod) [![](http://www.r-pkg.org/badges/version/heemod)](http://www.r-pkg.org/pkg/heemod) [![Coverage Status](https://img.shields.io/codecov/c/github/pierucci/heemod/devel.svg)](https://codecov.io/github/pierucci/heemod?branch=devel)
 
-`heemod` is an `R` toolset for health economic evaluation modelling. It aims to provide a simple and consistent interface for Markov models specification and comparison (for decision trees or cohort simulation). Non-homogeneous Markov models (with time varying properties) are supported.
+Health Economic Evaluation Modelling: decision trees and cohort simulations. Provides a simple and consistent interface for Markov models specification, comparison, sensitivity and probabilistic analysis, input of survival models, etc. Models with time varying properties (non-homogeneous Markov models and semi-Markov models) are supported.
 
 Most of the analyses presented in [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do) can be performed with `heemod`. See `vignette("i-reproduction", "heemod")` for an exact reproduction of the analyses from the book.
 
@@ -20,19 +20,28 @@ install.packages("heemod")
 devtools::install_github("pierucci/heemod@devel")
 ```
 
-## Main features
+## Features
+
+Main features:
 
   * Graphical user interface with `shiny`.
-  * Time-varying transition probabilities.
-  * Time-varying values attached to states.
-  * Microsimulation-like models.
+  * Accounting for time-dependency:
+    * For both model time and state time.
+    * Time-varying transition probabilities.
+    * Time-varying values attached to states.
   * Probabilistic uncertainty analysis (PSA).
-  * Covariance analysis for PSA.
+    * With correlated resampling.
+    * Covariance analysis for PSA.
+    * Expected value of perfect information (EVPI).
   * Deterministic sensitivity analysis (DSA).
+  
+Other features:
+  
   * Multiple state membership correction methods (life-table, half-cycle, etc.).
   * Demographic analysis to compute population-level results.
   * Heterogeneity analysis.
   * Parallel computing support.
+  * Features for budget impact analysis.
 
 ## Learning heemod
 

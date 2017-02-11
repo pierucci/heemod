@@ -25,4 +25,3 @@ my_df.csv (or my_df.xls, or my_df.xlsx) will be loaded as
 a data frame my_df.
 }
 \keyword{internal}
-

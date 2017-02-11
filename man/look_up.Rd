@@ -78,4 +78,3 @@ look_up(age_related_df, age = c(5, 15, 23.5),
 look_up(age_related_df, age = c(5, 15, 23.5), 
         value = "decade", bin = TRUE)
 }
-

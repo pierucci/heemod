@@ -18,5 +18,8 @@ heemod:::eval_strategy(
   param,
   init = c(10, 5),
   cycles = 5,
-  method = "end"
+  method = "end",
+  inflow = c(0, 0),
+  strategy_name = "A",
+  expand_limit = c(A = 5, B = 5)
 )

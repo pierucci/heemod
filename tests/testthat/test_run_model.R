@@ -234,9 +234,9 @@ test_that(
     res_e <- run_model(mod1, mod2,
                         parameters = par1, cost = x, effect = y,
                         method = "end")
-    res_h <- run_model(mod1, mod2,
+    res_h <- suppressWarnings(run_model(mod1, mod2,
                         parameters = par1, cost = x, effect = y,
-                        method = "half-cycle")
+                        method = "half-cycle"))
     res_l <- run_model(mod1, mod2,
                         parameters = par1, cost = x, effect = y,
                         method = "life-table")

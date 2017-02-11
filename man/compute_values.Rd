@@ -20,4 +20,3 @@ Given states and counts, computes the total state values
 per cycle.
 }
 \keyword{internal}
-

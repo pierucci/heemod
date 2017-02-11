@@ -16,4 +16,3 @@ A list of model options.
 Create Model Options From a Tabular Input
 }
 \keyword{internal}
-

@@ -97,11 +97,20 @@ check_names <- function(x) {
   if (any("markov_cycle" %in% x)) {
     stop("'markov_cycle' is a reserved name.")
   }
+  if (any("model_time" %in% x)) {
+    stop("'model_time' is a reserved name.")
+  }
   if (any("state_cycle" %in% x)) {
     stop("'state_cycle' is a reserved name.")
   }
+  if (any("state_time" %in% x)) {
+    stop("'state_time' is a reserved name.")
+  }
   if (any("C" %in% x)) {
     stop("'C' is a reserved name.")
+  }
+  if (any("strategy" %in% x)) {
+    stop("'strategy' is a reserved name.")
   }
   if (any(grepl("^\\.", x))) {
     stop("Names starting with '.' are reserved.")
@@ -184,6 +193,9 @@ wtd_summary <- function(x, weights = NULL) {
     res <- rep(NA, 6)
     
   } else {
+    if (! requireNamespace("Hmisc")) {
+      stop("'Hmisc' package required to produce weighted summary.")
+    }
     w_mean <- Hmisc::wtd.mean(x, weights = weights)
     w_q <- Hmisc::wtd.quantile(x, weights = weights,
                                probs = c(0, .25, .5, .75, 1))
@@ -357,3 +369,26 @@ pretty_names <- function(x) {
   
   x
 }
+
+to_dots <- function(x) {
+  stopifnot(is.list(x))
+  
+  f <- function(x) {
+    if (inherits(x, "character") || inherits(x, "factor")) {
+      structure(
+        list(
+          expr = as.character(x),
+          env = globalenv()
+        ),
+        class = "lazy"
+      )
+    } else {
+      x
+    }
+  }
+  
+  lazyeval::as.lazy_dots(
+    lapply(x, f)
+  )
+}
+

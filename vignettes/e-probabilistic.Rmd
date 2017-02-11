@@ -78,55 +78,39 @@ mat_trans_comb <- define_transition(
 State definition remains the same in this example.
 
 ```{r}
-A_mono <- define_state(
-  cost_health = cost_A,
-  cost_drugs = cost_zido,
-  cost_total = discount(cost_health + cost_drugs, .06),
-  life_year = 1
-)
-B_mono <- define_state(
-  cost_health = cost_B,
-  cost_drugs = cost_zido,
-  cost_total = discount(cost_health + cost_drugs, .06),
-  life_year = 1
-)
-C_mono <- define_state(
-  cost_health = cost_C,
-  cost_drugs = cost_zido,
-  cost_total = discount(cost_health + cost_drugs, .06),
-  life_year = 1
-)
-D_mono <- define_state(
-  cost_health = 0,
-  cost_drugs = 0,
-  cost_total = discount(cost_health + cost_drugs, .06),
-  life_year = 0
-)
-
-A_comb <- define_state(
-  cost_health = cost_A,
-  cost_drugs = cost_zido + cost_lami,
-  cost_total = discount(cost_health + cost_drugs, .06),
-  life_year = 1
-)
-B_comb <- define_state(
-  cost_health = cost_B,
-  cost_drugs = cost_zido + cost_lami,
-  cost_total = discount(cost_health + cost_drugs, .06),
-  life_year = 1
-)
-C_comb <- define_state(
-  cost_health = cost_C,
-  cost_drugs = cost_zido + cost_lami,
-  cost_total = discount(cost_health + cost_drugs, .06),
-  life_year = 1
-)
-D_comb <- define_state(
-  cost_health = 0,
-  cost_drugs = 0,
-  cost_total = discount(cost_health + cost_drugs, .06),
-  life_year = 0
-)
+state_A <- define_state(
+    cost_health = 2756,
+    cost_drugs = dispatch_strategy(
+      mono = cost_zido,
+      comb = cost_zido + cost_lami
+    ),
+    cost_total = discount(cost_health + cost_drugs, .06),
+    life_year = 1
+  )
+state_B <- define_state(
+    cost_health = 3052,
+    cost_drugs = dispatch_strategy(
+      mono = cost_zido,
+      comb = cost_zido + cost_lami
+    ),
+    cost_total = discount(cost_health + cost_drugs, .06),
+    life_year = 1
+  )
+state_C <- define_state(
+    cost_health = 9007,
+    cost_drugs = dispatch_strategy(
+      mono = cost_zido,
+      comb = cost_zido + cost_lami
+    ),
+    cost_total = discount(cost_health + cost_drugs, .06),
+    life_year = 1
+  )
+state_D <- define_state(
+    cost_health = 0,
+    cost_drugs = 0,
+    cost_total = discount(cost_health + cost_drugs, .06),
+    life_year = 0
+  )
 ```
 
 Strategies must be first defined and run as in a standard deterministic analysis.
@@ -134,18 +118,18 @@ Strategies must be first defined and run as in a standard deterministic analysis
 ```{r}
 strat_mono <- define_strategy(
   transition = mat_trans_mono,
-  A_mono,
-  B_mono,
-  C_mono,
-  D_mono
+  state_A,
+  state_B,
+  state_C,
+  state_D
 )
 
 strat_comb <- define_strategy(
   transition = mat_trans_comb,
-  A_comb,
-  B_comb,
-  C_comb,
-  D_comb
+  state_A,
+  state_B,
+  state_C,
+  state_D
 )
 
 res_mod <- run_model(
@@ -191,19 +175,19 @@ Proportions follow a binomial distribution that can be estimated by giving the m
 
 Finally multinomial distributions are declared with the number of individuals in each group in the sample used to estimate the proportions. These proportions follow a Dirichlet distribution:
 
-  * `p_AA + p_AB + p_AC + p_AD ~ multinom(721, 202, 67, 10)`
+  * `p_AA + p_AB + p_AC + p_AD ~ multinomial(721, 202, 67, 10)`
 
 ```{r}
 rsp <- define_psa(
   rr ~ lognormal(mean = .509, sdlog = .173),
   
-  cost_A ~ make_gamma(mean = 2756, sd = sqrt(2756)),
-  cost_B ~ make_gamma(mean = 3052, sd = sqrt(3052)),
-  cost_C ~ make_gamma(mean = 9007, sd = sqrt(9007)),
+  cost_A ~ gamma(mean = 2756, sd = sqrt(2756)),
+  cost_B ~ gamma(mean = 3052, sd = sqrt(3052)),
+  cost_C ~ gamma(mean = 9007, sd = sqrt(9007)),
   
-  p_CD_base ~ prop(prob = .25, size = 40),
+  p_CD_mono ~ binomial(prob = .25, size = 40),
   
-  p_AA_base + p_AB_base + p_AC_base + p_AD_base ~ multinom(721, 202, 67, 10)
+  p_AA_mono + p_AB_mono + p_AC_mono + p_AD_mono ~ multinomial(721, 202, 67, 10)
 )
 ```
 
@@ -214,7 +198,7 @@ Now that the distributions of parameters are set we can simply run the probabili
 ```{r}
 pm <- run_psa(
   model = res_mod,
-  resample = rsp,
+  psa = rsp,
   N = 100
 )
 ```
@@ -226,22 +210,33 @@ summary(pm,
         threshold = c(1000, 5000, 6000, 1e4))
 ```
 
+## Result interpretation
+
 The results of the analysis can be plotted on the cost-effectiveness plane. We can see there seem to be little uncertainty on the costs compared to the uncertainty on the effects, resulting in an uncertainty cloud that looks like a line.
 
 ```{r, fig.width = 6, fig.height=4, fig.align='center'}
 plot(pm, type = "ce")
 ```
 
-And as cost-effectiveness acceptability curves:
+And as cost-effectiveness acceptability curves or EVPI:
 
 ```{r, fig.width = 6, fig.align='center'}
 plot(pm, type = "ac", max_wtp = 10000, log_scale = FALSE)
+plot(pm, type = "evpi", max_wtp = 10000, log_scale = FALSE)
 ```
 
-A covariance analysis can be performed:
+To compute EVPPI the results can also be exported with `export_savi()` in a format compatible with the [SAVI](http://savi.shef.ac.uk/SAVI/) software (Sheffield Accelerated Value of Information).
+
+A covariance analysis can be performed on strategy results:
 
 ```{r, fig.width = 6, fig.height = 4, fig.align='center'}
 plot(pm, type = "cov")
+```
+
+Or on the difference between strategies:
+
+```{r, fig.width = 4, fig.height = 4, fig.align='center'}
+plot(pm, type = "cov", diff = TRUE, threshold = 5000)
 ```
 
 As usual plots can be modified with the standard `ggplot2` syntax.

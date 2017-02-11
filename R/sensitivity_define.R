@@ -44,7 +44,8 @@ define_dsa <- function(...) {
   names(low_dots) <- par_names
   names(high_dots) <- par_names
   
-  define_dsa_(par_names, low_dots, high_dots)
+  define_dsa_(par_names = par_names,
+              low_dots = low_dots, high_dots = high_dots)
 }
 
 #' @rdname define_dsa
@@ -78,22 +79,25 @@ define_dsa_ <- function(par_names, low_dots, high_dots) {
   }
   
   structure(
-    tab %>% 
-      dplyr::mutate_all(dplyr::funs(clean_null)),
-    class = c("sensitivity", class(tab)),
-    variables = par_names
+    list(
+      dsa = tab %>% 
+        dplyr::mutate_all(dplyr::funs(clean_null)),
+      variables = par_names,
+      low_dots = low_dots,
+      high_dots = high_dots
+    ),
+    class = c("sensitivity", class(tab))
   )
 }
 
 #' @export
 print.sensitivity <- function(x, ...) {
-  tab <- x %>% 
-    dplyr::mutate_all(
-      dplyr::funs(to_text_dots),
-      name = FALSE
-    ) %>% 
-    as.matrix
-  rownames(tab) <- seq_len(nrow(tab))
+  tab <- cbind(to_text_dots(x$low_dots, name = FALSE),
+               to_text_dots(x$high_dots, name = FALSE))
+  
+  rownames(tab) <- x$variables
+  colnames(tab) <- c("Low", "High")
+  
   print(
     tab,
     na.print = "-",

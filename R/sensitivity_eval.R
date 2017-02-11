@@ -3,7 +3,6 @@
 #' @param model An evaluated Markov model.
 #' @param dsa An object returned by 
 #'   \code{\link{define_dsa}}.
-#' @param sensitivity Deprecated, use \code{dsa} instead.
 #'   
 #' @return A \code{data.frame} with one row per model and 
 #'   parameter value.
@@ -21,22 +20,27 @@ run_dsa <- function(model, dsa) {
   method <- get_method(model)
   strategy_names <- get_strategy_names(model)
   
-  list_res <- lapply(
-    strategy_names,
-    function(n) {
-      tab <- eval_strategy_newdata(
-        model,
-        strategy = n,
-        newdata = dsa
-      ) 
-      tab %>% 
-        dplyr::mutate_if(
-          names(tab) %in% attr(dsa, "variables"),
-          dplyr::funs(to_text_dots),
-          name = FALSE
-        )
-    }
-  )
+  list_res <- list()
+  for (n in strategy_names) {
+    message(sprintf(
+      "Running DSA on strategy '%s'...", n
+    ))
+    tab <- eval_strategy_newdata(
+      model,
+      strategy = n,
+      newdata = dsa$dsa
+    ) 
+    res <- tab %>% 
+      dplyr::mutate_if(
+        names(tab) %in% dsa$variables,
+        dplyr::funs(to_text_dots),
+        name = FALSE
+      )
+    list_res <- c(
+      list_res,
+      list(res)
+    )
+  }
   
   for (i in seq_along(strategy_names)) {
     list_res[[i]]$.strategy_names <- strategy_names[i]
@@ -44,7 +48,7 @@ run_dsa <- function(model, dsa) {
   
   res <- Reduce(dplyr::bind_rows, list_res) %>% 
     tidyr::gather_(".par_names", ".par_value",
-                   attr(dsa, "variables"), na.rm = TRUE)
+                   dsa$variables, na.rm = TRUE)
   res <- res %>% 
     dplyr::rowwise() %>% 
     dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
@@ -55,7 +59,7 @@ run_dsa <- function(model, dsa) {
   structure(
     list(
       dsa = res,
-      variables = attr(dsa, "variables"),
+      variables = dsa$variables,
       model = model
     ),
     class = c("dsa", class(res))

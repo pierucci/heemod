@@ -24,4 +24,3 @@ A list with elements: \itemize{ \item models (of
 Gather Information for Running a Model From Tabular Data
 }
 \keyword{internal}
-

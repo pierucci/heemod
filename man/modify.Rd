@@ -22,4 +22,3 @@ objects such as parameters, transitions matrix or states.
 More details are available on the respective help page of
 each object definition.
 }
-

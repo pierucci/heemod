@@ -2,8 +2,8 @@
 % Please edit documentation in R/tabular_input.R
 \name{is_csv}
 \alias{is_csv}
-\alias{is_xls}
 \alias{is_xlsx}
+\alias{is_xls}
 \title{Check File Type}
 \usage{
 is_csv(x)
@@ -23,4 +23,3 @@ Whether the file is (respectively)
 Check File Type
 }
 \keyword{internal}
-

@@ -21,4 +21,3 @@ Strategy names.
 Check Strategy Index
 }
 \keyword{internal}
-

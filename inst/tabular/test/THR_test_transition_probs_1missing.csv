@@ -1,0 +1,13 @@
+.model,from,to,prob
+standard,PrimaryTHR,SuccessfulPrimary,C
+standard,PrimaryTHR,Death,0.02
+standard,SuccessfulPrimary,SuccessfulPrimary,C
+standard,SuccessfulPrimary,RevisionTHR,pHRFailStandard
+new,SuccessfulPrimary,RevisionTHR,pHRFailNew
+standard,SuccessfulPrimary,Death,mr
+standard,RevisionTHR,SuccessfulRevision,
+standard,RevisionTHR,Death,0.02
+standard,SuccessfulRevision,SuccessfulRevision,C
+standard,SuccessfulRevision,RevisionTHR,0.04
+standard,SuccessfulRevision,Death,mr
+standard,Death,Death,1

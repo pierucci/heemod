@@ -38,12 +38,13 @@ b = a + 543',
   ..$ expr: num 4321',
       fixed = TRUE
     )
-    expect_error(
-      modify(
+    expect_identical(
+      names(modify(
         par1,
         a = 4321,
         c = 333
-      )
+      )),
+      letters[1:3]
     )
     expect_error(
       modify(
@@ -74,15 +75,7 @@ test_that(
     )
     expect_output(
       str(e_par1),
-      "10 obs. of  3 variables:
- $ markov_cycle: int  1 2 3 4 5 6 7 8 9 10
- $ a           : num  2 2 2 2 2 2 2 2 2 2
- $ b           : num  2 4 6 8 10 12 14 16 18 20",
-      fixed = TRUE
-    )
-    expect_output(
-      str(e_par1),
-      "10 obs\\. of  3 variables"
+      "10 obs\\. of  5 variables"
     )
     expect_equal(
       get_parameter_names(e_par1),
@@ -113,6 +106,36 @@ test_that(
     )
     expect_error(
       heemod:::check_names(c("a", ".b"))
+    )
+  }
+)
+
+test_that(
+  "we catch infinite parameters",
+  {
+    par1 <- define_parameters(
+      a = 2,
+      b = 1 / (markov_cycle - 3)
+    )
+    options(heemod.inf_parameter = "ignore")
+    e_par1 <- heemod:::eval_parameters(
+      par1, 5
+    )
+    expect_equal(
+      as.numeric(unlist(e_par1[,"b"])),
+      1/(-2:2)
+    )
+    options(heemod.inf_parameter = "warning")
+    expect_warning(
+      e_par1 <- heemod:::eval_parameters(
+        par1, 5
+      )
+    )
+    options(heemod.inf_parameter = "stop")
+    expect_error(
+      e_par1 <- heemod:::eval_parameters(
+        par1, 5
+      )
     )
   }
 )

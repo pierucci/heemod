@@ -4,6 +4,10 @@
 #' their correlation structure for probabilistic uncertainty
 #' analysis of Markov models.
 #' 
+#' The distributions must be defined within \code{heemod} 
+#' (see \link[=distributions]{this list}), or defined with
+#' \code{\link{define_distribution}}.
+#' 
 #' If no correlation matrix is specified parameters are 
 #' assumed to be independant.
 #' 
@@ -24,13 +28,19 @@
 #' @example inst/examples/example_define_resample.R
 #'   
 define_psa <- function(...,
-                            correlation) {
+                       correlation) {
   .dots <- list(...)
   
   list_input <- lapply(
     .dots,
-    function(x) eval(attr(stats::terms(x), "variables")[[3]])
-  )
+    function(x) {
+      terms <- attr(stats::terms(x), "variables")
+      if(length(terms) < 3){
+        stop("Incorrect PSA distribution definition for parameter: ",
+             as.character(terms[2]))
+      }
+      eval(terms[[3]], envir = asNamespace("heemod"))
+    })
   
   list_qdist <- unlist(
     list_input,
@@ -173,7 +183,7 @@ define_correlation_ <- function(.dots) {
     cor = unlist(list_res[seq(from = 3, to = length(list_res), by = 3)])
   )
   
-  if (any(res$cor >1) | any(res$cor < -1)) {
+  if (any(res$cor > 1) | any(res$cor < -1)) {
     stop("Correlation values must be between -1 and 1.")
   }
   
@@ -188,3 +198,27 @@ define_correlation_ <- function(.dots) {
   structure(res, class = c("correlation_matrix", class(res)))
 }
 
+#' @export
+print.correlation_matrix <- function(x, ...) {
+  var_names <- unique(c(x$v1, x$v2))
+  res <- diag(length(var_names))
+  colnames(res) <- var_names
+  rownames(res) <- var_names
+  
+  for (i in seq_len(nrow(x))) {
+    res[x$v1[i], x$v2[i]] <- x$cor[i]
+    res[x$v2[i], x$v1[i]] <- x$cor[i]
+  }
+  print(as.table(res), zero.print = "-", ...)
+}
+
+#' @export
+print.resamp_definition <- function(x, ...) {
+  cat(sprintf(
+    "A PSA definition:\n\n%i parameter%s resampled, %i multinomial group%s.\n",
+    length(x$list_qdist),
+    plur(length(x$list_qdist)),
+    length(x$multinom),
+    plur(length(x$multinom))
+  ))
+}
