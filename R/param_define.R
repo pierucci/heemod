@@ -106,14 +106,6 @@ modify.uneval_parameters <- function(.OBJECT, ...) {
 modify_.uneval_parameters <- function(.OBJECT, .dots) {
   
   check_names(names(.dots))
-  # !mod!
-  # message d'erreur informatif quand parametres pas dans
-  # bon ordre
-  #
-  
-  stopifnot(
-    all(names(.dots) %in% names(.OBJECT))
-  )
   
   utils::modifyList(.OBJECT, .dots)
 }

@@ -2,7 +2,7 @@
 
 [![Travis-CI Build Status](https://travis-ci.org/pierucci/heemod.svg?branch=devel)](https://travis-ci.org/pierucci/heemod) [![](http://www.r-pkg.org/badges/version/heemod)](http://www.r-pkg.org/pkg/heemod) [![Coverage Status](https://img.shields.io/codecov/c/github/pierucci/heemod/devel.svg)](https://codecov.io/github/pierucci/heemod?branch=devel)
 
-Toolset for Health Economic Evaluation Modelling for decision trees or cohort simulations. Provides a simple and consistent interface for Markov models specification, comparison, sensitivity and probabilistic analysis, input of survival models, etc. Models with time varying properties (non-homogeneous Markov models and semi-Markov models) are supported.
+Health Economic Evaluation Modelling: decision trees and cohort simulations. Provides a simple and consistent interface for Markov models specification, comparison, sensitivity and probabilistic analysis, input of survival models, etc. Models with time varying properties (non-homogeneous Markov models and semi-Markov models) are supported.
 
 Most of the analyses presented in [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do) can be performed with `heemod`. See `vignette("i-reproduction", "heemod")` for an exact reproduction of the analyses from the book.
 

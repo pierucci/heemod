@@ -1,6 +1,6 @@
 Package: heemod
 Title: Models for Health Economic Evaluation
-Version: 0.7.1
+Version: 0.8.0
 Authors@R: c(
     person("Antoine", "Filipovic-Pierucci", email = "pierucci@gmail.com", role = c("aut", "cre")),
     person("Kevin", "Zarca", email = "kevin.zarca@urc-eco.fr", role = "aut"),
@@ -8,8 +8,8 @@ Authors@R: c(
     person("Zdenek", "Kabat", role = "ctb"),
     person("Vojtech", "Filipec", role = "ctb")
     )
-Description: Toolset for Health Economic Evaluation Modelling
-    for decision trees or cohort simulations. Provides a simple
+Description: Health Economic Evaluation Modelling:
+    decision trees and cohort simulations. Provides a simple
     and consistent interface for Markov models specification,
     comparison, sensitivity and probabilistic analysis, input of
     survival models, etc. Models with time varying properties
