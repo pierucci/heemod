@@ -12,7 +12,7 @@ inflow.}
 }
 \value{
 An object similar to the return value of
-  \code{\link{define_parameters}}.
+\code{\link[=define_parameters]{define_parameters()}}.
 }
 \description{
 This function is a placeholder.

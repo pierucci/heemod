@@ -14,7 +14,7 @@
 \alias{define_distribution}
 \alias{beta}
 \alias{triangle}
-\title{Probability Density Functions for Probabilistic 
+\title{Probability Density Functions for Probabilistic
 Uncertainty Analysis}
 \usage{
 normal(mean, sd)
@@ -76,8 +76,8 @@ triangle(lower, upper, peak = (lower + upper)/2)
 Define a distribution for PSA parameters.
 }
 \details{
-These functions are not exported, but only used in 
-\code{\link{define_psa}}. To specify a user-made function
+These functions are not exported, but only used in
+\code{\link[=define_psa]{define_psa()}}. To specify a user-made function
 use \code{define_distribution}.
 
 \code{define_distribution} takes as argument a function

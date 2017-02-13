@@ -1,13 +1,13 @@
 #' Run Probabilistic Uncertainty Analysis
 #' 
-#' @param model The result of \code{\link{run_model}}.
+#' @param model The result of [run_model()].
 #' @param psa Resampling distribution for parameters defined
-#'   by \code{\link{define_psa}}.
+#'   by [define_psa()].
 #' @param resample Deprecated. Resampling distribution for
-#'   parameters defined by \code{\link{define_psa}}.
+#'   parameters defined by [define_psa()].
 #' @param N > 0. Number of simulation to run.
 #'   
-#' @return A list with one \code{data.frame} per model.
+#' @return A list with one `data.frame` per model.
 #' @export
 #' 
 #' @example inst/examples/example_run_psa.R
@@ -129,11 +129,11 @@ eval_correlation <- function(x, var_names) {
 
 #' Evaluate Resampling Definition
 #' 
-#' @param psa A \code{\link{define_psa}} object.
+#' @param psa A [define_psa()] object.
 #' @param N > 0. Number of simulation to run.
 #'   
-#' @return A \code{data.frame} of resampled values with on 
-#'   column per parameter and \code{N} rows.
+#' @return A `data.frame` of resampled values with on 
+#'   column per parameter and `N` rows.
 #'   
 #' @keywords internal
 eval_resample <- function(psa, N) {

@@ -4,29 +4,29 @@
 #' a given country.
 #' 
 #' Locally cached data is used in case of connection 
-#' problems, of if \code{local = TRUE}. For memory space 
+#' problems, of if `local = TRUE`. For memory space 
 #' reasons local data is only available for WHO high-income 
 #' countries, and only for the latest year.
 #' 
-#' The results of \code{get_who_mr} are memoised for
-#' \code{options("heemod.memotime")} (default: 1 hour) to
+#' The results of `get_who_mr` are memoised for
+#' `options("heemod.memotime")` (default: 1 hour) to
 #' increase resampling performance.
 #' 
 #' @name who-mortality
 #' @param age age as a continuous variable.
-#' @param sex sex as \code{"FMLE"}-\code{"MLE"}, 
-#'   \code{0}-\code{1} (male = 0, female = 1) or 
-#'   \code{1}-\code{2} (male = 1, female = 2).
+#' @param sex sex as `"FMLE"`-`"MLE"`, 
+#'   `0`-`1` (male = 0, female = 1) or 
+#'   `1`-`2` (male = 1, female = 2).
 #' @param country Country code (see details).
 #' @param year Use data from that year. Defaults to 
-#'   \code{"latest"}.
+#'   `"latest"`.
 #' @param pool Pool female and male mortality rates?
 #' @param local Fetch mortality data from package cached 
 #'   data?
 #'   
 #' @return This function should be used within 
-#'   \code{\link{define_transition}} or 
-#'   \code{\link{define_parameters}}.
+#'   [define_transition()] or 
+#'   [define_parameters()].
 #'   
 #' @examples 
 #' 

@@ -16,26 +16,26 @@ define_state_list_(.dots)
 \item{...}{Name-value pairs of expressions defining model
 states.}
 
-\item{.dots}{List of states, only used by 
+\item{.dots}{List of states, only used by
 \code{define_state_list_} to avoid using \code{...}.}
 
 \item{.OBJECT}{An \code{uneval_states} object.}
 }
 \value{
-An object of class \code{uneval_state_list} (a 
-  list of \code{state} objects).
+An object of class \code{uneval_state_list} (a
+list of \code{state} objects).
 }
 \description{
-Define the states of a Markov model by combining 
+Define the states of a Markov model by combining
 \code{state} objects.
 }
 \details{
 State names have to correspond to those specified through
-\code{\link{define_transition}}.
+\code{\link[=define_transition]{define_transition()}}.
 
 All states should have the same value names.
 
-The \code{modify} function can modify existing states or 
+The \code{modify} function can modify existing states or
 add new ones.
 }
 \examples{

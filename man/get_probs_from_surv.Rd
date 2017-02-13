@@ -19,28 +19,28 @@ get_probs_from_surv_(x, ...)
 get_probs_from_surv(x, ...)
 }
 \arguments{
-\item{x}{Either a result from 
-\code{\link[flexsurv]{flexsurvreg}} or
-\code{\link{define_survival}}.}
+\item{x}{Either a result from
+\code{\link[flexsurv:flexsurvreg]{flexsurv::flexsurvreg()}} or
+\code{\link[=define_survival]{define_survival()}}.}
 
 \item{...}{arguments passed to methods.}
 
-\item{cycle}{The \code{markov_cycle} or 
+\item{cycle}{The \code{markov_cycle} or
 \code{state_time} for which to predict.}
 
-\item{km_limit}{Up to what time should Kaplan-Meier 
-estimates be used? Model predictions will be used 
+\item{km_limit}{Up to what time should Kaplan-Meier
+estimates be used? Model predictions will be used
 thereafter. See \code{Details}.}
 
-\item{cycle_length}{The value of a Markov cycle in 
+\item{cycle_length}{The value of a Markov cycle in
 absolute time units.}
 
-\item{type}{either \code{prob}, for transition 
+\item{type}{either \code{prob}, for transition
 probabilities, or \code{surv}, for survival}
 }
 \value{
 Returns the Markov transition probability for the
-  cycles.
+cycles.
 }
 \description{
 Get probabilities from survival models.

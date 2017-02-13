@@ -2,9 +2,9 @@
 #' 
 #' @param model An evaluated Markov model.
 #' @param dsa An object returned by 
-#'   \code{\link{define_dsa}}.
+#'   [define_dsa()].
 #'   
-#' @return A \code{data.frame} with one row per model and 
+#' @return A `data.frame` with one row per model and 
 #'   parameter value.
 #' @export
 #' 

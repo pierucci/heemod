@@ -15,12 +15,12 @@
 #' @param value The value to extract ffrom the reference 
 #'   data frame.
 #' @param ... Individual characteristics, should be named 
-#'   like the columns of \code{data}.
+#'   like the columns of `data`.
 #' @param bin Either logical: should all numeric variable be
 #'   binned, or character vector giving the names of
 #'   variables to bin (see examples).
 #'   
-#' @return A vector of values, same lenght as \code{...}.
+#' @return A vector of values, same lenght as `...`.
 #' @export
 #' 
 #' @example inst/examples/example_look_up.R

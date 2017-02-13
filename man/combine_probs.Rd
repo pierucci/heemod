@@ -13,7 +13,7 @@ combine_probs(...)
 A probability vector.
 }
 \description{
-Given several independent probabilities of an event, 
+Given several independent probabilities of an event,
 return the final probability of the event.
 }
 \details{

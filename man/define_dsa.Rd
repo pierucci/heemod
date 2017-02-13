@@ -10,9 +10,9 @@ define_dsa(...)
 define_dsa_(par_names, low_dots, high_dots)
 }
 \arguments{
-\item{...}{A list of parameter names and min/max values 
+\item{...}{A list of parameter names and min/max values
 of the form \code{var1, min(var1), max(var1), var2,
-min(var2), max(var2), ...}.}
+  min(var2), max(var2), ...}.}
 
 \item{par_names}{String vector of parameter names.}
 
@@ -23,7 +23,7 @@ non-standard evaluation.}
 A \code{sensitivity} object.
 }
 \description{
-Define parameter variations for a Markov model 
+Define parameter variations for a Markov model
 sensitivity analysis.
 }
 \examples{

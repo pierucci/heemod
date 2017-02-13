@@ -11,7 +11,7 @@ get_frontier(x)
 }
 \value{
 A vector of model names on the efficiency
-  frontier.
+frontier.
 }
 \description{
 Return Efficiency Frontier

@@ -7,17 +7,17 @@
 acceptability_curve(x, wtp_thresholds)
 }
 \arguments{
-\item{x}{Result from \code{\link{run_psa}}.}
+\item{x}{Result from \code{\link[=run_psa]{run_psa()}}.}
 
 \item{wtp_thresholds}{willingness to pay thresholds}
 }
 \value{
-A data frame with columns \code{.ceac} (the 
-  cost-effectiveness acceptability threshold), 
-  \code{.model} (treatments or models), \code{.n} (the 
-  number of cases in which the treatment was most 
-  cost-effective), and \code{.p} (the proportion of cases
-  where the treatment was most effective).
+A data frame with columns \code{.ceac} (the
+cost-effectiveness acceptability threshold),
+\code{.model} (treatments or models), \code{.n} (the
+number of cases in which the treatment was most
+cost-effective), and \code{.p} (the proportion of cases
+where the treatment was most effective).
 }
 \description{
 Acceptability Curve from Probabilistic Analysis
