@@ -11,8 +11,8 @@
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -81,9 +81,9 @@
     </div>
 
     
-    <p>Define a matrix of transition probabilities. Probability 
-can depend on parameters defined with 
-<code><a href='define_parameters.html'>define_parameters</a></code>, and can thus be 
+    <p>Define a matrix of transition probabilities. Probability
+can depend on parameters defined with
+<code><a href='define_parameters.html'>define_parameters()</a></code>, and can thus be
 time-dependent.</p>
     
 
@@ -102,12 +102,12 @@ time-dependent.</p>
     <dl class="dl-horizontal">
       <dt>...</dt>
       <dd>Name-value pairs of expressions definig matrix
-cells. Can refer to parameters defined with 
-<code><a href='define_parameters.html'>define_parameters</a></code>. For <code>plot</code>, 
+cells. Can refer to parameters defined with
+<code><a href='define_parameters.html'>define_parameters()</a></code>. For <code>plot</code>,
 additional arguments passed to
-<code><a href='http://www.rdocumentation.org/packages/diagram/topics/plotmat'>plotmat</a></code>.</dd>
+<code><a href='http://www.rdocumentation.org/packages/diagram/topics/plotmat'>diagram::plotmat()</a></code>.</dd>
       <dt>state_names</dt>
-      <dd>character vector, optional. State 
+      <dd>character vector, optional. State
 names.</dd>
       <dt>.dots</dt>
       <dd>Used to work around non-standard evaluation.</dd>
@@ -117,36 +117,36 @@ names.</dd>
       <dd>An <code>uneval_matrix</code> to plot.</dd>
       <dt>relsize</dt>
       <dd>Argument passed to
-<code><a href='http://www.rdocumentation.org/packages/diagram/topics/plotmat'>plotmat</a></code>.</dd>
+<code><a href='http://www.rdocumentation.org/packages/diagram/topics/plotmat'>diagram::plotmat()</a></code>.</dd>
       <dt>shadow.size</dt>
-      <dd>Argument passed to 
-<code><a href='http://www.rdocumentation.org/packages/diagram/topics/plotmat'>plotmat</a></code>.</dd>
+      <dd>Argument passed to
+<code><a href='http://www.rdocumentation.org/packages/diagram/topics/plotmat'>diagram::plotmat()</a></code>.</dd>
       <dt>latex</dt>
       <dd>Argument passed to
-<code><a href='http://www.rdocumentation.org/packages/diagram/topics/plotmat'>plotmat</a></code>.</dd>
+<code><a href='http://www.rdocumentation.org/packages/diagram/topics/plotmat'>diagram::plotmat()</a></code>.</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>An object of class <code>uneval_matrix</code> (actually
-  a named list of <code>lazy</code> expressions).</p>
+a named list of <code>lazy</code> expressions).</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Parameters names are searched first in a parameter object
-defined with <code><a href='define_parameters.html'>define_parameters</a></code> and linked 
-with the matrix through <code><a href='define_strategy.html'>define_strategy</a></code>; 
+defined with <code><a href='define_parameters.html'>define_parameters()</a></code> and linked
+with the matrix through <code><a href='define_strategy.html'>define_strategy()</a></code>;
 then in the environment where the matrix was defined.</p>
     <p>Matric cells are listed by row.</p>
     <p>The completary probability of all other row probabilities
 can be conveniently reffered as <code>C</code>.</p>
-    <p>Only matrix size is checked during this step (the matrix 
+    <p>Only matrix size is checked during this step (the matrix
 must be square). Other conditions (such as row sums being
 equal to 1) are tested later, during model evaluation.</p>
-    <p>For the <code>modify</code> function existing matrix cells are 
+    <p>For the <code>modify</code> function existing matrix cells are
 replaced with the new expression. Cells are referenced by
 name. Cell naming follows the <code>cell_x_y</code> convention,
-with <code>x</code> being the row number and <code>y</code> the 
+with <code>x</code> being the row number and <code>y</code> the
 column number.</p>
     
 

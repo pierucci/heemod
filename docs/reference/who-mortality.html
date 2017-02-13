@@ -11,8 +11,8 @@
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -81,7 +81,7 @@
     </div>
 
     
-    <p>Returns age and sex-specific mortality probabilities for 
+    <p>Returns age and sex-specific mortality probabilities for
 a given country.</p>
     
 
@@ -96,32 +96,32 @@ a given country.</p>
       <dt>age</dt>
       <dd>age as a continuous variable.</dd>
       <dt>sex</dt>
-      <dd>sex as <code>&quot;FMLE&quot;</code>-<code>&quot;MLE&quot;</code>, 
-<code>0</code>-<code>1</code> (male = 0, female = 1) or 
+      <dd>sex as <code>&quot;FMLE&quot;</code>-<code>&quot;MLE&quot;</code>,
+<code>0</code>-<code>1</code> (male = 0, female = 1) or
 <code>1</code>-<code>2</code> (male = 1, female = 2).</dd>
       <dt>country</dt>
       <dd>Country code (see details).</dd>
       <dt>year</dt>
-      <dd>Use data from that year. Defaults to 
+      <dd>Use data from that year. Defaults to
 <code>&quot;latest&quot;</code>.</dd>
       <dt>pool</dt>
       <dd>Pool female and male mortality rates?</dd>
       <dt>local</dt>
-      <dd>Fetch mortality data from package cached 
+      <dd>Fetch mortality data from package cached
 data?</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>This function should be used within 
-  <code><a href='define_transition.html'>define_transition</a></code> or 
-  <code><a href='define_parameters.html'>define_parameters</a></code>.</p>
+    <p>This function should be used within
+<code><a href='define_transition.html'>define_transition()</a></code> or
+<code><a href='define_parameters.html'>define_parameters()</a></code>.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Locally cached data is used in case of connection 
-problems, of if <code>local = TRUE</code>. For memory space 
-reasons local data is only available for WHO high-income 
+    <p>Locally cached data is used in case of connection
+problems, of if <code>local = TRUE</code>. For memory space
+reasons local data is only available for WHO high-income
 countries, and only for the latest year.</p>
     <p>The results of <code>get_who_mr</code> are memoised for
 <code>options(&quot;heemod.memotime&quot;)</code> (default: 1 hour) to

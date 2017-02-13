@@ -11,8 +11,8 @@
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -93,18 +93,18 @@ survival and overall survival.</p>
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
       <dt>pfs, os</dt>
-      <dd>Either results from 
-<code><a href='http://www.rdocumentation.org/packages/flexsurv/topics/flexsurvreg'>flexsurvreg</a></code> or 
-<code><a href='define_survival.html'>define_survival</a></code>.</dd>
+      <dd>Either results from
+<code><a href='http://www.rdocumentation.org/packages/flexsurv/topics/flexsurvreg'>flexsurv::flexsurvreg()</a></code> or
+<code><a href='define_survival.html'>define_survival()</a></code>.</dd>
       <dt>state_names</dt>
       <dd>named character vector, length 3 or 4.
-State names for progression-free state, progression, 
-(optionally terminal) and death respectively. Elements 
-should be named <code>&quot;progression_free&quot;</code>, 
-<code>&quot;progression&quot;</code>, (optionally <code>&quot;terminal&quot;</code>), 
+State names for progression-free state, progression,
+(optionally terminal) and death respectively. Elements
+should be named <code>&quot;progression_free&quot;</code>,
+<code>&quot;progression&quot;</code>, (optionally <code>&quot;terminal&quot;</code>),
 and <code>&quot;death&quot;</code>. See examples.</dd>
       <dt>terminal_state</dt>
-      <dd>Should a terminal state be 
+      <dd>Should a terminal state be
 included? Only used when state names are not provided.</dd>
       <dt>km_limit</dt>
       <dd>Up to what time should Kaplan-Meier
@@ -138,12 +138,12 @@ absolute time units.</dd>
 )</div><div class='output co'>#&gt; $pfs
 #&gt; &lt;lazy&gt;
 #&gt;   expr: dist_pfs
-#&gt;   env:  &lt;environment: 0xa8434e8&gt;
+#&gt;   env:  &lt;environment: 0x8d65b30&gt;
 #&gt; 
 #&gt; $os
 #&gt; &lt;lazy&gt;
 #&gt;   expr: dist_os
-#&gt;   env:  &lt;environment: 0xa8434e8&gt;
+#&gt;   env:  &lt;environment: 0x8d65b30&gt;
 #&gt; 
 #&gt; $state_names
 #&gt; progression_free      progression         terminal            death 
@@ -164,12 +164,12 @@ absolute time units.</dd>
 )</div><div class='output co'>#&gt; <span class='message'>No named state -&gt; generating names.</span></div><div class='output co'>#&gt; $pfs
 #&gt; &lt;lazy&gt;
 #&gt;   expr: dist_pfs
-#&gt;   env:  &lt;environment: 0xa8434e8&gt;
+#&gt;   env:  &lt;environment: 0x8d65b30&gt;
 #&gt; 
 #&gt; $os
 #&gt; &lt;lazy&gt;
 #&gt;   expr: dist_os
-#&gt;   env:  &lt;environment: 0xa8434e8&gt;
+#&gt;   env:  &lt;environment: 0x8d65b30&gt;
 #&gt; 
 #&gt; $state_names
 #&gt; progression_free      progression         terminal            death 

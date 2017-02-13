@@ -11,8 +11,8 @@
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -81,8 +81,8 @@
     </div>
 
     
-    <p>Parse a <code>data.frame</code> containing specifications for 
-multiple models into a list of inputs required for each 
+    <p>Parse a <code>data.frame</code> containing specifications for
+multiple models into a list of inputs required for each
 model.</p>
     
 
@@ -93,29 +93,29 @@ model.</p>
       <dt>multi_spec</dt>
       <dd><code>data frame</code>.</dd>
       <dt>split_on</dt>
-      <dd><code>character</code> of length 1, with the 
-name of the variable in <code>multi_spec</code> to be split 
+      <dd><code>character</code> of length 1, with the
+name of the variable in <code>multi_spec</code> to be split
 on.</dd>
       <dt>group_vars</dt>
-      <dd><code>character</code>, one or more variable 
-names from <code>multi_spec</code> that identify a line of 
+      <dd><code>character</code>, one or more variable
+names from <code>multi_spec</code> that identify a line of
 information.</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list of data frames, one for each value of 
- <code>split_on.</code></p>
+    <p>A list of data frames, one for each value of
+<code>split_on.</code></p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Each combination of values of the columns specified by 
-<code>group_vars</code> should either be unique in the file (in 
-which case it will be replicated for all values of 
-<code>split_on</code>), or must be repeated as many times as 
+    <p>Each combination of values of the columns specified by
+<code>group_vars</code> should either be unique in the file (in
+which case it will be replicated for all values of
+<code>split_on</code>), or must be repeated as many times as
 unique values of <code>split_on</code>.</p>
     <p><code>split_on</code> is usually the model name.</p>
-    <p><code>group_var</code> can be the state names, or from and to 
+    <p><code>group_var</code> can be the state names, or from and to
 lines for a matrix definition...</p>
     
 

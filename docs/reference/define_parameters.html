@@ -11,8 +11,8 @@
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -82,8 +82,8 @@
 
     
     <p>Define parameters called to compute the transition matrix
-or state values for a Markov model. Parameters can be 
-time dependent by using the <code>markov_cycle</code> 
+or state values for a Markov model. Parameters can be
+time dependent by using the <code>markov_cycle</code>
 parameter.</p>
     
 
@@ -97,39 +97,39 @@ parameter.</p>
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
       <dt>...</dt>
-      <dd>Name-value pairs of expressions definig 
+      <dd>Name-value pairs of expressions definig
 parameters.</dd>
       <dt>.dots</dt>
       <dd>Used to work around non-standard evaluation.</dd>
       <dt>.OBJECT</dt>
-      <dd>An object of class 
+      <dd>An object of class
 <code>uneval_parameters</code>.</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code>uneval_parameters</code> 
-  (actually a named list of <code>lazy</code> expressions).</p>
+    <p>An object of class <code>uneval_parameters</code>
+(actually a named list of <code>lazy</code> expressions).</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Parameters are defined sequencially, parameters defined 
+    <p>Parameters are defined sequencially, parameters defined
 earlier can be called in later expressions.</p>
-    <p>Vector length should not be explicitly set, but should 
-instead be stated relatively to <code>markov_cycle</code> 
-(whose length depends on the number of simulation 
-cycles). Alternatively, <code>dplyr</code> functions such as 
+    <p>Vector length should not be explicitly set, but should
+instead be stated relatively to <code>markov_cycle</code>
+(whose length depends on the number of simulation
+cycles). Alternatively, <code>dplyr</code> functions such as
 <code>n()</code> or <code>row_numbers()</code> can be used.</p>
     <p>This function relies heavily on the <code>dplyr</code> package.
-Parameter definitions should thus mimic the use of 
+Parameter definitions should thus mimic the use of
 functions such as <code>mutate</code>.</p>
-    <p>Variable names are searched first in the parameter 
-definition (only parameters defined earlier are visible) 
-then in the environment where <code>define_parameters</code> 
+    <p>Variable names are searched first in the parameter
+definition (only parameters defined earlier are visible)
+then in the environment where <code>define_parameters</code>
 was called.</p>
-    <p>For the <code>modify</code> function, existing parameters are 
-modified, but no new parameter can be added. Parameter 
-order matters since only parameters defined earlier can 
+    <p>For the <code>modify</code> function, existing parameters are
+modified, but no new parameter can be added. Parameter
+order matters since only parameters defined earlier can
 be referenced in later expressions.</p>
     
 

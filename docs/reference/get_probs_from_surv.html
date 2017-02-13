@@ -11,8 +11,8 @@
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -99,30 +99,30 @@
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
       <dt>x</dt>
-      <dd>Either a result from 
-<code><a href='http://www.rdocumentation.org/packages/flexsurv/topics/flexsurvreg'>flexsurvreg</a></code> or
-<code><a href='define_survival.html'>define_survival</a></code>.</dd>
+      <dd>Either a result from
+<code><a href='http://www.rdocumentation.org/packages/flexsurv/topics/flexsurvreg'>flexsurv::flexsurvreg()</a></code> or
+<code><a href='define_survival.html'>define_survival()</a></code>.</dd>
       <dt>...</dt>
       <dd>arguments passed to methods.</dd>
       <dt>cycle</dt>
-      <dd>The <code>markov_cycle</code> or 
+      <dd>The <code>markov_cycle</code> or
 <code>state_time</code> for which to predict.</dd>
       <dt>km_limit</dt>
-      <dd>Up to what time should Kaplan-Meier 
-estimates be used? Model predictions will be used 
+      <dd>Up to what time should Kaplan-Meier
+estimates be used? Model predictions will be used
 thereafter. See <code>Details</code>.</dd>
       <dt>cycle_length</dt>
-      <dd>The value of a Markov cycle in 
+      <dd>The value of a Markov cycle in
 absolute time units.</dd>
       <dt>type</dt>
-      <dd>either <code>prob</code>, for transition 
+      <dd>either <code>prob</code>, for transition
 probabilities, or <code>surv</code>, for survival</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Returns the Markov transition probability for the
-  cycles.</p>
+cycles.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
