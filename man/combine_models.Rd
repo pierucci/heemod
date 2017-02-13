@@ -7,7 +7,7 @@
 combine_models(newmodels, weights, oldmodel)
 }
 \arguments{
-\item{newmodels}{A list of models run over a set of 
+\item{newmodels}{A list of models run over a set of
 multiple parameters.}
 
 \item{weights}{A vector of weigths, same length as the
@@ -17,11 +17,11 @@ number of parameter sets.}
 }
 \value{
 A \code{combined_models} object, mostly similar
-  to a result from \code{\link{run_model}}. \code{plot}
-  and \code{summary} methods are available.
+to a result from \code{\link[=run_model]{run_model()}}. \code{plot}
+and \code{summary} methods are available.
 }
 \description{
-Given a set of models run with different parameters, 
+Given a set of models run with different parameters,
 return aggregated results to estimate population-level
 values.
 }

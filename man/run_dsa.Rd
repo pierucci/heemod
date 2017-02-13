@@ -9,12 +9,12 @@ run_dsa(model, dsa)
 \arguments{
 \item{model}{An evaluated Markov model.}
 
-\item{dsa}{An object returned by 
-\code{\link{define_dsa}}.}
+\item{dsa}{An object returned by
+\code{\link[=define_dsa]{define_dsa()}}.}
 }
 \value{
-A \code{data.frame} with one row per model and 
-  parameter value.
+A \code{data.frame} with one row per model and
+parameter value.
 }
 \description{
 Run Sensitivity Analysis

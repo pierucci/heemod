@@ -19,7 +19,7 @@ print.uneval_model <- function(x, ...) {
 #' 
 #' Various plots for Markov models.
 #' 
-#' @param x Result from \code{\link{run_model}}.
+#' @param x Result from [run_model()].
 #' @param type Type of plot, see details.
 #' @param strategy Name or position of model(s) of interest.
 #' @param states Names of states to be included in
@@ -30,19 +30,19 @@ print.uneval_model <- function(x, ...) {
 #'   any of the costs or effects defined in states.
 #' @param free_y Should y limits be free between panels?
 #' @param bw Black & white plot for publications?
-#' @param ... Additional arguments passed to \code{plot}.
+#' @param ... Additional arguments passed to `plot`.
 #'   
-#' \code{type = "counts"} represents state
-#' memberships (corrected) by cycle, \code{type = "ce"}
+#' `type = "counts"` represents state
+#' memberships (corrected) by cycle, `type = "ce"`
 #' plots models on the cost-efficiency plane with the
-#' efficiency frontier, and \code{type = "values"} state
+#' efficiency frontier, and `type = "values"` state
 #' values per cycle.
 #' 
-#' When \code{states} is specified, the states will be turned into
+#' When `states` is specified, the states will be turned into
 #' a factor with the ordering given in the variable, so that
 #' plotting order can be controlled.
 #' 
-#' @return A \code{ggplot2} object.
+#' @return A `ggplot2` object.
 #' 
 #' @example inst/examples/example_plot.run_model.R
 #' 

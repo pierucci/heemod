@@ -1,13 +1,13 @@
 #' Display the Code to Generate an Object
 #' 
-#' This function returns the \code{R} code to generate an
-#' \code{heemod} object.
+#' This function returns the `R` code to generate an
+#' `heemod` object.
 #' 
-#' @param x An \code{heemod} object.
+#' @param x An `heemod` object.
 #' @param name character. Optional argument giving the name
 #'   to assign to the object.
 #' @param sub logical. Should states or models be referenced
-#'   by name in \code{define_strategy} and \code{run_model}
+#'   by name in `define_strategy` and `run_model`
 #'   instead of including the entire code?
 #' @param depth Depth of the function call.
 #' @param n_space Number of space used for indentation.

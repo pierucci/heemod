@@ -41,7 +41,7 @@ rate.}
 A probability.
 }
 \description{
-These convienience functions make it easier to compute 
+These convienience functions make it easier to compute
 transition probabilities from indidence rates, OR, RR, or
 probabilities estimated on a different timeframe.
 }

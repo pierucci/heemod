@@ -4,9 +4,9 @@
 #' their correlation structure for probabilistic uncertainty
 #' analysis of Markov models.
 #' 
-#' The distributions must be defined within \code{heemod} 
-#' (see \link[=distributions]{this list}), or defined with
-#' \code{\link{define_distribution}}.
+#' The distributions must be defined within `heemod` 
+#' (see [distributions]), or defined with
+#' [define_distribution()].
 #' 
 #' If no correlation matrix is specified parameters are 
 #' assumed to be independant.
@@ -16,13 +16,13 @@
 #' 
 #' @param ... Formulas defining parameter distributions.
 #' @param correlation A correlation matrix for parameters or
-#'   the output of \code{\link{define_correlation}}.
+#'   the output of [define_correlation()].
 #' @param list_qdist List of resampling functions.
 #' @param list_multi List of multinomial parameters.
 #'   
-#' @return An object of class \code{resamp_definition}. 
-#'   Contains \code{list_qdist}, a list of quantile 
-#'   functions and \code{correlation} a correlation matrix.
+#' @return An object of class `resamp_definition`. 
+#'   Contains `list_qdist`, a list of quantile 
+#'   functions and `correlation` a correlation matrix.
 #' @export
 #' 
 #' @example inst/examples/example_define_resample.R
@@ -104,7 +104,7 @@ define_psa_ <- function(list_qdist, list_multi, correlation) {
 #' 
 #' @param x A vector of parameter names.
 #'   
-#' @return An object of class \code{multinomial}.
+#' @return An object of class `multinomial`.
 #'   
 define_multinom <- function(x) {
   char_var <- x
@@ -144,7 +144,7 @@ define_multinom <- function(x) {
 #'   var2), var3, var4, cor(var3, var4), ...}.
 #' @param .dots Used to work around non-standard evaluation.
 #'   
-#' @return An object of class \code{correlation_matrix}.
+#' @return An object of class `correlation_matrix`.
 #' @export
 #' 
 #' @examples

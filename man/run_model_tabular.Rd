@@ -21,25 +21,25 @@ run_model_tabular(location, reference = "REFERENCE.csv", run_psa = TRUE,
 \item{overwrite}{Should the outputs be overwritten?}
 }
 \value{
-A list of evaluated models (always), and, if 
-  appropriate input is provided, dsa (deterministic 
-  sensitivity analysis), psa (probabilistic sensitivity 
-  analysis) and demographics (results across different 
-  demographic groups).
+A list of evaluated models (always), and, if
+appropriate input is provided, dsa (deterministic
+sensitivity analysis), psa (probabilistic sensitivity
+analysis) and demographics (results across different
+demographic groups).
 }
 \description{
 This function runs a model from tabular input.
 }
 \details{
-The reference file should have two columns, \code{data} 
-and \code{file}. An optional \code{absolute_path} column 
-can be added, having value \code{TRUE} where an absolute 
-file path is provided. \code{data} values must include 
-\code{state}, \code{tm}, and \code{parameters}, and can 
-also include \code{options}, \code{demographics} and 
+The reference file should have two columns, \code{data}
+and \code{file}. An optional \code{absolute_path} column
+can be added, having value \code{TRUE} where an absolute
+file path is provided. \code{data} values must include
+\code{state}, \code{tm}, and \code{parameters}, and can
+also include \code{options}, \code{demographics} and
 \code{data}.  The corresponding values in the \code{file}
-column give the names of the files (located in 
-\code{base_dir}) that contain the corresponding 
-information - or, in the case of \code{data}, the 
+column give the names of the files (located in
+\code{base_dir}) that contain the corresponding
+information - or, in the case of \code{data}, the
 directory containing the tables to be loaded.
 }

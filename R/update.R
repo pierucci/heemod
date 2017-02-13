@@ -4,42 +4,42 @@
 #' parameter set per line, runs iteratively Markov models 
 #' over these sets.
 #' 
-#' \code{newdata} must be a \code{data.frame} with the
+#' `newdata` must be a `data.frame` with the
 #' following properties: the column names must be parameter 
-#' names used in \code{\link{define_parameters}}; and an
-#' optional column \code{.weights} can give the respective
+#' names used in [define_parameters()]; and an
+#' optional column `.weights` can give the respective
 #' weight of each row in the target population.
 #' 
 #' Weights are automatillcally scaled. If no weights are
 #' provided equal weights are used for each strata.
 #' 
-#' For the plotting function, the \code{type} argument can
-#' take the following values: \code{"cost"}, \code{"effect"}
-#' or \code{"icer"} to plot the heterogeneity of the
-#' respective values. Furthermore \code{"ce"} and
-#' \code{"count"} can produce from the combined model plots
-#' similar to those of \code{\link{run_model}}.
+#' For the plotting function, the `type` argument can
+#' take the following values: `"cost"`, `"effect"`
+#' or `"icer"` to plot the heterogeneity of the
+#' respective values. Furthermore `"ce"` and
+#' `"count"` can produce from the combined model plots
+#' similar to those of [run_model()].
 #' 
 #' @name update-model
-#' @param object The result of \code{\link{run_model}}.
-#' @param newdata A \code{data.frame} of new parameter sets,
+#' @param object The result of [run_model()].
+#' @param newdata A `data.frame` of new parameter sets,
 #'   one column per parameter and one row per parameter set.
-#'   An optional \code{.weights} column can be included for
+#'   An optional `.weights` column can be included for
 #'   a weighted analysis.
 #' @param x Updated model to plot.
 #' @param strategy A model index, character or numeric.
 #' @param result The the result to plot (see details).
 #' @param type Plot simple values or differences?
 #' @param ... Additional arguments passed to
-#'   \code{geom_histogram}. Especially usefull to specify
-#'   \code{binwidth}.
+#'   `geom_histogram`. Especially usefull to specify
+#'   `binwidth`.
 #'   
 #' @section Warning:
 #'   
 #'   Histograms do not account for weights. On the other
 #'   hand summary results do.
 #'   
-#' @return A \code{data.frame} with one row per model/value.
+#' @return A `data.frame` with one row per model/value.
 #' @export
 #' 
 #' @example inst/examples/example_update.R

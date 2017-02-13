@@ -33,7 +33,7 @@ Imports: dplyr,
 License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 6.0.0
+RoxygenNote: 6.0.1
 Suggests: diagram,
           flexsurv,
           Hmisc,
@@ -49,3 +49,4 @@ Suggests: diagram,
           triangle
 URL: https://github.com/pierucci/heemod, https://pierucci.org
 BugReports: https://github.com/pierucci/heemod/issues
+Roxygen: list(markdown = TRUE)

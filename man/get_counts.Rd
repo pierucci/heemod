@@ -22,7 +22,7 @@ get_counts(x, ...)
 \method{get_counts}{list}(x, ...)
 }
 \arguments{
-\item{x}{Result from \code{\link{run_model}}.}
+\item{x}{Result from \code{\link[=run_model]{run_model()}}.}
 
 \item{...}{further arguments passed to or from other
 methods.}
@@ -31,6 +31,6 @@ methods.}
 A data frame of counts per state.
 }
 \description{
-Given a result from \code{\link{run_model}}, return 
+Given a result from \code{\link[=run_model]{run_model()}}, return
 state membership counts for a specific strategy.
 }

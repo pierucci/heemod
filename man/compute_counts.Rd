@@ -10,7 +10,7 @@ compute_counts(x, ...)
 \item{x}{An \code{eval_matrix} or
 \code{eval_part_surv} object.}
 
-\item{init}{numeric vector, same length as number of 
+\item{init}{numeric vector, same length as number of
 model states. Number of individuals in each model state
 at the beginning.}
 
@@ -23,14 +23,14 @@ Number of new individuals in each state per cycle.}
 A \code{cycle_counts} object.
 }
 \description{
-Given an initial number of individual and an evaluated 
-transition matrix, returns the number of individual per 
+Given an initial number of individual and an evaluated
+transition matrix, returns the number of individual per
 state per cycle.
 }
 \details{
-Use the \code{method} argument to specify if transitions 
-are supposed to happen at the beginning or the end of 
-each cycle. Alternatively linear interpolation between 
+Use the \code{method} argument to specify if transitions
+are supposed to happen at the beginning or the end of
+each cycle. Alternatively linear interpolation between
 cycles can be performed.
 }
 \keyword{internal}
