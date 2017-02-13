@@ -33,7 +33,7 @@ Imports: dplyr,
 License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 6.0.0
+RoxygenNote: 6.0.1
 Suggests: diagram,
           flexsurv,
           Hmisc,
