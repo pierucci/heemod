@@ -140,3 +140,20 @@ modify_.uneval_matrix <- function(.OBJECT, .dots){
   
   utils::modifyList(.OBJECT, .dots)
 }
+
+
+#' Modify an unevaluated transition object
+#'
+#' @param x a transition object
+#' @param transition_options a list of options for modifying the transition object
+#' @param ... additional arguments for modification
+#'
+#' @return a modified version of the transition object
+#' @export
+#'
+modify_transition <- function(x, ...){
+  UseMethod("modify_transition")
+}
+modify_transition.default <- function(x){
+  x
+}

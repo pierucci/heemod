@@ -138,10 +138,12 @@ get_probs_from_surv_.flexsurvreg <- function(x, cycle,
 #' @rdname get_probs_from_surv
 #' @export
 get_probs_from_surv_.surv_dist <- function(x, cycle,
-                                          km_limit = 0,
                                           cycle_length = 1,
                                           type = c("prob", "surv"),
                                           ...) {
+
+  ## ... here absorbs km_limit, which is used for flexsurvreg
+  ## objects but not for surv_dist objects
   type <- match.arg(type)
   
   stopifnot(
@@ -203,20 +205,29 @@ define_survival <- function(distribution = c("exp", "weibull",
   list_arg <- list(...)
   
   if (distribution %in% c("exp", "weibull",
-                          "lnorm", "gamma")) {
+                          "lnorm", "gamma", "beta")) {
     env_f <- asNamespace("stats")
-  } else {
-    if (! requireNamespace("flexsurv")) {
-      stop("'flexsurv' package required.")
+  } 
+  if(distribution == "triangle"){
+      if( ! requireNamespace("triangle"))
+        stop("'triangle' package required.")
+      env_f <- asNamespace("triangle")
     }
+  if(distribution %in% c("gompertz", "gengamma")){
+      if (! requireNamespace("flexsurv")) {
+        stop("'flexsurv' package required.")
+      }
     env_f <- asNamespace("flexsurv")
-  }
+    }
   
   rf <- get(paste0("r", distribution),
             envir = env_f)
   
   names_fun <- setdiff(names(list_arg), "distribution")
   names_par <- setdiff(names(formals(rf)), "n")
+  
+  if(any(names_fun == ""))
+     stop("all arguments to the distribution must be named")
   
   correct_names <- names_fun %in% names_par
   
@@ -235,3 +246,55 @@ define_survival <- function(distribution = c("exp", "weibull",
     class = "surv_dist"
   )
 }
+
+#' Get transition or survival probabilities from fits
+#'
+#' @param fits Fits from \code{flexsurvreg}, or a list specifying 
+#'   distributions
+#' @param treatment The treatment for which probabilities are desired 
+#' @param km_until Up to what time should Kaplan-Meier estimates be used?  
+#' @param markov_cycle The Markov cycles for which to predict.
+#' @param markov_cycle_length The value of a Markov cycle in absolute time units.
+#' @param pred_type "prob" or "surv", depending on which type of prediction
+#'   is desired.
+#'
+#' @return a vector of probabilities
+#' @export
+#'
+#' @examples 
+#' 
+#' simple_exp <- list(A = define_survival("exp", rate = .05),
+#'                    B = define_survival("gamma", rate = .5, shape = 2))
+#' get_surv_probs(simple_exp, treatment = "A", 
+#'                km_until = 0, markov_cycle = 1:5,
+#'                markov_cycle_length = 1, pred_type = "prob")
+#' get_surv_probs(simple_exp, treatment = "B", 
+#'                km_until = 0, markov_cycle = 1:5,
+#'                markov_cycle_length = 1, pred_type = "prob")
+
+get_surv_probs <-
+  function(fits, treatment, km_until, markov_cycle, 
+           markov_cycle_length,
+           pred_type = c("prob", "surv")){
+    if(missing(fits))
+      stop("must specify argument 'fits' in get_surv_probs")
+    if(missing(treatment))
+      stop("must specify argument 'treatment' in get_surv_probs")
+    ## TODO:   km_until only required if fits[[treatment]] is flexsurvreg,
+    ##         not part_surv
+    if(missing(km_until))
+      stop("must specify argument 'km_until' in get_surv_probs")
+    if(missing(markov_cycle))
+      stop("must specify argument 'markov_cycle' in get_surv_probs")
+    if(missing(markov_cycle_length))
+      stop("must specify argument 'markov_cycle_length' in get_surv_probs")
+    pred_type <- match.arg(pred_type)
+    get_probs_from_surv(fits[[treatment]], 
+                        cycle = markov_cycle,
+                        km_limit = km_until, 
+                        cycle_length = markov_cycle_length,
+                        type = pred_type)
+  }
+
+
+

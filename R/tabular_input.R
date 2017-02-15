@@ -184,7 +184,8 @@ eval_models_from_tabular <- function(inputs,
       effect = inputs$model_options$effect,
       base_model = inputs$model_options$base_model,
       method = inputs$model_options$method,
-      cycles = inputs$model_options$cycles
+      cycles = inputs$model_options$cycles,
+      transition_options = inputs$model_options$transition_options
     )
   )
   
@@ -264,14 +265,39 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   
   ## to accomodate partitioned survival models, we will allow for
   ##   the possibility that there is no transition matrix ...
-  if (options()$heemod.verbose) message("*** Reading TM...")
+  tm_info <- NULL
+  tm_file <- ref$full_file[ref$data == "tm"]
+  if(length(tm_file) > 0 && file.exists(tm_file)){
+    if (options()$heemod.verbose) message("*** Reading TM...")
+    tm_info <- read_file(ref$full_file[ref$data == "tm"])
+    tm_info <- parse_multi_spec(
+      tm_info,
+      group_vars = c("from", "to")
+    )
+  }
+  surv_info <- NULL
+  if("survivalInformation" %in% ref$data){
+    if(options()$heemod.verbose) 
+      message("** Reading survival model information..")
+    if(!is.null(tm_info))
+      state_names <- get_state_names(tm_info)
+    else
+      state_names <- unique(state_info[[1]]$.state)
+    if(!("use_fits" %in% ref$data))
+      stop("must have 'use_fits' in reference file to use fits")
+    ## load all available fits
+    surv_info <- 
+      partitioned_survival_from_ref_struc(ref, df_env, 
+                                          state_names = state_names, 
+                                          save_fits = FALSE, just_load = TRUE)
+    ## choose the ones we want, and make 
+    ## partitioned survival objects to use
+    use_fits <- eval(parse(text = ref$file[ref$data == "use_fits"]))
+    surv_info <- combine_part_surv_(surv_info, use_fits)
+    
+   }
   
-  tm_info <- parse_multi_spec(
-    read_file(ref$full_file[ref$data == "tm"]),
-    group_vars = c("from", "to")
-  )
-  
-  if (length(pb <- setdiff(names(state_info), names(tm_info)))) {
+   if (!is.null(tm_info) && length(pb <- setdiff(names(state_info), names(tm_info)))) {
     stop(sprintf(
       "Mismatching model names between TM file and state file: %s.",
       paste(pb, collapse = ", ")
@@ -279,6 +305,7 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   }
   
   tm_info <- tm_info[names(state_info)]
+  surv_info <- surv_info[names(state_info)]
   
   tab_undefined <- do.call("rbind", tm_info) %>% 
     dplyr::filter_(~ is.na(prob))
@@ -289,12 +316,13 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
     stop("Undefined probabilities in the transition matrix (see above).")
   }
   
-  
-if (options()$heemod.verbose) message("*** Defining models...")
+  if (options()$heemod.verbose) message("*** Defining models...")
   models <- lapply(
     seq_along(state_info),
     function(i) {
       create_model_from_tabular(state_info[[i]], tm_info[[i]],
+                                surv_info[[i]],
+                                names(state_info)[i],
                                 df_env = df_env)
     })  
   
@@ -610,10 +638,11 @@ create_options_from_tabular <- function(opt) {
   allowed_opt <- c("cost", "effect", "init",
                    "method", "base", "cycles", "n",
                    "num_cores")
+  transition_opt <- c("km_limit", "cycle_length")
   if(! inherits(opt, "data.frame"))
     stop("'opt' must be a data frame.")
   
-  if (any(ukn_opt <- ! opt$option %in% allowed_opt)) {
+  if (any(ukn_opt <- ! opt$option %in% c(allowed_opt, transition_opt))) {
     stop(sprintf(
       "Unknown options: %s.",
       paste(opt$option[ukn_opt], collapse = ", ")
@@ -654,6 +683,21 @@ create_options_from_tabular <- function(opt) {
   if (! is.null(res$num_cores)){
     res$num_cores <- parse(text = res$num_cores)[[1]]
   }
+  if (! is.null(res$km_limit)){
+    res$km_limit <- as_numeric_safe(
+      strsplit(res$km_limit, ",")[[1]]
+    )
+  }
+  if(! is.null(res$cycle_length)){
+    res$cycle_length <- parse(text = res$cycle_length)[[1]]
+  }
+  trans_opt_ind <- match(transition_opt, names(res))
+  trans_opt_ind <- trans_opt_ind[!is.na(trans_opt_ind)]
+  if(length(trans_opt_ind)){
+    transition_options <- res[trans_opt_ind]
+    res <- res[-trans_opt_ind]
+    res$transition_options <- transition_options
+  }
   if (options()$heemod.verbose) message(paste(
     names(res), unlist(res), sep = " = ", collapse = "\n"
   ))
@@ -677,28 +721,33 @@ create_options_from_tabular <- function(opt) {
 #' @keywords internal
 create_model_from_tabular <- function(state_info,
                                       tm_info,
+                                      surv_info,
+                                      strategy_name,
                                       df_env = globalenv()) {
-  if(length(tm_info) == 0) {
-    stop("A transition matrix must be defined.")
-  }
-  
-  if(! inherits(state_info, "data.frame")) {
+  if(length(tm_info) == 0 & length(surv_info) == 0)
+    stop("either a transition matrix (tm_info) or a partitioned
+         survival model (surv_info) must be defined")
+  if(! inherits(state_info, "data.frame"))
     stop("'state_info' must be a data frame.")
-  }
   
-  if(!is.null(tm_info) && ! inherits(tm_info, "data.frame")) {
-    stop("'tm_info' must be a data frame.")
-  }
+  if(!is.null(tm_info) && ! inherits(tm_info, "data.frame"))
+    stop("'tm_info' must be a data frame if defined.")
+  ##  if(!is.null(surv_info) && ! inherits(surv_info, "data.frame"))
+  ##    stop("'surv_info' must be a data frame if defined.")
   
   if (options()$heemod.verbose) message("**** Defining state list...")
   states <- create_states_from_tabular(state_info,
                                        df_env = df_env)
   if (options()$heemod.verbose) message("**** Defining TM...")
   
-  TM <- create_matrix_from_tabular(tm_info, get_state_names(states),
-                                   df_env = df_env)
+  TM <- "undefined"
+  if(!is.null(tm_info))
+    TM <- create_matrix_from_tabular(tm_info, get_state_names(states),
+                                     df_env = df_env)
   
-  define_strategy_(transition = TM, states = states)
+  define_strategy_(transition = TM, states = states, 
+                   partitioned_survival = surv_info,
+                   strategy_name = strategy_name)
 }
 
 #' Load Data From a Folder Into an Environment
@@ -1008,29 +1057,47 @@ save_outputs <- function(outputs, output_dir, overwrite) {
   
   ## some csv files
   if (options()$heemod.verbose) message("** Writing tabular outputs to files ...")
-  
-  if (! is.null(outputs$demographics)) {
+    icer_to_write <- compute_icer(outputs$demographics$updated_model)
     utils::write.csv(
-      summary(outputs$demographics)$scaled_results,
+      icer_to_write[order(icer_to_write$.index),],
       file = file.path(output_dir, "icer_by_group.csv"),
       row.names = FALSE
     )
-  }
-
+  
+  all_counts <- 
+    do.call("rbind",
+            lapply(get_strategy_names(outputs$model_runs),
+                   function(this_name){
+                     data.frame(.model = this_name,
+                                get_counts(outputs$model_runs, m = this_name))
+                   }
+            )
+    )
+  
   utils::write.csv(
-    get_counts(outputs$model_runs),
+    all_counts,
     file = file.path(output_dir, "state_counts.csv"),
     row.names = FALSE
   )
-
+  
+  all_values <- 
+    do.call("rbind",
+            lapply(get_strategy_names(outputs$model_runs),
+                   function(this_name){
+                     data.frame(.model = this_name,
+                                get_values(outputs$model_runs, m = this_name))
+                   }
+            )
+    )
+  
   utils::write.csv(
-    get_values(outputs$model_runs),
+    all_values,
     file = file.path(output_dir, "cycle_values.csv"),
     row.names = FALSE
   )
   
   utils::write.csv(
-    summary(outputs$dsa)$res_comp,
+    as.data.frame(outputs$dsa$dsa),
     file = file.path(output_dir, "dsa.csv"),
     row.names = FALSE
   )

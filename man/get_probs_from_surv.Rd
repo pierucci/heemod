@@ -13,8 +13,8 @@ get_probs_from_surv_(x, ...)
 \method{get_probs_from_surv_}{flexsurvreg}(x, cycle, km_limit = 0,
   cycle_length = 1, type = c("prob", "surv"), ...)
 
-\method{get_probs_from_surv_}{surv_dist}(x, cycle, km_limit = 0,
-  cycle_length = 1, type = c("prob", "surv"), ...)
+\method{get_probs_from_surv_}{surv_dist}(x, cycle, cycle_length = 1,
+  type = c("prob", "surv"), ...)
 
 get_probs_from_surv(x, ...)
 }

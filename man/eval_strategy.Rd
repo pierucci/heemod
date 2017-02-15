@@ -5,7 +5,7 @@
 \title{Evaluate Strategy}
 \usage{
 eval_strategy(strategy, parameters, cycles, init, method, expand_limit, inflow,
-  strategy_name)
+  strategy_name, transition_options)
 }
 \arguments{
 \item{strategy}{An \code{uneval_strategy} object.}

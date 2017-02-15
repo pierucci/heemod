@@ -1,4 +1,5 @@
 context("Survival analysis-to-Markov model tests")
+library(flexsurv)
 
 ## simple data where half of participants
 ## die at time 10, rest are censored at time 20
@@ -24,13 +25,21 @@ fit_probs <- get_probs_from_surv(test_fit,
                                  km_limit = 0,
                                  cycle = 1:20)
 
+dist_1 <- define_survival(distribution = "exp", rate = 1/5)
+dist_prob_1 <- get_probs_from_surv(dist_1, km_limit = 0, cycle = 1:5)
+dist_2 <- define_survival(distribution = "gamma", shape = 3, rate = 2)
+dist_prob_2 <- get_probs_from_surv(dist_2, km_limit = 0, cycle = 1:5)
+
 
 test_that("Probabilities are calculated correctly", {
   expect_equal(km_probs, rep(c(0, 0.5, 0),
                              c(9, 1, 10)))
   expect_equal(round(fit_probs, 4),
                rep(0.0328, 20))
-  
+  expect_equal(round(dist_prob_1, 6), 
+               rep(0.181269, 5))
+  expect_equal(round(dist_prob_2, 6),
+               c(0.323324, 0.648128, 0.739740, 0.778050, 0.798648))
   su <- define_survival(
     distribution = "weibull",
     shape = 1.5,
@@ -44,6 +53,7 @@ test_that("Probabilities are calculated correctly", {
       get_probs_from_surv(su, cycle = 2)
     )
   )
+  
 })
 
 test_that("input errors are caught", {
@@ -57,16 +67,27 @@ test_that("input errors are caught", {
       define_survival(distribution = "exp",
                       shape = 2, rate = 0.01),
       km_limit = 100,
-      cycle = 1:20)
+      cycle = 1:20),
+    "Incorrect argument"
   )
+  
   expect_error(
-    get_probs_from_surv(
-      define_survival(
-        distribution = "gamma",
-        shape = 2, random = 0.01),
-      km_limit = 100,
-      cycle = 1:20)
+      get_probs_from_surv(
+        define_survival(
+          distribution = "gamma",
+          shape = 2, random = 0.01),
+        km_limit = 100,
+        cycle = 1:20),
+      "Incorrect argument"
   )
+  
+  expect_error(
+    define_survival(
+      distribution = "gamma",
+      shape = 2, 0.01),
+    "all arguments to the distribution must be named"
+  )
+  
   expect_error(
     get_probs_from_surv(
       define_survival(
@@ -81,14 +102,16 @@ test_that("input errors are caught", {
       bad_test_fit,
       km_limit = 10,
       cycle = 1:20
-    )
+    ),
+    "no applicable method"
   )
   expect_error(
     get_probs_from_surv(
       test_fit,
       km_limit = 10,
       cycle = 0:20
-    )
+    ),
+    "all(cycle > 0) is not TRUE", fixed = TRUE
   )
   expect_error(
     get_probs_from_surv(
@@ -96,13 +119,15 @@ test_that("input errors are caught", {
       km_limit = 10,
       cycle = 1:20,
       cycle_length = -1
-    )
+    ),
+    "cycle_length > 0 is not TRUE", fixed = TRUE
   )
   expect_error(
     get_probs_from_surv(
       test_fit,
       km_limit = -1,
       cycle = 1:20
-    )
+    ),
+    "km_limit >= 0 is not TRUE", fixed = TRUE
   )
 })
