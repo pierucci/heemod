@@ -1,0 +1,8 @@
+data,file
+state,THR_states.csv
+tm,THR_transitionprobs_strategy.csv
+parameters,THR_params_strategy.csv
+demographics,THR_demographic_table.csv
+data,input_dataframes
+output,output_strategy
+options,THR_options.csv
