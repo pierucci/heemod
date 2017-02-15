@@ -1,3 +1,12 @@
+# heemod devel
+
+`heemod` can now be cited with :
+
+Filipović-Pierucci A, Zarca K and Durand-Zaleski I (2017).
+“Markov Models for Health Economic Evaluation: The R
+Package heemod.” _ArXiv e-prints_. R package version
+0.8.0, 1702.03252, <URL: https://pierucci.org/heemod>.
+
 # heemod 0.8.0
 
 ## Breaking changes
