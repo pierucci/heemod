@@ -28,22 +28,22 @@ set_cluster <- function(x) {
   reach_cluster(operation = "set", value = x)
 }
 
-#' Run \code{heemod} on a Cluster
+#' Run `heemod` on a Cluster
 #' 
 #' These functions create or delete a cluster for 
-#' \code{heemod}. When the cluster is created it is 
-#' automagically used by \code{heemod} functions.
+#' `heemod`. When the cluster is created it is 
+#' automagically used by `heemod` functions.
 #' 
 #' The usual wokflow is to create the cluster with 
-#' \code{use_cluster}, then run functions such as 
-#' \code{\link{run_psa}} that make use of the cluster. To 
-#' stop using the cluster run \link{close_cluster}.
+#' `use_cluster`, then run functions such as 
+#' [run_psa()] that make use of the cluster. To 
+#' stop using the cluster run [close_cluster()].
 #' 
-#' The cluster status is given by \code{status_cluster}.
+#' The cluster status is given by `status_cluster`.
 #' 
-#' A custom cluster can be passed to \code{use_cluster} with
-#' the \code{cluster} argument. This custom custer needs to 
-#' work with \code{\link{parallel}{parLapply}}.
+#' A custom cluster can be passed to `use_cluster` with
+#' the `cluster` argument. This custom custer needs to 
+#' work with [parallel::parLapply()].
 #' 
 #' @name cluster
 #' @param num_cores Number of core.
@@ -52,10 +52,10 @@ set_cluster <- function(x) {
 #'   one?
 #' @param verbose Print cluster info.
 #'   
-#' @return \code{use_cluster} and \code{close_cluster} 
-#'   return \code{TRUE} invisibly in case of success. 
-#'   \code{status_cluster} returns \code{TRUE} if a cluster 
-#'   is defined, \code{FALSE} otherwise.
+#' @return `use_cluster` and `close_cluster` 
+#'   return `TRUE` invisibly in case of success. 
+#'   `status_cluster` returns `TRUE` if a cluster 
+#'   is defined, `FALSE` otherwise.
 #'   
 #' @export
 use_cluster <- function(num_cores, cluster = NULL, close = TRUE) {

@@ -2,16 +2,16 @@
 #' 
 #' This function runs a model from tabular input.
 #' 
-#' The reference file should have two columns, \code{data} 
-#' and \code{file}. An optional \code{absolute_path} column 
-#' can be added, having value \code{TRUE} where an absolute 
-#' file path is provided. \code{data} values must include 
-#' \code{state}, \code{tm}, and \code{parameters}, and can 
-#' also include \code{options}, \code{demographics} and 
-#' \code{data}.  The corresponding values in the \code{file}
+#' The reference file should have two columns, `data` 
+#' and `file`. An optional `absolute_path` column 
+#' can be added, having value `TRUE` where an absolute 
+#' file path is provided. `data` values must include 
+#' `state`, `tm`, and `parameters`, and can 
+#' also include `options`, `demographics` and 
+#' `data`.  The corresponding values in the `file`
 #' column give the names of the files (located in 
-#' \code{base_dir}) that contain the corresponding 
-#' information - or, in the case of \code{data}, the 
+#' `base_dir`) that contain the corresponding 
+#' information - or, in the case of `data`, the 
 #' directory containing the tables to be loaded.
 #' 
 #' @param location Directory where the files are located.
@@ -52,8 +52,8 @@ run_model_tabular <- function(location, reference = "REFERENCE.csv",
 #' @param ref_file Name of the reference file.
 #'   
 #' @return A list with elements: \itemize{ \item models (of 
-#'   type \code{uneval_model}, created by 
-#'   \code{\link{create_model_list_from_tabular}}) \item 
+#'   type `uneval_model`, created by 
+#'   [create_model_list_from_tabular()]) \item 
 #'   param_info  \item output_dir where to store output 
 #'   files, if specified \item demographic_file a table for 
 #'   demographic analysis \item model_options a list of 
@@ -154,17 +154,17 @@ gather_model_info <- function(base_dir, ref_file) {
 #' analysis, and analyses across demographics.
 #' 
 #' @param inputs Result from 
-#'   \code{\link{gather_model_info}}.
+#'   [gather_model_info()].
 #' @param run_psa Run PSA?
 #' @param run_demo Run demographic analysis?
 #'   
-#' @return a list \itemize{ \item \code{models} (always) 
-#'   unevaluated model. \item \code{model_runs} (always) 
-#'   evaluated models \item \code{dsa} (deterministic 
+#' @return a list \itemize{ \item `models` (always) 
+#'   unevaluated model. \item `model_runs` (always) 
+#'   evaluated models \item `dsa` (deterministic 
 #'   sensitivity analysis) - if appropriate parameters 
-#'   provided \item \code{psa} (probabilistic sensitivity 
+#'   provided \item `psa` (probabilistic sensitivity 
 #'   analysis) - if appropriate parameters provided \item 
-#'   \code{demographics} results across different 
+#'   `demographics` results across different 
 #'   demographic groups - if appropriate parameters 
 #'   provided}
 #'   
@@ -306,7 +306,7 @@ if (options()$heemod.verbose) message("*** Defining models...")
 #' Create State Definitions From Tabular Input
 #' 
 #' Transforms tabular input defining states into an 
-#' \code{heemod} object.
+#' `heemod` object.
 #' 
 #' Columns of state_info besides .model and state include 
 #' costs and utilities we want to keep track of, with 
@@ -326,10 +326,10 @@ if (options()$heemod.verbose) message("*** Defining models...")
 #' The input data frame is expected to contain state 
 #' information for all the models you will use in an 
 #' analysis. For more information see the vignette: 
-#' \code{vignette("file-input", package = "heemod")}.
+#' `vignette("file-input", package = "heemod")`.
 #' 
 #' @param state_info Result for one model of 
-#'   \code{\link{parse_multi_spec}}.
+#'   [parse_multi_spec()].
 #' @param df_env An environment containing external data.
 #'   
 #' @return A state list.
@@ -414,24 +414,24 @@ create_states_from_tabular <- function(state_info,
 #' Create a Transition Matrix From Tabular Input
 #' 
 #' Transforms tabular input defining a transition matrix 
-#' into an \code{heemod} object.
+#' into an `heemod` object.
 #' 
-#' The data frame \code{trans_probs} should have columns 
-#' \code{from}, \code{to}, and \code{prob}, where 
-#' \code{prob} is the probability of a transition from the 
-#' \code{from} state to the \code{to} state. Prob can be 
+#' The data frame `trans_probs` should have columns 
+#' `from`, `to`, and `prob`, where 
+#' `prob` is the probability of a transition from the 
+#' `from` state to the `to` state. Prob can be 
 #' defined in terms of parameters, just as when using 
-#' \code{define_transition} at the keyboard. Probabilities of 0 
+#' `define_transition` at the keyboard. Probabilities of 0 
 #' need not be specified - they will be automatically 
 #' inserted.
 #' 
-#' All state names must be used in the \code{from} column of
+#' All state names must be used in the `from` column of
 #' the transition matrix (otherwise you can just get rid of 
 #' the state). Absorbing states should have a transition 
 #' from and to themselves with probability 1.
 #' 
 #' @param trans_probs  Result for one model of 
-#'   \code{\link{parse_multi_spec}}.
+#'   [parse_multi_spec()].
 #' @param state_names The names of the states used in the 
 #'   transition matrix.
 #' @param df_env An environment containing external data.
@@ -493,10 +493,10 @@ create_matrix_from_tabular <- function(trans_probs, state_names,
 #' created.
 #' 
 #' The tabular parameter definition file can have the 
-#' following columns: \code{parameter} (the parameter name, 
-#' required), \code{value} (required), \code{low} and 
-#' \code{high} (if both are present, a deterministic 
-#' sensitivity analysis will be performed), and \code{psa} 
+#' following columns: `parameter` (the parameter name, 
+#' required), `value` (required), `low` and 
+#' `high` (if both are present, a deterministic 
+#' sensitivity analysis will be performed), and `psa` 
 #' (a definition of a distribution to use in a probabilistic
 #' sensitivity analysis. Other columns will be ignored.
 #' 
@@ -660,10 +660,10 @@ create_options_from_tabular <- function(opt) {
   res
 }
 
-#' Create a \code{heemod} Model From Tabular Files Info
+#' Create a `heemod` Model From Tabular Files Info
 #' 
-#' Calls \code{\link{create_states_from_tabular}} and
-#' \code{\link{create_matrix_from_tabular}}.
+#' Calls [create_states_from_tabular()] and
+#' [create_matrix_from_tabular()].
 #' 
 #' @param state_info A state tabular file (file path or 
 #'   parsed file).
@@ -671,8 +671,8 @@ create_options_from_tabular <- function(opt) {
 #'   path or parsed file).
 #' @param df_env An environment containing external data.
 #' 
-#' @return A \code{heemod} model as returned by 
-#'   \code{\link{define_strategy}}.
+#' @return A `heemod` model as returned by 
+#'   [define_strategy()].
 #'   
 #' @keywords internal
 create_model_from_tabular <- function(state_info,
@@ -751,31 +751,31 @@ create_df_from_tabular <- function(df_dir, df_envir) {
 
 #'Specify Inputs for Multiple Models From a Single File
 #'
-#'Parse a \code{data.frame} containing specifications for 
+#'Parse a `data.frame` containing specifications for 
 #'multiple models into a list of inputs required for each 
 #'model.
 #'
 #'Each combination of values of the columns specified by 
-#'\code{group_vars} should either be unique in the file (in 
+#'`group_vars` should either be unique in the file (in 
 #'which case it will be replicated for all values of 
-#'\code{split_on}), or must be repeated as many times as 
-#'unique values of \code{split_on}.
+#'`split_on`), or must be repeated as many times as 
+#'unique values of `split_on`.
 #'
-#'\code{split_on} is usually the model name.
+#'`split_on` is usually the model name.
 #'
-#'\code{group_var} can be the state names, or from and to 
+#'`group_var` can be the state names, or from and to 
 #'lines for a matrix definition...
 #'
-#'@param multi_spec \code{data frame}.
-#'@param split_on \code{character} of length 1, with the 
-#'  name of the variable in \code{multi_spec} to be split 
+#'@param multi_spec `data frame`.
+#'@param split_on `character` of length 1, with the 
+#'  name of the variable in `multi_spec` to be split 
 #'  on.
-#'@param group_vars \code{character}, one or more variable 
-#'  names from \code{multi_spec} that identify a line of 
+#'@param group_vars `character`, one or more variable 
+#'  names from `multi_spec` that identify a line of 
 #'  information.
 #'  
 #'@return A list of data frames, one for each value of 
-#'  \code{split_on.}
+#'  `split_on.`
 #'   
 #' @keywords internal
 parse_multi_spec <- function(multi_spec,
@@ -854,7 +854,7 @@ parse_multi_spec <- function(multi_spec,
 #' This function mostly checks whether the parameters are
 #' correct.
 #' 
-#' An optional \code{.weights} column can exist in the file.
+#' An optional `.weights` column can exist in the file.
 #' 
 #' @param newdata A data frame.
 #' @param params Parameters of a model, to check that all
@@ -892,7 +892,7 @@ create_demographic_table <- function(newdata,
 #' 
 #' @param file_name File name.
 #' 
-#' @return A \code{data.frame}.
+#' @return A `data.frame`.
 #'   
 #' @keywords internal
 read_file <- function(file_name) {
@@ -934,15 +934,15 @@ read_file <- function(file_name) {
 
 #' Remove Blank Rows From Table
 #' 
-#' Remove rows were all values are \code{NA}.
+#' Remove rows were all values are `NA`.
 #' 
 #' Some rows can be left blanks in the input table for 
 #' readability, this function ensures those rows are 
 #' removed.
 #' 
-#' @param x A \code{data.frame}.
+#' @param x A `data.frame`.
 #'   
-#' @return A \code{data.frame} without blank rows.
+#' @return A `data.frame` without blank rows.
 #'   
 #' @keywords internal
 filter_blanks <- function(x) {
@@ -974,11 +974,11 @@ is_xls <- function(x) {
 #' Save Model Outputs
 #' 
 #' @param outputs Result from
-#'   \code{\link{run_model_tabular}}.
+#'   [run_model_tabular()].
 #' @param output_dir Subdirectory in which to write output.
 #' @param overwrite Should the outputs be overwritten?
 #'   
-#' @return \code{NULL}. Used for its side effect of creating
+#' @return `NULL`. Used for its side effect of creating
 #'   files in the output directory.
 #'   
 #' @keywords internal

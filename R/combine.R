@@ -10,9 +10,9 @@
 #'   number of parameter sets.
 #' @param oldmodel The original model.
 #'   
-#' @return A \code{combined_models} object, mostly similar
-#'   to a result from \code{\link{run_model}}. \code{plot}
-#'   and \code{summary} methods are available.
+#' @return A `combined_models` object, mostly similar
+#'   to a result from [run_model()]. `plot`
+#'   and `summary` methods are available.
 #'   
 #' @keywords internal
 combine_models <- function(newmodels, weights, oldmodel) {

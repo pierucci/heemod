@@ -1,0 +1,13 @@
+bibentry(
+  bibtype = "misc",
+  author = c(
+    person("Antoine", "Filipovic-Pierucci"),
+    person("Kevin", "Zarca"),
+    person("Isabelle", "Durand-Zaleski")
+  ),
+  title = "Markov Models for Health Economic Evaluation: The R Package heemod",
+  year = "2017",
+  eprint = "arXiv:1702.03252",
+  note = sprintf("R package version %s", meta$Version),
+  url = "https://pierucci.org/heemod"
+)

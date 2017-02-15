@@ -3,22 +3,22 @@
 #' Define the values characterising a Markov Model state for
 #' 1 cycle.
 #' 
-#' As with \code{\link{define_parameters}}, state values are
+#' As with [define_parameters()], state values are
 #' defined sequencially. Later state definition can thus
 #' only refer to values defined earlier.
 #' 
-#' For the \code{modify} function, existing values are 
+#' For the `modify` function, existing values are 
 #' modified, no new values can be added. Values order 
 #' matters since only values defined earlier can be 
 #' referenced in later expressions.
 #' 
 #' @param ... Name-value pairs of expressions defining state
 #'   values.
-#' @param .OBJECT An object of class \code{state}.
+#' @param .OBJECT An object of class `state`.
 #' @param .dots Used to work around non-standard evaluation.
 #'   
-#' @return An object of class \code{state} (actually a named
-#'   list of \code{lazy} expressions).
+#' @return An object of class `state` (actually a named
+#'   list of `lazy` expressions).
 #' @export
 #' 
 #' @example inst/examples/example_define_state.R
@@ -64,24 +64,24 @@ modify_.state <- function(.OBJECT, .dots) {
 #' Define Markov Model State List
 #' 
 #' Define the states of a Markov model by combining 
-#' \code{state} objects.
+#' `state` objects.
 #' 
 #' State names have to correspond to those specified through
-#' \code{\link{define_transition}}.
+#' [define_transition()].
 #' 
 #' All states should have the same value names.
 #' 
-#' The \code{modify} function can modify existing states or 
+#' The `modify` function can modify existing states or 
 #' add new ones.
 #' 
 #' @param ... Name-value pairs of expressions defining model
 #'   states.
-#' @param .OBJECT An \code{uneval_states} object.
+#' @param .OBJECT An `uneval_states` object.
 #' @param .dots List of states, only used by 
-#'   \code{define_state_list_} to avoid using \code{...}.
+#'   `define_state_list_` to avoid using `...`.
 #'   
-#' @return An object of class \code{uneval_state_list} (a 
-#'   list of \code{state} objects).
+#' @return An object of class `uneval_state_list` (a 
+#'   list of `state` objects).
 #'   
 #' @examples
 #' \dontrun{
@@ -175,9 +175,9 @@ modify_.uneval_state_list <- function(.OBJECT, .dots) {
 #' 
 #' All states should have the same value names.
 #' 
-#' @param x An object of class \code{uneval_states}.
+#' @param x An object of class `uneval_states`.
 #'   
-#' @return \code{NULL}
+#' @return `NULL`
 #'   
 #' @keywords internal
 check_states <- function(x){
@@ -195,8 +195,8 @@ check_states <- function(x){
 #' 
 #' For internal use.
 #' 
-#' Work with both \code{uneval_states} and
-#' \code{eval_states}.
+#' Work with both `uneval_states` and
+#' `eval_states`.
 #' 
 #' @param x An object containing states.
 #'   

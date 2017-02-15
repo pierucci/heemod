@@ -10,7 +10,7 @@
 #' @param low_dots,high_dots Used to work around
 #'   non-standard evaluation.
 #'   
-#' @return A \code{sensitivity} object.
+#' @return A `sensitivity` object.
 #' @export
 #' 
 #' @examples

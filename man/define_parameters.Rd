@@ -13,46 +13,46 @@ define_parameters_(.dots)
 \method{modify}{uneval_parameters}(.OBJECT, ...)
 }
 \arguments{
-\item{...}{Name-value pairs of expressions definig 
+\item{...}{Name-value pairs of expressions definig
 parameters.}
 
 \item{.dots}{Used to work around non-standard evaluation.}
 
-\item{.OBJECT}{An object of class 
+\item{.OBJECT}{An object of class
 \code{uneval_parameters}.}
 }
 \value{
-An object of class \code{uneval_parameters} 
-  (actually a named list of \code{lazy} expressions).
+An object of class \code{uneval_parameters}
+(actually a named list of \code{lazy} expressions).
 }
 \description{
 Define parameters called to compute the transition matrix
-or state values for a Markov model. Parameters can be 
-time dependent by using the \code{markov_cycle} 
+or state values for a Markov model. Parameters can be
+time dependent by using the \code{markov_cycle}
 parameter.
 }
 \details{
-Parameters are defined sequencially, parameters defined 
+Parameters are defined sequencially, parameters defined
 earlier can be called in later expressions.
 
-Vector length should not be explicitly set, but should 
-instead be stated relatively to \code{markov_cycle} 
-(whose length depends on the number of simulation 
-cycles). Alternatively, \code{dplyr} functions such as 
+Vector length should not be explicitly set, but should
+instead be stated relatively to \code{markov_cycle}
+(whose length depends on the number of simulation
+cycles). Alternatively, \code{dplyr} functions such as
 \code{n()} or \code{row_numbers()} can be used.
 
 This function relies heavily on the \code{dplyr} package.
-Parameter definitions should thus mimic the use of 
+Parameter definitions should thus mimic the use of
 functions such as \code{mutate}.
 
-Variable names are searched first in the parameter 
-definition (only parameters defined earlier are visible) 
-then in the environment where \code{define_parameters} 
+Variable names are searched first in the parameter
+definition (only parameters defined earlier are visible)
+then in the environment where \code{define_parameters}
 was called.
 
-For the \code{modify} function, existing parameters are 
-modified, but no new parameter can be added. Parameter 
-order matters since only parameters defined earlier can 
+For the \code{modify} function, existing parameters are
+modified, but no new parameter can be added. Parameter
+order matters since only parameters defined earlier can
 be referenced in later expressions.
 }
 \examples{

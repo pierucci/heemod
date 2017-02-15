@@ -31,7 +31,7 @@ substitute_dots <- function(.dots, .values) {
 #' Expand Time-Dependant States into Tunnel States
 #' 
 #' This function for transition matrices and state values 
-#' expands states relying on \code{state_time} in a serie
+#' expands states relying on `state_time` in a serie
 #' of tunnels states.
 #' 
 #' @param x A transition matrix or a state list.
@@ -118,7 +118,7 @@ expand_state.uneval_state_list <- function(x, state_name, cycles) {
 
 #' Convert Lazy Dots to Expression List
 #' 
-#' This function is used by \code{\link{interp_heemod}}.
+#' This function is used by [interp_heemod()].
 #'
 #' @param .dots A lazy dots object.
 #'

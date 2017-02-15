@@ -24,25 +24,25 @@ one?}
 \item{verbose}{Print cluster info.}
 }
 \value{
-\code{use_cluster} and \code{close_cluster} 
-  return \code{TRUE} invisibly in case of success. 
-  \code{status_cluster} returns \code{TRUE} if a cluster 
-  is defined, \code{FALSE} otherwise.
+\code{use_cluster} and \code{close_cluster}
+return \code{TRUE} invisibly in case of success.
+\code{status_cluster} returns \code{TRUE} if a cluster
+is defined, \code{FALSE} otherwise.
 }
 \description{
-These functions create or delete a cluster for 
-\code{heemod}. When the cluster is created it is 
+These functions create or delete a cluster for
+\code{heemod}. When the cluster is created it is
 automagically used by \code{heemod} functions.
 }
 \details{
-The usual wokflow is to create the cluster with 
-\code{use_cluster}, then run functions such as 
-\code{\link{run_psa}} that make use of the cluster. To 
-stop using the cluster run \link{close_cluster}.
+The usual wokflow is to create the cluster with
+\code{use_cluster}, then run functions such as
+\code{\link[=run_psa]{run_psa()}} that make use of the cluster. To
+stop using the cluster run \code{\link[=close_cluster]{close_cluster()}}.
 
 The cluster status is given by \code{status_cluster}.
 
 A custom cluster can be passed to \code{use_cluster} with
-the \code{cluster} argument. This custom custer needs to 
-work with \code{\link{parallel}{parLapply}}.
+the \code{cluster} argument. This custom custer needs to
+work with \code{\link[parallel:parLapply]{parallel::parLapply()}}.
 }

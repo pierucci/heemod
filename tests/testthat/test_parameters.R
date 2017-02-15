@@ -38,12 +38,13 @@ b = a + 543',
   ..$ expr: num 4321',
       fixed = TRUE
     )
-    expect_error(
-      modify(
+    expect_identical(
+      names(modify(
         par1,
         a = 4321,
         c = 333
-      )
+      )),
+      letters[1:3]
     )
     expect_error(
       modify(
