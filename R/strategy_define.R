@@ -19,8 +19,6 @@
 #' @param states List of states, only used by
 #'   `define_strategy_`` to avoid using `...`.
 #' @param partitioned_survival Partitioned survival argument.
-#'   See [survival_from_data()] and
-#'   [partitioned_survival_from_tabular()].
 #' @param strategy_name name of the strategy, may be used in parameters.
 #' @param transition_matrix Deprecated argument, use
 #'   `transition`.
