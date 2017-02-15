@@ -9,33 +9,33 @@ parse_multi_spec(multi_spec, split_on = ".model", group_vars)
 \arguments{
 \item{multi_spec}{\code{data frame}.}
 
-\item{split_on}{\code{character} of length 1, with the 
-name of the variable in \code{multi_spec} to be split 
+\item{split_on}{\code{character} of length 1, with the
+name of the variable in \code{multi_spec} to be split
 on.}
 
-\item{group_vars}{\code{character}, one or more variable 
-names from \code{multi_spec} that identify a line of 
+\item{group_vars}{\code{character}, one or more variable
+names from \code{multi_spec} that identify a line of
 information.}
 }
 \value{
-A list of data frames, one for each value of 
- \code{split_on.}
+A list of data frames, one for each value of
+\code{split_on.}
 }
 \description{
-Parse a \code{data.frame} containing specifications for 
-multiple models into a list of inputs required for each 
+Parse a \code{data.frame} containing specifications for
+multiple models into a list of inputs required for each
 model.
 }
 \details{
-Each combination of values of the columns specified by 
-\code{group_vars} should either be unique in the file (in 
-which case it will be replicated for all values of 
-\code{split_on}), or must be repeated as many times as 
+Each combination of values of the columns specified by
+\code{group_vars} should either be unique in the file (in
+which case it will be replicated for all values of
+\code{split_on}), or must be repeated as many times as
 unique values of \code{split_on}.
 
 \code{split_on} is usually the model name.
 
-\code{group_var} can be the state names, or from and to 
+\code{group_var} can be the state names, or from and to
 lines for a matrix definition...
 }
 \keyword{internal}

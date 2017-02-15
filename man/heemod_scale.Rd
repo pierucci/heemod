@@ -18,19 +18,19 @@
 \method{scale}{dsa}(x, center = TRUE, scale = TRUE)
 }
 \arguments{
-\item{x}{Result of \code{\link{run_model}} or 
-\code{\link{run_psa}}.}
+\item{x}{Result of \code{\link[=run_model]{run_model()}} or
+\code{\link[=run_psa]{run_psa()}}.}
 
 \item{center}{Center results around base model?}
 
 \item{scale}{Scale results to individual values?}
 }
 \value{
-Input with normalized \code{.cost} and 
-  \code{.effect}, ordered by \code{.effect}.
+Input with normalized \code{.cost} and
+\code{.effect}, ordered by \code{.effect}.
 }
 \description{
-Normalize cost and effect values taking base model as a 
+Normalize cost and effect values taking base model as a
 reference.
 }
 \keyword{internal}

@@ -13,7 +13,7 @@ make_names(x)
 A character vector.
 }
 \description{
-Compared to \code{\link{make.names}} this function also 
+Compared to \code{\link[=make.names]{make.names()}} this function also
 converts characters to lower case and replaces \code{.}
 by \code{_}.
 }

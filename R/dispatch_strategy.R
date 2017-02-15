@@ -73,17 +73,17 @@ dispatch_strategy <- function(.strategy, ...) {
 #' Hack to Automate Use of Strategy Name
 #' 
 #' This function is a hack to automate the definition of the
-#' argument \code{.strategy} in
-#' \code{\link{dispatch_strategy}}.
+#' argument `.strategy` in
+#' [dispatch_strategy()].
 #' 
 #' The hack consists in replacing calls to 
-#' \code{dispatch_strategy(...)} by 
-#' \code{dispatch_strategy(.strategy = strategy, ...)} if
-#' \code{.strategy_name} is not already defined.
+#' `dispatch_strategy(...)` by 
+#' `dispatch_strategy(.strategy = strategy, ...)` if
+#' `.strategy_name` is not already defined.
 #' 
-#' @param .dots A \code{lazy_dots} object.
+#' @param .dots A `lazy_dots` object.
 #'   
-#' @return A modified \code{lazy_dots} object.
+#' @return A modified `lazy_dots` object.
 #'   
 #' @keywords internal
 dispatch_strategy_hack <- function(.dots) {

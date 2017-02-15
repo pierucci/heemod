@@ -7,20 +7,20 @@
 create_model_from_tabular(state_info, tm_info, df_env = globalenv())
 }
 \arguments{
-\item{state_info}{A state tabular file (file path or 
+\item{state_info}{A state tabular file (file path or
 parsed file).}
 
-\item{tm_info}{A transition matrix tabular file (file 
+\item{tm_info}{A transition matrix tabular file (file
 path or parsed file).}
 
 \item{df_env}{An environment containing external data.}
 }
 \value{
-A \code{heemod} model as returned by 
-  \code{\link{define_strategy}}.
+A \code{heemod} model as returned by
+\code{\link[=define_strategy]{define_strategy()}}.
 }
 \description{
-Calls \code{\link{create_states_from_tabular}} and
-\code{\link{create_matrix_from_tabular}}.
+Calls \code{\link[=create_states_from_tabular]{create_states_from_tabular()}} and
+\code{\link[=create_matrix_from_tabular]{create_matrix_from_tabular()}}.
 }
 \keyword{internal}

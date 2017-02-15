@@ -15,7 +15,7 @@ export_savi(x, folder = ".")
 Nothing. Creates 3 files.
 }
 \description{
-Export the result of a PSA in a format compatible with 
+Export the result of a PSA in a format compatible with
 Sheffield Accelerated Value of Information software.
 }
 \details{
@@ -24,6 +24,6 @@ This function saves 3 files at the path given by
 \code{cost.csv} and \code{effect.csv} the cost and effect
 results.
 
-The official SAVI website can be found at this URL: 
+The official SAVI website can be found at this URL:
 http://http://savi.shef.ac.uk/SAVI/
 }

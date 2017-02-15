@@ -4,25 +4,25 @@
 #' survival and overall survival.
 #' 
 #' @param pfs,os Either results from 
-#'   \code{\link[flexsurv]{flexsurvreg}} or 
-#'   \code{\link{define_survival}}.
+#'   [flexsurv::flexsurvreg()] or 
+#'   [define_survival()].
 #' @param state_names named character vector, length 3 or 4.
 #'   State names for progression-free state, progression, 
 #'   (optionally terminal) and death respectively. Elements 
-#'   should be named \code{"progression_free"}, 
-#'   \code{"progression"}, (optionally \code{"terminal"}), 
-#'   and \code{"death"}. See examples.
+#'   should be named `"progression_free"`, 
+#'   `"progression"`, (optionally `"terminal"`), 
+#'   and `"death"`. See examples.
 #' @param terminal_state Should a terminal state be 
 #'   included? Only used when state names are not provided.
 #' @param km_limit Up to what time should Kaplan-Meier
 #'   estimates be used? Model predictions will be used
-#'   thereafter. Either a length 2 vector (for \code{pfs}
-#'   and \code{os} respectively) or a single values (used
+#'   thereafter. Either a length 2 vector (for `pfs`
+#'   and `os` respectively) or a single values (used
 #'   for both distributions).
 #' @param cycle_length The value of a Markov cycle in
 #'   absolute time units.
 #'   
-#' @return A \code{part_surv} object.
+#' @return A `part_surv` object.
 #' @export
 #' 
 #' @examples

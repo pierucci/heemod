@@ -3,7 +3,7 @@
 #' Check whether a matrix fullfills the conditions to be a 
 #' transition matrix.
 #' 
-#' This function is called by \code{\link{eval_transition}}
+#' This function is called by [eval_transition()]
 #' and should not be used directly.
 #' 
 #' Checks whether all rows sum to 1 and all probabilities 
@@ -11,7 +11,7 @@
 #' 
 #' @param x a matrix.
 #'   
-#' @return \code{NULL}
+#' @return `NULL`
 #'   
 #' @keywords internal
 check_matrix <- function(x) {
@@ -68,10 +68,10 @@ check_matrix <- function(x) {
 #' This functions has been heavily optimized, and thus can
 #' be difficult to read. Good luck...
 #' 
-#' @param x an \code{uneval_matrix} object.
-#' @param parameters an \code{eval_parameters} object.
+#' @param x an `uneval_matrix` object.
+#' @param parameters an `eval_parameters` object.
 #'   
-#' @return An \code{eval_matrix} object (actually a list of 
+#' @return An `eval_matrix` object (actually a list of 
 #'   transition matrices, one per cycle).
 #'   
 #' @keywords internal

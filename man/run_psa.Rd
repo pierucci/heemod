@@ -7,15 +7,17 @@
 run_psa(model, psa, N, resample)
 }
 \arguments{
-\item{model}{The result of \code{\link{run_model}}.}
+\item{model}{The result of \code{\link[=run_model]{run_model()}}.}
 
 \item{psa}{Resampling distribution for parameters defined
-by \code{\link{define_psa}}.}
+by \code{\link[=define_psa]{define_psa()}}.}
 
-\item{N}{> 0. Number of simulation to run.}
+\item{N}{\enumerate{
+\item Number of simulation to run.
+}}
 
 \item{resample}{Deprecated. Resampling distribution for
-parameters defined by \code{\link{define_psa}}.}
+parameters defined by \code{\link[=define_psa]{define_psa()}}.}
 }
 \value{
 A list with one \code{data.frame} per model.

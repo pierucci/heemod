@@ -33,12 +33,12 @@ object.}
 An interpolated lazy dots object.
 }
 \description{
-Sequencially interpolates lazy dots, optionnaly using 
+Sequencially interpolates lazy dots, optionnaly using
 external references.
 }
 \details{
-The interpolation is sequencial: the second dot is 
-interpolated using the first, the third using the 
+The interpolation is sequencial: the second dot is
+interpolated using the first, the third using the
 interpolated first two, and so on.
 }
 \keyword{internal}

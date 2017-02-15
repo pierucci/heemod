@@ -9,7 +9,7 @@
   remove_ns = FALSE, bw = FALSE, ...)
 }
 \arguments{
-\item{x}{A result of \code{\link{run_dsa}}.}
+\item{x}{A result of \code{\link[=run_dsa]{run_dsa()}}.}
 
 \item{type}{Type of plot (see details).}
 
@@ -30,10 +30,10 @@ widest are on top?}
 A \code{ggplot2} object.
 }
 \description{
-Plot the results of a sensitivity analysis as a tornado 
+Plot the results of a sensitivity analysis as a tornado
 plot.
 }
 \details{
-Plot type \code{simple} plots variations of single strategy 
+Plot type \code{simple} plots variations of single strategy
 values, while \code{difference} plots incremental values.
 }

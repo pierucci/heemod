@@ -20,7 +20,7 @@ A vector.
 Insert a vector in another vector.
 }
 \details{
-To insert an element at the beginning use a \code{pos} 
+To insert an element at the beginning use a \code{pos}
 value of 0.
 
 Duplicated positions are not allowed.

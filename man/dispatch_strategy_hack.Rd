@@ -15,11 +15,11 @@ A modified \code{lazy_dots} object.
 \description{
 This function is a hack to automate the definition of the
 argument \code{.strategy} in
-\code{\link{dispatch_strategy}}.
+\code{\link[=dispatch_strategy]{dispatch_strategy()}}.
 }
 \details{
-The hack consists in replacing calls to 
-\code{dispatch_strategy(...)} by 
+The hack consists in replacing calls to
+\code{dispatch_strategy(...)} by
 \code{dispatch_strategy(.strategy = strategy, ...)} if
 \code{.strategy_name} is not already defined.
 }

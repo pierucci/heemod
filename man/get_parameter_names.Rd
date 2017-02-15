@@ -7,7 +7,7 @@
 get_parameter_names(x)
 }
 \arguments{
-\item{x}{\code{uneval_parameters} or 
+\item{x}{\code{uneval_parameters} or
 \code{eval_parameters} object.}
 }
 \value{

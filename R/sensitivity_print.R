@@ -3,10 +3,10 @@
 #' Plot the results of a sensitivity analysis as a tornado 
 #' plot.
 #' 
-#' Plot type \code{simple} plots variations of single strategy 
-#' values, while \code{difference} plots incremental values.
+#' Plot type `simple` plots variations of single strategy 
+#' values, while `difference` plots incremental values.
 #' 
-#' @param x A result of \code{\link{run_dsa}}.
+#' @param x A result of [run_dsa()].
 #' @param strategy Name or index of strategies to plot.
 #' @param type Type of plot (see details).
 #' @param result Plot cost, effect, or ICER.
@@ -14,9 +14,9 @@
 #'   widest are on top?
 #' @param bw Black & white plot for publications?
 #' @param remove_ns Remove variables that are not sensitive.
-#' @param ... Additional arguments passed to \code{plot}.
+#' @param ... Additional arguments passed to `plot`.
 #'   
-#' @return A \code{ggplot2} object.
+#' @return A `ggplot2` object.
 #' @export
 #' 
 plot.dsa <- function(x, type = c("simple", "difference"),

@@ -2,32 +2,32 @@
 % Please edit documentation in R/newdata.R
 \name{eval_strategy_newdata}
 \alias{eval_strategy_newdata}
-\title{Iteratively Evaluate a Markov Model With New Parameter 
+\title{Iteratively Evaluate a Markov Model With New Parameter
 Values}
 \usage{
 eval_strategy_newdata(x, strategy = 1, newdata)
 }
 \arguments{
-\item{x}{Result from \code{\link{run_model}}.}
+\item{x}{Result from \code{\link[=run_model]{run_model()}}.}
 
-\item{newdata}{a data.frame whose names match parameters 
-names. \code{model} will be evaluated iteratively, 
+\item{newdata}{a data.frame whose names match parameters
+names. \code{model} will be evaluated iteratively,
 taking successive values from each row.}
 
 \item{model}{Name or index of model to recompute.}
 }
 \value{
-A data.frame containing the values of 
-  \code{newdata} and each Markov Model evaluation in 
-  \code{res}.
+A data.frame containing the values of
+\code{newdata} and each Markov Model evaluation in
+\code{res}.
 }
 \description{
-Given a data.frame with on set of new parameters values 
-per row, iteratively evaluate the model over the set of 
+Given a data.frame with on set of new parameters values
+per row, iteratively evaluate the model over the set of
 new values.
 }
 \details{
-New parameters with a missing value (\code{NA}) do not 
+New parameters with a missing value (\code{NA}) do not
 replace existing parameters.
 }
 \examples{

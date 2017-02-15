@@ -9,7 +9,7 @@ is.wholenumber(x, tol = .Machine$double.eps^0.5)
 \arguments{
 \item{x}{numeric.}
 
-\item{tol}{the smallest positive floating-point number x 
+\item{tol}{the smallest positive floating-point number x
 such that 1 + x != 1.}
 }
 \value{
