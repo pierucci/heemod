@@ -33,31 +33,35 @@
 #'   
 #' @keywords internal
 eval_strategy <- function(strategy, parameters, cycles, 
-                          init, method, expand_limit,
-                          inflow, strategy_name) {
+                          init, method, 
+                          expand_limit,
+                          inflow, strategy_name,
+                          transition_options) {
   stopifnot(
     cycles > 0,
     length(cycles) == 1,
     all(init >= 0)
   )
   
-  uneval_transition <- get_transition(strategy)
+  uneval_transition <- get_transition(strategy, transition_options)
+  
   uneval_states <- get_states(strategy)
   
   i_parameters <- interp_heemod(parameters)
   
-  i_uneval_transition <- interp_heemod(
-    uneval_transition,
-    more = as_expr_list(i_parameters)
-  )
-  
+  td_tm <- FALSE
+  if(inherits(uneval_transition, "uneval_matrix")){
+    i_uneval_transition <- interp_heemod(
+      uneval_transition,
+      more = as_expr_list(i_parameters)
+    )
+    td_tm <- has_state_time(i_uneval_transition)
+  }
+
   i_uneval_states <- interp_heemod(
     uneval_states,
     more = as_expr_list(i_parameters)
   )
-  
-  
-  td_tm <- has_state_time(i_uneval_transition)
   
   td_st <- has_state_time(i_uneval_states)
   

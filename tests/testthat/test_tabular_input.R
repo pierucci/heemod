@@ -363,7 +363,7 @@ test_that(
     )
     
     expect_error(
-      create_model_from_tabular(states1, NULL, NULL, new.env()),
+      create_model_from_tabular(states1, NULL, NULL, NULL, new.env()),
       "either a transition matrix (tm_info) or a partitioned
          survival model (surv_info) must be defined",
       fixed = TRUE

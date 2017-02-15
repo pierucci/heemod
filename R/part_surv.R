@@ -51,8 +51,19 @@ define_part_surv <- function(pfs, os, state_names,
                              km_limit = 0,
                              cycle_length = 1) {
   
-  if (missing(state_names)) {
+  if(!inherits(pfs, c("flexsurvreg", "surv_dist")))
+    stop("pfs argument ", substitute(pfs), 
+         " is not a valid flexsurvreg or surv_dist object")
+  if(!inherits(os, c("flexsurvreg", "surv_dist")))
+    stop("os argument ", substitute(os), 
+         " is not a valid flexsurvreg or surv_dist object")
+  
+  if (missing(state_names) || is.null(state_names)) {
     message("No named state -> generating names.")
+    
+    if(missing(terminal_state))
+      stop("if state_names is not specified or is NULL", 
+            " then terminal_state must be defined")
     
     if (terminal_state) {
       state_names <- LETTERS[seq_len(4)]
@@ -72,6 +83,24 @@ define_part_surv <- function(pfs, os, state_names,
     }
   } else if (terminal_state) {
     warning("Argument 'terminal_state' ignored when state names are given.")
+  }
+  if(is.null(names(state_names))){
+    if(length(state_names) == 3)
+      names(state_names) <- c(
+        "progression_free",
+        "progression",
+        "death"
+      )
+    if(length(state_names) == 4)
+      names(state_names) <- c(
+        "progression_free",
+        "progression",
+        "terminal",
+        "death"
+      )
+    if(!(length(state_names) %in% c(3,4)) )
+      stop("length of state_names must be 3 or 4")
+  
   }
   
   define_part_surv_(
@@ -130,6 +159,42 @@ define_part_surv_ <- function(pfs, os, state_names,
     class = "part_surv"
   )
 }
+
+
+#' @rdname modify_transition
+#' @export
+#'
+#' @examples
+#' dist_pfs <- define_survival("exp", rate = 1)
+#' dist_os <- define_survival("exp", rate = .5)
+#' 
+#' ps1 <- define_part_surv(
+#'   pfs = dist_pfs,
+#'   os = dist_os,
+#'   terminal_state = TRUE
+#' )
+#' 
+#' ps2 <- modify_transition(
+#'   ps1,
+#'   list(km_limit = c(20, 20))
+#'   )
+
+modify_transition.part_surv <- function(x, 
+                             transition_options){
+  km_limit <- transition_options$km_limit
+  cycle_length <- transition_options$cycle_length
+  if(!is.null(km_limit))
+    x$km_limit <- km_limit
+  if(!is.null(cycle_length))
+    x$cycle_length <- cycle_length
+  define_part_surv_(
+    pfs = x$pfs,
+    os = x$os,
+    state_names = x$state_names,
+    km_limit = x$km_limit,
+    cycle_length = x$cycle_length)
+}
+
 
 get_state_names.part_surv <- function(x) {
   x$state_names

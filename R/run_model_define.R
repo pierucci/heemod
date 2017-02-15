@@ -58,7 +58,8 @@ run_model <- function(...,
                       cost = NULL, effect = NULL,
                       state_time_limit = NULL,
                       central_strategy = NULL,
-                      inflow = rep(0L, get_state_number(get_states(list(...)[[1]])))) {
+                      inflow = rep(0L, get_state_number(get_states(list(...)[[1]]))),
+                      transition_options) {
   
   uneval_strategy_list <- list(...)
   
@@ -74,7 +75,8 @@ run_model <- function(...,
     effect = lazyeval::lazy_(substitute(effect), env = parent.frame()),
     state_time_limit = state_time_limit,
     central_strategy = central_strategy,
-    inflow = inflow
+    inflow = inflow,
+    transition_options = transition_options
   )
 }
 
@@ -88,7 +90,8 @@ run_model_ <- function(uneval_strategy_list,
                        cost, effect,
                        state_time_limit,
                        central_strategy,
-                       inflow) {
+                       inflow,
+                       transition_options) {
   if (length(uneval_strategy_list) == 0) {
     stop("At least 1 strategy is needed.")
   }
@@ -135,6 +138,9 @@ run_model_ <- function(uneval_strategy_list,
     strategy_names <- as.character(utils::as.roman(seq_along(uneval_strategy_list)))
     names(uneval_strategy_list) <- strategy_names
   }
+  
+  ##for(i in seq(along = strategy_names))
+  ##  uneval_strategy_list[[i]]$strategy_name <- strategy_names[i]
   
   if (! list_all_same(lapply(uneval_strategy_list,
                              function(x) sort(get_state_names(x))))) {
@@ -196,7 +202,8 @@ run_model_ <- function(uneval_strategy_list,
       method = method,
       expand_limit = state_time_limit[[n]],
       inflow = inflow,
-      strategy_name = n
+      strategy_name = n,
+      transition_options = transition_options
     )
   }
   

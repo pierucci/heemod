@@ -4,15 +4,13 @@
 \alias{get_transition}
 \title{Get Markov Model Transition Matrix}
 \usage{
-get_transition(x)
+get_transition(x, ...)
 }
 \arguments{
-\item{x}{An \code{uneval_model} or \code{eval_model}
-object.}
+\item{x}{An \code{uneval_model} or \code{eval_model} object.}
 }
 \value{
-An \code{uneval_matrix} or \code{uneval_matrix}
-object.
+An \code{uneval_matrix} or \code{uneval_matrix} object.
 }
 \description{
 Works on both unevaluated and evaluated models.
