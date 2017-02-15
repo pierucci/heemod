@@ -10,11 +10,27 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
+
+
 ```{r setup, include=FALSE}
 library(heemod)
+library(flexsurv)
 ```
+There are two ways to have `heemod` use survival models:
 
-Input transition probabilities from defined distributions:
+* by specifying, in text, a survival distribution with parameters; or
+
+* by passing in fit survival models from package `flexsurvreg`.
+
+We will demonstrate each of these in turn.
+
+`heemod` currently supports the exponential (`exp`), weibull, lognormal (`lnorm`),
+gamma, and beta distributions from the `stats` package, Gompertz (`gompertz`) and
+generalized gamma (`gengamma`) distributions from the `flexsurv` package, and the
+triangle distribution from the `triangle` package.
+
+To enter survival distributions explicitly, use the \code{define_survival}
+function:
 
 ```{r}
 surv_dist1 <- define_survival(
@@ -24,7 +40,7 @@ surv_dist1 <- define_survival(
 )
 ```
 
-From fitted models:
+Survival models fitted by the `flexsurv` package can also be used:
 
 ```{r fig.width=6, fig.height=6}
 library(flexsurv)
@@ -36,7 +52,18 @@ fitw <- flexsurvreg(
 plot(fitw)
 ```
 
-For the example we define a simple model with only 1 strategy:
+Probabilities can be calculated by passing these objects to `get_probs_from_surv`:
+```{r}
+get_probs_from_surv(surv_dist1, cycle = 1:5)
+get_probs_from_surv(fitw, cycle = 1:5, km_limit = 2, cycle_length = 365)
+```
+
+These probabilities can then be used in defining parameters or other
+parts of models.  In this simple model with only 1 strategy, the transition
+from the first state to the second state is defined by the
+explicitly defined Weibull distribution, while the transition from
+the second state to the third state is defined by the fit object
+from `flexsurvreg`. 
 
 ```{r warning=FALSE}
 param <- define_parameters(
@@ -86,7 +113,20 @@ resTM <- run_model(
 plot(resTM)
 ```
 
-A partitioned survival model can also be computed:
+The example above uses an explicit distribution or a fitted survival model
+to define elements of a standard Markov transition matrix.  It is also 
+possible to define transitions not as matrices, but as partitioned survival models.
+
+Partitioned survival models are frequently used to model the fate of cancer 
+patients, and `heemod` deals, for now, specifically with that case.   A partial 
+survival model requires two  `survival` objects, one for _progression free 
+survival_, or pfs, for which the event waited for is tumor growth or death, and
+one for _overall survival_, or os, for which the event is death. 
+`define_part_surv` requires a `survival` object for each of pfs and os.   
+By definition, anyone in progression-free survival is also in overall survival.
+However, `heemod` will not check whether this condition is met when defining a
+partitioned survival.  However, if the condition is not met, negative counts
+will appear when the survival model is run, causing an error.
 
 ```{r warning=FALSE}
 surv_dist2 <- define_survival(
@@ -97,6 +137,7 @@ surv_dist2 <- define_survival(
 ps <- define_part_surv(
   pfs = surv_dist2,
   os = fitw,
+  terminal_state = FALSE,
   km_limit = c(0, 2), # 0 for pfs, 2 for os
   cycle_length = c(1, 365) # 1 for pfs, 365 for os
 )
