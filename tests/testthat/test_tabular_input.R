@@ -146,8 +146,17 @@ test_that(
       heemod:::gather_model_info(
         system.file("tabular/test", package = "heemod"),
         "REFERENCE_missingfunctions.csv"),
-      "no functions in 'functions' directory: notpresent"
+      "'functions' directory missing: ",
+      fixed = TRUE
     )
+    expect_error(
+      heemod:::gather_model_info(
+        system.file("tabular/test", package = "heemod"),
+        "REFERENCE_emptyfunctions.csv"),
+      "no functions in 'functions' directory: emptyfunctions",
+      fixed = TRUE
+    )
+    
   }
 )
 
