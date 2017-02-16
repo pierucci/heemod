@@ -122,6 +122,36 @@ test_that("can read multinomial parameters from file",
 )
 
 test_that(
+  "Bad spec file input is caught.", {
+    expect_error(
+      heemod:::gather_model_info(
+        system.file("tabular/test", package = "heemod"),
+        "bad_REFERENCE.csv")
+    )
+    expect_error(
+      heemod:::gather_model_info(
+        system.file("tabular/test/test_diff_mod_name", package = "heemod"),
+        "REFERENCE.csv"),
+      "newzzz"
+    )
+    expect_error(
+      capture.output(
+        heemod:::gather_model_info(
+          system.file("tabular/test", package = "heemod"),
+          "REFERENCE_1probmissing.csv")
+        ),
+      "Undefined probabilities"
+    )
+    expect_error(
+      heemod:::gather_model_info(
+        system.file("tabular/test", package = "heemod"),
+        "REFERENCE_missingfunctions.csv"),
+      "no functions in 'functions' directory: notpresent"
+    )
+  }
+)
+
+test_that(
   "Bad state file input is caught.", {
     expect_error(
       heemod:::create_states_from_tabular(NULL),
@@ -141,23 +171,6 @@ test_that(
       fixed = TRUE
     )
     
-    expect_error(
-      heemod:::gather_model_info(
-        system.file("tabular/test", package = "heemod"),
-        "bad_REFERENCE.csv")
-    )
-    expect_error(
-      heemod:::gather_model_info(
-        system.file("tabular/test/test_diff_mod_name", package = "heemod"),
-        "REFERENCE.csv"),
-      "newzzz"
-    )
-    expect_error(
-      heemod:::gather_model_info(
-        system.file("tabular/test", package = "heemod"),
-        "REFERENCE_1probmissing.csv"),
-      "Undefined probabilities"
-    )
     
     dup_state <- structure(list(
       .model = c("standard", "standard", "standard", 
@@ -212,6 +225,11 @@ test_that(
     expect_error(
       heemod:::create_states_from_tabular(mult_disc_state)
     )
+  }
+)
+ 
+test_that(
+  "Bad transmission matrix input is caught.", {
     
     bad_tm <- structure(list(
       .model = c("standard", "standard", "standard", 
@@ -239,7 +257,11 @@ test_that(
           "SuccessfulRevisionzzz")
       )
     )
+  }
+)
     
+test_that(
+  "Bad parameter file input is caught.", {
     pb_par <- structure(list(
       parameter = c("lngamma", "gamma"),
       value = c("0.3740968", 
@@ -309,7 +331,12 @@ test_that(
     expect_error(
       heemod:::create_parameters_from_tabular(pb_par)
     )
-    
+  }
+)
+
+test_that(
+    "other bad input is caught.", {
+        
     opt_pb <- structure(list(
       option = c("cost", "effect", "method", "method", 
                  "n"),
@@ -363,7 +390,7 @@ test_that(
     )
     
     expect_error(
-      create_model_from_tabular(states1, NULL, NULL, new.env())
+        create_model_from_tabular(states1, NULL, NULL, new.env())
     )
   }
 )
