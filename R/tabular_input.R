@@ -115,8 +115,13 @@ gather_model_info <- function(base_dir, ref_file) {
 
   if("functions" %in% ref$data){
     if(options()$heemod.verbose) message("** Reading functions...")
-    for(this_file in list.files(ref$full_file[ref$data == "functions"],
-                                full.names = TRUE)){
+    function_dir <- ref$full_file[ref$data == "functions"]
+    function_list <- list.files(function_dir, full.names = TRUE)
+    if(length(function_list) == 0)
+      stop("no functions in 'functions' directory: ", 
+           ref$file[ref$data == "functions"])
+                                                              
+    for(this_file in function_list){
       source(this_file, echo = FALSE, local = TRUE)
     }
   }
