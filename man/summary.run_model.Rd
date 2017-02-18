@@ -7,12 +7,12 @@
 \method{summary}{run_model}(object, threshold = NULL, ...)
 }
 \arguments{
-\item{object}{Output from \code{\link{run_model}}.}
+\item{object}{Output from \code{\link[=run_model]{run_model()}}.}
 
 \item{threshold}{ICER threshold (possibly several) for
 net monetary benefit computation.}
 
-\item{...}{additional arguments affecting the summary 
+\item{...}{additional arguments affecting the summary
 produced.}
 }
 \value{

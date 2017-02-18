@@ -7,27 +7,27 @@
 eval_models_from_tabular(inputs, run_psa = TRUE, run_demo = TRUE)
 }
 \arguments{
-\item{inputs}{Result from 
-\code{\link{gather_model_info}}.}
+\item{inputs}{Result from
+\code{\link[=gather_model_info]{gather_model_info()}}.}
 
 \item{run_psa}{Run PSA?}
 
 \item{run_demo}{Run demographic analysis?}
 }
 \value{
-a list \itemize{ \item \code{models} (always) 
-  unevaluated model. \item \code{model_runs} (always) 
-  evaluated models \item \code{dsa} (deterministic 
-  sensitivity analysis) - if appropriate parameters 
-  provided \item \code{psa} (probabilistic sensitivity 
-  analysis) - if appropriate parameters provided \item 
-  \code{demographics} results across different 
-  demographic groups - if appropriate parameters 
-  provided}
+a list \itemize{ \item \code{models} (always)
+unevaluated model. \item \code{model_runs} (always)
+evaluated models \item \code{dsa} (deterministic
+sensitivity analysis) - if appropriate parameters
+provided \item \code{psa} (probabilistic sensitivity
+analysis) - if appropriate parameters provided \item
+\code{demographics} results across different
+demographic groups - if appropriate parameters
+provided}
 }
 \description{
-Execute a full set of analyses, possibly including 
-discrete sensitivity analysis, probabilistic sensitivity 
+Execute a full set of analyses, possibly including
+discrete sensitivity analysis, probabilistic sensitivity
 analysis, and analyses across demographics.
 }
 \keyword{internal}

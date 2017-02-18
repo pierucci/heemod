@@ -14,7 +14,7 @@
 \alias{define_distribution}
 \alias{beta}
 \alias{triangle}
-\title{Probability Density Functions for Probabilistic 
+\title{Probability Density Functions for Probabilistic
 Uncertainty Analysis}
 \usage{
 normal(mean, sd)
@@ -71,23 +71,13 @@ triangle(lower, upper, peak = (lower + upper)/2)
 \item{peak}{peak of triangular distribution.}
 
 \item{x}{A distribution function, see details.}
-
-\item{shape1}{for beta distribution}
-
-\item{shape2}{for beta distribution}
-
-\item{lower}{lower bound of triangular distribution.}
-
-\item{upper}{upper bound of triangular distribution.}
-
-\item{peak}{peak of triangular distribution.}
 }
 \description{
 Define a distribution for PSA parameters.
 }
 \details{
-These functions are not exported, but only used in 
-\code{\link{define_psa}}. To specify a user-made function
+These functions are not exported, but only used in
+\code{\link[=define_psa]{define_psa()}}. To specify a user-made function
 use \code{define_distribution}.
 
 \code{define_distribution} takes as argument a function

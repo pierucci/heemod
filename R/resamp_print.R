@@ -2,27 +2,32 @@
 #' 
 #' Various plots for Markov models probabilistic analysis.
 #' 
-#' \code{type = "ac"} plots cost-effectiveness acceptability
-#' curves, \code{type = "ce"} plots results on the 
-#' cost-efficiency plane, \code{type = "cov"} to perform
-#' covariance analysis on the results, \code{type = "evpi"}
+#' `type = "ac"` plots cost-effectiveness acceptability
+#' curves, `type = "ce"` plots results on the 
+#' cost-efficiency plane, `type = "cov"` to perform 
+#' covariance analysis on the results, `type = "evpi"` 
 #' for expected value of perfect information.
 #' 
-#' @param x Result from \code{\link{run_model}}.
+#' @param x Result from [run_model()].
 #' @param type Type of plot, see details.
 #' @param max_wtp Maximal willingness to pay.
-#' @param n Number of CECA points to estimate (values above
+#' @param n Number of CECA points to estimate (values above 
 #'   100 may take significant time).
 #' @param log_scale Show willingness to pay on a log scale?
+#' @param diff Logical, perform covariance analysis on
+#'   strategy differences?
+#' @param threshold When `diff = TRUE`, threshlod value
+#'   for net monetary benefit computation.
 #' @param bw Black & white plot for publications?
-#' @param ... Additional arguments passed to \code{plot}.
+#' @param ... Additional arguments, depends on `type`.
 #'   
-#' @return A \code{ggplot2} object.
+#' @return A `ggplot2` object.
 #' @export
 #' 
 plot.psa <- function(x, type = c("ce", "ac", "cov", "evpi"),
                      max_wtp = 1e5,
                      n = 100, log_scale = TRUE,
+                     diff = FALSE, threshold,
                      bw = FALSE, ...) {
   type <- match.arg(type)
   
@@ -102,7 +107,7 @@ plot.psa <- function(x, type = c("ce", "ac", "cov", "evpi"),
       res
     },
     cov = {
-      tab <- compute_cov(x) %>% 
+      tab <- compute_cov(x, diff = diff, threshold = threshold, ...) %>% 
         dplyr::mutate_(
           .prop = ~ .prop * 100
         )

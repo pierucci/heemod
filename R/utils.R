@@ -13,17 +13,17 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
 
 #' Discount a Quantity Over Time
 #' 
-#' This function should only take as an \code{x} argument 
+#' This function should only take as an `x` argument 
 #' the names of variables already defined in 
-#' \code{\link{define_parameters}} or 
-#' \code{\link{define_state}}, and not numeric constants.
+#' [define_parameters()] or 
+#' [define_state()], and not numeric constants.
 #' 
 #' @param x numeric. A quantity to discount.
 #' @param r discount rate.
 #' @param first logical. Should the discouting start at the
 #'   first value ?
 #'   
-#' @return A numeric vector of the same length as \code{x}.
+#' @return A numeric vector of the same length as `x`.
 #' @export
 #' 
 #' @examples
@@ -60,7 +60,7 @@ list_all_same <- function(x) {
 #'
 #' @param x integer.
 #'
-#' @return \code{"s"} or \code{""}.
+#' @return `"s"` or `""`.
 #'   
 #' @keywords internal
 plur <- function(x) {
@@ -75,8 +75,8 @@ plur_y <- function(x) {
 #' 
 #' Throws an error if any of the names are reserved.
 #' 
-#' Reserved names are \code{markov_cycle} and anything
-#' starting with \code{.}.
+#' Reserved names are `markov_cycle` and anything
+#' starting with `.`.
 #' 
 #' @param x A character vector of names.
 #'   
@@ -97,8 +97,14 @@ check_names <- function(x) {
   if (any("markov_cycle" %in% x)) {
     stop("'markov_cycle' is a reserved name.")
   }
+  if (any("model_time" %in% x)) {
+    stop("'model_time' is a reserved name.")
+  }
   if (any("state_cycle" %in% x)) {
     stop("'state_cycle' is a reserved name.")
+  }
+  if (any("state_time" %in% x)) {
+    stop("'state_time' is a reserved name.")
   }
   if (any("C" %in% x)) {
     stop("'C' is a reserved name.")
@@ -113,9 +119,9 @@ check_names <- function(x) {
 
 #' Make Syntactically Valid Names
 #' 
-#' Compared to \code{\link{make.names}} this function also 
-#' converts characters to lower case and replaces \code{.}
-#' by \code{_}.
+#' Compared to [make.names()] this function also 
+#' converts characters to lower case and replaces `.`
+#' by `_`.
 #' 
 #' @param x A character vector.
 #'   
@@ -128,7 +134,7 @@ make_names <- function(x) {
 
 #' Check Strategy Index
 #' 
-#' @param x A result from \code{\link{run_model}}.
+#' @param x A result from [run_model()].
 #' @param i A strategy index, character or numeric.
 #' @param allow_multiple logical. Allow multiple strategy
 #'   index?
@@ -168,12 +174,12 @@ check_strategy_index <- function(x, i, allow_multiple = FALSE) {
 #' 
 #' Compute a weighted summary of a numeric vector.
 #' 
-#' If \code{weights} is \code{NULL} an unweighted summar is
+#' If `weights` is `NULL` an unweighted summar is
 #' returned.
 #' 
 #' @param x A numeric vector.
 #' @param weights A vector of weights, same length as 
-#'   \code{x}.
+#'   `x`.
 #'   
 #' @return A vector with values \code{Min., 1st Qu., Median,
 #'   Mean, 3rd Qu., Max.}.
@@ -294,7 +300,7 @@ interleave <- function(...) {
 #' 
 #' Insert a vector in another vector.
 #' 
-#' To insert an element at the beginning use a \code{pos} 
+#' To insert an element at the beginning use a `pos` 
 #' value of 0.
 #' 
 #' Duplicated positions are not allowed.
@@ -386,33 +392,3 @@ to_dots <- function(x) {
   )
 }
 
-#' Ensure Value is a Correct Probability
-#' 
-#' Ensure the value returned is a correct probability
-#' between 0 and 1.
-#' 
-#' Values less than 0 are set to 0, values more than 1 are
-#' set to 1.
-#' 
-#' @param x A probability vector that may take values
-#'   outside the 0-1 range
-#' @param warn Throw warnings when values are corrected?
-#'   
-#' @return A correct probability vector.
-#' @export
-#' 
-#' @examples
-#' 
-#' p(c(-.1, 0, .5, 1, 1.1))
-p <- function(x, warn = FALSE) {
-  x1 <- x > 1
-  x0 <- x < 0
-  if (warn) {
-    warning(sprintf(
-      "Probabilities out of range corrected at position%s: %s.",
-      plur(sum(x0 | x1)),
-      paste(which(x0 | x1), collapse = ", ")
-    ))
-  }
-  ifelse(x1, 1, ifelse(x0, 0, x))
-}

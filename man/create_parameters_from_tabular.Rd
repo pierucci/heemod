@@ -19,11 +19,11 @@ If specified in the tabular file, DSA and PSA can also be
 created.
 }
 \details{
-The tabular parameter definition file can have the 
-following columns: \code{parameter} (the parameter name, 
-required), \code{value} (required), \code{low} and 
-\code{high} (if both are present, a deterministic 
-sensitivity analysis will be performed), and \code{psa} 
+The tabular parameter definition file can have the
+following columns: \code{parameter} (the parameter name,
+required), \code{value} (required), \code{low} and
+\code{high} (if both are present, a deterministic
+sensitivity analysis will be performed), and \code{psa}
 (a definition of a distribution to use in a probabilistic
 sensitivity analysis. Other columns will be ignored.
 }

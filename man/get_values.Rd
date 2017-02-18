@@ -22,7 +22,7 @@ get_values(x, ...)
 \method{get_values}{list}(x, ...)
 }
 \arguments{
-\item{x}{Result from \code{\link{run_model}}.}
+\item{x}{Result from \code{\link[=run_model]{run_model()}}.}
 
 \item{...}{further arguments passed to or from other
 methods.}
@@ -31,6 +31,6 @@ methods.}
 A data frame of values per state.
 }
 \description{
-Given a result from \code{\link{run_model}}, return 
+Given a result from \code{\link[=run_model]{run_model()}}, return
 cost and effect values for a specific strategy.
 }

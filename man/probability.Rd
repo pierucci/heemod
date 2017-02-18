@@ -2,13 +2,16 @@
 % Please edit documentation in R/transform.R
 \name{probability}
 \alias{probability}
+\alias{rescale_prob}
 \alias{prob_to_prob}
 \alias{rate_to_prob}
 \alias{or_to_prob}
 \alias{rr_to_prob}
 \title{Convenience Functions to Compute Probabilities}
 \usage{
-prob_to_prob(p, to = 1, from = 1)
+rescale_prob(p, to = 1, from = 1)
+
+prob_to_prob(...)
 
 rate_to_prob(r, to = 1, per = 1)
 
@@ -23,6 +26,8 @@ rr_to_prob(rr, p)
 
 \item{from}{Timeframe of the original probability.}
 
+\item{...}{For deprecated functions.}
+
 \item{r}{Rate.}
 
 \item{per}{Number of person-time corresponding to the
@@ -36,14 +41,14 @@ rate.}
 A probability.
 }
 \description{
-These convienience functions make it easier to compute 
+These convienience functions make it easier to compute
 transition probabilities from indidence rates, OR, RR, or
 probabilities estimated on a different timeframe.
 }
 \examples{
 # convert 5-year probability 
 # to 1-year probability
-prob_to_prob(p = .65, from = 5)
+rescale_prob(p = .65, from = 5)
 
 # convert 1-year probability 
 # to 1-month probability

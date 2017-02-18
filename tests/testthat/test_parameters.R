@@ -38,12 +38,13 @@ b = a + 543',
   ..$ expr: num 4321',
       fixed = TRUE
     )
-    expect_error(
-      modify(
+    expect_identical(
+      names(modify(
         par1,
         a = 4321,
         c = 333
-      )
+      )),
+      letters[1:3]
     )
     expect_error(
       modify(
@@ -74,7 +75,7 @@ test_that(
     )
     expect_output(
       str(e_par1),
-      "10 obs\\. of  4 variables"
+      "10 obs\\. of  5 variables"
     )
     expect_equal(
       get_parameter_names(e_par1),

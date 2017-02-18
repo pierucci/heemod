@@ -2,26 +2,26 @@
 #' 
 #' Get probabilities from survival models.
 #' 
-#' If \code{use_km_until = 0}, then only model probabilities
+#' If `use_km_until = 0`, then only model probabilities
 #' will be used.
 #' 
-#' The results of \code{get_probs_from_surv} are memoised for
-#' \code{options("heemod.memotime")} (default: 1 hour) to
+#' The results of `get_probs_from_surv` are memoised for
+#' `options("heemod.memotime")` (default: 1 hour) to
 #' increase resampling performance.
 #' 
 #' @name get_probs_from_surv
 #' @param x Either a result from 
-#'   \code{\link[flexsurv]{flexsurvreg}} or
-#'   \code{\link{define_survival}}.
-#' @param cycle The \code{markov_cycle} or 
-#'   \code{state_cycle} for which to predict.
+#'   [flexsurv::flexsurvreg()] or
+#'   [define_survival()].
+#' @param cycle The `markov_cycle` or 
+#'   `state_time` for which to predict.
 #' @param km_limit Up to what time should Kaplan-Meier 
 #'   estimates be used? Model predictions will be used 
-#'   thereafter. See \code{Details}.
+#'   thereafter. See `Details`.
 #' @param cycle_length The value of a Markov cycle in 
 #'   absolute time units.
-#' @param type either \code{prob}, for transition 
-#'   probabilities, or \code{surv}, for survival
+#' @param type either `prob`, for transition 
+#'   probabilities, or `surv`, for survival
 #' @param ... arguments passed to methods.
 #'   
 #' @return Returns the Markov transition probability for the
@@ -185,7 +185,7 @@ get_probs_from_surv <- memoise::memoise(
 #' @param ... Additional distribution parameters (see
 #'   respective distribution help pages).
 #'   
-#' @return A \code{surv_dist} object.
+#' @return A `surv_dist` object.
 #' @export
 #' 
 #' @examples

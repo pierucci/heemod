@@ -15,12 +15,12 @@ create_df_from_tabular(df_dir, df_envir)
 The environment with the data frames.
 }
 \description{
-Reads files containing data frames (in tabular format) 
-from a directory, and loads them in an environment to be 
+Reads files containing data frames (in tabular format)
+from a directory, and loads them in an environment to be
 available during an analysis.
 }
 \details{
-The files must be in .csv, .xls, or .xlsx format. A file 
+The files must be in .csv, .xls, or .xlsx format. A file
 my_df.csv (or my_df.xls, or my_df.xlsx) will be loaded as
 a data frame my_df.
 }

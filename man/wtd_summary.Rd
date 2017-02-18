@@ -9,7 +9,7 @@ wtd_summary(x, weights = NULL)
 \arguments{
 \item{x}{A numeric vector.}
 
-\item{weights}{A vector of weights, same length as 
+\item{weights}{A vector of weights, same length as
 \code{x}.}
 }
 \value{

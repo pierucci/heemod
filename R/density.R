@@ -4,11 +4,11 @@
 #' Define a distribution for PSA parameters.
 #' 
 #' These functions are not exported, but only used in 
-#' \code{\link{define_psa}}. To specify a user-made function
-#' use \code{define_distribution}.
+#' [define_psa()]. To specify a user-made function
+#' use `define_distribution`.
 #' 
-#' \code{define_distribution} takes as argument a function
-#' with a single argument, \code{x}, corresponding to a
+#' `define_distribution` takes as argument a function
+#' with a single argument, `x`, corresponding to a
 #' vector of quantiles. It returns the distribution values
 #' for the given quantiles. See examples
 #' 
@@ -165,4 +165,3 @@ triangle <- function(lower, upper, peak = (lower + upper)/2) {
 r_triangle <- function(lower, upper, peak) {
   function(x) triangle::qtriangle(p = x, a = lower, b = upper, c = peak)
 }
-

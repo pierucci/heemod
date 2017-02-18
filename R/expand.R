@@ -1,25 +1,25 @@
-has_state_cycle <- function(x, ...) {
-  UseMethod("has_state_cycle")
+has_state_time <- function(x, ...) {
+  UseMethod("has_state_time")
 }
 
 #' @export
-has_state_cycle.uneval_matrix <- function(x, ...) {
-  unlist(lapply(x, function(y) "state_cycle" %in% all.vars(y$expr)))
+has_state_time.uneval_matrix <- function(x, ...) {
+  unlist(lapply(x, function(y) "state_time" %in% all.vars(y$expr)))
 }
 
 #' @export
-has_state_cycle.part_surv <- function(x, ...) {
+has_state_time.part_surv <- function(x, ...) {
   FALSE
 }
 
 #' @export
-has_state_cycle.uneval_state_list <- function(x, ...) {
-  unlist(lapply(x, has_state_cycle))
+has_state_time.uneval_state_list <- function(x, ...) {
+  unlist(lapply(x, has_state_time))
 }
 
 #' @export
-has_state_cycle.state <- function(x, ...) {
-  any(unlist(lapply(x, function(y) "state_cycle" %in% all.vars(y$expr))))
+has_state_time.state <- function(x, ...) {
+  any(unlist(lapply(x, function(y) "state_time" %in% all.vars(y$expr))))
 }
 
 substitute_dots <- function(.dots, .values) {
@@ -31,7 +31,7 @@ substitute_dots <- function(.dots, .values) {
 #' Expand Time-Dependant States into Tunnel States
 #' 
 #' This function for transition matrices and state values 
-#' expands states relying on \code{state_cycle} in a serie
+#' expands states relying on `state_time` in a serie
 #' of tunnels states.
 #' 
 #' @param x A transition matrix or a state list.
@@ -65,8 +65,8 @@ expand_state.uneval_matrix <- function(x, state_pos,
       from = get_tm_pos(state_pos, 1, N+1),
       to = get_tm_pos(state_pos, N+1, N+1))]
     
-    # edit state_cycle
-    new <- substitute_dots(new, list(state_cycle = n))
+    # edit state_time
+    new <- substitute_dots(new, list(state_time = n))
     
     # and reinsert
     res <- insert(res, (N+1)*(state_pos-1),
@@ -89,7 +89,7 @@ expand_state.uneval_matrix <- function(x, state_pos,
     x[get_tm_pos(state_pos, 1, N):get_tm_pos(state_pos, N, N)] <-
       substitute_dots(
         x[get_tm_pos(state_pos, 1, N):get_tm_pos(state_pos, N, N)],
-        list(state_cycle = n)
+        list(state_time = n)
       )
     x
   }
@@ -105,7 +105,7 @@ expand_state.uneval_state_list <- function(x, state_name, cycles) {
   id <- seq_len(cycles + 1)
   res <- lapply(
     id,
-    function(x) substitute_dots(st, list(state_cycle = x))
+    function(x) substitute_dots(st, list(state_time = x))
   )
   names(res) <- sprintf(".%s_%i", state_name, id)
   
@@ -118,7 +118,7 @@ expand_state.uneval_state_list <- function(x, state_name, cycles) {
 
 #' Convert Lazy Dots to Expression List
 #' 
-#' This function is used by \code{\link{interp_heemod}}.
+#' This function is used by [interp_heemod()].
 #'
 #' @param .dots A lazy dots object.
 #'
@@ -164,7 +164,7 @@ interp_heemod.default <- function(x, more = NULL, ...) {
     
     if (any(pb <- funs %in% names(for_interp))) {
       stop(sprintf(
-        "Some parameters are named like a function, this is incompatible with the use of 'state_cycle': %s.",
+        "Some parameters are named like a function, this is incompatible with the use of 'state_time': %s.",
         paste(funs[pb], collapse = ", ")
       ))
     }
@@ -220,7 +220,7 @@ all.funs <- function(expr) {
   names(with_funs)[with_funs > 0]
 }
 
-complete_scl <- function(scl, state_names,
+complete_stl <- function(scl, state_names,
                          strategy_names, cycles) {
   uni <- FALSE
   if (is.numeric(scl) && length(scl) == 1 && is.null(names(scl))) {
@@ -247,14 +247,14 @@ complete_scl <- function(scl, state_names,
   
   check_scl <- function(scl, cycles) {
     if (is.null(names(scl))) {
-      stop("'state_cycle_limit' must be named.")
+      stop("'state_time_limit' must be named.")
     }
     if (any(duplicated(names(scl)))) {
-      stop("'state_cycle_limit' names must be unique.")
+      stop("'state_time_limit' names must be unique.")
     }
     if (any(pb <- ! names(scl) %in% state_names)) {
       stop(sprintf(
-        "Some 'state_cycle_limit' names are not state names: %s.",
+        "Some 'state_time_limit' names are not state names: %s.",
         paste(names(scl)[pb], collapse = ", ")
       ))
     }
@@ -290,5 +290,5 @@ complete_scl <- function(scl, state_names,
     return(res)
   }
   
-  stop("'Incorrect 'state_cycle_limit' type.")
+  stop("'Incorrect 'state_time_limit' type.")
 }

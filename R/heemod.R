@@ -1,6 +1,6 @@
 #' heemod: Health Economic Evaluation MODelling
 #' 
-#' \code{heemod} is an R toolset for health economic 
+#' `heemod` is an R toolset for health economic 
 #' evaluation modelling. It aims to provide a simple and 
 #' consistent interface for Markov models specification and
 #' comparison. Non-homogeneous Markov models (with time

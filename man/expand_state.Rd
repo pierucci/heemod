@@ -29,8 +29,8 @@ expand_state(x, ...)
 The same object type as the input.
 }
 \description{
-This function for transition matrices and state values 
-expands states relying on \code{state_cycle} in a serie
+This function for transition matrices and state values
+expands states relying on \code{state_time} in a serie
 of tunnels states.
 }
 \keyword{internal}

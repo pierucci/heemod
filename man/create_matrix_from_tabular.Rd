@@ -7,10 +7,10 @@
 create_matrix_from_tabular(trans_probs, state_names, df_env = globalenv())
 }
 \arguments{
-\item{trans_probs}{Result for one model of 
-\code{\link{parse_multi_spec}}.}
+\item{trans_probs}{Result for one model of
+\code{\link[=parse_multi_spec]{parse_multi_spec()}}.}
 
-\item{state_names}{The names of the states used in the 
+\item{state_names}{The names of the states used in the
 transition matrix.}
 
 \item{df_env}{An environment containing external data.}
@@ -19,22 +19,22 @@ transition matrix.}
 A transition matrix.
 }
 \description{
-Transforms tabular input defining a transition matrix 
+Transforms tabular input defining a transition matrix
 into an \code{heemod} object.
 }
 \details{
-The data frame \code{trans_probs} should have columns 
-\code{from}, \code{to}, and \code{prob}, where 
-\code{prob} is the probability of a transition from the 
-\code{from} state to the \code{to} state. Prob can be 
-defined in terms of parameters, just as when using 
-\code{define_transition} at the keyboard. Probabilities of 0 
-need not be specified - they will be automatically 
+The data frame \code{trans_probs} should have columns
+\code{from}, \code{to}, and \code{prob}, where
+\code{prob} is the probability of a transition from the
+\code{from} state to the \code{to} state. Prob can be
+defined in terms of parameters, just as when using
+\code{define_transition} at the keyboard. Probabilities of 0
+need not be specified - they will be automatically
 inserted.
 
 All state names must be used in the \code{from} column of
-the transition matrix (otherwise you can just get rid of 
-the state). Absorbing states should have a transition 
+the transition matrix (otherwise you can just get rid of
+the state). Absorbing states should have a transition
 from and to themselves with probability 1.
 }
 \keyword{internal}
