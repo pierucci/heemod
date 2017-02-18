@@ -11,6 +11,6 @@ define_psa(
 # example with multinomial parameters
 
 define_psa(
-  rate1 + rate2 + rate3 ~ multinom(10, 50, 40),
-  a + b ~ multinom(15, 30)
+  rate1 + rate2 + rate3 ~ multinomial(10, 50, 40),
+  a + b ~ multinomial(15, 30)
 )

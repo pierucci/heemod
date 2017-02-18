@@ -8,6 +8,8 @@
 \alias{binomial}
 \alias{multinomial}
 \alias{logitnormal}
+\alias{beta}
+\alias{triangle}
 \alias{poisson}
 \alias{define_distribution}
 \alias{beta}
@@ -26,6 +28,10 @@ binomial(prob, size)
 multinomial(...)
 
 logitnormal(mu, sigma)
+
+beta(shape1, shape2)
+
+triangle(lower, upper, peak = (lower + upper)/2)
 
 poisson(mean)
 
@@ -53,6 +59,16 @@ triangle(lower, upper, peak = (lower + upper)/2)
 \item{mu}{Mean on the logit scale.}
 
 \item{sigma}{SD on the logit scale.}
+
+\item{shape1}{for beta distribution}
+
+\item{shape2}{for beta distribution}
+
+\item{lower}{lower bound of triangular distribution.}
+
+\item{upper}{upper bound of triangular distribution.}
+
+\item{peak}{peak of triangular distribution.}
 
 \item{x}{A distribution function, see details.}
 
