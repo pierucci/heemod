@@ -464,3 +464,24 @@ get_expand_limit <- function(x, strategy) {
 get_eval_strategy_list <- function(x) {
   x$eval_strategy_list
 }
+
+get_parameter_values <- function(x, parameter_names,
+                                 cycle = 1, strategy = 1) {
+  strategy <- check_strategy_index(x, strategy)
+  
+  stopifnot(
+    cycle > 0,
+    cycle <= get_cycles(x),
+    all(parameter_names %in% get_parameter_names(x))
+  )
+  
+  stats::setNames(
+    lapply(
+      seq_along(parameter_names),
+      function(i) {
+        as.vector(unlist(
+          get_eval_strategy_list(x)[[strategy]]$parameters[cycle[i], parameter_names[i]]
+        ))
+      }),
+    parameter_names)
+}
