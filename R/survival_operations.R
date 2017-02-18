@@ -269,7 +269,9 @@ maximize_hazards = function(...){
 #' @examples
 #' 
 #' fs1 = flexsurvreg(Surv(rectime, censrec)~group, data=bc)
-#' good_model = set_covariates()
+#' good_model = set_covariates(group="good")
+#' cohort = data.frame(group=c("Good","Good","Medium", "Poor"))
+#' mixed_model = set_covariates(data=cohort)
 set_covariates = function(dist, ..., data = NULL){
   
   data = rbind(

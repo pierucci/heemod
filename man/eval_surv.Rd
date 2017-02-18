@@ -12,6 +12,7 @@
 \alias{eval_surv_.surv_ph}
 \alias{eval_surv_.surv_aft}
 \alias{eval_surv_.surv_po}
+\alias{eval_surv_.surv_add_haz}
 \alias{eval_surv_.surv_max_haz}
 \title{Evaluate Survival Distributions}
 \usage{
@@ -42,6 +43,9 @@ eval_surv(x, cycle, cycle_length = 1, type = c("prob", "surv"), ...)
 
 \method{eval_surv_}{surv_po}(x, cycle, cycle_length = 1, type = c("prob",
   "surv"))
+
+\method{eval_surv_}{surv_add_haz}(x, cycle, cycle_length = 1,
+  type = c("prob", "surv"))
 
 \method{eval_surv_}{surv_max_haz}(x, cycle, cycle_length = 1,
   type = c("prob", "surv"))
