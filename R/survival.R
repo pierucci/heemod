@@ -28,7 +28,7 @@
 #'   cycles.
 #'   
 #' @export
-get_probs_from_surv_ <- function(x, ...){
+get_probs_from_surv_ <- function(x, ...) {
   UseMethod("get_probs_from_surv_")
 }
 
@@ -110,7 +110,7 @@ get_probs_from_surv_.flexsurvreg <- function(x, cycle,
       }
       
       #get pred-based probabilities
-      if(type == "prob") {
+      if (type == "prob") {
         tmp <- as.data.frame(flexsurv::summary.flexsurvreg(
           x,
           t = times_surv,
@@ -119,7 +119,7 @@ get_probs_from_surv_.flexsurvreg <- function(x, cycle,
         pred_tr_prob <- 1 - exp(-diff(tmp$est))
         res[use_pred] <- pred_tr_prob[use_pred]
       } else if (type == "surv") {
-        res[use_pred] <- flexsurv::summary.flexsurvreg(
+        res[use_pred] <- summary(
           x, t = times_surv,
           type = "survival")[[1]]$est[-1][use_pred]
       }
@@ -154,17 +154,18 @@ get_probs_from_surv_.surv_dist <- function(x, cycle,
     stop("'flexsurv' package required.")
   }
   
-  Hf <- get(paste0("H", x$distribution),
+  pf <- get(paste0("p", x$distribution),
              envir = asNamespace("flexsurv"))
   
   args <- x[- match("distribution", names(x))]
   args[["x"]] <- times_surv
-  cumhaz <- do.call(Hf, args)
+  args[["lower.tail"]] <- F
+  res <- do.call(pf, args)
   
-  if(type == "prob") {
-    res <- 1 - (1 / exp(diff(cumhaz)))
+  if (type == "prob") {
+    res <- calc_probs(ret)
   } else {
-    res <- exp(-cumhaz)[-1]
+    res <- res[-1]
   }
   
   res
@@ -177,61 +178,4 @@ get_probs_from_surv <- memoise::memoise(
   ~ memoise::timeout(options()$heemod.memotime)
 )
 
-#' Define a Survival Distribution
-#' 
-#' Define a parametric survival distribution.
-#' 
-#' @param distribution A parametric survival distribution.
-#' @param ... Additional distribution parameters (see
-#'   respective distribution help pages).
-#'   
-#' @return A `surv_dist` object.
-#' @export
-#' 
-#' @examples
-#' 
-#' define_survival(distribution = "exp", rate = .5)
-#' define_survival(distribution = "gompertz", rate = .5, shape = 1)
-#' 
-define_survival <- function(distribution = c("exp", "weibull",
-                                             "lnorm", "gamma", 
-                                             "gompertz", "gengamma"),
-                            ...) {
-  
-  distribution <- match.arg(distribution)
-  
-  list_arg <- list(...)
-  
-  if (distribution %in% c("exp", "weibull",
-                          "lnorm", "gamma")) {
-    env_f <- asNamespace("stats")
-  } else {
-    if (! requireNamespace("flexsurv")) {
-      stop("'flexsurv' package required.")
-    }
-    env_f <- asNamespace("flexsurv")
-  }
-  
-  rf <- get(paste0("r", distribution),
-            envir = env_f)
-  
-  names_fun <- setdiff(names(list_arg), "distribution")
-  names_par <- setdiff(names(formals(rf)), "n")
-  
-  correct_names <- names_fun %in% names_par
-  
-  if (! all(correct_names)) {
-    stop(sprintf(
-      "Incorrect argument%s: %s.",
-      plur(sum(! correct_names)),
-      paste(names_fun[! correct_names], collapse = ", ")))
-  }
-  
-  structure(
-    list(
-      distribution = distribution,
-      ...
-    ),
-    class = "surv_dist"
-  )
-}
+
