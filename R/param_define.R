@@ -58,20 +58,29 @@ define_parameters_ <- function(.dots) {
 
 #' Return parameters names
 #' 
-#' Extract parameters names from an `uneval_parameters`
-#' or `eval_parameters` object.
+#' Extract parameters names.
 #' 
-#' @param x `uneval_parameters` or 
-#'   `eval_parameters` object.
+#' @param x An object with parameters.
 #'   
 #' @return A character vector of parameter names.
 #'   
 #' @keywords internal
 get_parameter_names <- function(x) {
+  UseMethod("get_parameter_names")
+}
+
+get_parameter_names.uneval_parameters <- function(x) {
   names(x)[! names(x) %in% c("markov_cycle", "strategy",
                              "model_time")]
 }
 
+get_parameter_names.eval_parameters <- function(x) {
+  get_parameter_names.uneval_parameters(x)
+}
+
+get_parameter_names.run_model <- function(x) {
+  get_parameter_names(get_parameters(x))
+}
 
 #' Modify Object
 #' 
