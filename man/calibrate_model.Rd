@@ -22,7 +22,7 @@ in \code{matching.values}. See details.}
 
 \item{target_values}{values we want the matching functions to match}
 
-\item{method}{The optimization method from package `optimx` to use for the 
+\item{method}{The optimization method from package \code{optimx} to use for the
 calibration; defaults to "Nelder-Mead".}
 
 \item{initial_values}{an optional matrix with each row providing a starting
@@ -45,8 +45,8 @@ across demographic groups?}
 }
 \value{
 A data frame in which each row has the calibrated values of
-  parameters in `param_names` for the corresponding row of
-  \code{initial_values}, along with the convergence code for each run.
+parameters in \code{param_names} for the corresponding row of
+\code{initial_values}, along with the convergence code for each run.
 }
 \description{
 Calibrate model parameters to match desired output

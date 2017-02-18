@@ -6,48 +6,48 @@
 #' @param param_names names of the parameters to calibrate
 #' @param matching_df List where each element specifies the function that
 #'   will be used to calculate a value that is matched with the respective value
-#'   in \code{matching.values}. See details.
+#'   in `matching.values`. See details.
 #' @param target_values values we want the matching functions to match
 #' @param method The optimization method from package `optimx` to use for the 
 #'   calibration; defaults to "Nelder-Mead".
 #' @param initial_values an optional matrix with each row providing a starting
 #'   point for the optimization.  (If a data frame is passed in, it will be
-#'   converted.) If not provided, the starting values from \code{run_model} will
+#'   converted.) If not provided, the starting values from `run_model` will
 #'   be used.
-#' @param demographics As for \code{run_model_tabular}.
+#' @param demographics As for `run_model_tabular`.
 #' @param run_demo When running from a tabular model, should the model be run
 #'   across demographic groups?
 #'   
 #' @param ... optional arguments to be passed to optimx; when running
-#'   \code{calibrate_model_from_tabular}, will also include all arguments to
-#'   \code{calibrate_model} other than run_model.
+#'   `calibrate_model_from_tabular`, will also include all arguments to
+#'   `calibrate_model` other than run_model.
 #' @export
 #' 
 #' @return A data frame in which each row has the calibrated values of
 #'   parameters in `param_names` for the corresponding row of
-#'   \code{initial_values}, along with the convergence code for each run.
-#' @details \code{matching_df} is a data.frame with four columns:  group,
+#'   `initial_values`, along with the convergence code for each run.
+#' @details `matching_df` is a data.frame with four columns:  group,
 #' strategy_name, states_to_sum, and cycles_to_sum.  Each value of group defines
 #' a set of counts that will be added together and compared to the corresponding
-#' element of \code{target_values}.  (Target values must be given in the order
+#' element of `target_values`.  (Target values must be given in the order
 #' of sorted group values.)   For each value of group, strategy_name can have
 #' only one value; having more than one will cause an error. For each value of
-#' group, \code{cycles_to_sum} and \code{states_to_sum} will be used to index
+#' group, `cycles_to_sum` and `states_to_sum` will be used to index
 #' the counts from the corresponding strategy, and the sum of those counts will
 #' be returned as the value to match.  The calibration minimizes the sum of
 #' squared differences between the calculated values and the target values.
 #' 
 #' Parameters not being optimized are unchanged from the values in the model run
-#' passed to \code{calibrate_model}.  If \code{initial_values} is \code{NULL},
+#' passed to `calibrate_model`.  If `initial_values` is `NULL`,
 #' initial values of the parameters being calibrated will also be taken from the
-#' model run passed to \code{calibrate_model}.  Passing in initial values
+#' model run passed to `calibrate_model`.  Passing in initial values
 #' allows (among other things) the user to check whether the calibration gets
 #' the same results from different starting points.
 #' 
 #' Running calibrate_model does not change the model parameters - the user
 #' must create a new model and run it if desired.
 #' 
-#' See also the vignette \code{k-calibration}.
+#' See also the vignette `k-calibration`.
 #' @example inst/examples/example_calibration.R
 
 calibrate_model <- function(run_model,
