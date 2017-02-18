@@ -2,8 +2,10 @@
 #' 
 #' Performs checks on the cycle and time inputs to `eval_surv`
 #' 
-#' @param cycle
-#' @param cycle_length
+#' @param cycle The `markov_cycle` or 
+#'   `state_time` for which to predict.
+#' @param cycle_length The value of a Markov cycle in 
+#'   absolute time units.
 #'   
 #' @keywords internal
 #' 
@@ -162,7 +164,6 @@ extractStratum = function(sf, index){
 #'   
 #' @keywords internal
 #' 
-extractStr
 extractStrata = function(sf){
   if(is.null(sf$strata)) extractStratum(sf, 1)
   else plyr::ldply(
@@ -176,13 +177,26 @@ extractStrata = function(sf){
 #' Calculates the per-cycle event probabilities from a vector of survival
 #' probabilities.
 #' 
-#' @param sf A survit object.
+#' @param x A vector of survival probabilities.
 #'   
 #' @return The per-cycle event probabilities.
 #'   
 #' @keywords internal
 #' 
-calc_probs = function(x) -diff(c(1, x)) / c(1, x[-length(x)])
+calc_prob_from_surv = function(x) -diff(c(1, x)) / c(1, x[-length(x)])
+
+#' Calculate Probability of Survival
+#' 
+#' Calculates the probability of survival from a vector of event
+#' probabilities
+#' 
+#' @param x A vector of per-cycle event probabilities.
+#'   
+#' @return The survival probabilities
+#'   
+#' @keywords internal
+#' 
+calc_prob_from_surv = function(x) cumprod(1-x)
 
 
 #' Evaluate Survival Distributions
@@ -276,7 +290,7 @@ eval_surv_.survfit <- function(x, cycle, cycle_length=1,
   
   if (type == "prob") {
     # Calculate per-cycle failure prob
-    ret <- calc_probs(ret)
+    ret <- calc_prob_from_surv(ret)
   }else{
     ret = ret[-1]
   }
@@ -352,7 +366,7 @@ eval_surv_.flexsurvreg <- function(x, cycle, cycle_length=1,
   
   if (type == "prob") {
     # Calculate per-cycle failure prob
-    ret <- calc_probs(ret)
+    ret <- calc_prob_from_surv(ret)
   }else{
     ret = ret[-1]
   }
@@ -392,7 +406,7 @@ eval_surv_.surv_projection <- function(x, cycle,
   ret[ind_s2] <- (surv2*surv1_p_at/surv2_p_at)[ind_s2]
   
   if(type == "prob"){
-    ret <- calc_probs(ret)
+    ret <- calc_prob_from_surv(ret)
   }else{
     ret <- ret[-1]
   }
@@ -405,6 +419,8 @@ eval_surv_.surv_projection <- function(x, cycle,
 eval_surv_.surv_pool <- function(x, cycle,
                                        cycle_length = 1,
                                        type = c("prob", "surv")){
+  
+  check_cycle_inputs(cycle, cycle_length)
   
   # Determine dimensions of matrix and initialize
   n_cycle <- length(cycle)
@@ -426,9 +442,155 @@ eval_surv_.surv_pool <- function(x, cycle,
   ret <- rowSums(surv_mat)
   
   if(type == "prob"){
-    ret <- calc_probs(ret)
+    ret <- calc_prob_from_surv(ret)
   }else{
     ret <- ret[-1]
+  }
+  
+  ret
+}
+
+#' @rdname eval_surv
+#' @export
+eval_surv_.surv_ph <- function(x, cycle,
+                                 cycle_length = 1,
+                                 type = c("prob", "surv")){
+  
+  check_cycle_inputs(cycle, cycle_length)
+  
+  ret = eval_surv(
+    x$dist,
+    cycle=cycle,
+    cycle_length=cycle_length,
+    type="surv"
+  ) ^ hr
+  
+  if(type == "prob"){
+    ret <- calc_prob_from_surv(ret)
+  }else{
+    ret <- ret[-1]
+  }
+  
+  ret
+}
+
+#' @rdname eval_surv
+#' @export
+eval_surv_.surv_aft <- function(x, cycle,
+                               cycle_length = 1,
+                               type = c("prob", "surv")){
+  
+  check_cycle_inputs(cycle, cycle_length)
+  
+  ret = eval_surv(
+    x$dist,
+    cycle=cycle,
+    cycle_length=cycle_length * x$af,
+    type="surv"
+  )
+  
+  if(type == "prob"){
+    ret <- calc_prob_from_surv(ret)
+  }else{
+    ret <- ret[-1]
+  }
+  
+  ret
+}
+
+#' @rdname eval_surv
+#' @export
+eval_surv_.surv_po <- function(x, cycle,
+                                cycle_length = 1,
+                                type = c("prob", "surv")){
+  
+  check_cycle_inputs(cycle, cycle_length)
+  
+  ret = eval_surv(
+    x$dist,
+    cycle=cycle,
+    cycle_length=cycle_length,
+    type="surv"
+  ) %>% or_to_prob(x$or)
+  
+  if(type == "prob"){
+    ret <- calc_prob_from_surv(ret)
+  }else{
+    ret <- ret[-1]
+  }
+  
+  ret
+}
+
+#' @rdname eval_surv
+#' @export
+eval_surv_.surv_add_haz <- function(x, cycle,
+                                    cycle_length = 1,
+                                    type = c("prob", "surv")){
+  
+  check_cycle_inputs(cycle, cycle_length)
+  
+  # Determine dimensions of matrix and initialize
+  n_cycle <- length(cycle)
+  n_dist <- length(x$dists)
+  surv_mat = matrix(nrow = nCycle + 1, ncol = nCycle + 1)
+  
+  # Evaluate and weight component distributions into columns
+  # of matrix
+  for(i in seq_len(n_dist)){
+    surv_mat[ ,i] <- eval_surv(
+      x$dists[[i]],
+      cycle=cycle,
+      cycle_length=cycle_length,
+      type="prob"
+    )
+  }
+  
+  # Calculate maximum of the event probabilities for
+  # each cycle
+  ret <- apply(surv_mat, 1, function(z) 1 - prod(z - 1))
+  
+  if(type == "prob"){
+    ret <- calc_surv_from_prob(ret)
+  }else{
+    ret <- ret
+  }
+  
+  ret
+}
+
+#' @rdname eval_surv
+#' @export
+eval_surv_.surv_max_haz <- function(x, cycle,
+                                 cycle_length = 1,
+                                 type = c("prob", "surv")){
+  
+  check_cycle_inputs(cycle, cycle_length)
+  
+  # Determine dimensions of matrix and initialize
+  n_cycle <- length(cycle)
+  n_dist <- length(x$dists)
+  surv_mat = matrix(nrow = nCycle + 1, ncol = nCycle + 1)
+  
+  # Evaluate and weight component distributions into columns
+  # of matrix
+  for(i in seq_len(n_dist)){
+    surv_mat[ ,i] <- eval_surv(
+      x$dists[[i]],
+      cycle=cycle,
+      cycle_length=cycle_length,
+      type="prob"
+    )
+  }
+  
+  # Calculate maximum of the event probabilities for
+  # each cycle
+  ret <- apply(surv_mat, 1, max)
+  
+  if(type == "prob"){
+    ret <- calc_surv_from_prob(ret)
+  }else{
+    ret <- ret
   }
   
   ret
