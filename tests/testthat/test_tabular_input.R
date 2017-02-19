@@ -101,24 +101,24 @@ test_that(
   }
 )
 
-test_that("can read multinomial parameters from file",
-          {
-            from_input <- 
-              define_psa(p_AA ~binomial(.7, 1000), 
-                         p_AB + p_AC + p_AD ~ multinomial(202, 67, 10))
-            from_file <-
-              create_parameters_from_tabular(read_file(system.file(
-                "tabular/test",
-                "example_multinom_params.csv",
-                package = "heemod"
-              )))
-            ## can't test identity because of environments, so test results
-            set.seed(5)
-            from_input_draws <- eval_resample(from_input, 10)
-            set.seed(5)
-            from_file_draws <- eval_resample(from_file$psa_params, 10)
-            expect_identical(from_input_draws, from_file_draws)
-          }
+test_that(
+  "can read multinomial parameters from file", {
+    from_input <- 
+      define_psa(p_AA ~binomial(.7, 1000), 
+                 p_AB + p_AC + p_AD ~ multinomial(202, 67, 10))
+    from_file <-
+      create_parameters_from_tabular(read_file(system.file(
+        "tabular/test",
+        "example_multinom_params.csv",
+        package = "heemod"
+      )))
+    ## can't test identity because of environments, so test results
+    set.seed(5)
+    from_input_draws <- eval_resample(from_input, 10)
+    set.seed(5)
+    from_file_draws <- eval_resample(from_file$psa_params, 10)
+    expect_identical(from_input_draws, from_file_draws)
+  }
 )
 
 test_that(
@@ -139,21 +139,21 @@ test_that(
         heemod:::gather_model_info(
           system.file("tabular/test", package = "heemod"),
           "REFERENCE_1probmissing.csv")
-        ),
+      ),
       "Undefined probabilities"
     )
     expect_error(
       heemod:::gather_model_info(
         system.file("tabular/test", package = "heemod"),
         "REFERENCE_missingfunctions.csv"),
-      "'functions' directory missing: ",
+      "'source' directory missing: ",
       fixed = TRUE
     )
     expect_error(
       heemod:::gather_model_info(
         system.file("tabular/test", package = "heemod"),
         "REFERENCE_emptyfunctions.csv"),
-      "no functions in 'functions' directory: emptyfunctions",
+      "No source files in 'source' directory: emptyfunctions",
       fixed = TRUE
     )
     
@@ -236,7 +236,7 @@ test_that(
     )
   }
 )
- 
+
 test_that(
   "Bad transmission matrix input is caught.", {
     
@@ -268,7 +268,7 @@ test_that(
     )
   }
 )
-    
+
 test_that(
   "Bad parameter file input is caught.", {
     pb_par <- structure(list(
@@ -344,8 +344,8 @@ test_that(
 )
 
 test_that(
-    "other bad input is caught.", {
-        
+  "other bad input is caught.", {
+    
     opt_pb <- structure(list(
       option = c("cost", "effect", "method", "method", 
                  "n"),
@@ -399,7 +399,7 @@ test_that(
     )
     
     expect_error(
-        create_model_from_tabular(states1, NULL, NULL, new.env())
+      create_model_from_tabular(states1, NULL, NULL, new.env())
     )
   }
 )
