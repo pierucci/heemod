@@ -156,7 +156,6 @@ test_that(
       "No source files in 'source' directory: emptyfunctions",
       fixed = TRUE
     )
-    
   }
 )
 
