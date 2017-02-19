@@ -13,7 +13,7 @@ define_parameters_(.dots)
 \method{modify}{uneval_parameters}(.OBJECT, ...)
 }
 \arguments{
-\item{...}{Name-value pairs of expressions definig
+\item{...}{Name-value pairs of expressions defining
 parameters.}
 
 \item{.dots}{Used to work around non-standard evaluation.}

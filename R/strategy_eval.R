@@ -35,10 +35,12 @@
 eval_strategy <- function(strategy, parameters, cycles, 
                           init, method, expand_limit,
                           inflow, strategy_name) {
+  init <- check_init(init, strategy)
+  inflow <- check_init(inflow, strategy)
+  
   stopifnot(
     cycles > 0,
-    length(cycles) == 1,
-    all(init >= 0)
+    length(cycles) == 1
   )
   
   uneval_transition <- get_transition(strategy)
@@ -131,6 +133,17 @@ eval_strategy <- function(strategy, parameters, cycles,
                                 cycles = cycles,
                                 strategy_name = strategy_name)
   
+  init <- unlist(eval_init(x = init, parameters[1, ]))
+  inflow <- eval_init(x = inflow, parameters)
+  
+  if (! any(init > 0)) {
+    stop("At least one init count must be > 0.")
+  }
+  
+  stopifnot(
+    length(init) == get_state_number(strategy)
+  )
+  
   states <- eval_state_list(uneval_states, parameters)
   
   transition <- eval_transition(uneval_transition,
@@ -217,8 +230,10 @@ compute_counts.eval_matrix <- function(x, init,
     ))
   }
   
+  i <- 0
   add_and_mult <- function(x, y) {
-    (x + inflow) %*% y
+    i <<- i + 1
+    (x + unlist(inflow[i, ])) %*% y
   }
   
   list_counts <- Reduce(

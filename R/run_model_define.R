@@ -146,38 +146,6 @@ run_model_ <- function(uneval_strategy_list,
     stop("State value names differ between models.")
   }
   
-  if (! length(init) == get_state_number(uneval_strategy_list[[1]])) {
-    stop(sprintf(
-      "Length of 'init' vector (%i) differs from number of states (%i).",
-      length(init),
-      get_state_number(uneval_strategy_list[[1]])
-    ))
-  }
-  
-  if (! any(init > 0)) {
-    stop("At least one init count must be > 0.")
-  }
-  
-  if (is.null(names(init))) {
-    names(init) <- get_state_names(uneval_strategy_list[[1]])
-  }
-  
-  if (! all(sort(names(init)) == sort(get_state_names(uneval_strategy_list[[1]])))) {
-    stop("Names of 'init' vector differ from state names.")
-  }
-  
-  if (! length(inflow) == get_state_number(uneval_strategy_list[[1]])) {
-    stop(sprintf(
-      "Length of 'inflow' vector (%i) differs from number of states (%i).",
-      length(inflow),
-      get_state_number(uneval_strategy_list[[1]])
-    ))
-  }
-  
-  if (! all(names(inflow) == names(init))) {
-    stop("Names of 'inflow' must be similar to 'init'.")
-  }
-  
   state_time_limit <- complete_stl(
     state_time_limit,
     state_names = get_state_names(uneval_strategy_list[[1]]),
@@ -202,7 +170,7 @@ run_model_ <- function(uneval_strategy_list,
   
   list_res <- lapply(eval_strategy_list, get_total_state_values)
   
-  for (n in strategy_names){
+  for (n in strategy_names) {
     list_res[[n]]$.strategy_names <- n
   }
   
@@ -427,7 +395,7 @@ get_init <- function(x) {
 }
 
 get_init.run_model <- function(x) {
-  x$init
+  get_eval_strategy_list(x)[[1]]$init
 }
 
 get_ce <- function(x) {
