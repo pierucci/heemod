@@ -112,7 +112,22 @@ gather_model_info <- function(base_dir, ref_file) {
       df_env
     )
   }
-  
+
+  if("functions" %in% ref$data){
+    if(options()$heemod.verbose) message("** Reading functions...")
+    function_dir <- ref$full_file[ref$data == "functions"]
+    short_function_dir <- ref$file[ref$data == "functions"]
+    if(!dir.exists(function_dir))
+      stop("'functions' directory missing: ", short_function_dir)
+    function_list <- list.files(function_dir, full.names = TRUE)
+    if(length(function_list) == 0)
+      stop("no functions in 'functions' directory: ", 
+           short_function_dir)                                                          
+    for(this_file in function_list){
+      source(this_file, echo = FALSE, local = TRUE)
+    }
+  }
+
   ## note - the environment df_env gets included directly
   ##   into param_info, so anything that will load anything
   ##   into that environment needs to come before this statement

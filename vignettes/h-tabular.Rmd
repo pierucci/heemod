@@ -46,6 +46,8 @@ Optionally, the following rows can be provided:
   5. `demographics`: file describing of the population to run the models on.
   6. `data`: a *directory* containing additional tables to be loaded; these can be `.csv`, `.xls` or `.xlsx`.
   7. `output`: a *directory* to save the output graphics.  
+  8.  `functions`: a *directory* in which functions used in your analysis can
+      be placed, and will be sourced into the local environment when you run the model.  They will not persist in the global environment.
 
 ```{r echo = FALSE}
 heemod:::read_file(system.file("tabular/thr/REFERENCE.csv", package = "heemod")) %>% 
