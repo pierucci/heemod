@@ -12,6 +12,7 @@ vignette: >
 
 ```{r setup, include=FALSE}
 library(heemod)
+library(dplyr)
 ```
 
 Input transition probabilities from defined distributions:
@@ -34,6 +35,11 @@ fitw <- flexsurvreg(
   data = ovarian, dist = "weibull"
 )
 plot(fitw)
+
+km <- survfit(
+  formula = Surv(futime, fustat) ~ 1,
+  data = ovarian
+)
 ```
 
 For the example we define a simple model with only 1 strategy:
@@ -44,11 +50,9 @@ param <- define_parameters(
     surv_dist1,
     cycle = markov_cycle # can also be state_cycle
   ),
-  p2 = eval_surv(
-    fitw,
-    cycle = markov_cycle,
-    cycle_length = 365 # time is in days in fitw, in years in markov_cycle
-  )
+  p2 = km %>%
+    project(fitw, at = 730) %>%
+    eval_surv(markov_cycle, cycle_length = 365) # time is in days in fitw, in years in markov_cycle
 )
 
 tm <- define_transition(

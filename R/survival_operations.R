@@ -28,11 +28,11 @@ project <- function(..., at){
   # and subsequent distributions are put in a list along
   # with their cut point.
   dist_list <- list()
-  for(i in seq_along(at)) {
+  for(i in seq_along(dots)) {
     if(i==1) dist_list[[i]] <- dots[[i]]
     else dist_list[[i]] <- list(
       dist = dots[[i]],
-      at = at[i]
+      at = at[i-1]
     )
   }
   
