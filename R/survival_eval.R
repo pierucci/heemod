@@ -310,7 +310,7 @@ eval_surv_.flexsurvreg <- function(x, cycle, cycle_length=1,
   nCoef <- length(coef)
   nT <- length(t)
   
-  if(nCoef > 0 && is.null(covar)){
+  if(x$ncovs > 0 && is.null(covar)){
     warning("No covariates provided, returning aggregate survial across all subjects.")
   }
   
@@ -347,13 +347,18 @@ eval_surv_.flexsurvreg <- function(x, cycle, cycle_length=1,
     append(paramDf)
   
   # Calculate survival probabilities for each distinct level/time,
-  # join to the full data, then summarize over times.
   surv_df <- data %>%
     dplyr::slice(rep(seq_len(nObs), each = nT)) %>%
-    dplyr::mutate(t = rep(t, nObs), value = do.call(x$dfns$p, fncall)) %>%
-    dplyr::left_join(data_full,by=colnames(data)) %>%
-    dplyr::group_by(t) %>%
-    dplyr::summarize(value=mean(value))
+    dplyr::mutate(t = rep(t, nObs), value = do.call(x$dfns$p, fncall))
+  
+  # Join to the full data, then summarize over times.
+  if(x$ncovs > 0){
+    surv_df <- surv_df %>%
+      dplyr::left_join(data_full,by=colnames(data)) %>%
+      dplyr::group_by(t) %>%
+      dplyr::summarize(value=mean(value))
+  }
+
   
   # Just get the results column
   ret <- surv_df$value

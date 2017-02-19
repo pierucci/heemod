@@ -40,15 +40,14 @@ For the example we define a simple model with only 1 strategy:
 
 ```{r warning=FALSE}
 param <- define_parameters(
-  p1 = get_probs_from_surv(
+  p1 = eval_surv(
     surv_dist1,
     cycle = markov_cycle # can also be state_cycle
   ),
-  p2 = get_probs_from_surv(
+  p2 = eval_surv(
     fitw,
     cycle = markov_cycle,
-    cycle_length = 365, # time is in days in fitw, in years in markov_cycle
-    km_limit = 2 # use KM estimates during the first 2 years
+    cycle_length = 365 # time is in days in fitw, in years in markov_cycle
   )
 )
 
@@ -97,7 +96,6 @@ surv_dist2 <- define_survival(
 ps <- define_part_surv(
   pfs = surv_dist2,
   os = fitw,
-  km_limit = c(0, 2), # 0 for pfs, 2 for os
   cycle_length = c(1, 365) # 1 for pfs, 365 for os
 )
 
