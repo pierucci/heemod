@@ -29,7 +29,7 @@ f <- function(x) {
 }
 f(res_mod)
 
-calibrate(
+calibrate_model(
   res_mod,
   parameter_names = "p",
   fn_values = f,

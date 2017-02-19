@@ -22,7 +22,7 @@
 #' [stats::optimise()] (except when a `method` is given).
 #' `convcode` is always `NA` with [stats::optimise()].
 #' 
-#' Running [calibrate()] does not change the model 
+#' Running [calibrate_model()] does not change the model 
 #' parameters; the user must create a new model and run it 
 #' if desired.
 #' 
@@ -47,10 +47,10 @@
 #'   
 #' @export
 #' @example inst/examples/example_calibration.R
-calibrate <- function(x, parameter_names,
-                      fn_values, target_values,
-                      initial_values = NULL,
-                      ...) {
+calibrate_model <- function(x, parameter_names,
+                            fn_values, target_values,
+                            initial_values = NULL,
+                            ...) {
   
   # if initial values were not supplied,
   # extract them from the model
@@ -256,7 +256,7 @@ fn_calibrate.updated_model <- function(x, parameter_names,
 
 #' Define Calibration Function
 #' 
-#' Define a function to be passed to the [fn_values()] argument of
+#' Define a function to be passed to the `fn_values` argument of
 #' [calibrate_model()].
 #'
 #' @param type Type of model values (`count` or `value`).
@@ -316,12 +316,12 @@ define_calibration_fn <- function(type, strategy_names,
       seq_along(ex_list),
       function(i) {
         (f_list[[i]](x) %>% 
-          dplyr::filter_(
-            .dots = ex_list[[i]]
-          ))[[type[i]]]
+           dplyr::filter_(
+             .dots = ex_list[[i]]
+           ))[[type[i]]]
       })
     )
-  
+    
     if (! is.null(groups)) {
       res <- tapply(res, groups, aggreg_fn)
     }

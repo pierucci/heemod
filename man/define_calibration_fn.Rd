@@ -24,7 +24,7 @@ define_calibration_fn(type, strategy_names, element_names, cycles,
 A numeric vector.
 }
 \description{
-Define a function to be passed to the \code{\link[=fn_values]{fn_values()}} argument of
+Define a function to be passed to the \code{fn_values} argument of
 \code{\link[=calibrate_model]{calibrate_model()}}.
 }
 \examples{
@@ -35,6 +35,7 @@ f <- define_calibration_fn(
   strategy_names = c("I", "I", "II"),
   element_names = c("A", "B", "ly"),
   cycles = c(3, 5, 9),
+  groups = c(1, 1, 2),
   aggreg_fn = mean
 )
 

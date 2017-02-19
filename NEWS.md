@@ -2,7 +2,7 @@
 
 ## New features
 
-  * Model calibration with `calibrate()`.
+  * Model calibration with `calibrate_model()`.
 
 # heemod 0.8.0
 
