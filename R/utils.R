@@ -371,8 +371,16 @@ pretty_names <- function(x) {
 }
 
 to_dots <- function(x) {
-  stopifnot(is.list(x))
-  
+  UseMethod("to_dots")
+}
+
+to_dots.default <- function(x) {
+  lazyeval::as.lazy_dots(lapply(
+    x, function(x) x
+  ))
+}
+
+to_dots.list <- function(x) {
   f <- function(x) {
     if (inherits(x, "character") || inherits(x, "factor")) {
       structure(
@@ -391,4 +399,3 @@ to_dots <- function(x) {
     lapply(x, f)
   )
 }
-
