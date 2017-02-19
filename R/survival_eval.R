@@ -384,6 +384,8 @@ eval_surv_.surv_projection <- function(x, cycle,
                                        cycle_length = 1,
                                        type = c("prob", "surv")){
   
+  type <- match.arg(type)
+  
   check_cycle_inputs(cycle, cycle_length)
   
   t <- cycle_length * cycle
@@ -411,17 +413,19 @@ eval_surv_.surv_projection <- function(x, cycle,
 
 #' @rdname eval_surv
 #' @export
-eval_surv_.surv_pool <- function(x, cycle,
+eval_surv_.surv_pooled <- function(x, cycle,
                                        cycle_length = 1,
                                        type = c("prob", "surv")){
+  
+  type <- match.arg(type)
   
   check_cycle_inputs(cycle, cycle_length)
   
   # Determine dimensions of matrix and initialize
   n_cycle <- length(cycle)
   n_dist <- length(x$dists)
-  surv_mat = matrix(nrow = nCycle + 1, ncol = nCycle + 1)
-  
+  surv_mat = matrix(nrow = n_cycle, ncol = n_dist)
+
   # Evaluate and weight component distributions into columns
   # of matrix
   for(i in seq_len(n_dist)){
@@ -449,6 +453,8 @@ eval_surv_.surv_ph <- function(x, cycle,
                                  cycle_length = 1,
                                  type = c("prob", "surv")){
   
+  type <- match.arg(type)
+  
   check_cycle_inputs(cycle, cycle_length)
   
   ret = eval_surv_(
@@ -470,6 +476,8 @@ eval_surv_.surv_ph <- function(x, cycle,
 eval_surv_.surv_aft <- function(x, cycle,
                                cycle_length = 1,
                                type = c("prob", "surv")){
+  
+  type <- match.arg(type)
   
   check_cycle_inputs(cycle, cycle_length)
   
@@ -493,14 +501,18 @@ eval_surv_.surv_po <- function(x, cycle,
                                 cycle_length = 1,
                                 type = c("prob", "surv")){
   
+  type <- match.arg(type)
+  
   check_cycle_inputs(cycle, cycle_length)
   
-  ret = eval_surv_(
+  p = eval_surv_(
     x$dist,
     cycle=cycle,
     cycle_length=cycle_length,
     type="surv"
-  ) %>% or_to_prob(x$or)
+  )
+  
+  ret = 1 / ((((1 - p) / p) * x$or) + 1)
   
   if(type == "prob"){
     ret <- calc_prob_from_surv(ret)
@@ -514,6 +526,8 @@ eval_surv_.surv_po <- function(x, cycle,
 eval_surv_.surv_add_haz <- function(x, cycle,
                                     cycle_length = 1,
                                     type = c("prob", "surv")){
+  
+  type <- match.arg(type)
   
   check_cycle_inputs(cycle, cycle_length)
   
@@ -550,6 +564,8 @@ eval_surv_.surv_max_haz <- function(x, cycle,
                                  cycle_length = 1,
                                  type = c("prob", "surv")){
   
+  type <- match.arg(type)
+  
   check_cycle_inputs(cycle, cycle_length)
   
   # Determine dimensions of matrix and initialize
@@ -574,6 +590,37 @@ eval_surv_.surv_max_haz <- function(x, cycle,
   
   if(type == "prob"){
     ret <- calc_surv_from_prob(ret)
+  }
+  
+  ret
+}
+
+#' @rdname get_probs_from_surv
+#' @export
+eval_surv_.surv_dist <- function(x, cycle,
+                                 cycle_length = 1,
+                                 type = c("prob", "surv"),
+                                 ...) {
+  type <- match.arg(type)
+  
+  check_cycle_inputs(cycle, cycle_length)
+  
+  times_surv <- cycle_length * cycle
+  
+  if (! requireNamespace("flexsurv")) {
+    stop("'flexsurv' package required.")
+  }
+  
+  pf <- get(paste0("p", x$distribution),
+            envir = asNamespace("flexsurv"))
+  
+  args <- x[- match("distribution", names(x))]
+  args[["q"]] <- times_surv
+  args[["lower.tail"]] <- F
+  ret <- do.call(pf, args)
+  
+  if (type == "prob") {
+    ret <- calc_prob_from_surv(ret)
   }
   
   ret

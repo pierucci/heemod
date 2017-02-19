@@ -8,7 +8,7 @@
 \alias{eval_surv_.flexsurvreg}
 \alias{eval_surv_.surv_model}
 \alias{eval_surv_.surv_projection}
-\alias{eval_surv_.surv_pool}
+\alias{eval_surv_.surv_pooled}
 \alias{eval_surv_.surv_ph}
 \alias{eval_surv_.surv_aft}
 \alias{eval_surv_.surv_po}
@@ -32,8 +32,8 @@ eval_surv(x, cycle, cycle_length = 1, type = c("prob", "surv"), ...)
 \method{eval_surv_}{surv_projection}(x, cycle, cycle_length = 1,
   type = c("prob", "surv"))
 
-\method{eval_surv_}{surv_pool}(x, cycle, cycle_length = 1, type = c("prob",
-  "surv"))
+\method{eval_surv_}{surv_pooled}(x, cycle, cycle_length = 1,
+  type = c("prob", "surv"))
 
 \method{eval_surv_}{surv_ph}(x, cycle, cycle_length = 1, type = c("prob",
   "surv"))

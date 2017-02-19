@@ -20,13 +20,14 @@ project <- function(..., at){
   stopifnot(
     all(at > 0),
     all(is.finite(at)),
-    is.ordered(at,strict=T),
+    !is.unsorted(at, strict=T),
     length(at) == length(dots) - 1
   )
-  
+
   # Restructure so that first distribution is "alone"
   # and subsequent distributions are put in a list along
   # with their cut point.
+  dist_list <- list()
   for(i in seq_along(at)) {
     if(i==1) dist_list[[i]] <- dots[[i]]
     else dist_list[[i]] <- list(
@@ -54,8 +55,8 @@ projectFn = function(dist1, dist2_list){
   structure(
     list(
       dist1 = dist1,
-      dist2 = dist2$dist,
-      at = dist2$at
+      dist2 = dist2_list$dist,
+      at = dist2_list$at
     ),
     class = "surv_projection"
   )
@@ -82,7 +83,7 @@ pool <- function(..., weights=1){
   
   stopifnot(
     all(weights > 0),
-    all(is.finite(at)),
+    all(is.finite(weights)),
     length(weights) == length(dots)
   )
   
@@ -90,7 +91,7 @@ pool <- function(..., weights=1){
   
   structure(
     list(
-      distributions = dots,
+      dists = dots,
       weights = weights
     ),
     class = "surv_pooled"
@@ -193,7 +194,7 @@ apply_or = function(dist, or, log.or = F){
       dist = dist,
       or = ifelse(log.or, exp(or), or)
     ),
-    class = "surv_or"
+    class = "surv_po"
   )
 }
 

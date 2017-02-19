@@ -111,7 +111,7 @@ get_probs_from_surv_.flexsurvreg <- function(x, cycle,
       
       #get pred-based probabilities
       if (type == "prob") {
-        tmp <- as.data.frame(flexsurv::summary.flexsurvreg(
+        tmp <- as.data.frame(summary(
           x,
           t = times_surv,
           type = "cumhaz")
