@@ -341,3 +341,7 @@ print.summary_updated_model <- function(x, ...) {
   
   invisible(x)
 }
+
+get_newdata <- function(x) {
+  x$newdata
+}
