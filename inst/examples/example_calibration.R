@@ -8,7 +8,7 @@ mat <- define_transition(
 mod <- define_strategy(
   transition = mat,
   A = define_state(cost=10, effect = 0.5), 
-  B= define_state(cost = 5, effect = 0.8)
+  B = define_state(cost = 5, effect = 0.8)
 )
 
 res_mod <- run_model(
@@ -21,17 +21,19 @@ res_mod <- run_model(
   method = "end"
 )
 
-target.final.count <- get_counts(res_mod, "A")$count[10]   #134.2177
+f <- function(x) {
+  dplyr::filter(
+    get_counts(x),
+    state_names == "A" & markov_cycle == 10
+  )$count
+}
+f(res_mod)
 
-simple_matching_df <- 
-  data.frame(group = 1, strategy_name = "mod", cycles_to_sum = 10, states_to_sum = "A")
-calibrate_model(res_mod,
-                param_names = c("p"),
-                matching_df = simple_matching_df,
-                target_values = c(134.2177),
-                method = c("L-BFGS-B"),
-                initial_values = matrix(c(0.1, 0.5, 0.9), 
-                                        dimnames = list(NULL, "p")), 
-                lower = 0, upper = 1
+calibrate(
+  res_mod,
+  parameter_names = "p",
+  fn_values = f,
+  target_values = 130,
+  initial_values = data.frame(p = c(0.5, 0.9)),
+  lower = 0, upper = 1
 )
-

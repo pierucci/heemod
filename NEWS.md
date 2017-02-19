@@ -1,3 +1,9 @@
+# heemod devel
+
+## New features
+
+  * Model calibration with `calibrate()`.
+
 # heemod 0.8.0
 
 ## Breaking changes
