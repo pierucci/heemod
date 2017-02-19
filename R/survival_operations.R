@@ -14,7 +14,7 @@
 #' dist1 = define_survival(distribution = "exp", rate = .5)
 #' dist2 = define_survival(distribution = "gompertz", rate = .5, shape = 1)
 #' proj_dist = project(dist1, dist2, at=20)
-project <- function(..., at){
+project <- function(..., at) {
   dots <- list(...)
   
   stopifnot(
@@ -51,7 +51,7 @@ project <- function(..., at){
 #' time at which projection begins.
 #' @return A `surv_projection` object.
 #' @keywords internal
-projectFn = function(dist1, dist2_list){
+projectFn = function(dist1, dist2_list) {
   structure(
     list(
       dist1 = dist1,
@@ -77,9 +77,9 @@ projectFn = function(dist1, dist2_list){
 #' dist1 = define_survival(distribution = "exp", rate = .5)
 #' dist2 = define_survival(distribution = "gompertz", rate = .5, shape = 1)
 #' pooled_dist = pool(dist1, dist2, weights = c(0.25, 0.75))
-pool <- function(..., weights=1){
+pool <- function(..., weights=1) {
   
-  dots = list(...)
+  dots <- list(...)
   
   stopifnot(
     all(weights > 0),
@@ -112,7 +112,7 @@ pool <- function(..., weights=1){
 #' 
 #' dist1 = define_survival(distribution = "exp", rate = .25)
 #' ph_dist = apply_hr(dist1, 0.5)
-apply_hr = function(dist, hr, log.hr = F){
+apply_hr = function(dist, hr, log.hr = F) {
   
   stopifnot(
     length(hr) == 1,
@@ -146,7 +146,7 @@ apply_hr = function(dist, hr, log.hr = F){
 #' 
 #' dist1 = define_survival(distribution = "exp", rate = .25)
 #' aft_dist = apply_af(dist1, 1.5)
-apply_af = function(dist, af, log.af = F){
+apply_af = function(dist, af, log.af = F) {
   
   stopifnot(
     length(af) == 1,
@@ -179,7 +179,7 @@ apply_af = function(dist, af, log.af = F){
 #' 
 #' dist1 = define_survival(distribution = "exp", rate = .25)
 #' po_dist = apply_or(dist1, 1.2)
-apply_or = function(dist, or, log.or = F){
+apply_or = function(dist, or, log.or = F) {
   
   stopifnot(
     length(or) == 1,
@@ -211,9 +211,9 @@ apply_or = function(dist, or, log.or = F){
 #' dist1 = define_survival(distribution = "exp", rate = .125)
 #' dist2 = define_survival(distribution = "weibull", shape = 1.2, scale = 50)
 #' combined_dist = add_hazards(dist1, dist2)
-add_hazards = function(...){
+add_hazards = function(...) {
   
-  dots = list(...)
+  dots <- list(...)
   
   structure(
     list(
@@ -238,7 +238,7 @@ add_hazards = function(...){
 #' gp_mortality = define_survival(distribution = "exp", rate = .001)
 #' disease_mortality = define_survival(distribution = "weibull", shape = 0.5, scale = 50)
 #' combined_dist = maximimize_hazards(disease_mortality, gp_mortality)
-maximize_hazards = function(...){
+maximize_hazards = function(...) {
   
   dots = list(...)
   
@@ -271,7 +271,7 @@ maximize_hazards = function(...){
 #' good_model = set_covariates(group="good")
 #' cohort = data.frame(group=c("Good","Good","Medium", "Poor"))
 #' mixed_model = set_covariates(data=cohort)
-set_covariates = function(dist, ..., data = NULL){
+set_covariates = function(dist, ..., data = NULL) {
   
   data = rbind(
     data.frame(...),

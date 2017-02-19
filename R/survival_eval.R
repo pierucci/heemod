@@ -9,7 +9,7 @@
 #'   
 #' @keywords internal
 #' 
-check_cycle_inputs = function(cycle, cycle_length) {
+check_cycle_inputs <- function(cycle, cycle_length) {
     
   stopifnot(
     all(cycle == seq_len(length(cycle))),
@@ -42,7 +42,7 @@ extractParams = function(obj, data = NULL) {
     # Apply factor levels of original data
     for(i in colnames(data)) {
       if (is.character(data[[i]]) | is.factor(data[[i]])) {
-        data[[i]] <- factor(data[[i]], levels=levels(obj$data$m[[i]]))
+        data[[i]] <- factor(data[[i]], levels = levels(obj$data$m[[i]]))
       }
     }
   }
@@ -113,16 +113,16 @@ extractParams = function(obj, data = NULL) {
 #'   
 #' @keywords internal
 #' 
-extractStratum = function(sf, index){
-  if(is.null(sf$strata)){
+extractStratum = function(sf, index) {
+  if(is.null(sf$strata)) {
     # If there is no stratification, get the full table
-    selector = seq_len(length(sf$time))
-    values = list()
+    selector <- seq_len(length(sf$time))
+    values <- list()
   }
   else{
     # If there are strata, create a selector which selects only the rows
     # corresponding to the given index
-    endIndex = sum(sf$strata[seq_len(index)])
+    endIndex <- sum(sf$strata[seq_len(index)])
     startIndex = 1 + endIndex - sf$strata[index]
     selector = seq(from = startIndex, to = endIndex)
     
@@ -137,7 +137,7 @@ extractStratum = function(sf, index){
   # Return the stratum's product-limit table
   argList = as.list(values) %>% append(
     list(
-      time = c(0,sf$time[selector]),
+      time = c(0, sf$time[selector]),
       n = sum(sf$n.censor[selector] + sf$n.event[selector]),
       nrisk = c(sum(sf$n.censor[selector] + sf$n.event[selector]), sf$n.risk[selector]),
       ncensor = c(0, sf$n.censor[selector]),
@@ -161,7 +161,7 @@ extractStratum = function(sf, index){
 #'   
 #' @keywords internal
 #' 
-extractStrata = function(sf){
+extractStrata = function(sf) {
   if(is.null(sf$strata)) extractStratum(sf, 1)
   else plyr::ldply(
     seq_len(length(sf$strata)),
@@ -193,7 +193,7 @@ calc_prob_from_surv = function(x) -diff(c(1, x)) / c(1, x[-length(x)])
 #'   
 #' @keywords internal
 #' 
-calc_surv_from_prob = function(x) cumprod(1-x)
+calc_surv_from_prob = function(x) cumprod(1 - x)
 
 
 #' Evaluate Survival Distributions
@@ -233,8 +233,8 @@ eval_surv <- memoise::memoise(
 
 #' @rdname eval_surv
 #' @export
-eval_surv_.survfit <- function(x, cycle, cycle_length=1,
-                               covar = NULL, type=c("prob","surv")){
+eval_surv_.survfit <- function(x, cycle, cycle_length = 1,
+                               covar = NULL, type = c("prob","surv")) {
   
   type <- match.arg(type)
   
@@ -248,7 +248,7 @@ eval_surv_.survfit <- function(x, cycle, cycle_length=1,
   # Identify the terms which separate groups (if any)
   terms <- setdiff(
     colnames(pl_table),
-    c("time","n", "nrisk","ncensor","nevent","surv","lower","upper")
+    c("time", "n", "nrisk", "ncensor", "nevent", "surv", "lower", "upper")
   )
   
   # Generate predicted survival for each group
@@ -273,13 +273,13 @@ eval_surv_.survfit <- function(x, cycle, cycle_length=1,
     # If covariates are not provided, do weighted average for each time.
     agg_df = surv_df %>%
       dplyr::group_by(t) %>%
-      dplyr::summarize(value=sum(value*n)/sum(n))
+      dplyr::summarize(value = sum(value * n) / sum(n))
   }else {
     # If covariates are provided, join the predictions to them and then
     # do simple average for each time.
     agg_df = left_join(covar, surv_df, by = terms) %>%
       dplyr::group_by(t) %>%
-      dplyr::summarize(value=mean(value))
+      dplyr::summarize(value = mean(value))
   }
   
   # Get the vector of predictions
@@ -294,9 +294,9 @@ eval_surv_.survfit <- function(x, cycle, cycle_length=1,
 
 #' @rdname eval_surv
 #' @export
-eval_surv_.flexsurvreg <- function(x, cycle, cycle_length=1,
+eval_surv_.flexsurvreg <- function(x, cycle, cycle_length = 1,
                                    covar = NULL,
-                                   type=c("prob","surv")) {
+                                   type = c("prob", "surv")) {
   
   type <- match.arg(type)
   
@@ -310,7 +310,7 @@ eval_surv_.flexsurvreg <- function(x, cycle, cycle_length=1,
   nCoef <- length(coef)
   nT <- length(t)
   
-  if(x$ncovs > 0 && is.null(covar)){
+  if(x$ncovs > 0 && is.null(covar)) {
     warning("No covariates provided, returning aggregate survial across all subjects.")
   }
   
@@ -352,11 +352,11 @@ eval_surv_.flexsurvreg <- function(x, cycle, cycle_length=1,
     dplyr::mutate(t = rep(t, nObs), value = do.call(x$dfns$p, fncall))
   
   # Join to the full data, then summarize over times.
-  if(x$ncovs > 0){
+  if(x$ncovs > 0) {
     surv_df <- surv_df %>%
-      dplyr::left_join(data_full,by=colnames(data)) %>%
+      dplyr::left_join(data_full, by = colnames(data)) %>%
       dplyr::group_by(t) %>%
-      dplyr::summarize(value=mean(value))
+      dplyr::summarize(value = mean(value))
   }
 
   
@@ -373,16 +373,22 @@ eval_surv_.flexsurvreg <- function(x, cycle, cycle_length=1,
 
 #' @rdname eval_surv
 #' @export
-eval_surv_.surv_model <- function(x, cycle, cycle_length=1,
-                                  type=c("prob","surv")){
-  eval_surv_(x$dist, cycle=cycle, cycle_length = cycle_length, covar=x$covar, type=type)
+eval_surv_.surv_model <- function(x, cycle, cycle_length = 1,
+                                  type = c("prob", "surv")) {
+  eval_surv_(
+    x$dist,
+    cycle = cycle,
+    cycle_length = cycle_length,
+    covar = x$covar,
+    type = type
+  )
 }
 
 #' @rdname eval_surv
 #' @export
 eval_surv_.surv_projection <- function(x, cycle,
                                        cycle_length = 1,
-                                       type = c("prob", "surv")){
+                                       type = c("prob", "surv")) {
   
   type <- match.arg(type)
   
@@ -392,8 +398,18 @@ eval_surv_.surv_projection <- function(x, cycle,
   
   ret <- numeric(length(cycle))
   
-  surv1 <- eval_surv_(x$dist1, cycle=cycle, cycle_length=cycle_length, type="surv")
-  surv2 <- eval_surv_(x$dist2, cycle=cycle, cycle_length=cycle_length, type="surv")
+  surv1 <- eval_surv_(
+    x$dist1,
+    cycle = cycle,
+    cycle_length = cycle_length,
+    type = "surv"
+  )
+  surv2 <- eval_surv_(
+    x$dist2,
+    cycle=cycle,
+    cycle_length=cycle_length,
+    type="surv"
+  )
   
   ind_s1 <- t < x$at
   ind_s2 <- t >= x$at
@@ -402,9 +418,9 @@ eval_surv_.surv_projection <- function(x, cycle,
   surv2_p_at <- eval_surv_(x$dist2, cycle=1, cycle_length=x$at, type="surv")
   
   ret[ind_s1] <- surv1[ind_s1]
-  ret[ind_s2] <- (surv2*surv1_p_at/surv2_p_at)[ind_s2]
+  ret[ind_s2] <- (surv2 * surv1_p_at / surv2_p_at)[ind_s2]
   
-  if(type == "prob"){
+  if(type == "prob") {
     ret <- calc_prob_from_surv(ret)
   }
   
@@ -415,7 +431,7 @@ eval_surv_.surv_projection <- function(x, cycle,
 #' @export
 eval_surv_.surv_pooled <- function(x, cycle,
                                        cycle_length = 1,
-                                       type = c("prob", "surv")){
+                                       type = c("prob", "surv")) {
   
   type <- match.arg(type)
   
@@ -424,11 +440,11 @@ eval_surv_.surv_pooled <- function(x, cycle,
   # Determine dimensions of matrix and initialize
   n_cycle <- length(cycle)
   n_dist <- length(x$dists)
-  surv_mat = matrix(nrow = n_cycle, ncol = n_dist)
+  surv_mat <- matrix(nrow = n_cycle, ncol = n_dist)
 
   # Evaluate and weight component distributions into columns
   # of matrix
-  for(i in seq_len(n_dist)){
+  for(i in seq_len(n_dist)) {
     surv_mat[ ,i] <- x$weights[i] / sum(x$weights) * eval_surv_(
       x$dists[[i]],
       cycle=cycle,
@@ -440,7 +456,7 @@ eval_surv_.surv_pooled <- function(x, cycle,
   # Calculate weighted average as the row sums
   ret <- rowSums(surv_mat)
   
-  if(type == "prob"){
+  if(type == "prob") {
     ret <- calc_prob_from_surv(ret)
   }
   
@@ -451,20 +467,20 @@ eval_surv_.surv_pooled <- function(x, cycle,
 #' @export
 eval_surv_.surv_ph <- function(x, cycle,
                                  cycle_length = 1,
-                                 type = c("prob", "surv")){
+                                 type = c("prob", "surv")) {
   
   type <- match.arg(type)
   
   check_cycle_inputs(cycle, cycle_length)
   
-  ret = eval_surv_(
+  ret <- eval_surv_(
     x$dist,
-    cycle=cycle,
-    cycle_length=cycle_length,
-    type="surv"
+    cycle = cycle,
+    cycle_length = cycle_length,
+    type = "surv"
   ) ^ x$hr
   
-  if(type == "prob"){
+  if(type == "prob") {
     ret <- calc_prob_from_surv(ret)
   }
   
@@ -475,20 +491,20 @@ eval_surv_.surv_ph <- function(x, cycle,
 #' @export
 eval_surv_.surv_aft <- function(x, cycle,
                                cycle_length = 1,
-                               type = c("prob", "surv")){
+                               type = c("prob", "surv")) {
   
   type <- match.arg(type)
   
   check_cycle_inputs(cycle, cycle_length)
   
-  ret = eval_surv_(
+  ret <- eval_surv_(
     x$dist,
-    cycle=cycle,
-    cycle_length=cycle_length/x$af,
-    type="surv"
+    cycle = cycle,
+    cycle_length = cycle_length/x$af,
+    type = "surv"
   )
   
-  if(type == "prob"){
+  if(type == "prob") {
     ret <- calc_prob_from_surv(ret)
   }
   
@@ -499,22 +515,22 @@ eval_surv_.surv_aft <- function(x, cycle,
 #' @export
 eval_surv_.surv_po <- function(x, cycle,
                                 cycle_length = 1,
-                                type = c("prob", "surv")){
+                                type = c("prob", "surv")) {
   
   type <- match.arg(type)
   
   check_cycle_inputs(cycle, cycle_length)
   
-  p = eval_surv_(
+  p <- eval_surv_(
     x$dist,
-    cycle=cycle,
-    cycle_length=cycle_length,
-    type="surv"
+    cycle = cycle,
+    cycle_length = cycle_length,
+    type = "surv"
   )
   
-  ret = 1 / ((((1 - p) / p) * x$or) + 1)
+  ret <- 1 / ((((1 - p) / p) * x$or) + 1)
   
-  if(type == "prob"){
+  if(type == "prob") {
     ret <- calc_prob_from_surv(ret)
   }
   
@@ -525,7 +541,7 @@ eval_surv_.surv_po <- function(x, cycle,
 #' @export
 eval_surv_.surv_add_haz <- function(x, cycle,
                                     cycle_length = 1,
-                                    type = c("prob", "surv")){
+                                    type = c("prob", "surv")) {
   
   type <- match.arg(type)
   
@@ -534,16 +550,16 @@ eval_surv_.surv_add_haz <- function(x, cycle,
   # Determine dimensions of matrix and initialize
   n_cycle <- length(cycle)
   n_dist <- length(x$dists)
-  surv_mat = matrix(nrow = n_cycle, ncol = n_dist)
+  surv_mat <- matrix(nrow = n_cycle, ncol = n_dist)
   
   # Evaluate and weight component distributions into columns
   # of matrix
-  for(i in seq_len(n_dist)){
+  for(i in seq_len(n_dist)) {
     surv_mat[ ,i] <- eval_surv_(
       x$dists[[i]],
-      cycle=cycle,
-      cycle_length=cycle_length,
-      type="prob"
+      cycle = cycle,
+      cycle_length = cycle_length,
+      type = "prob"
     )
   }
   
@@ -551,7 +567,7 @@ eval_surv_.surv_add_haz <- function(x, cycle,
   # each cycle
   ret <- apply(surv_mat, 1, function(z) 1 - prod(z - 1))
   
-  if(type == "surv"){
+  if(type == "surv") {
     ret <- calc_surv_from_prob(ret)
   }
   
@@ -562,7 +578,7 @@ eval_surv_.surv_add_haz <- function(x, cycle,
 #' @export
 eval_surv_.surv_max_haz <- function(x, cycle,
                                  cycle_length = 1,
-                                 type = c("prob", "surv")){
+                                 type = c("prob", "surv")) {
   
   type <- match.arg(type)
   
@@ -571,16 +587,16 @@ eval_surv_.surv_max_haz <- function(x, cycle,
   # Determine dimensions of matrix and initialize
   n_cycle <- length(cycle)
   n_dist <- length(x$dists)
-  surv_mat = matrix(nrow = n_cycle, ncol = n_dist)
+  surv_mat <- matrix(nrow = n_cycle, ncol = n_dist)
   
   # Evaluate and weight component distributions into columns
   # of matrix
-  for(i in seq_len(n_dist)){
+  for(i in seq_len(n_dist)) {
     surv_mat[ ,i] <- eval_surv_(
       x$dists[[i]],
-      cycle=cycle,
-      cycle_length=cycle_length,
-      type="prob"
+      cycle = cycle,
+      cycle_length = cycle_length,
+      type = "prob"
     )
   }
   
