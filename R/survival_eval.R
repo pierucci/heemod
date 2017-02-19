@@ -10,19 +10,14 @@
 #' @keywords internal
 #' 
 check_cycle_inputs = function(cycle, cycle_length) {
-  
-    if(!all(cycle == seq_len(length(cycle))+min(cycle)-1))
-      stop("Cycle must be consecutive and ascending order.")
-    if(cycle[1] != 1)
-      stop("Cycle must start from 1")
-    if(length(cycle) < 1)
-      stop("Cycle must have length of at least 1.")
-    if(any(cycle <= 0))
-      stop("Cycle must be greater than zero.")
-    if(any(is.infinite(cycle_length)))
-      stop("Cycle must be finite.")
-    if(any(is.na(cycle)))
-      stop("Cycle cannot be NA or NaN.")
+    
+  stopifnot(
+    all(cycle == seq_len(length(cycle))),
+    length(cycle) >= 1,
+    !any(cycle <= 0),
+    !any(is.infinite(cycle_length)),
+    !any(is.na(cycle))
+  )
   
 }
 
@@ -62,8 +57,8 @@ extractParams = function(obj, data = NULL) {
       as.data.frame %>%
       t %>%
       as.data.frame %>%
-      head(1) %>%
-      set_rownames(NULL)
+      head(1)
+    rownames(outParams) <- NULL
   }
   else {
     # Get parameters of distribution
@@ -277,14 +272,14 @@ eval_surv_.survfit <- function(x, cycle, cycle_length=1,
     }
     # If covariates are not provided, do weighted average for each time.
     agg_df = surv_df %>%
-      group_by(t) %>%
-      summarize(value=sum(value*n)/sum(n))
+      dplyr::group_by(t) %>%
+      dplyr::summarize(value=sum(value*n)/sum(n))
   }else {
     # If covariates are provided, join the predictions to them and then
     # do simple average for each time.
     agg_df = left_join(covar, surv_df, by = terms) %>%
-      group_by(t) %>%
-      summarize(value=mean(value))
+      dplyr::group_by(t) %>%
+      dplyr::summarize(value=mean(value))
   }
   
   # Get the vector of predictions
@@ -551,7 +546,7 @@ eval_surv_.surv_add_haz <- function(x, cycle,
   # each cycle
   ret <- apply(surv_mat, 1, function(z) 1 - prod(z - 1))
   
-  if(type == "prob"){
+  if(type == "surv"){
     ret <- calc_surv_from_prob(ret)
   }
   
@@ -588,7 +583,7 @@ eval_surv_.surv_max_haz <- function(x, cycle,
   # each cycle
   ret <- apply(surv_mat, 1, max)
   
-  if(type == "prob"){
+  if(type == "surv") {
     ret <- calc_surv_from_prob(ret)
   }
   

@@ -1,14 +1,67 @@
 context("Evaluation of survival functions")
 
-fs1 = flexsurv::flexsurvreg(survival::Surv(rectime, censrec)~group, data=flexsurv::bc, dist="weibull")
-fs2 = flexsurv::flexsurvreg(survival::Surv(rectime, censrec)~group, data=flexsurv::bc, dist="weibullPH")
-fs3 = flexsurv::flexsurvspline(survival::Surv(rectime, censrec)~group, data=flexsurv::bc, scale="odds", k=2)
-fs4 = flexsurv::flexsurvreg(survival::Surv(rectime, censrec)~group, data=flexsurv::bc, dist="exp")
-
-cox = survival::coxph(survival::Surv(rectime,censrec)~group, data=flexsurv::bc)
+fs1 = flexsurv::flexsurvreg(
+  survival::Surv(rectime, censrec)~group,
+  data=flexsurv::bc,
+  dist="weibull"
+)
+fs2 = flexsurv::flexsurvreg(
+  survival::Surv(rectime, censrec)~group,
+  data=flexsurv::bc,
+  dist="weibullPH"
+)
+fs3 = flexsurv::flexsurvspline(
+  survival::Surv(rectime, censrec)~group, 
+  data=flexsurv::bc,
+  scale="odds",
+  k=2
+)
+fs4 = flexsurv::flexsurvreg(
+  survival::Surv(rectime, censrec)~group,
+  data=flexsurv::bc,
+  dist="exp"
+)
+fs5 = flexsurv::flexsurvreg(
+  survival::Surv(rectime, censrec)~1,
+  data=flexsurv::bc,
+  dist="genf"
+)
+fs6 = flexsurv::flexsurvreg(
+  survival::Surv(time, status==1)~age+sex,
+  data=survival::cancer,
+  dist="gompertz"
+)
+cox = survival::coxph(
+  survival::Surv(rectime,censrec)~group,
+  data=flexsurv::bc
+)
 cox_bl = survival::survfit(cox)
 
 km = survival::survfit(survival::Surv(rectime,censrec)~group, data=flexsurv::bc)
+km_good = survival::survfit(
+  survival::Surv(rectime,censrec)~group,
+  data=flexsurv::bc %>% dplyr::filter(group=="Good")
+)
+
+test_that(
+  "Flexsurvreg",
+  {
+    heemod_res = fs6 %>%
+      set_covariates(age=50, sex=1) %>%
+      eval_surv(cycle=seq_len(10),cycle_length=200, type="surv")
+    fs_res = summary(
+      fs6,
+      t=seq(from=200,to=2000,by=200),
+      type="survival",
+      ci=F,
+      tidy=T,
+      newdata=data_frame(age=50, sex=1)
+    )$est
+    
+    expect_equal(heemod_res, fs_res)
+      
+  }
+)
 
 test_that(
   "Applying treatment effects",
@@ -171,6 +224,14 @@ test_that(
       knots = c(4.276666, 6.219263, 6.771924, 7.806289)
     )
     
+    surv5 = define_survival(
+      dist = "genf",
+      mu = 6.96387,
+      sigma = 1.17338,
+      Q = -1.08049,
+      P = 0.33090
+    )
+    
     surv1_surv = surv1 %>%
       eval_surv(cycle=seq_len(10), cycle_length=200)
     fs1_surv = fs1 %>%
@@ -207,6 +268,18 @@ test_that(
       set_covariates(group = "Good") %>%
       eval_surv(cycle=seq_len(10), cycle_length=200)
     
+    surv5_surv = surv5 %>%
+      eval_surv(cycle=seq_len(10), cycle_length=200)
+    fs5_surv = fs5 %>%
+      set_covariates(group = "Good") %>%
+      eval_surv(cycle=seq_len(10), cycle_length=200)
+    
+    surv5_prob = surv5 %>%
+      eval_surv(cycle=seq_len(10), cycle_length=200)
+    fs5_prob = fs5 %>%
+      set_covariates(group = "Good") %>%
+      eval_surv(cycle=seq_len(10), cycle_length=200)
+    
     # Survival from flexsurv should equal equivalent from
     # define_survival
     expect_equal(surv1_surv, fs1_surv, tolerance=1E-4)
@@ -217,6 +290,36 @@ test_that(
     
     expect_equal(surv3_surv, fs3_surv, tolerance=1E-4)
     expect_equal(surv3_prob, fs3_prob, tolerance=1E-4)
+  
+    expect_equal(surv5_surv, fs5_surv, tolerance=1E-4)
+    expect_equal(surv5_prob, fs5_prob, tolerance=1E-4)
+  }
+)
+
+test_that(
+  "Survfit",
+  {
+    
+    # Survival for a KM fit only to one group should be the same
+    # as survival for all w/ covariates set to same group.
+    
+    km_prob = km %>%
+      set_covariates(data.frame(group = "Good")) %>%
+      eval_surv(cycle=seq_len(10), cycle_length=200)
+    
+    km_good_prob = km_good %>%
+      eval_surv(cycle=seq_len(10), cycle_length=200)
+    
+    km_surv = km %>%
+      set_covariates(data.frame(group = "Good")) %>%
+      eval_surv(cycle=seq_len(10), cycle_length=200)
+    
+    km_good_surv = km_good %>%
+      eval_surv(cycle=seq_len(10), cycle_length=200)
+    
+    expect_equal(km_prob, km_good_prob)
+    expect_equal(km_surv, km_good_surv)
+      
   }
 )
 
@@ -261,5 +364,86 @@ test_that(
         eval_surv(cycle=seq_len(10), cycle_length=200)
       
       expect_equal(exp_sur5, exp_surv6)
+      
+      # Adding exponential hazards to itself same as applying a HR of 2
+      exp_double1_prob = fs4 %>%
+        set_covariates(group="Medium") %>%
+        add_hazards(.,.) %>%
+        eval_surv(cycle=seq_len(10), cycle_length=200)
+      
+      exp_double2_prob = fs4 %>%
+        set_covariates(group="Medium") %>%
+        apply_hr(hr=2) %>%
+        eval_surv(cycle=seq_len(10), cycle_length=200)
+      
+      exp_double1_surv = fs4 %>%
+        set_covariates(group="Medium") %>%
+        add_hazards(.,.) %>%
+        eval_surv(cycle=seq_len(10), cycle_length=200, type="surv")
+      
+      exp_double2_surv = fs4 %>%
+        set_covariates(group="Medium") %>%
+        apply_hr(hr=2) %>%
+        eval_surv(cycle=seq_len(10), cycle_length=200, type="surv")
+      
+      expect_equal(exp_double1_prob, exp_double2_prob)
+      expect_equal(exp_double1_surv, exp_double2_surv)
+      
+      # Maxing hazards of two exponentials same as using
+      # the one w/ greater hazards
+      exp_max1_prob = fs4 %>%
+        set_covariates(group="Poor") %>%
+        eval_surv(cycle=seq_len(10), cycle_length=200)
+      
+      exp_max2_prob = fs4 %>%
+        set_covariates(group="Good") %>%
+        maximize_hazards(fs4 %>% set_covariates(group="Poor")) %>%
+        eval_surv(cycle=seq_len(10), cycle_length=200)
+      
+      exp_max1_surv = fs4 %>%
+        set_covariates(group="Poor") %>%
+        eval_surv(cycle=seq_len(10), cycle_length=200, type="surv")
+      
+      exp_max2_surv = fs4 %>%
+        set_covariates(group="Good") %>%
+        maximize_hazards(fs4 %>% set_covariates(group="Poor")) %>%
+        eval_surv(cycle=seq_len(10), cycle_length=200, type="surv")
+      
+      expect_equal(exp_max1_prob, exp_max2_prob)
+      expect_equal(exp_max1_surv, exp_max2_surv)
+      
+      # Running a flexsurvreg w/o specifying covariates should
+      # be the same as a wieghted average of the covariate levels
+      # based on distribution in original data
+      fs1_weighted1_surv = fs3 %>%
+        eval_surv(cycle=seq_len(10), cycle_length=200, type="surv")
+        
+      fs1_weighted2_surv = pool(
+        fs3 %>% set_covariates(group="Good"),
+        fs3 %>% set_covariates(group="Medium"),
+        fs3 %>% set_covariates(group="Poor"),
+        weights = c(229, 229, 228)
+      ) %>%
+        eval_surv(cycle=seq_len(10), cycle_length=200, type="surv")
+      
+      fs2_weighted1_prob = fs3 %>%
+        eval_surv(cycle=seq_len(10), cycle_length=200, type="prob")
+      
+      fs2_weighted2_prob = pool(
+        fs3 %>% set_covariates(group="Good"),
+        fs3 %>% set_covariates(group="Medium"),
+        fs3 %>% set_covariates(group="Poor"),
+        weights = c(229, 229, 228)
+      ) %>%
+        eval_surv(cycle=seq_len(10), cycle_length=200, type="prob")
+      
+      expect_equal(fs1_weighted1_surv, fs1_weighted2_surv)
+      expect_equal(fs2_weighted1_prob, fs2_weighted2_prob)
+      
+      # Should also give a warning
+      expect_warning(
+        fs3 %>% eval_surv(cycle=seq_len(10), cycle_length=100, type="prob"),
+        "No covariates provided, returning aggregate survial across all subjects."
+      )
   }
 )

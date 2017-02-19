@@ -87,8 +87,6 @@ pool <- function(..., weights=1){
     length(weights) == length(dots)
   )
   
-  if(sum(weights) != 1) warning("Weights do not sum to 1.")
-  
   structure(
     list(
       dists = dots,
