@@ -253,3 +253,86 @@ fn_calibrate.updated_model <- function(x, parameter_names,
   
   sum((values - target_values) ^ 2)
 }
+
+#' Define Calibration Function
+#' 
+#' Define a function to be passed to the [fn_values()] argument of
+#' [calibrate_model()].
+#'
+#' @param type Type of model values (`count` or `value`).
+#' @param strategy_names Names of strategies.
+#' @param element_names Names of states (for counts) or of state values (for values).
+#' @param cycles Cycles of interest.
+#' @param groups Optional grouping of values (values in a same group have the same `groups`).
+#' @param aggreg_fn A function to aggregate values in a same group.
+#'
+#' @return A numeric vector.
+#' @export
+#'
+#' @example inst/examples/example_define_calibration_fn.R
+define_calibration_fn <- function(type, strategy_names,
+                                  element_names, cycles,
+                                  groups = NULL, aggreg_fn = sum) {
+  if (length(type) == 1) {
+    type <- rep(type, length(element_names))
+  }
+  
+  stopifnot(
+    all(type %in% c("count", "value")),
+    length(type) == length(element_names),
+    length(type) == length(strategy_names),
+    length(element_names) == length(cycles),
+    if (! is.null(groups)) length(element_names) == length(groups) else TRUE
+  )
+  
+  f_list <- lapply(
+    type,
+    function(type_n) {
+      if (type_n == "count") get_counts else get_values
+    })
+  
+  ex_list <- lapply(
+    seq_along(element_names),
+    function(i) {
+      if (type[i] == "count") {
+        lazyeval::interp(
+          ~ state_names == state & markov_cycle == cycle &
+            .strategy_names == strat,
+          state = element_names[i], cycle = cycles[i],
+          strat = strategy_names[i]
+        )
+      } else {
+        lazyeval::interp(
+          ~ value_names == value & markov_cycle == cycle &
+            .strategy_names == strat,
+          value = element_names[i], cycle = cycles[i],
+          strat = strategy_names[i]
+        )
+      }
+    })
+  
+  function(x) {
+    res <- unlist(lapply(
+      seq_along(ex_list),
+      function(i) {
+        (f_list[[i]](x) %>% 
+          dplyr::filter_(
+            .dots = ex_list[[i]]
+          ))[[type[i]]]
+      })
+    )
+  
+    if (! is.null(groups)) {
+      res <- tapply(res, groups, aggreg_fn)
+    }
+    
+    if (! is.numeric(res)) {
+      stop(sprintf(
+        "Model values are not numeric. Class: %s",
+        paste(class(res), collapse == ", ")
+      ))
+    }
+    
+    return(res)
+  }
+}
