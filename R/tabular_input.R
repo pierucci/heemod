@@ -112,22 +112,24 @@ gather_model_info <- function(base_dir, ref_file) {
       df_env
     )
   }
-
-  if("functions" %in% ref$data){
-    if(options()$heemod.verbose) message("** Reading functions...")
-    function_dir <- ref$full_file[ref$data == "functions"]
-    short_function_dir <- ref$file[ref$data == "functions"]
-    if(!dir.exists(function_dir))
-      stop("'functions' directory missing: ", short_function_dir)
-    function_list <- list.files(function_dir, full.names = TRUE)
-    if(length(function_list) == 0)
-      stop("no functions in 'functions' directory: ", 
-           short_function_dir)                                                          
-    for(this_file in function_list){
-      source(this_file, echo = FALSE, local = TRUE)
+  
+  if ("source" %in% ref$data) {
+    if(options()$heemod.verbose) message("** Reading R source files...")
+    source_dir <- ref$full_file[ref$data == "source"]
+    short_source_dir <- ref$file[ref$data == "source"]
+    if (! dir.exists(source_dir)) {
+      stop("'source' directory missing: ", short_source_dir)
+    }
+    source_list <- list.files(source_dir, full.names = TRUE)
+    if (length(source_list) == 0) {
+      stop("No source files in 'source' directory: ", 
+           short_source_dir)                      
+    }                                    
+    for (this_file in source_list) { 
+      source(this_file, echo = FALSE, local = df_env)
     }
   }
-
+  
   ## note - the environment df_env gets included directly
   ##   into param_info, so anything that will load anything
   ##   into that environment needs to come before this statement
@@ -305,7 +307,7 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   }
   
   
-if (options()$heemod.verbose) message("*** Defining models...")
+  if (options()$heemod.verbose) message("*** Defining models...")
   models <- lapply(
     seq_along(state_info),
     function(i) {
@@ -1031,13 +1033,13 @@ save_outputs <- function(outputs, output_dir, overwrite) {
       row.names = FALSE
     )
   }
-
+  
   utils::write.csv(
     get_counts(outputs$model_runs),
     file = file.path(output_dir, "state_counts.csv"),
     row.names = FALSE
   )
-
+  
   utils::write.csv(
     get_values(outputs$model_runs),
     file = file.path(output_dir, "cycle_values.csv"),
