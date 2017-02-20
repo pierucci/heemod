@@ -14,41 +14,45 @@
 \alias{eval_surv_.surv_po}
 \alias{eval_surv_.surv_add_haz}
 \alias{eval_surv_.surv_max_haz}
+\alias{eval_surv_.surv_dist}
 \title{Evaluate Survival Distributions}
 \usage{
 eval_surv_(x, cycle, cycle_length = 1, type = c("prob", "surv"), ...)
 
 eval_surv(x, cycle, cycle_length = 1, type = c("prob", "surv"), ...)
 
-\method{eval_surv_}{survfit}(x, cycle, cycle_length = 1, covar = NULL,
-  type = c("prob", "surv"))
+\method{eval_surv_}{survfit}(x, cycle, cycle_length = 1, type = c("prob",
+  "surv"), ...)
 
-\method{eval_surv_}{flexsurvreg}(x, cycle, cycle_length = 1, covar = NULL,
-  type = c("prob", "surv"))
+\method{eval_surv_}{flexsurvreg}(x, cycle, cycle_length = 1,
+  type = c("prob", "surv"), ...)
 
 \method{eval_surv_}{surv_model}(x, cycle, cycle_length = 1, type = c("prob",
-  "surv"))
+  "surv"), ...)
 
 \method{eval_surv_}{surv_projection}(x, cycle, cycle_length = 1,
-  type = c("prob", "surv"))
+  type = c("prob", "surv"), ...)
 
 \method{eval_surv_}{surv_pooled}(x, cycle, cycle_length = 1,
-  type = c("prob", "surv"))
+  type = c("prob", "surv"), ...)
 
 \method{eval_surv_}{surv_ph}(x, cycle, cycle_length = 1, type = c("prob",
-  "surv"))
+  "surv"), ...)
 
 \method{eval_surv_}{surv_aft}(x, cycle, cycle_length = 1, type = c("prob",
-  "surv"))
+  "surv"), ...)
 
 \method{eval_surv_}{surv_po}(x, cycle, cycle_length = 1, type = c("prob",
-  "surv"))
+  "surv"), ...)
 
 \method{eval_surv_}{surv_add_haz}(x, cycle, cycle_length = 1,
-  type = c("prob", "surv"))
+  type = c("prob", "surv"), ...)
 
 \method{eval_surv_}{surv_max_haz}(x, cycle, cycle_length = 1,
-  type = c("prob", "surv"))
+  type = c("prob", "surv"), ...)
+
+\method{eval_surv_}{surv_dist}(x, cycle, cycle_length = 1, type = c("prob",
+  "surv"), ...)
 }
 \arguments{
 \item{x}{A survival distribution object}
@@ -73,7 +77,7 @@ Generate either survival probabilities or conditional probabilities of event
 for each model cycle.
 }
 \details{
-The results of \code{get_probs_from_surv} are memoised for
+The results of \code{eval_surv} are memoised for
 \code{options("heemod.memotime")} (default: 1 hour) to
 increase resampling performance.
 }

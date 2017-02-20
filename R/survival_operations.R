@@ -20,7 +20,7 @@ project <- function(..., at) {
   stopifnot(
     all(at > 0),
     all(is.finite(at)),
-    !is.unsorted(at, strict=T),
+    !is.unsorted(at, strictly=T),
     length(at) == length(dots) - 1
   )
 
@@ -236,8 +236,12 @@ add_hazards = function(...) {
 #' @examples
 #' 
 #' gp_mortality = define_survival(distribution = "exp", rate = .001)
-#' disease_mortality = define_survival(distribution = "weibull", shape = 0.5, scale = 50)
-#' combined_dist = maximimize_hazards(disease_mortality, gp_mortality)
+#' disease_mortality = define_survival(
+#'   distribution = "weibull",
+#'   shape = 0.5,
+#'   scale = 50
+#' )
+#' combined_dist = maximize_hazards(disease_mortality, gp_mortality)
 maximize_hazards = function(...) {
   
   dots = list(...)
@@ -267,10 +271,14 @@ maximize_hazards = function(...) {
 #' 
 #' @examples
 #' 
-#' fs1 = flexsurvreg(Surv(rectime, censrec)~group, data=bc)
-#' good_model = set_covariates(group="good")
-#' cohort = data.frame(group=c("Good","Good","Medium", "Poor"))
-#' mixed_model = set_covariates(data=cohort)
+#' fs1 = flexsurv::flexsurvreg(
+#'   survival::Surv(rectime, censrec)~group,
+#'   data=flexsurv::bc,
+#'   dist = "llogis"
+#' )
+#' good_model = set_covariates(fs1, group = "Good")
+#' cohort = data.frame(group=c("Good", "Good", "Medium", "Poor"))
+#' mixed_model = set_covariates(fs1, data = cohort)
 set_covariates = function(dist, ..., data = NULL) {
   
   data = rbind(

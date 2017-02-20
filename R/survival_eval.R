@@ -37,7 +37,7 @@ extractParams = function(obj, data = NULL) {
   
   # Use data from object if not given
   if (is.null(data)) data <- obj$data$m %>%
-      select(-1, -ncol(.))
+      dplyr::select(-1, -ncol(obj$data$m))
   else {
     # Apply factor levels of original data
     for(i in colnames(data)) {
@@ -85,7 +85,7 @@ extractParams = function(obj, data = NULL) {
         # Assemble model matrix
         form <- obj$all.formulae[[parNames[i]]][-2] %>%
           formula
-        mm <- model.matrix(form, data = data)
+        mm <- stats::model.matrix(form, data = data)
         # Multiply cells of model matrix by cells of coefficient matrix and get row sums
         parMat[ , i] <- (mm * parCoefMat) %>%
           rowSums %>%
@@ -201,7 +201,7 @@ calc_surv_from_prob = function(x) cumprod(1 - x)
 #' Generate either survival probabilities or conditional probabilities of event
 #' for each model cycle.
 #' 
-#' The results of `get_probs_from_surv` are memoised for
+#' The results of `eval_surv` are memoised for
 #' `options("heemod.memotime")` (default: 1 hour) to
 #' increase resampling performance.
 #' 
@@ -234,7 +234,9 @@ eval_surv <- memoise::memoise(
 #' @rdname eval_surv
 #' @export
 eval_surv_.survfit <- function(x, cycle, cycle_length = 1,
-                               covar = NULL, type = c("prob","surv")) {
+                               type = c("prob","surv"), ...) {
+  
+  dots = list(...)
   
   type <- match.arg(type)
   
@@ -259,27 +261,27 @@ eval_surv_.survfit <- function(x, cycle, cycle_length = 1,
       maxtime <- max(d$time)
       selector <- (t > maxtime)
       # Use stepfun to look up survival probabilities
-      value <- stepfun(d$time[-1], d$surv)(t)
+      value <- stats::stepfun(d$time[-1], d$surv)(t)
       # Use NA when time > max time
       value[selector] <- as.numeric(NA)
       data_frame(t = t, value = value, n = d$n[1])
     }
   )
   
-  if(is.null(covar)) {
+  if(is.null(dots$covar)) {
     if(length(terms) > 0) {
       warning("No covariates provided, returning aggregate survial across all subjects.")
     }
     # If covariates are not provided, do weighted average for each time.
     agg_df = surv_df %>%
-      dplyr::group_by(t) %>%
-      dplyr::summarize(value = sum(value * n) / sum(n))
+      dplyr::group_by_("t") %>%
+      dplyr::summarize_(value = "sum(value * n) / sum(n)")
   }else {
     # If covariates are provided, join the predictions to them and then
     # do simple average for each time.
-    agg_df = left_join(covar, surv_df, by = terms) %>%
-      dplyr::group_by(t) %>%
-      dplyr::summarize(value = mean(value))
+    agg_df = left_join(dots$covar, surv_df, by = terms) %>%
+      dplyr::group_by_("t") %>%
+      dplyr::summarize_(value = "mean(value)")
   }
   
   # Get the vector of predictions
@@ -295,8 +297,9 @@ eval_surv_.survfit <- function(x, cycle, cycle_length = 1,
 #' @rdname eval_surv
 #' @export
 eval_surv_.flexsurvreg <- function(x, cycle, cycle_length = 1,
-                                   covar = NULL,
-                                   type = c("prob", "surv")) {
+                                   type = c("prob", "surv"), ...) {
+  
+  dots = list(...)
   
   type <- match.arg(type)
   
@@ -310,24 +313,24 @@ eval_surv_.flexsurvreg <- function(x, cycle, cycle_length = 1,
   nCoef <- length(coef)
   nT <- length(t)
   
-  if(x$ncovs > 0 && is.null(covar)) {
+  if(x$ncovs > 0 && is.null(dots$covar)) {
     warning("No covariates provided, returning aggregate survial across all subjects.")
   }
   
   # For efficiency, survival probabilities are only calculated
   # for each distinct set of covariates, then merged back onto
   # the full dataset (data_full).
-  if (is.null(covar)) {
+  if (is.null(dots$covar)) {
     # if covar is not provided, use the
     # original model.frame
     data_full = x$data$m %>%
-      dplyr::select(-1, -ncol(.))
+      dplyr::select(-1, -ncol(x$data$m))
     data = dplyr::distinct(data_full)
   }
   else {
     # Use covar if provided
-    data_full <- covar
-    data <- dplyr::distinct(covar)
+    data_full <- dots$covar
+    data <- dplyr::distinct(dots$covar)
   }
   
   # If there is no data, make an empty df
@@ -355,8 +358,8 @@ eval_surv_.flexsurvreg <- function(x, cycle, cycle_length = 1,
   if(x$ncovs > 0) {
     surv_df <- surv_df %>%
       dplyr::left_join(data_full, by = colnames(data)) %>%
-      dplyr::group_by(t) %>%
-      dplyr::summarize(value = mean(value))
+      dplyr::group_by_("t") %>%
+      dplyr::summarize_(value = "mean(value)")
   }
 
   
@@ -374,7 +377,7 @@ eval_surv_.flexsurvreg <- function(x, cycle, cycle_length = 1,
 #' @rdname eval_surv
 #' @export
 eval_surv_.surv_model <- function(x, cycle, cycle_length = 1,
-                                  type = c("prob", "surv")) {
+                                  type = c("prob", "surv"), ...) {
   eval_surv_(
     x$dist,
     cycle = cycle,
@@ -388,7 +391,7 @@ eval_surv_.surv_model <- function(x, cycle, cycle_length = 1,
 #' @export
 eval_surv_.surv_projection <- function(x, cycle,
                                        cycle_length = 1,
-                                       type = c("prob", "surv")) {
+                                       type = c("prob", "surv"), ...) {
   
   type <- match.arg(type)
   
@@ -431,7 +434,7 @@ eval_surv_.surv_projection <- function(x, cycle,
 #' @export
 eval_surv_.surv_pooled <- function(x, cycle,
                                        cycle_length = 1,
-                                       type = c("prob", "surv")) {
+                                       type = c("prob", "surv"), ...) {
   
   type <- match.arg(type)
   
@@ -467,7 +470,7 @@ eval_surv_.surv_pooled <- function(x, cycle,
 #' @export
 eval_surv_.surv_ph <- function(x, cycle,
                                  cycle_length = 1,
-                                 type = c("prob", "surv")) {
+                                 type = c("prob", "surv"), ...) {
   
   type <- match.arg(type)
   
@@ -491,7 +494,7 @@ eval_surv_.surv_ph <- function(x, cycle,
 #' @export
 eval_surv_.surv_aft <- function(x, cycle,
                                cycle_length = 1,
-                               type = c("prob", "surv")) {
+                               type = c("prob", "surv"), ...) {
   
   type <- match.arg(type)
   
@@ -515,7 +518,7 @@ eval_surv_.surv_aft <- function(x, cycle,
 #' @export
 eval_surv_.surv_po <- function(x, cycle,
                                 cycle_length = 1,
-                                type = c("prob", "surv")) {
+                                type = c("prob", "surv"), ...) {
   
   type <- match.arg(type)
   
@@ -541,7 +544,7 @@ eval_surv_.surv_po <- function(x, cycle,
 #' @export
 eval_surv_.surv_add_haz <- function(x, cycle,
                                     cycle_length = 1,
-                                    type = c("prob", "surv")) {
+                                    type = c("prob", "surv"), ...) {
   
   type <- match.arg(type)
   
@@ -578,7 +581,7 @@ eval_surv_.surv_add_haz <- function(x, cycle,
 #' @export
 eval_surv_.surv_max_haz <- function(x, cycle,
                                  cycle_length = 1,
-                                 type = c("prob", "surv")) {
+                                 type = c("prob", "surv"), ...) {
   
   type <- match.arg(type)
   
@@ -611,12 +614,11 @@ eval_surv_.surv_max_haz <- function(x, cycle,
   ret
 }
 
-#' @rdname get_probs_from_surv
+#' @rdname eval_surv
 #' @export
 eval_surv_.surv_dist <- function(x, cycle,
                                  cycle_length = 1,
-                                 type = c("prob", "surv"),
-                                 ...) {
+                                 type = c("prob", "surv"), ...) {
   type <- match.arg(type)
   
   check_cycle_inputs(cycle, cycle_length)

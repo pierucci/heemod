@@ -19,6 +19,10 @@ in each cycle between two or more survival distributions.
 \examples{
 
 gp_mortality = define_survival(distribution = "exp", rate = .001)
-disease_mortality = define_survival(distribution = "weibull", shape = 0.5, scale = 50)
-combined_dist = maximimize_hazards(disease_mortality, gp_mortality)
+disease_mortality = define_survival(
+  distribution = "weibull",
+  shape = 0.5,
+  scale = 50
+)
+combined_dist = maximize_hazards(disease_mortality, gp_mortality)
 }
