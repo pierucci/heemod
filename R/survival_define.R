@@ -41,7 +41,7 @@ define_survival <- function(distribution = c("exp", "weibull",
             envir = env_f)
   
   names_fun <- setdiff(names(list_arg), "distribution")
-  names_par <- setdiff(names(formals(pf)), "n")
+  names_par <- setdiff(names(formals(pf)), "q")
   
   correct_names <- names_fun %in% names_par
   
@@ -98,7 +98,7 @@ define_spline_survival <- function(scale = c("hazard","odds","normal"),
   pf <- flexsurv::psurvspline
   
   names_fun <- setdiff(names(list_arg), "scale")
-  names_par <- setdiff(names(formals(pf)), "n")
+  names_par <- setdiff(names(formals(pf)), "q")
   
   correct_names <- names_fun %in% names_par
   
