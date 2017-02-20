@@ -127,7 +127,7 @@ extractStratum = function(sf, index) {
     selector = seq(from = startIndex, to = endIndex)
     
     # Extract the variable names and values corresponding to the stratum
-    split_strata = stringr::str_trim(strsplit(names(sf$strata[index]),"(=|, )")[[1]])
+    split_strata = strsplit(names(sf$strata[index]),"(=|, )")[[1]]
     len = length(split_strata) / 2
     keys = split_strata[seq_len(len) * 2 - 1]
     values = split_strata[seq_len(len) * 2]
@@ -641,3 +641,6 @@ eval_surv_.surv_dist <- function(x, cycle,
   
   ret
 }
+
+
+

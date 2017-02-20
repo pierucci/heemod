@@ -30,8 +30,7 @@ Imports: plyr,
           tibble,
           tidyr,
           tools,
-          utils,
-          stringr
+          utils
 License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr
