@@ -52,6 +52,9 @@
 #' @importFrom stats as.formula
 #' @importFrom stats var
 #' @importFrom stats coef
+#' @importFrom stats model.matrix
+#' @importFrom stats formula
+#' @importFrom stats stepfun
 #'   
 #' @importFrom graphics par
 #'   

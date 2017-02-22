@@ -5,10 +5,10 @@
 \alias{define_part_surv_}
 \title{Define Partitioned Survival}
 \usage{
-define_part_surv(pfs, os, state_names, terminal_state = FALSE, km_limit = 0,
+define_part_surv(pfs, os, state_names, terminal_state = FALSE,
   cycle_length = 1)
 
-define_part_surv_(pfs, os, state_names, km_limit = 0, cycle_length = 1)
+define_part_surv_(pfs, os, state_names, cycle_length = 1)
 }
 \arguments{
 \item{pfs, os}{Either results from
@@ -24,12 +24,6 @@ and \code{"death"}. See examples.}
 
 \item{terminal_state}{Should a terminal state be
 included? Only used when state names are not provided.}
-
-\item{km_limit}{Up to what time should Kaplan-Meier
-estimates be used? Model predictions will be used
-thereafter. Either a length 2 vector (for \code{pfs}
-and \code{os} respectively) or a single values (used
-for both distributions).}
 
 \item{cycle_length}{The value of a Markov cycle in
 absolute time units.}
