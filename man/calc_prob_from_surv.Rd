@@ -7,7 +7,7 @@
 calc_prob_from_surv(x)
 }
 \arguments{
-\item{x}{A vector of survival probabilities.}
+\item{x}{A vector of conditional event probabilities.}
 }
 \value{
 The per-cycle event probabilities.

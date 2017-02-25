@@ -125,14 +125,11 @@ In addition, distributions can be combined using a variety of operations:
 
 + Combine two (or more) survival distributions as independent risks: `add_hazards`
 
-+ Take the maximum of the event rate of two (or more) survival distributions: `maximize hazards`
-
 ```{r}
 
 km_poor_proj = km_poor %>% project(fitcov_poor, at=365)
 models_all = pool(fitcov_good, fitcov_medium, fitcov_poor, weights=c(0.25, 0.25, 0.5))
 combined_risks = add_hazards(fitw, fitcov_good)
-max_risk = maximize_hazards(fitw, fitspl)
 
 ```
 
@@ -188,8 +185,7 @@ A partitioned survival model can also be computed:
 
 ```{r warning=FALSE}
 ps <- define_part_surv(
-  pfs = surv_dist1 %>%
-    maximize_hazards(km1 %>% project(fitw, at = 730)),
+  pfs = surv_dist1,
   os = km1 %>%
     project(fitw, at = 730),
      cycle_length = c(1, 365) # 1 for pfs, 365 for os

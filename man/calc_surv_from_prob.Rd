@@ -10,7 +10,7 @@ calc_surv_from_prob(x)
 \item{x}{A vector of per-cycle event probabilities.}
 }
 \value{
-The survival probabilities
+The survival probabilities.
 }
 \description{
 Calculates the probability of survival from a vector of event
