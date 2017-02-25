@@ -13,7 +13,7 @@ calc_prob_from_surv(x)
 The per-cycle event probabilities.
 }
 \description{
-Calculates the per-cycle event probabilities from a vector of survival
-probabilities.
+Calculates the per-cycle event probabilities from a
+vector of survival probabilities.
 }
 \keyword{internal}

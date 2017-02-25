@@ -7,13 +7,14 @@
 check_cycle_inputs(cycle, cycle_length)
 }
 \arguments{
-\item{cycle}{The \code{markov_cycle} or
-\code{state_time} for which to predict.}
+\item{cycle}{The \code{model_time} or \code{state_time} for which
+to predict.}
 
-\item{cycle_length}{The value of a Markov cycle in
+\item{cycle_length}{The length of a Markov cycle in
 absolute time units.}
 }
 \description{
-Performs checks on the cycle and time inputs to \code{eval_surv}
+Performs checks on the cycle and time inputs to
+\code{\link[=eval_surv]{eval_surv()}}.
 }
 \keyword{internal}

@@ -24,6 +24,9 @@
 #' @importFrom dplyr ungroup
 #' @importFrom dplyr mutate_if
 #' @importFrom dplyr funs
+#' 
+#' @importFrom plyr ldply
+#' @importFrom plyr ddply
 #'   
 #' @importFrom lazyeval lazy
 #' @importFrom lazyeval lazy_dots

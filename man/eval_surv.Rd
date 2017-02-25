@@ -57,24 +57,24 @@ eval_surv(x, cycle, cycle_length = 1, type = c("prob", "surv"), ...)
 \arguments{
 \item{x}{A survival distribution object}
 
-\item{cycle}{The \code{markov_cycle} or
-\code{state_time} for which to predict.}
+\item{cycle}{The \code{model_time} or \code{state_time} for which
+to predict.}
 
 \item{cycle_length}{The value of a Markov cycle in
 absolute time units.}
 
-\item{type}{either \code{prob}, for transition
-probabilities, or \code{surv}, for survival}
+\item{type}{either \code{prob}, for transition probabilities,
+or \code{surv}, for survival}
 
 \item{...}{arguments passed to methods.}
 }
 \value{
-Returns either the survival probalities or conditional probabilities
-of event for each cycle.
+Returns either the survival probalities or
+conditional probabilities of event for each cycle.
 }
 \description{
-Generate either survival probabilities or conditional probabilities of event
-for each model cycle.
+Generate either survival probabilities or conditional
+probabilities of event for each model cycle.
 }
 \details{
 The results of \code{eval_surv} are memoised for

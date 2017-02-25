@@ -16,14 +16,14 @@ Description: Health Economic Evaluation Modelling:
     (non-homogeneous Markov models and semi-Markov models)
     are supported.
 Depends: R (>= 3.2.2)
-Imports: plyr,
-          dplyr,
+Imports:  dplyr,
           ggplot2 (>= 2.2.0),
           graphics,
           grDevices,
           lazyeval,
           memoise,
           mvnfast,
+          plyr,
           pryr,
           rgho,
           stats,

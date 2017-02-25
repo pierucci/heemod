@@ -1,44 +1,49 @@
 #' Check Cycle and Time Inputs
 #' 
-#' Performs checks on the cycle and time inputs to `eval_surv`
+#' Performs checks on the cycle and time inputs to
+#' [eval_surv()].
 #' 
-#' @param cycle The `markov_cycle` or 
-#'   `state_time` for which to predict.
-#' @param cycle_length The value of a Markov cycle in 
+#' @param cycle The `model_time` or `state_time` for which
+#'   to predict.
+#' @param cycle_length The length of a Markov cycle in 
 #'   absolute time units.
 #'   
 #' @keywords internal
-#' 
+#'   
 check_cycle_inputs <- function(cycle, cycle_length) {
-    
-  stopifnot(
-    all(cycle == seq_len(length(cycle))),
-    length(cycle) >= 1,
-    !any(cycle <= 0),
-    !any(is.infinite(cycle_length)),
-    !any(is.na(cycle))
-  )
   
+  stopifnot(
+    all(cycle == seq_along(cycle)) ||
+      (length(cycle) == 2 && diff(cycle) == 1),
+    length(cycle) >= 1,
+    all(cycle > 0),
+    ! any(is.infinite(cycle_length)),
+    ! any(is.na(cycle))
+  )
 }
 
 #' Extract Evaluated Parameters
 #' 
-#' Extracts the covariate-adjusted parameters from a flexsurv object.
+#' Extracts the covariate-adjusted parameters from a
+#' [flexsurv::flexsurvreg()] object.
 #' 
-#' @param obj A flexsurv object.
-#' @param data An optional dataset of covariate values to generate parameters
-#' for.  Defaults to the original data to which the model was fit.
+#' @param obj A [flexsurv::flexsurvreg()] object.
+#' @param data An optional dataset of covariate values to
+#'   generate parameters for. Defaults to the original data
+#'   to which the model was fit.
 #'   
-#' @return A tidy data frame of curve parameters for each covariate level.
+#' @return A tidy data frame of curve parameters for each
+#'   covariate level.
 #'   
 #' @keywords internal
-#' 
-extractParams = function(obj, data = NULL) {
+#'   
+extract_params <- function(obj, data = NULL) {
   
   # Use data from object if not given
-  if (is.null(data)) data <- obj$data$m %>%
-      dplyr::select(-1, -ncol(obj$data$m))
-  else {
+  if (is.null(data)) {
+    data <- obj$data$m %>%
+      dplyr::select(-1, - ncol(obj$data$m))
+  } else {
     # Apply factor levels of original data
     for(i in colnames(data)) {
       if (is.character(data[[i]]) | is.factor(data[[i]])) {
@@ -48,94 +53,100 @@ extractParams = function(obj, data = NULL) {
   }
   
   # Grab parameter estimates
-  coef <- obj$coefficients
-  nCoef <- length(coef)
+  coef_obj <- obj$coefficients
+  n_coef <- length(coef_obj)
   
   if (obj$ncovs == 0) {
     # Null model, extract parameter estimates
-    outParams <- obj$res %>%
-      as.data.frame %>%
-      t %>%
-      as.data.frame %>%
+    out_params <- obj$res %>%
+      as.data.frame() %>%
+      t() %>%
+      as.data.frame() %>%
       head(1)
-    rownames(outParams) <- NULL
-  }
-  else {
+    rownames(out_params) <- NULL
+    
+  } else {
     # Get parameters of distribution
-    parNames <- obj$dlist$pars
-    names(parNames) <- parNames
-    nPars <- length(parNames)
+    par_names <- obj$dlist$pars
+    names(par_names) <- par_names
+    n_pars <- length(par_names)
     # Replicate matrix of coefficents, row = obs, col = param
-    nObs <- nrow(data)
-    coefMat <- coef %>% 
-      rep(nObs) %>%
-      matrix(ncol <- nCoef, nrow = nObs, byrow = TRUE)
-    names(coefMat) <- parNames
+    n_obs <- nrow(data)
+    coef_mat <- coef_obj %>% 
+      rep(n_obs) %>%
+      matrix(ncol <- n_coef, nrow = n_obs, byrow = TRUE)
+    names(coef_mat) <- par_names
     # Preallocate a matrix to hold calculated parameters
-    parMat <- matrix(ncol = nPars, nrow = nObs)
+    par_mat <- matrix(ncol = n_pars, nrow = n_obs)
+    
     # Loop to compute covariate-adjusted parmaeters
-    for(i in seq_len(nPars)) {
+    for (i in seq_len(n_pars)) {
       # Extract inverse transformation
-      invTrans <- obj$dlist$inv.transforms[[i]]
+      inv_trans <- obj$dlist$inv.transforms[[i]]
       # Subset coefficients relevant to parameter
-      coefSelector <- c(i, obj$mx[[parNames[i]]] + nPars)
-      nParCoefs <- length(coefSelector)
-      parCoefMat <- coefMat[ , coefSelector]
-      if (nParCoefs > 1) {
+      coef_selector <- c(i, obj$mx[[par_names[i]]] + n_pars)
+      n_par_coefs <- length(coef_selector)
+      par_coef_mat <- coef_mat[ , coef_selector]
+      if (n_par_coefs > 1) {
         # Assemble model matrix
-        form <- obj$all.formulae[[parNames[i]]][-2] %>%
-          formula
+        form <- obj$all.formulae[[par_names[i]]][-2] %>%
+          formula()
         mm <- stats::model.matrix(form, data = data)
         # Multiply cells of model matrix by cells of coefficient matrix and get row sums
-        parMat[ , i] <- (mm * parCoefMat) %>%
-          rowSums %>%
-          invTrans
-      }else {
-        parMat[ , i] <- parCoefMat %>% invTrans
+        par_mat[ , i] <- (mm * par_coef_mat) %>%
+          rowSums() %>%
+          inv_trans()
+      } else {
+        
+        par_mat[ , i] <- par_coef_mat %>% inv_trans()
       }
     }
-    outParams <- parMat  %>%
+    
+    out_params <- par_mat  %>%
       as.data.frame()
-    colnames(outParams) <- parNames
+    colnames(out_params) <- par_names
   }
-  return(outParams)
+  
+  return(out_params)
 }
 
 #' Extract Product-Limit Table for a Stratum
 #' 
-#' Extracts the product-limit table from a survfit object for a given stratum.
-#' Only `survfit` and unstratified `survfit.coxph` objects are supported.
+#' Extracts the product-limit table from a survfit object 
+#' for a given stratum. Only [survival::survfit()] and
+#' unstratified [survival::survfit.coxph()] objects are
+#' supported.
 #' 
 #' @param sf A survit object.
 #' @param index The index number of the strata to extract.
 #'   
-#' @return A data.frame of the product-limit table for the given stratum.
+#' @return A data frame of the product-limit table for the 
+#'   given stratum.
 #'   
 #' @keywords internal
-#' 
-extractStratum = function(sf, index) {
+extract_stratum <- function(sf, index) {
   if(is.null(sf$strata)) {
     # If there is no stratification, get the full table
     selector <- seq_len(length(sf$time))
     values <- list()
-  }
-  else{
+  } else {
+    
     # If there are strata, create a selector which selects only the rows
     # corresponding to the given index
-    endIndex <- sum(sf$strata[seq_len(index)])
-    startIndex = 1 + endIndex - sf$strata[index]
-    selector = seq(from = startIndex, to = endIndex)
+    end_index <- sum(sf$strata[seq_len(index)])
+    start_index <- 1 + end_index - sf$strata[index]
+    selector <- seq(from = start_index, to = end_index)
     
     # Extract the variable names and values corresponding to the stratum
-    split_strata = strsplit(names(sf$strata[index]),"(=|, )")[[1]]
-    len = length(split_strata) / 2
-    keys = split_strata[seq_len(len) * 2 - 1]
-    values = split_strata[seq_len(len) * 2]
-    names(values) = keys
+    split_strata <- strsplit(names(sf$strata[index]),"(=|, )")[[1]]
+    len <- length(split_strata) / 2
+    keys <- split_strata[seq_len(len) * 2 - 1]
+    values <- split_strata[seq_len(len) * 2]
+    names(values) <- keys
   }
   
   # Return the stratum's product-limit table
-  argList = as.list(values) %>% append(
+  arg_list <- as.list(values) %>% append(
     list(
       time = c(0, sf$time[selector]),
       n = sum(sf$n.censor[selector] + sf$n.event[selector]),
@@ -147,80 +158,89 @@ extractStratum = function(sf, index) {
       upper = c(1, sf$upper[selector])
     )
   )
-  return(do.call(data_frame, argList))
+  
+  return(do.call(data_frame, arg_list))
 }
 
 #' Extract Product-Limit Tables
 #' 
-#' Extracts the product-limit table from a survfit object for all strata.
-#' Only `survfit` and unstratified `survfit.coxph` objects are supported.
+#' Extracts the product-limit table from a survfit object
+#' for all strata. Only `survfit` and unstratified
+#' `survfit.coxph` objects are supported.
 #' 
 #' @param sf A survit object.
 #'   
-#' @return A tidy data.frame of the product-limit tables for all strata.
+#' @return A tidy data.frame of the product-limit tables for
+#'   all strata.
 #'   
 #' @keywords internal
-#' 
-extractStrata = function(sf) {
-  if(is.null(sf$strata)) extractStratum(sf, 1)
-  else plyr::ldply(
-    seq_len(length(sf$strata)),
-    function(i) extractStratum(sf, i)
-  )
+#'   
+extract_strata = function(sf) {
+  if (is.null(sf$strata)) {
+    extract_stratum(sf, 1)
+  } else {
+    plyr::ldply(
+      seq_len(length(sf$strata)),
+      function(i) extract_stratum(sf, i)
+    )
+  }
 }
 
 #' Calculate Probability of Event
 #' 
-#' Calculates the per-cycle event probabilities from a vector of survival
-#' probabilities.
+#' Calculates the per-cycle event probabilities from a
+#' vector of survival probabilities.
 #' 
 #' @param x A vector of survival probabilities.
 #'   
 #' @return The per-cycle event probabilities.
 #'   
 #' @keywords internal
-#' 
-calc_prob_from_surv = function(x) -diff(c(1, x)) / c(1, x[-length(x)])
+#'   
+calc_prob_from_surv <- function(x) {
+  - diff(c(1, x)) / c(1, x[-length(x)])
+}
 
 #' Calculate Probability of Survival
 #' 
-#' Calculates the probability of survival from a vector of event
-#' probabilities
+#' Calculates the probability of survival from a vector of
+#' event probabilities
 #' 
 #' @param x A vector of per-cycle event probabilities.
 #'   
-#' @return The survival probabilities
+#' @return Survival probabilities.
 #'   
 #' @keywords internal
-#' 
-calc_surv_from_prob = function(x) cumprod(1 - x)
-
+#'   
+calc_surv_from_prob <- function(x) {
+  cumprod(1 - x)
+}
 
 #' Evaluate Survival Distributions
 #' 
-#' Generate either survival probabilities or conditional probabilities of event
-#' for each model cycle.
+#' Generate either survival probabilities or conditional
+#' probabilities of event for each model cycle.
 #' 
-#' The results of `eval_surv` are memoised for
-#' `options("heemod.memotime")` (default: 1 hour) to
+#' The results of `eval_surv` are memoised for 
+#' `options("heemod.memotime")` (default: 1 hour) to 
 #' increase resampling performance.
 #' 
 #' @name eval_surv
 #' @param x A survival distribution object
-#' @param cycle The `markov_cycle` or 
-#'   `state_time` for which to predict.
+#' @param cycle The `model_time` or `state_time` for which
+#'   to predict.
 #' @param cycle_length The value of a Markov cycle in 
 #'   absolute time units.
-#' @param type either `prob`, for transition 
-#'   probabilities, or `surv`, for survival
+#' @param type either `prob`, for transition probabilities,
+#'   or `surv`, for survival
 #' @param ... arguments passed to methods.
 #'   
-#' @return Returns either the survival probalities or conditional probabilities
-#' of event for each cycle.
+#' @return Returns either the survival probalities or
+#'   conditional probabilities of event for each cycle.
 #'   
 #' @export
 eval_surv_ <- function(x, cycle, cycle_length=1,
-                       type=c("prob","surv"), ...) {
+                       type = c("prob","surv"), ...) {
   UseMethod("eval_surv_")
 }
 
@@ -236,61 +256,69 @@ eval_surv <- memoise::memoise(
 eval_surv_.survfit <- function(x, cycle, cycle_length = 1,
                                type = c("prob","surv"), ...) {
   
-  dots = list(...)
+  dots <- list(...)
   
   type <- match.arg(type)
   
+  if (length(cycle) == 1) {
+    cycle <- c(cycle - cycle_length, cycle)
+  }
+  
   check_cycle_inputs(cycle, cycle_length)
   
-  t <- cycle_length * cycle
+  time <- cycle_length * cycle
   
   # Extract the product-limit tables for all strata
-  pl_table <- extractStrata(x)
+  pl_table <- extract_strata(x)
   
   # Identify the terms which separate groups (if any)
   terms <- setdiff(
     colnames(pl_table),
-    c("time", "n", "nrisk", "ncensor", "nevent", "surv", "lower", "upper")
+    c("time", "n", "nrisk", "ncensor",
+      "nevent", "surv", "lower", "upper")
   )
   
   # Generate predicted survival for each group
-  surv_df = plyr::ddply(
+  surv_df <- plyr::ddply(
     pl_table,
     terms,
     function(d) {
       maxtime <- max(d$time)
       selector <- (t > maxtime)
       # Use stepfun to look up survival probabilities
-      value <- stats::stepfun(d$time[-1], d$surv)(t)
+      value <- stats::stepfun(d$time[-1], d$surv)(time)
       # Use NA when time > max time
       value[selector] <- as.numeric(NA)
-      data_frame(t = t, value = value, n = d$n[1])
+      tibble::data_frame(t = time, value = value, n = d$n[1])
     }
   )
   
-  if(is.null(dots$covar)) {
-    if(length(terms) > 0) {
+  if (is.null(dots$covar)) {
+    if (length(terms) > 0) {
       warning("No covariates provided, returning aggregate survial across all subjects.")
     }
     # If covariates are not provided, do weighted average for each time.
-    agg_df = surv_df %>%
-      dplyr::group_by_("t") %>%
-      dplyr::summarize_(value = "sum(value * n) / sum(n)")
-  }else {
+    agg_df <- surv_df %>%
+      dplyr::group_by_(~ t) %>%
+      dplyr::summarize_(value = ~ sum(value * n) / sum(n))
+  } else {
+    
     # If covariates are provided, join the predictions to them and then
     # do simple average for each time.
-    agg_df = left_join(dots$covar, surv_df, by = terms) %>%
-      dplyr::group_by_("t") %>%
-      dplyr::summarize_(value = "mean(value)")
+    agg_df <- dots$covar %>% 
+      dplyr::left_join(surv_df, by = terms) %>%
+      dplyr::group_by_(~ t) %>%
+      dplyr::summarize_(value = ~ mean(value))
   }
   
   # Get the vector of predictions
-  ret = agg_df$value
+  ret <- agg_df$value
   
   if (type == "prob") {
     # Calculate per-cycle failure prob
     ret <- calc_prob_from_surv(ret)
   }
+  
   return(ret)
 }
 
@@ -308,9 +336,9 @@ eval_surv_.flexsurvreg <- function(x, cycle, cycle_length = 1,
   t <- cycle_length * cycle
   
   # Extract parameter estimates
-  coef <- x$coefficients
+  coef_obj <- x$coefficients
   
-  nCoef <- length(coef)
+  nCoef <- length(coef_obj)
   nT <- length(t)
   
   if(x$ncovs > 0 && is.null(dots$covar)) {
@@ -361,7 +389,7 @@ eval_surv_.flexsurvreg <- function(x, cycle, cycle_length = 1,
       dplyr::group_by_("t") %>%
       dplyr::summarize_(value = "mean(value)")
   }
-
+  
   
   # Just get the results column
   ret <- surv_df$value
@@ -433,8 +461,8 @@ eval_surv_.surv_projection <- function(x, cycle,
 #' @rdname eval_surv
 #' @export
 eval_surv_.surv_pooled <- function(x, cycle,
-                                       cycle_length = 1,
-                                       type = c("prob", "surv"), ...) {
+                                   cycle_length = 1,
+                                   type = c("prob", "surv"), ...) {
   
   type <- match.arg(type)
   
@@ -444,7 +472,7 @@ eval_surv_.surv_pooled <- function(x, cycle,
   n_cycle <- length(cycle)
   n_dist <- length(x$dists)
   surv_mat <- matrix(nrow = n_cycle, ncol = n_dist)
-
+  
   # Evaluate and weight component distributions into columns
   # of matrix
   for(i in seq_len(n_dist)) {
@@ -469,8 +497,8 @@ eval_surv_.surv_pooled <- function(x, cycle,
 #' @rdname eval_surv
 #' @export
 eval_surv_.surv_ph <- function(x, cycle,
-                                 cycle_length = 1,
-                                 type = c("prob", "surv"), ...) {
+                               cycle_length = 1,
+                               type = c("prob", "surv"), ...) {
   
   type <- match.arg(type)
   
@@ -493,8 +521,8 @@ eval_surv_.surv_ph <- function(x, cycle,
 #' @rdname eval_surv
 #' @export
 eval_surv_.surv_aft <- function(x, cycle,
-                               cycle_length = 1,
-                               type = c("prob", "surv"), ...) {
+                                cycle_length = 1,
+                                type = c("prob", "surv"), ...) {
   
   type <- match.arg(type)
   
@@ -517,8 +545,8 @@ eval_surv_.surv_aft <- function(x, cycle,
 #' @rdname eval_surv
 #' @export
 eval_surv_.surv_po <- function(x, cycle,
-                                cycle_length = 1,
-                                type = c("prob", "surv"), ...) {
+                               cycle_length = 1,
+                               type = c("prob", "surv"), ...) {
   
   type <- match.arg(type)
   
@@ -580,8 +608,8 @@ eval_surv_.surv_add_haz <- function(x, cycle,
 #' @rdname eval_surv
 #' @export
 eval_surv_.surv_max_haz <- function(x, cycle,
-                                 cycle_length = 1,
-                                 type = c("prob", "surv"), ...) {
+                                    cycle_length = 1,
+                                    type = c("prob", "surv"), ...) {
   
   type <- match.arg(type)
   
