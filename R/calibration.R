@@ -329,7 +329,7 @@ define_calibration_fn <- function(type, strategy_names,
     if (! is.numeric(res)) {
       stop(sprintf(
         "Model values are not numeric. Class: %s",
-        paste(class(res), collapse == ", ")
+        paste(class(res), collapse = ", ")
       ))
     }
     
