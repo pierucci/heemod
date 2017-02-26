@@ -1,8 +1,13 @@
 # heemod devel
 
+## Breaking changes
+
+  * `get_probs_from_surv()`=>`compute_surv()`.
+
 ## New features
 
-  * Model calibration with `calibrate_model()`.
+  * Operations on survival functions, see `vignette("j-survival")`. Thanks to [Jordan Amdahl](https://github.com/jrdnmdhl).
+  * Model calibration with `calibrate_model()`. Thanks to [Matthew Wiener](https://github.com/MattWiener).
 
 # heemod 0.8.0
 

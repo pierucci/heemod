@@ -24,6 +24,9 @@
 #' @importFrom dplyr ungroup
 #' @importFrom dplyr mutate_if
 #' @importFrom dplyr funs
+#' 
+#' @importFrom plyr ldply
+#' @importFrom plyr ddply
 #'   
 #' @importFrom lazyeval lazy
 #' @importFrom lazyeval lazy_dots
@@ -52,6 +55,9 @@
 #' @importFrom stats as.formula
 #' @importFrom stats var
 #' @importFrom stats coef
+#' @importFrom stats model.matrix
+#' @importFrom stats formula
+#' @importFrom stats stepfun
 #'   
 #' @importFrom graphics par
 #'   
@@ -89,3 +95,6 @@
 #' @importFrom tibble tibble
 #' @importFrom tibble tibble_
 NULL
+
+#' @export
+dplyr::`%>%`
