@@ -13,12 +13,12 @@
 check_cycle_inputs <- function(cycle, cycle_length) {
   
   stopifnot(
-    all(cycle == seq_along(cycle)) ||
-      (length(cycle) == 2 && diff(cycle) == 1),
+    all(cycle == seq(from = min(cycle), to = max(cycle), by = 1)),
+    all(round(cycle, 0) == cycle),
     length(cycle) >= 1,
-    all(cycle > 0),
-    ! any(is.infinite(cycle_length)),
-    ! any(is.na(cycle))
+    !any(cycle < 0),
+    !any(is.infinite(cycle_length)),
+    !any(is.na(cycle))
   )
 }
 
@@ -191,15 +191,12 @@ extract_strata = function(sf) {
 #' Calculates the per-cycle event probabilities from a
 #' vector of survival probabilities.
 #' 
-#' @param x A vector of survival probabilities.
+#' @param x A vector of conditional event probabilities.
 #'   
 #' @return The per-cycle event probabilities.
 #'   
 #' @keywords internal
-#'   
-calc_prob_from_surv <- function(x) {
-  - diff(c(1, x)) / c(1, x[-length(x)])
-}
+calc_prob_from_surv = function(x) - diff(x) / x[-length(x)]
 
 #' Calculate Probability of Survival
 #' 
@@ -208,13 +205,12 @@ calc_prob_from_surv <- function(x) {
 #' 
 #' @param x A vector of per-cycle event probabilities.
 #'   
-#' @return Survival probabilities.
+#' @return The survival probabilities.
 #'   
 #' @keywords internal
-#'   
-calc_surv_from_prob <- function(x) {
-  cumprod(1 - x)
-}
+#' 
+calc_surv_from_prob = function(x) cumprod(x[1] - x[-1])
+
 
 #' Evaluate Survival Distributions
 #' 
@@ -260,13 +256,15 @@ eval_surv_.survfit <- function(x, cycle, cycle_length = 1,
   
   type <- match.arg(type)
   
-  if (length(cycle) == 1) {
-    cycle <- c(cycle - cycle_length, cycle)
+  if(type == "prob") {
+    cycle_ = c(cycle[1] - 1, cycle)
+  }else {
+    cycle_ = cycle
   }
   
-  check_cycle_inputs(cycle, cycle_length)
+  check_cycle_inputs(cycle_, cycle_length)
   
-  time <- cycle_length * cycle
+  t <- cycle_length * cycle_
   
   # Extract the product-limit tables for all strata
   pl_table <- extract_strata(x)
@@ -331,9 +329,15 @@ eval_surv_.flexsurvreg <- function(x, cycle, cycle_length = 1,
   
   type <- match.arg(type)
   
-  check_cycle_inputs(cycle, cycle_length)
+  if(type == "prob") {
+    cycle_ = c(cycle[1] - 1, cycle)
+  }else {
+    cycle_ = cycle
+  }
   
-  t <- cycle_length * cycle
+  check_cycle_inputs(cycle_, cycle_length)
+  
+  t <- cycle_length * cycle_
   
   # Extract parameter estimates
   coef_obj <- x$coefficients
@@ -411,8 +415,10 @@ eval_surv_.surv_model <- function(x, cycle, cycle_length = 1,
     cycle = cycle,
     cycle_length = cycle_length,
     covar = x$covar,
-    type = type
+    type = type,
+    ...
   )
+  
 }
 
 #' @rdname eval_surv
@@ -423,21 +429,27 @@ eval_surv_.surv_projection <- function(x, cycle,
   
   type <- match.arg(type)
   
-  check_cycle_inputs(cycle, cycle_length)
+  if(type == "prob") {
+    cycle_ = c(cycle[1] - 1, cycle)
+  }else {
+    cycle_ = cycle
+  }
   
-  t <- cycle_length * cycle
+  check_cycle_inputs(cycle_, cycle_length)
   
-  ret <- numeric(length(cycle))
+  t <- cycle_length * cycle_
+  
+  ret <- numeric(length(cycle_))
   
   surv1 <- eval_surv_(
     x$dist1,
-    cycle = cycle,
+    cycle = cycle_,
     cycle_length = cycle_length,
     type = "surv"
   )
   surv2 <- eval_surv_(
     x$dist2,
-    cycle=cycle,
+    cycle=cycle_,
     cycle_length=cycle_length,
     type="surv"
   )
@@ -445,8 +457,8 @@ eval_surv_.surv_projection <- function(x, cycle,
   ind_s1 <- t < x$at
   ind_s2 <- t >= x$at
   
-  surv1_p_at <- eval_surv_(x$dist1, cycle=1, cycle_length=x$at, type="surv")
-  surv2_p_at <- eval_surv_(x$dist2, cycle=1, cycle_length=x$at, type="surv")
+  surv1_p_at <- eval_surv_(x$dist1, cycle = 1, cycle_length = x$at, type = "surv", .internal = TRUE)
+  surv2_p_at <- eval_surv_(x$dist2, cycle = 1, cycle_length = x$at, type = "surv", .internal = TRUE)
   
   ret[ind_s1] <- surv1[ind_s1]
   ret[ind_s2] <- (surv2 * surv1_p_at / surv2_p_at)[ind_s2]
@@ -466,10 +478,16 @@ eval_surv_.surv_pooled <- function(x, cycle,
   
   type <- match.arg(type)
   
-  check_cycle_inputs(cycle, cycle_length)
+  if(type == "prob") {
+    cycle_ = c(cycle[1] - 1, cycle)
+  }else {
+    cycle_ = cycle
+  }
+  
+  check_cycle_inputs(cycle_, cycle_length)
   
   # Determine dimensions of matrix and initialize
-  n_cycle <- length(cycle)
+  n_cycle <- length(cycle_)
   n_dist <- length(x$dists)
   surv_mat <- matrix(nrow = n_cycle, ncol = n_dist)
   
@@ -478,7 +496,7 @@ eval_surv_.surv_pooled <- function(x, cycle,
   for(i in seq_len(n_dist)) {
     surv_mat[ ,i] <- x$weights[i] / sum(x$weights) * eval_surv_(
       x$dists[[i]],
-      cycle=cycle,
+      cycle=cycle_,
       cycle_length=cycle_length,
       type="surv"
     )
@@ -502,11 +520,17 @@ eval_surv_.surv_ph <- function(x, cycle,
   
   type <- match.arg(type)
   
-  check_cycle_inputs(cycle, cycle_length)
+  if(type == "prob") {
+    cycle_ = c(cycle[1] - 1, cycle)
+  }else {
+    cycle_ = cycle
+  }
+  
+  check_cycle_inputs(cycle_, cycle_length)
   
   ret <- eval_surv_(
     x$dist,
-    cycle = cycle,
+    cycle = cycle_,
     cycle_length = cycle_length,
     type = "surv"
   ) ^ x$hr
@@ -526,11 +550,17 @@ eval_surv_.surv_aft <- function(x, cycle,
   
   type <- match.arg(type)
   
-  check_cycle_inputs(cycle, cycle_length)
+  if(type == "prob") {
+    cycle_ = c(cycle[1] - 1, cycle)
+  }else {
+    cycle_ = cycle
+  }
+  
+  check_cycle_inputs(cycle_, cycle_length)
   
   ret <- eval_surv_(
     x$dist,
-    cycle = cycle,
+    cycle = cycle_,
     cycle_length = cycle_length/x$af,
     type = "surv"
   )
@@ -548,13 +578,21 @@ eval_surv_.surv_po <- function(x, cycle,
                                cycle_length = 1,
                                type = c("prob", "surv"), ...) {
   
+  dots = list(...)
+  
   type <- match.arg(type)
   
-  check_cycle_inputs(cycle, cycle_length)
+  if(type == "prob") {
+    cycle_ = c(cycle[1] - 1, cycle)
+  }else {
+    cycle_ = cycle
+  }
+  
+  check_cycle_inputs(cycle_, cycle_length)
   
   p <- eval_surv_(
     x$dist,
-    cycle = cycle,
+    cycle = cycle_,
     cycle_length = cycle_length,
     type = "surv"
   )
@@ -576,10 +614,16 @@ eval_surv_.surv_add_haz <- function(x, cycle,
   
   type <- match.arg(type)
   
-  check_cycle_inputs(cycle, cycle_length)
+  if(type == "prob") {
+    cycle_ = c(cycle[1] - 1, cycle)
+  }else {
+    cycle_ = cycle
+  }
+  
+  check_cycle_inputs(cycle_, cycle_length)
   
   # Determine dimensions of matrix and initialize
-  n_cycle <- length(cycle)
+  n_cycle <- length(cycle_)
   n_dist <- length(x$dists)
   surv_mat <- matrix(nrow = n_cycle, ncol = n_dist)
   
@@ -588,55 +632,17 @@ eval_surv_.surv_add_haz <- function(x, cycle,
   for(i in seq_len(n_dist)) {
     surv_mat[ ,i] <- eval_surv_(
       x$dists[[i]],
-      cycle = cycle,
+      cycle = cycle_,
       cycle_length = cycle_length,
-      type = "prob"
+      type = "surv"
     )
   }
   
-  # Calculate maximum of the event probabilities for
-  # each cycle
-  ret <- apply(surv_mat, 1, function(z) 1 - prod(z - 1))
+  # Apply independent risks
+  ret <- apply(surv_mat, 1, function(z) prod(z))
   
-  if(type == "surv") {
-    ret <- calc_surv_from_prob(ret)
-  }
-  
-  ret
-}
-
-#' @rdname eval_surv
-#' @export
-eval_surv_.surv_max_haz <- function(x, cycle,
-                                    cycle_length = 1,
-                                    type = c("prob", "surv"), ...) {
-  
-  type <- match.arg(type)
-  
-  check_cycle_inputs(cycle, cycle_length)
-  
-  # Determine dimensions of matrix and initialize
-  n_cycle <- length(cycle)
-  n_dist <- length(x$dists)
-  surv_mat <- matrix(nrow = n_cycle, ncol = n_dist)
-  
-  # Evaluate and weight component distributions into columns
-  # of matrix
-  for(i in seq_len(n_dist)) {
-    surv_mat[ ,i] <- eval_surv_(
-      x$dists[[i]],
-      cycle = cycle,
-      cycle_length = cycle_length,
-      type = "prob"
-    )
-  }
-  
-  # Calculate maximum of the event probabilities for
-  # each cycle
-  ret <- apply(surv_mat, 1, max)
-  
-  if(type == "surv") {
-    ret <- calc_surv_from_prob(ret)
+  if(type == "prob") {
+    ret <- calc_prob_from_surv(ret)
   }
   
   ret
@@ -649,9 +655,15 @@ eval_surv_.surv_dist <- function(x, cycle,
                                  type = c("prob", "surv"), ...) {
   type <- match.arg(type)
   
-  check_cycle_inputs(cycle, cycle_length)
+  if(type == "prob") {
+    cycle_ = c(cycle[1] - 1, cycle)
+  }else {
+    cycle_ = cycle
+  }
   
-  times_surv <- cycle_length * cycle
+  check_cycle_inputs(cycle_, cycle_length)
+  
+  times_surv <- cycle_length * cycle_
   
   if (! requireNamespace("flexsurv")) {
     stop("'flexsurv' package required.")
@@ -665,12 +677,9 @@ eval_surv_.surv_dist <- function(x, cycle,
   args[["lower.tail"]] <- F
   ret <- do.call(pf, args)
   
-  if (type == "prob") {
+  if(type == "prob") {
     ret <- calc_prob_from_surv(ret)
   }
   
   ret
 }
-
-
-
