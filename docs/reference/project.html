@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Articles • heemod</title>
+<title>Project Beyond a Survival Distribution with Another — project • heemod</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -34,7 +34,7 @@
   </head>
 
   <body>
-    <div class="container template-vignette-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -74,58 +74,50 @@
       
       </header>
 
-      <div class="page-header">
-  <h1>Vignette reference <small>version&nbsp;0.8.0</small></h1>
-</div>
-
-<div class="row">
-  <div class="col-md-9">
-    <div class="section ">
-      <h3>Introduction</h3>
-      <p class="section-desc"></p>
-
-      <ul>
-        <li><a href="a-introduction.html">An Introduction to `heemod`</a></li>
-        <li><a href="b-time-dependency.html">Time-varying values</a></li>
-        <li><a href="j-survival.html">Survival models</a></li>
-      </ul>
+      <div class="row">
+  <div class="col-md-9 contents">
+    <div class="page-header">
+    <h1>Project Beyond a Survival Distribution with Another</h1>
     </div>
-    <div class="section ">
-      <h3>Examples</h3>
-      <p class="section-desc"></p>
 
-      <ul>
-        <li><a href="c-homogeneous.html">Simple Markov Models (Homogeneous)</a></li>
-        <li><a href="d-non-homogeneous.html">Time-varying Markov Models (Non-Homogeneous)</a></li>
-      </ul>
-    </div>
-    <div class="section ">
-      <h3>Sensitivity</h3>
-      <p class="section-desc"></p>
+    
+    <p>Project survival from a survival distribution using one
+or survival distributions using the specified cut points.</p>
+    
 
-      <ul>
-        <li><a href="e-probabilistic.html">Probabilistic Uncertainty Analysis</a></li>
-        <li><a href="f-sensitivity.html">Deterministic Sensitivity Analysis</a></li>
-      </ul>
-    </div>
-    <div class="section ">
-      <h3>Heterogeneity</h3>
-      <p class="section-desc"></p>
+    <pre><span class='fu'>project</span>(<span class='no'>...</span>, <span class='no'>at</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <dl class="dl-horizontal">
+      <dt>...</dt>
+      <dd>Survival distributions to be used in the
+projection.</dd>
+      <dt>at</dt>
+      <dd>A vector of times corresponding to the cut
+point(s) to be used.</dd>
+    </dl>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-      <ul>
-        <li><a href="g-heterogeneity.html">Heterogeneity &amp; Demographic Analysis</a></li>
-      </ul>
-    </div>
-    <div class="section ">
-      <h3>Other features</h3>
-      <p class="section-desc"></p>
+    <p>A <code>surv_projection</code> object.</p>
+    
 
-      <ul>
-        <li><a href="h-tabular.html">Tabular Input</a></li>
-        <li><a href="i-reproduction.html">Reproducing Exact Results from DMHEE</a></li>
-        <li><a href="k-calibration.html">Calibrating `heemod` models</a></li>
-      </ul>
-    </div>
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+<span class='no'>dist1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='define_survival.html'>define_survival</a></span>(<span class='kw'>distribution</span> <span class='kw'>=</span> <span class='st'>"exp"</span>, <span class='kw'>rate</span> <span class='kw'>=</span> <span class='fl'>.5</span>)
+<span class='no'>dist2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='define_survival.html'>define_survival</a></span>(<span class='kw'>distribution</span> <span class='kw'>=</span> <span class='st'>"gompertz"</span>, <span class='kw'>rate</span> <span class='kw'>=</span> <span class='fl'>.5</span>, <span class='kw'>shape</span> <span class='kw'>=</span> <span class='fl'>1</span>)
+<span class='no'>proj_dist</span> <span class='kw'>&lt;-</span> <span class='fu'>project</span>(<span class='no'>dist1</span>, <span class='no'>dist2</span>, <span class='kw'>at</span><span class='kw'>=</span><span class='fl'>20</span>)</div></pre>
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
+
   </div>
 </div>
 

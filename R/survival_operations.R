@@ -120,8 +120,9 @@ pool <- function(..., weights=1) {
 #' 
 #' @examples
 #' 
-#' dist1 = define_survival(distribution = "exp", rate = .25)
-#' ph_dist = apply_hr(dist1, 0.5)
+#' dist1 <- define_survival(distribution = "exp", rate = .25)
+#' ph_dist <- apply_hr(dist1, 0.5)
+#' 
 apply_hr <- function(dist, hr, log_hr = FALSE) {
   
   stopifnot(

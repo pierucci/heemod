@@ -5,7 +5,7 @@
 \title{Calibrate Model Parameters}
 \usage{
 calibrate_model(x, parameter_names, fn_values, target_values,
-  initial_values = NULL, ...)
+  initial_values = NULL, method = c("Nelder-Mead", "BFGS"), ...)
 }
 \arguments{
 \item{x}{Result from \code{\link[=run_model]{run_model()}} or \code{\link[=update]{update()}}.}
@@ -21,6 +21,9 @@ output from \code{fn_values}.}
 
 \item{initial_values}{Optional starting values. See
 details.}
+
+\item{method}{Optimisation method (\code{Nelder-Mead} or
+\code{BFGS}).}
 
 \item{...}{Optional arguments passed to
 \code{\link[optimx:optimx]{optimx::optimx()}}.}

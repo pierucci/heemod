@@ -23,6 +23,7 @@ distribution.
 }
 \examples{
 
-dist1 = define_survival(distribution = "exp", rate = .25)
-ph_dist = apply_hr(dist1, 0.5)
+dist1 <- define_survival(distribution = "exp", rate = .25)
+ph_dist <- apply_hr(dist1, 0.5)
+
 }

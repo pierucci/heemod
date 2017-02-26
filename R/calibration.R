@@ -37,6 +37,8 @@
 #'   output from `fn_values`.
 #' @param initial_values Optional starting values. See 
 #'   details.
+#' @param method Optimisation method (`Nelder-Mead` or
+#'   `BFGS`).
 #' @param ... Optional arguments passed to 
 #'   [optimx::optimx()].
 #'   
@@ -50,7 +52,9 @@
 calibrate_model <- function(x, parameter_names,
                             fn_values, target_values,
                             initial_values = NULL,
+                            method = c("Nelder-Mead", "BFGS"),
                             ...) {
+  method <- match.arg(method)
   
   # if initial values were not supplied,
   # extract them from the model
@@ -129,6 +133,7 @@ calibrate_model <- function(x, parameter_names,
         optim_output <- optimx::optimx(
           par = initial_values[i, ],
           fn = fn_calibrate_wrapper,
+          method = method,
           
           model = x,
           parameter_names = parameter_names,
@@ -256,19 +261,22 @@ fn_calibrate.updated_model <- function(x, parameter_names,
 
 #' Define Calibration Function
 #' 
-#' Define a function to be passed to the `fn_values` argument of
-#' [calibrate_model()].
-#'
+#' Define a function to be passed to the `fn_values`
+#' argument of [calibrate_model()].
+#' 
 #' @param type Type of model values (`count` or `value`).
 #' @param strategy_names Names of strategies.
-#' @param element_names Names of states (for counts) or of state values (for values).
+#' @param element_names Names of states (for counts) or of
+#'   state values (for values).
 #' @param cycles Cycles of interest.
-#' @param groups Optional grouping of values (values in a same group have the same `groups`).
-#' @param aggreg_fn A function to aggregate values in a same group.
-#'
+#' @param groups Optional grouping of values (values in a
+#'   same group have the same `groups`).
+#' @param aggreg_fn A function to aggregate values in a same
+#'   group.
+#'   
 #' @return A numeric vector.
 #' @export
-#'
+#' 
 #' @example inst/examples/example_define_calibration_fn.R
 define_calibration_fn <- function(type, strategy_names,
                                   element_names, cycles,
