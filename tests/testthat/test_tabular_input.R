@@ -149,13 +149,6 @@ test_that(
       "'source' directory missing: ",
       fixed = TRUE
     )
-    expect_error(
-      heemod:::gather_model_info(
-        system.file("tabular/test", package = "heemod"),
-        "REFERENCE_emptyfunctions.csv"),
-      "No source files in 'source' directory: emptyfunctions",
-      fixed = TRUE
-    )
   }
 )
 
