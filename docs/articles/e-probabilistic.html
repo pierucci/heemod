@@ -59,7 +59,7 @@
     <div class="page-header toc-ignore">
       <h1>Probabilistic Uncertainty Analysis</h1>
             
-            <h4 class="date">2017-02-13</h4>
+            <h4 class="date">2017-02-26</h4>
           </div>
 
     
@@ -275,6 +275,7 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 <p>To compute EVPPI the results can also be exported with <code><a href="../reference/export_savi.html">export_savi()</a></code> in a format compatible with the <a href="http://savi.shef.ac.uk/SAVI/">SAVI</a> software (Sheffield Accelerated Value of Information).</p>
 <p>A covariance analysis can be performed on strategy results:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(pm, <span class="dt">type =</span> <span class="st">"cov"</span>)</code></pre></div>
+<pre><code>## Loading required namespace: mgcv</code></pre>
 <p><img src="e-probabilistic_files/figure-html/unnamed-chunk-11-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>Or on the difference between strategies:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(pm, <span class="dt">type =</span> <span class="st">"cov"</span>, <span class="dt">diff =</span> <span class="ot">TRUE</span>, <span class="dt">threshold =</span> <span class="dv">5000</span>)</code></pre></div>

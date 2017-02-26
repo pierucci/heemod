@@ -85,10 +85,10 @@
 survival and overall survival.</p>
     
 
-    <pre><span class='fu'>define_part_surv</span>(<span class='no'>pfs</span>, <span class='no'>os</span>, <span class='no'>state_names</span>, <span class='kw'>terminal_state</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>km_limit</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+    <pre><span class='fu'>define_part_surv</span>(<span class='no'>pfs</span>, <span class='no'>os</span>, <span class='no'>state_names</span>, <span class='kw'>terminal_state</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>cycle_length</span> <span class='kw'>=</span> <span class='fl'>1</span>)
 
-<span class='fu'>define_part_surv_</span>(<span class='no'>pfs</span>, <span class='no'>os</span>, <span class='no'>state_names</span>, <span class='kw'>km_limit</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>cycle_length</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
+<span class='fu'>define_part_surv_</span>(<span class='no'>pfs</span>, <span class='no'>os</span>, <span class='no'>state_names</span>, <span class='kw'>cycle_length</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -106,12 +106,6 @@ and <code>&quot;death&quot;</code>. See examples.</dd>
       <dt>terminal_state</dt>
       <dd>Should a terminal state be
 included? Only used when state names are not provided.</dd>
-      <dt>km_limit</dt>
-      <dd>Up to what time should Kaplan-Meier
-estimates be used? Model predictions will be used
-thereafter. Either a length 2 vector (for <code>pfs</code>
-and <code>os</code> respectively) or a single values (used
-for both distributions).</dd>
       <dt>cycle_length</dt>
       <dd>The value of a Markov cycle in
 absolute time units.</dd>
@@ -138,19 +132,16 @@ absolute time units.</dd>
 )</div><div class='output co'>#&gt; $pfs
 #&gt; &lt;lazy&gt;
 #&gt;   expr: dist_pfs
-#&gt;   env:  &lt;environment: 0x8d65b30&gt;
+#&gt;   env:  &lt;environment: 0xc268470&gt;
 #&gt; 
 #&gt; $os
 #&gt; &lt;lazy&gt;
 #&gt;   expr: dist_os
-#&gt;   env:  &lt;environment: 0x8d65b30&gt;
+#&gt;   env:  &lt;environment: 0xc268470&gt;
 #&gt; 
 #&gt; $state_names
 #&gt; progression_free      progression         terminal            death 
 #&gt;              &quot;A&quot;              &quot;B&quot;              &quot;C&quot;              &quot;D&quot; 
-#&gt; 
-#&gt; $km_limit
-#&gt; [1] 0 0
 #&gt; 
 #&gt; $cycle_length
 #&gt; [1] 1 1
@@ -164,19 +155,16 @@ absolute time units.</dd>
 )</div><div class='output co'>#&gt; <span class='message'>No named state -&gt; generating names.</span></div><div class='output co'>#&gt; $pfs
 #&gt; &lt;lazy&gt;
 #&gt;   expr: dist_pfs
-#&gt;   env:  &lt;environment: 0x8d65b30&gt;
+#&gt;   env:  &lt;environment: 0xc268470&gt;
 #&gt; 
 #&gt; $os
 #&gt; &lt;lazy&gt;
 #&gt;   expr: dist_os
-#&gt;   env:  &lt;environment: 0x8d65b30&gt;
+#&gt;   env:  &lt;environment: 0xc268470&gt;
 #&gt; 
 #&gt; $state_names
 #&gt; progression_free      progression         terminal            death 
 #&gt;              &quot;A&quot;              &quot;B&quot;              &quot;C&quot;              &quot;D&quot; 
-#&gt; 
-#&gt; $km_limit
-#&gt; [1] 0 0
 #&gt; 
 #&gt; $cycle_length
 #&gt; [1] 1 1
