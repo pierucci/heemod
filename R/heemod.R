@@ -95,3 +95,6 @@
 #' @importFrom tibble tibble
 #' @importFrom tibble tibble_
 NULL
+
+#' @export
+dplyr::`%>%`
