@@ -4,25 +4,25 @@
 \alias{apply_af}
 \title{Apply an Acceleration Factor}
 \usage{
-apply_af(dist, af, log.af = F)
+apply_af(dist, af, log_af = FALSE)
 }
 \arguments{
 \item{dist}{A survival distribution.}
 
 \item{af}{An acceleration factor to be applied.}
 
-\item{log.af}{If true, the accleration factor is exponentiated before being
-applied.}
+\item{log_af}{If \code{TRUE}, the accleration factor is
+exponentiated before being applied.}
 }
 \value{
 A \code{surv_aft} object.
 }
 \description{
-Proportionally increase or reduce the time to event of a survival
-distribution.
+Proportionally increase or reduce the time to event of a
+survival distribution.
 }
 \examples{
 
-dist1 = define_survival(distribution = "exp", rate = .25)
-aft_dist = apply_af(dist1, 1.5)
+dist1 <- define_survival(distribution = "exp", rate = .25)
+aft_dist <- apply_af(dist1, 1.5)
 }

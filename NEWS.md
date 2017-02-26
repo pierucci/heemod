@@ -1,3 +1,13 @@
+# heemod devel
+
+## Breaking changes
+
+  * `get_probs_from_surv()`=>`compute_surv()`.
+
+## New features
+
+  * Operations on survival functions, see `vignette("j-survival")`. Thanks to Jordan Amdahl (@jrdnmdhl).
+
 # heemod 0.8.0
 
 ## Breaking changes

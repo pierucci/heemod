@@ -12,139 +12,153 @@ vignette: >
 
 ```{r setup, include=FALSE}
 library(heemod)
-library(dplyr)
-library(survival)
-library(flexsurv)
 ```
 
-The heemod package provides a number of ways to estimate transition probabilties from survival distributions.  Survival distributions in heemod can come from at least three different sources:
+The `heemod` package provides a number of ways to estimate transition probabilities from survival distributions.  Survival distributions can come from at least three different sources:
 
-+ User-definded parametric distributions
-
-+ Fitted parametric distributions (`flexsurv::flexsurvreg`)
-
-+ Fitted Kaplan-Meiers (`survival::survfit`)
+  * User-definded parametric distributions.
+  * Fitted parametric distributions with `flexsurv::flexsurvreg()`.
+  * Fitted Kaplan-Meiers with `survival::survfit()`.
 
 Once defined, each of these types of distributions can be combined and modified using a standard set of operations.
 
-User-defined parametric distributions are created using the `define_survival` and `define_spline_survival` functions:
+User-defined parametric distributions are created using the `define_survival()` and `define_spline_survival()` functions:
 ```{r}
-
-surv_dist1 <- define_survival(
+surv_dist_1 <- define_survival(
   distribution = "exp",
   rate = .5
 )
 
-surv_dist2 <- define_spline_survival(
+surv_dist_2 <- define_spline_survival(
   scale = "odds",
   gamma = c(-11.643, 1.843, 0.208),
   knots = c(4.077537, 5.883183, 6.458338)
 )
-
 ```
 
-Fitted parametric models are created using `flexsurv::flexsurvreg` and `flexsurv::flexsurvspline`:
+Fitted parametric models are created using `flexsurv::flexsurvreg()` and `flexsurv::flexsurvspline()`:
 
 ```{r fig.width=6, fig.height=6}
+library(flexsurv)
 
-
-fitw <- flexsurvreg(
+fit_w <- flexsurvreg(
   formula = Surv(futime, fustat) ~ 1,
   data = ovarian, dist = "weibull"
 )
-plot(fitw)
-
-
-fitspl <- flexsurvspline(
+plot(fit_w)
+fit_spl <- flexsurvspline(
   formula = Surv(futime, fustat) ~ 1,
   data = ovarian,
   scale = "odds",
   k=1
 )
-plot(fitspl)
-
+plot(fit_spl)
 ```
 
-Fitted models can include covariates.  In order to use a model with covariates in heemod, you can use the `set_covariates` function on the fitted model and provide as additional arguments the covariate values you want to model.  You can also provide a data.frame of covariate levels to aggregate survival probabilites over different groups.  By default, heemod will aggregate over predicted survival probabilities for each subject in the dataset to which the model was fit.
+Fitted models can include covariates. In order to use a model with covariates in heemod, you can use the `set_covariates()` function on the fitted model and provide as additional arguments the covariate values you want to model. You can also provide a data frame of covariate levels to aggregate survival probabilites over different groups.  By default, heemod will aggregate over predicted survival probabilities for each subject in the dataset to which the model was fit.
 
 ```{r fig.width=6, fig.height=6}
-
-
-fitcov <- flexsurvreg(
+fit_cov <- flexsurvreg(
   formula = Surv(rectime, censrec) ~ group,
-  data = bc, dist = "weibull"
+  dist = "weibull",
+  data = bc
 )
-
-plot(fitw)
-
-fitcov_good <- fitcov %>% set_covariates(group = "Good")
-fitcov_medium <- fitcov %>% set_covariates(group = "Medium")
-fitcov_poor <- fitcov %>% set_covariates(group = "Poor")
-
+plot(fit_cov)
+fitcov_good   <- set_covariates(fit_cov, group = "Good")
+fitcov_medium <- set_covariates(fit_cov, group = "Medium")
+fitcov_poor   <- set_covariates(fit_cov, group = "Poor")
 ```
 
+Similar functionality is also available for Kaplan-Meiers created using `survival::survfit()`
+```{r fig.width=6, fig.height=6}
+library(survival)
 
-Similar functionality is also available for Kaplan-Meiers created using `survival::survfit`
-```{r}
-
-km1 <- survfit(
+km_1 <- survfit(
   formula = Surv(futime, fustat) ~ 1,
   data = ovarian
 )
-kmcov <- survfit(
+km_cov <- survfit(
   formula = Surv(rectime, censrec) ~ group,
   data = bc
 )
-plot(kmcov)
-
-km_good <- kmcov %>% set_covariates(group = "Good")
-km_medium <- kmcov %>% set_covariates(group = "Medium")
-km_poor <- kmcov %>% set_covariates(group = "Poor")
-
+plot(km_cov)
+km_good   <- set_covariates(km_cov, group = "Good")
+km_medium <- set_covariates(km_cov, group = "Medium")
+km_poor   <- set_covariates(km_cov, group = "Poor")
 ```
 
 Once defined, treatment effects of various types can be applied to any survival distribution:
 
-+ Hazard ratio: `apply_hr`
-
-+ Odds ratio: `apply_or`
-
-+ Acceleration factor: `apply_af`
+  * Hazard ratio: `apply_hr()`.
+  * Odds ratio: `apply_or()`.
+  * Acceleration factor: `apply_af()`.
 
 ```{r}
-km_poor_ph <- km_poor %>% apply_hr(hr=0.5)
-km_medium_af <- km_medium %>% apply_af(af=1.2)
-
+km_poor_ph <- apply_hr(km_poor, hr = 0.5)
+km_medium_af <- apply_af(km_medium, af = 1.2)
 ```
 
 In addition, distributions can be combined using a variety of operations:
 
-+ Use one (or more) survival distributions to project from another: `project`
-
-+ Pool two (or more) survival distributions: `pool`
-
-+ Combine two (or more) survival distributions as independent risks: `add_hazards`
+  * Use one (or more) survival distributions to project from another: `project()`.
+  * Pool two (or more) survival distributions: `pool()`.
+  * Combine two (or more) survival distributions as independent risks: `add_hazards()`.
 
 ```{r}
-
-km_poor_proj = km_poor %>% project(fitcov_poor, at=365)
-models_all = pool(fitcov_good, fitcov_medium, fitcov_poor, weights=c(0.25, 0.25, 0.5))
-combined_risks = add_hazards(fitw, fitcov_good)
-
+km_poor_proj <- project(
+  km_poor,
+  fitcov_poor,
+  at = 365
+)
+models_all <- pool(
+  fitcov_good, fitcov_medium, fitcov_poor,
+  weights = c(0.25, 0.25, 0.5)
+)
+combined_risks <- add_hazards(
+  fit_w, fitcov_good
+)
 ```
 
+The transition or survival probabilities are computed with `compute_surv()`. Time (usually `model_time` or `state_time`) needs to be passed to the function as a `time` argument.
+
+```{r}
+compute_surv(surv_dist_2, time = 1:5)
+```
+
+All these operations can be chained with the `%>%` piping operator.
+
+```{r}
+fit_cov %>% 
+  set_covariates(group = "Good") %>% 
+  apply_hr(hr = 2) %>% 
+  project(
+    fitcov_poor,
+    at = 3
+  ) %>%
+  pool(
+    fitcov_medium,
+    weights = c(0.25, 0.75)
+  ) %>%
+  add_hazards(
+    fit_w
+  ) %>% 
+  compute_surv(time = 1:5)
+```
 
 For the example we define a simple model with only 1 strategy.
 
-```{r warning=FALSE}
+```{r warning=FALSE, fig.width=6, fig.height=6}
 param <- define_parameters(
-  p1 = eval_surv(
-    surv_dist1,
-    cycle = markov_cycle # can also be state_cycle
+  p1 = compute_surv(
+    surv_dist_1,
+    time = model_time # can also be state_time
   ),
   p2 = km_medium %>%
     project(fitcov_medium, at = 730) %>%
-    eval_surv(markov_cycle, cycle_length = 365) # time is in days in fitw, in years in markov_cycle
+    compute_surv(
+      time = model_time,
+      cycle_length = 365  # time is in days in km_medium, in years in model_time
+    )
 )
 
 tm <- define_transition(
@@ -175,20 +189,21 @@ resTM <- run_model(
   stratTM,
   cycles = 10
 )
+
 ```
 
-```{r fig.width=6}
+```{r fig.width=6, fig.height=4}
 plot(resTM)
 ```
 
 A partitioned survival model can also be computed:
 
-```{r warning=FALSE}
+```{r warning=FALSE, fig.width=6, fig.height=4}
 ps <- define_part_surv(
-  pfs = surv_dist1,
-  os = km1 %>%
-    project(fitw, at = 730),
-     cycle_length = c(1, 365) # 1 for pfs, 365 for os
+  pfs = surv_dist_1,
+  os  = km_1 %>%
+    project(fit_w, at = 730),
+  cycle_length = c(1, 365) # 1 for pfs, 365 for os
 )
 
 stratPS <- define_strategy(
@@ -200,8 +215,6 @@ resPS <- run_model(
   stratPS,
   cycles = 10
 )
-```
 
-```{r fig.width=6}
 plot(resPS)
 ```

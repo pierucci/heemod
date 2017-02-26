@@ -7,20 +7,22 @@
 project(..., at)
 }
 \arguments{
-\item{...}{Survival distributions to be used in the projection.}
+\item{...}{Survival distributions to be used in the
+projection.}
 
-\item{at}{A vector of times corresponding to the cut point(s) to be used.}
+\item{at}{A vector of times corresponding to the cut
+point(s) to be used.}
 }
 \value{
 A \code{surv_projection} object.
 }
 \description{
-Project survival from a survival distribution using one or survival
-distributions using the specified cut points.
+Project survival from a survival distribution using one
+or survival distributions using the specified cut points.
 }
 \examples{
 
-dist1 = define_survival(distribution = "exp", rate = .5)
-dist2 = define_survival(distribution = "gompertz", rate = .5, shape = 1)
-proj_dist = project(dist1, dist2, at=20)
+dist1 <- define_survival(distribution = "exp", rate = .5)
+dist2 <- define_survival(distribution = "gompertz", rate = .5, shape = 1)
+proj_dist <- project(dist1, dist2, at=20)
 }

@@ -6,7 +6,8 @@ Authors@R: c(
     person("Kevin", "Zarca", email = "kevin.zarca@urc-eco.fr", role = "aut"),
     person("Matthew", "Wiener", role = "ctb"),
     person("Zdenek", "Kabat", role = "ctb"),
-    person("Vojtech", "Filipec", role = "ctb")
+    person("Vojtech", "Filipec", role = "ctb"),
+	  person("Jordan", "Amdahl", role=c("ctb"))
     )
 Description: Health Economic Evaluation Modelling:
     decision trees and cohort simulations. Provides a simple

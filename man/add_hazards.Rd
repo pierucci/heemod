@@ -7,18 +7,20 @@
 add_hazards(...)
 }
 \arguments{
-\item{...}{Survival distributions to be used in the projection.}
+\item{...}{Survival distributions to be used in the
+projection.}
 }
 \value{
 A \code{surv_add_haz} object.
 }
 \description{
-Get a survival distribution reflecting the independent hazards from two or
-more survival distributions.
+Get a survival distribution reflecting the independent
+hazards from two or more survival distributions.
 }
 \examples{
 
-dist1 = define_survival(distribution = "exp", rate = .125)
-dist2 = define_survival(distribution = "weibull", shape = 1.2, scale = 50)
-combined_dist = add_hazards(dist1, dist2)
+dist1 <- define_survival(distribution = "exp", rate = .125)
+dist2 <- define_survival(distribution = "weibull", shape = 1.2, scale = 50)
+combined_dist <- add_hazards(dist1, dist2)
+
 }

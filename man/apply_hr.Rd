@@ -4,21 +4,22 @@
 \alias{apply_hr}
 \title{Apply a Hazard Ratio}
 \usage{
-apply_hr(dist, hr, log.hr = F)
+apply_hr(dist, hr, log_hr = FALSE)
 }
 \arguments{
 \item{dist}{A survival distribution.}
 
 \item{hr}{A hazard ratio to be applied.}
 
-\item{log.hr}{If true, the hazard ratio is exponentiated before being
-applied.}
+\item{log_hr}{If \code{TRUE}, the hazard ratio is exponentiated
+before being applied.}
 }
 \value{
 A \code{surv_ph} object.
 }
 \description{
-Proportional reduce or increase the hazard rate of a distribution.
+Proportional reduce or increase the hazard rate of a
+distribution.
 }
 \examples{
 

@@ -7,7 +7,8 @@
 pool(..., weights = 1)
 }
 \arguments{
-\item{...}{Survival distributions to be used in the projection.}
+\item{...}{Survival distributions to be used in the
+projection.}
 
 \item{weights}{A vector of weights used in pooling.}
 }
@@ -15,11 +16,13 @@ pool(..., weights = 1)
 A \code{surv_pooled} object.
 }
 \description{
-Pool a set of survival distributions using the specified weights.
+Pool a set of survival distributions using the specified
+weights.
 }
 \examples{
 
-dist1 = define_survival(distribution = "exp", rate = .5)
-dist2 = define_survival(distribution = "gompertz", rate = .5, shape = 1)
-pooled_dist = pool(dist1, dist2, weights = c(0.25, 0.75))
+dist1 <- define_survival(distribution = "exp", rate = .5)
+dist2 <- define_survival(distribution = "gompertz", rate = .5, shape = 1)
+pooled_dist <- pool(dist1, dist2, weights = c(0.25, 0.75))
+
 }

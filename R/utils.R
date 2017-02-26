@@ -392,3 +392,11 @@ to_dots <- function(x) {
   )
 }
 
+clean_factors <- function(x) {
+  for (n in names(x)) {
+    if (inherits(x[[n]], "factor")) {
+      x[[n]] <- as.character(x[[n]])
+    }
+  }
+  x
+}

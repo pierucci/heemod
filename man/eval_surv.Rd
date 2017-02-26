@@ -3,7 +3,6 @@
 \name{eval_surv}
 \alias{eval_surv}
 \alias{eval_surv_}
-\alias{eval_surv}
 \alias{eval_surv_.survfit}
 \alias{eval_surv_.flexsurvreg}
 \alias{eval_surv_.surv_model}
@@ -16,44 +15,42 @@
 \alias{eval_surv_.surv_dist}
 \title{Evaluate Survival Distributions}
 \usage{
-eval_surv_(x, cycle, cycle_length = 1, type = c("prob", "surv"), ...)
+eval_surv_(x, time, cycle_length = 1, type = c("prob", "surv"), ...)
 
-eval_surv(x, cycle, cycle_length = 1, type = c("prob", "surv"), ...)
-
-\method{eval_surv_}{survfit}(x, cycle, cycle_length = 1, type = c("prob",
+\method{eval_surv_}{survfit}(x, time, cycle_length = 1, type = c("prob",
   "surv"), ...)
 
-\method{eval_surv_}{flexsurvreg}(x, cycle, cycle_length = 1,
+\method{eval_surv_}{flexsurvreg}(x, time, cycle_length = 1, type = c("prob",
+  "surv"), ...)
+
+\method{eval_surv_}{surv_model}(x, time, cycle_length = 1, type = c("prob",
+  "surv"), ...)
+
+\method{eval_surv_}{surv_projection}(x, time, cycle_length = 1,
   type = c("prob", "surv"), ...)
 
-\method{eval_surv_}{surv_model}(x, cycle, cycle_length = 1, type = c("prob",
+\method{eval_surv_}{surv_pooled}(x, time, cycle_length = 1, type = c("prob",
   "surv"), ...)
 
-\method{eval_surv_}{surv_projection}(x, cycle, cycle_length = 1,
+\method{eval_surv_}{surv_ph}(x, time, cycle_length = 1, type = c("prob",
+  "surv"), ...)
+
+\method{eval_surv_}{surv_aft}(x, time, cycle_length = 1, type = c("prob",
+  "surv"), ...)
+
+\method{eval_surv_}{surv_po}(x, time, cycle_length = 1, type = c("prob",
+  "surv"), ...)
+
+\method{eval_surv_}{surv_add_haz}(x, time, cycle_length = 1,
   type = c("prob", "surv"), ...)
 
-\method{eval_surv_}{surv_pooled}(x, cycle, cycle_length = 1,
-  type = c("prob", "surv"), ...)
-
-\method{eval_surv_}{surv_ph}(x, cycle, cycle_length = 1, type = c("prob",
-  "surv"), ...)
-
-\method{eval_surv_}{surv_aft}(x, cycle, cycle_length = 1, type = c("prob",
-  "surv"), ...)
-
-\method{eval_surv_}{surv_po}(x, cycle, cycle_length = 1, type = c("prob",
-  "surv"), ...)
-
-\method{eval_surv_}{surv_add_haz}(x, cycle, cycle_length = 1,
-  type = c("prob", "surv"), ...)
-
-\method{eval_surv_}{surv_dist}(x, cycle, cycle_length = 1, type = c("prob",
+\method{eval_surv_}{surv_dist}(x, time, cycle_length = 1, type = c("prob",
   "surv"), ...)
 }
 \arguments{
 \item{x}{A survival distribution object}
 
-\item{cycle}{The \code{model_time} or \code{state_time} for which
+\item{time}{The \code{model_time} or \code{state_time} for which
 to predict.}
 
 \item{cycle_length}{The value of a Markov cycle in
@@ -73,7 +70,8 @@ Generate either survival probabilities or conditional
 probabilities of event for each model cycle.
 }
 \details{
-The results of \code{eval_surv} are memoised for
+The results of \code{compute_surv()} are memoised for
 \code{options("heemod.memotime")} (default: 1 hour) to
 increase resampling performance.
 }
+\keyword{internal}
