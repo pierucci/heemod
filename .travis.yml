@@ -8,10 +8,6 @@ r:
   - release
   - devel
 
-r_github_packages:
-  - hadley/devtools
-  - cran/survival
-
 branches:
   only:
     - master
