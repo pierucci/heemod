@@ -139,7 +139,7 @@ apply_hr = function(dist, hr, log.hr = F) {
 #' @param log.af If true, the accleration factor is exponentiated before being
 #' applied.
 #'   
-#' @return A `surv_ph` object.
+#' @return A `surv_aft` object.
 #' @export
 #' 
 #' @examples
@@ -172,7 +172,7 @@ apply_af = function(dist, af, log.af = F) {
 #' @param or An odds ratio to be applied.
 #' @param log.or If true, the odds ratio is exponentiated before being applied.
 #'   
-#' @return A `surv_ph` object.
+#' @return A `surv_po` object.
 #' @export
 #' 
 #' @examples
@@ -220,37 +220,6 @@ add_hazards = function(...) {
       dists = dots
     ),
     class = "surv_add_haz"
-  )
-}
-
-#' Get the Maximum Hazards
-#' 
-#' Get a survival distribution reflecting the maximum of the hazard rates
-#' in each cycle between two or more survival distributions.
-#' 
-#' @param ... Survival distributions to be used in the projection.
-#'   
-#' @return A `surv_max_haz` object.
-#' @export
-#' 
-#' @examples
-#' 
-#' gp_mortality = define_survival(distribution = "exp", rate = .001)
-#' disease_mortality = define_survival(
-#'   distribution = "weibull",
-#'   shape = 0.5,
-#'   scale = 50
-#' )
-#' combined_dist = maximize_hazards(disease_mortality, gp_mortality)
-maximize_hazards = function(...) {
-  
-  dots = list(...)
-  
-  structure(
-    list(
-      dists = dots
-    ),
-    class = "surv_max_haz"
   )
 }
 

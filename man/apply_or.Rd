@@ -14,7 +14,7 @@ apply_or(dist, or, log.or = F)
 \item{log.or}{If true, the odds ratio is exponentiated before being applied.}
 }
 \value{
-A \code{surv_ph} object.
+A \code{surv_po} object.
 }
 \description{
 Proportionally increase or reduce the odds of an event of a survival

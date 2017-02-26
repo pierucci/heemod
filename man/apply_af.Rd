@@ -15,7 +15,7 @@ apply_af(dist, af, log.af = F)
 applied.}
 }
 \value{
-A \code{surv_ph} object.
+A \code{surv_aft} object.
 }
 \description{
 Proportionally increase or reduce the time to event of a survival

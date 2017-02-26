@@ -365,6 +365,36 @@ test_that(
       
       expect_equal(exp_sur5, exp_surv6)
       
+      # Should also work if cycle doesn't start at 1
+      exp_sur7 = fs4 %>%
+        set_covariates(group="Poor") %>%
+        eval_surv(cycle=seq(from=10,to=20,by=1), cycle_length=100)
+      exp_surv8 = fs4 %>%
+        set_covariates(group="Poor") %>%
+        pool(fs4 %>% set_covariates(group="Poor"), weights = c(0.5, 0.5)) %>%
+        apply_hr(1) %>%
+        project(fs4 %>% set_covariates(group="Poor"), at = 89.1) %>%
+        apply_af(1) %>%
+        apply_or(1) %>%
+        eval_surv(cycle=seq(from=10,to=20,by=1), cycle_length=100)
+      
+      expect_equal(exp_sur7, exp_surv8)
+      
+      # Should also work for length 1 input
+      exp_sur9 = fs4 %>%
+        set_covariates(group="Poor") %>%
+        eval_surv(cycle=25, cycle_length=365.25/7)
+      exp_surv10 = fs4 %>%
+        set_covariates(group="Poor") %>%
+        pool(fs4 %>% set_covariates(group="Poor"), weights = c(0.5, 0.5)) %>%
+        apply_hr(1) %>%
+        project(fs4 %>% set_covariates(group="Poor"), at = 89.1) %>%
+        apply_af(1) %>%
+        apply_or(1) %>%
+        eval_surv(cycle=25, cycle_length=365.25/7)
+      
+      expect_equal(exp_sur9, exp_surv10)
+      
       # Adding exponential hazards to itself same as applying a HR of 2
       exp_double1_prob = fs4 %>%
         set_covariates(group="Medium") %>%
@@ -388,29 +418,6 @@ test_that(
       
       expect_equal(exp_double1_prob, exp_double2_prob)
       expect_equal(exp_double1_surv, exp_double2_surv)
-      
-      # Maxing hazards of two exponentials same as using
-      # the one w/ greater hazards
-      exp_max1_prob = fs4 %>%
-        set_covariates(group="Poor") %>%
-        eval_surv(cycle=seq_len(10), cycle_length=200)
-      
-      exp_max2_prob = fs4 %>%
-        set_covariates(group="Good") %>%
-        maximize_hazards(fs4 %>% set_covariates(group="Poor")) %>%
-        eval_surv(cycle=seq_len(10), cycle_length=200)
-      
-      exp_max1_surv = fs4 %>%
-        set_covariates(group="Poor") %>%
-        eval_surv(cycle=seq_len(10), cycle_length=200, type="surv")
-      
-      exp_max2_surv = fs4 %>%
-        set_covariates(group="Good") %>%
-        maximize_hazards(fs4 %>% set_covariates(group="Poor")) %>%
-        eval_surv(cycle=seq_len(10), cycle_length=200, type="surv")
-      
-      expect_equal(exp_max1_prob, exp_max2_prob)
-      expect_equal(exp_max1_surv, exp_max2_surv)
       
       # Running a flexsurvreg w/o specifying covariates should
       # be the same as a wieghted average of the covariate levels
