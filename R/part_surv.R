@@ -125,9 +125,9 @@ eval_transition.part_surv <- function(x, parameters) {
     data = dplyr::slice(parameters, 1)
   )
   
-  pfs_surv <- eval_surv(
+  pfs_surv <- compute_surv(
     pfs_dist,
-    cycle = parameters$markov_cycle,
+    time = parameters$markov_cycle - 1,
     cycle_length = x$cycle_length[1],
     type = "surv"
   )
@@ -137,9 +137,9 @@ eval_transition.part_surv <- function(x, parameters) {
     data = dplyr::slice(parameters, 1)
   )
   
-  os_surv <- eval_surv(
+  os_surv <- compute_surv(
     os_dist,
-    cycle = parameters$markov_cycle,
+    time = parameters$markov_cycle - 1,
     cycle_length = x$cycle_length[2],
     type = "surv"
   )
