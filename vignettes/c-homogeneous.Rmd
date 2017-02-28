@@ -176,7 +176,7 @@ By default models are run for 1000 persons starting in the first state (here sta
 
 ## Result interpretation
 
-Strategy values can then be compared with `summary()` (optionnaly net monetary benefits can be calculated with the `threshold` option):
+Strategy values can then be compared with `summary()` (optionally net monetary benefits can be calculated with the `threshold` option):
 
 ```{r}
 summary(res_mod,
