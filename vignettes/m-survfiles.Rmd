@@ -1,0 +1,99 @@
+---
+title: "Survival models"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true 
+vignette: >
+  %\VignetteIndexEntry{Survival models}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+
+```{r setup, include=FALSE}
+library(heemod)
+knitr::opts_chunk$set(echo = TRUE)
+library(flexsurv)
+```
+
+Running an oncology cost/benefit model in heemod involves several steps:
+
+Fit available survival data under different distributional assumptions.
+
+Examine the survival fits and decide which ones are most appropriate to use in the cost/benefit analysis.
+
+Run the cost/benefit model in heemod with the chosen survival fits.
+
+This document will demonstrate how to accomplish those steps in heemod.
+
+```{r fits}
+base_dir <- system.file("tabular\\surv", package = "heemod")
+spec_file <- "example_oncSpecs_nomatrix.csv"
+```
+
+General information on the files needed to run heemod from tabular input can be found in this vignette from the package, and in the others that can be found here. Here we will deal only with those aspects specific to fitting survival curves from data and using them to run economic models.
+
+The source of the survival data, as well as the names and locations of the resulting fits, are specified in a file with the following rows:
+
+name | meaning
+-------------------------|------------------------------------------------------------------
+survivalDataDirectory	   | the subdirectory in which survival data are kept
+surv_data_file_suffix	   | the name of the file in survivalDataDirectory in which the survival data for either OS or PFS (depending on the suffix) will be found
+fit_name_suffix	         | the name of the R object in which to save the fits
+fit_file_suffix	         | the file in which to save the fits
+
+In this case, suffix must contain either “pfs” or “os” (not case sensitive), and one set of each must be included. The suffixes determine which rows go together. Here’s an example of such a file, pointing to an example using randomly-generated data and two fake treatments, “A” and “B”:
+
+```{r sim-data}
+surv_inf_file_name <- "survival_info.csv"
+full_path <- file.path(base_dir, surv_inf_file_name)
+surv_info <- heemod:::read_file(full_path)
+print(surv_info)
+```
+
+Here the fit names are not simply “OS.fit” and “PFS.fit”, but “OS2.fit” and “PFS2.fit”, a change that merely demonstrates that we can use different names if we choose.
+
+To actually create the fits, we use the function partitioned_survival_from_tabular. Here we use save_fits = TRUE; it is also possible to set  save_fits = FALSE to obtain the fits in R without saving them to a file. The specification file will be used again to run the economic model, but to create the fits it needs only the survivalInformation field. If desired, the rest of the fields can be added later.
+
+The distributions currently used for survival fits are exponential, Weibull, lognormal, gamma, Gompertz, and generalized gamma. If fitting fails for some distribution, `heemod` will note the error and continue, so results will be available for the other distributional assumptions.
+
+```{r make-fits}
+temp1 <- survival_fits_from_tabular(base_dir, spec_file, 
+                                    save_fits = TRUE)[[1]]
+```
+
+Fit quality can be examined using the negative log-likelihood, the Aikake and Bayes information critera, and various kinds of graphs. (`sapply_matrix` returns a matrix of the results of `sapply` with the same dimension and dimension names as the original matrix.)
+
+```{r}
+names(temp1)
+```
+
+```{r}
+sapply_matrix(temp1$OS2.fit, "[[", "AIC")
+```
+`heemod` does not automatically choose a distribution to use in the survival model - the modeler must choose the most appropriate distribution for each set of survival data.
+
+
+When a modeler has decided to run the economic analysis using a particular set of fits, the specification must be included in the reference file as the “use_fit” element. “use_fit” is a list with one element for each strategy in the analysis. Each element of the list is itself a list, with two elements, “psf” and “os”. And each of those elements contains the name of a distribution. For example, if
+
+```{r}
+choices <- list(A = list(os = "exp", pfs = "gamma"),
+                B = list(os = "exp", pfs = "lnorm"))
+```
+then the analysis will use an exponential survival model for overall survival for both strategies, but will use the gamma survival model for progression-free survival for A, and a lognormal survival model for progression-free survival for B.
+
+In this example, we’ve used a different choice. Here is the use_fits element of this file:
+```{r}
+ref <- heemod:::read_file(file.path(base_dir, spec_file))
+ref[ref$data == "use_fits", "file"]
+```
+
+```{r}
+surv_example <- run_model_tabular(base_dir, spec_file,
+                                  run_psa = FALSE, run_demo = FALSE,
+                                  save = FALSE, overwrite= FALSE)
+```
+Note that we got a warning here because partitioned survival models do not use the “method” element.
+
+The same specification file that was used for survival_fits_from_tabular can be used for run_model_tabular. run_model_tabular uses the information in the specification file to pick up the desired fits from those created earlier. No survival fitting happens when running  run_model_tabular, only selection.
