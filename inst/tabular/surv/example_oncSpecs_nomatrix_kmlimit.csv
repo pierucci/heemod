@@ -1,7 +1,7 @@
 data,file
 state,example_oncStates.csv
 parameters,example_oncParams_nomatrix.csv
-survivalInformation,survival_info.csv
+tm,survival_info.csv
 ,
 output,output-nomatrix
 options,example_oncOptions_kmlimit.csv
