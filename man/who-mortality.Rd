@@ -2,11 +2,11 @@
 % Please edit documentation in R/gho_mortality.R
 \name{who-mortality}
 \alias{who-mortality}
-\alias{get_who_mr_}
+\alias{get_who_mr_memo}
 \alias{get_who_mr}
 \title{Use WHO Mortality Rate}
 \usage{
-get_who_mr_(age, sex = NULL, country, year = "latest", pool = FALSE,
+get_who_mr_memo(age, sex = NULL, country, year = "latest", pool = FALSE,
   local = FALSE)
 
 get_who_mr(age, sex = NULL, country, year = "latest", pool = FALSE,
