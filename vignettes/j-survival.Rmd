@@ -10,7 +10,6 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-
 ```{r setup, include=FALSE}
 library(heemod)
 ```
@@ -146,17 +145,29 @@ fit_cov %>%
   compute_surv(time = 1:5)
 ```
 
+For the example we define a simple model with only 1 strategy.
 
-For the example we define a simple model with only 1 strategy.   First we
-use the partitioned survival framework:
-
-```{r warning=FALSE, fig.width=6, fig.height=4}
-ps <- define_part_surv(
-  pfs = surv_dist_1,
-  os  = km_medium %>%
-    project(fitcov_medium, at = 730),
-  cycle_length = c(1, 365) # 1 for pfs, 365 for os
+```{r warning=FALSE, fig.width=6, fig.height=6}
+param <- define_parameters(
+  p1 = compute_surv(
+    surv_dist_1,
+    time = model_time # can also be state_time
+  ),
+  p2 = km_medium %>%
+    project(fitcov_medium, at = 730) %>%
+    compute_surv(
+      time = model_time,
+      cycle_length = 365  # time is in days in km_medium, in years in model_time
+    )
 )
+
+tm <- define_transition(
+  C, p1, 0,
+  0, C,  p2,
+  0, 0,  C
+)
+
+plot(tm)
 
 sA <-  define_state(
   cost = 10, ut = 1
@@ -166,6 +177,33 @@ sB <-  define_state(
 )
 sC <-  define_state(
   cost = 0, ut = 0
+)
+
+stratTM <- define_strategy(
+  transition = tm,
+  A = sA, B = sB, C = sC
+)
+
+resTM <- run_model(
+  parameters = param,
+  stratTM,
+  cycles = 10
+)
+
+```
+
+```{r fig.width=6, fig.height=4}
+plot(resTM)
+```
+
+A partitioned survival model can also be computed:
+
+```{r warning=FALSE, fig.width=6, fig.height=4}
+ps <- define_part_surv(
+  pfs = surv_dist_1,
+  os  = km_1 %>%
+    project(fit_w, at = 730),
+  cycle_length = c(1, 365) # 1 for pfs, 365 for os
 )
 
 stratPS <- define_strategy(
@@ -179,76 +217,4 @@ resPS <- run_model(
 )
 
 plot(resPS)
-```
-
-In this case, we can define the same model using a Markov transition matrix.
-Note that we will run the Markov model with `method = "end"` to match the
-method used by partitioned survival models.
-
-```{r warning=FALSE, fig.width=6, fig.height=6}
-param <- define_parameters(
-  p1 = compute_surv(
-    surv_dist_1,
-    time = model_time # can also be state_time
-  ),
-  p2 = compute_surv(
-    km_medium %>% project(fitcov_medium, at = 730),
-    time = model_time,
-    cycle_length = 365 # time is in days in km_medium, in years in model_time
-  )
-)
-
-tm <- define_transition(
-  1 - p1, p1 - p2, p2,
-  0, 1 - p2,  p2,
-  0, 0,  C
-)
-
-plot(tm)
-
-stratTM <- define_strategy(
-  transition = tm,
-  A = sA, B = sB, C = sC
-)
-
-resTM <- run_model(
-  parameters = param,
-  stratTM,
-  cycles = 10,
-  method = "end"
-)
-```
-
-Note that we set method equal to "end" here, to match the method used by
-partitioned survival model.
-```{r fig.width=6, fig.height=4}
-plot(resTM)
-```
-
-We can also define different models, for example, under the assumption
-that state C can be reached only from state B:
-```{r warning=FALSE, fig.width=6, fig.height=6}
-tm2 <- define_transition(
-  C, p1, 0,
-  0, C,  p2,
-  0, 0,  C
-)
-
-plot(tm2)
-stratTM2 <- define_strategy(
-  transition = tm2,
-  A = sA, B = sB, C = sC
-)
-```
-```{r warning = FALSE, fig.width = 6, fig.height = 4}
-resTM2 <- run_model(
-  parameters = param,
-  stratTM2,
-  cycles = 10,
-  method = "end"
-)
-```
-
-```{r fig.width=6, fig.height = 4}
-plot(resTM2)
 ```
