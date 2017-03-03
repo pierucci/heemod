@@ -310,67 +310,6 @@ for (i in 1:length(dist_fit))
         expect_gt(upper - true_val, 0)
       }  # end loop around different parameters
       
-      ## simulate Markov model and compare against survival fit data
-      #loop over km_pred definitions
-      km_until_vals <- list(0, 5000)
-      for (km_until in km_until_vals)
-      {
-        #define parameters for Markov model
-        param <- 
-          define_parameters(tr = get_probs_from_surv(fit, 
-                                                     km_limit = km_until, 
-                                                     cycle = markov_cycle))
-        
-        #define transition matrix for Markov model
-        mat_trans <- define_transition(state_names = c("Alive", "Dead"),
-                                       1 - tr, tr,
-                                       0, 1)
-        
-        #define Markov model with transition matrix and state assignments
-        mod <- define_strategy(
-          transition = mat_trans,
-          Alive = define_state(utility = 0, cost = 0),
-          Dead = define_state(utility = 0, cost = 0)
-        )
-        
-        #run model over the same time period a survival simulation data (365 days)
-        res_mod <- run_model(
-          mod = mod,
-          parameters = param,
-          cycles = max.time + 1,
-          cost = cost,
-          effect = utility,
-          method = "end"
-        )
-        
-        #get predicted results from either KM estimate or fitted distribution
-        preds <- rep(NA, max.time + 1)
-        if(km_until > 0)
-          km_pred <-
-          data.frame(time = c(0, km_until),
-                     method = c("km", "pred"))
-        else
-          km_pred <- data.frame(time = 0, method = "pred")
-        
-        type <- look_up(km_pred,
-                        time = c(1:(max.time + 1)),
-                        bin = "time",
-                        value = "method")
-        use_km <- type %in% c("KM", "km")
-        use_pred <- type == "pred"
-        if (any(use_km)) {
-          preds[use_km] = km$surv[use_km]
-        }
-        if (any(use_pred)) {
-          preds[use_pred] = fit_pred[use_pred]
-        }
-        
-        #get counts from Markov model simulation
-        mm <-  subset(get_counts(res_mod), state_names == "Alive")$count / 1000
-        
-        #expect equal
-        expect_equal(preds, mm)
-      }
     }  # end loop around n_patients
   })
 }  # end loop around distributions
