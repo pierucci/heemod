@@ -23,7 +23,7 @@ A \code{surv_projection} object.
 }
 \description{
 Project survival from a survival distribution using one
-or survival distributions using the specified cut points.
+or more survival distributions using the specified cut points.
 }
 \examples{
 

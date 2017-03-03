@@ -17,8 +17,8 @@
 #' things) the user to check whether the calibration gets 
 #' the same results from different starting points.
 #' 
-#' Multi-dimensionnal problems are optimized with 
-#' [optimx::optimx()], 1-dimensionnal problems with 
+#' Multi-dimensional problems are optimized with 
+#' [optimx::optimx()], 1-dimensional problems with 
 #' [stats::optimise()] (except when a `method` is given).
 #' `convcode` is always `NA` with [stats::optimise()].
 #' 

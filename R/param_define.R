@@ -5,7 +5,7 @@
 #' time dependent by using the `markov_cycle` 
 #' parameter.
 #' 
-#' Parameters are defined sequencially, parameters defined 
+#' Parameters are defined sequentially, parameters defined 
 #' earlier can be called in later expressions.
 #' 
 #' Vector length should not be explicitly set, but should 

@@ -53,8 +53,8 @@ Passing in multiple initial values allows (among other
 things) the user to check whether the calibration gets
 the same results from different starting points.
 
-Multi-dimensionnal problems are optimized with
-\code{\link[optimx:optimx]{optimx::optimx()}}, 1-dimensionnal problems with
+Multi-dimensional problems are optimized with
+\code{\link[optimx:optimx]{optimx::optimx()}}, 1-dimensional problems with
 \code{\link[stats:optimise]{stats::optimise()}} (except when a \code{method} is given).
 \code{convcode} is always \code{NA} with \code{\link[stats:optimise]{stats::optimise()}}.
 

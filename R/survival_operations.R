@@ -1,7 +1,7 @@
 #' Project Beyond a Survival Distribution with Another
 #' 
 #' Project survival from a survival distribution using one
-#' or survival distributions using the specified cut points.
+#' or more survival distributions using the specified cut points.
 #' 
 #' @param ... Survival distributions to be used in the
 #'   projection.
@@ -313,3 +313,57 @@ set_covariates_ <- function(dist, covariates, data = NULL) {
     class = "surv_model"
   )
 }
+
+#' Plot general survival models
+#'
+#' @param x a survival object of class `surv_aft`, `surv_add_haz`,
+#'   `surv_ph`, `surv_po`, `surv_model`, `surv_pooled`, or `surv_projection`.
+#' @param times Times at which to evaluate and plot the survival object.
+#' @param type either `surv` (the default) or `prob`, depending on whether
+#'   you want to plot survival from the start or conditional probabilities.
+#' @param join_col,join_pch,join_size graphical parameters for points
+#'   marking points at which different survival functions are joined.
+#' @param ... additional arguments to pass to `ggplot2` functions.
+#'   
+#' @details The function currently only highlights join points that are at
+#'   the top level; that is, for objects with class `surv_projection`.
+#'   
+#'   To avoid plotting the join points, set join_size to a negative number.  
+#'
+#' @return a [ggplot2::ggplot()] object.
+#' @export
+#'
+plot.surv_obj <- 
+  function(x, times, type = c("surv", "prob"), 
+           join_col = "red", join_pch = 20, join_size = 3, 
+           ...){
+    type <- match.arg(type)
+    y_ax_label <- c(surv = "survival", prob = "probability")[type]
+    res1 <- data.frame(times = times,
+                       res = compute_surv(x, times, ..., type = type))
+    
+    this_plot <- 
+      ggplot2::ggplot(res1, ggplot2::aes(x = times, y = res)) + 
+      ggplot2::geom_line() + 
+      ggplot2::scale_x_continuous(name = "time") + 
+      ggplot2::scale_y_continuous(name = y_ax_label)
+    
+    if("at" %in% names(x))
+      this_plot <- this_plot +
+      ggplot2::geom_point(data = dplyr::filter(res1, times == x$at),
+                          ggplot2::aes(x = times, y = res),
+                          pch = join_pch, size = join_size, 
+                          col = join_col)
+    
+    this_plot
+    
+  }
+
+plot.surv_projection <- plot.surv_obj
+plot.surv_ph <- plot.surv_obj
+plot.surv_add_haz <- plot.surv_obj
+plot.surv_model <- plot.surv_obj
+plot.surv_po <- plot.surv_obj
+plot.surv_aft <- plot.surv_obj
+plot.surv_pooled <- plot.surv_obj
+
