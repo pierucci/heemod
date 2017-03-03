@@ -16,6 +16,11 @@ Package heemod.” _ArXiv e-prints_. R package version
   * Operations on survival functions, see `vignette("j-survival")`. Thanks to [Jordan Amdahl](https://github.com/jrdnmdhl).
   * Model calibration with `calibrate_model()`. Thanks to [Matthew Wiener](https://github.com/MattWiener).
 
+### Backend changes
+
+  * Renamed memoised functions.
+  * NSE aliases (`*_`) to survival operation functions.
+
 ## heemod 0.8.0
 
 ### Breaking changes

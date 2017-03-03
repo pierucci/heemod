@@ -5,6 +5,7 @@
 #' 
 #' @param ... Survival distributions to be used in the
 #'   projection.
+#' @param dots Used to work around non-standard evaluation.
 #' @param at A vector of times corresponding to the cut
 #'   point(s) to be used.
 #'   
@@ -18,6 +19,13 @@
 #' proj_dist <- project(dist1, dist2, at=20)
 project <- function(..., at) {
   dots <- list(...)
+  
+  project_(dots, at)
+}
+
+#' @export
+#' @rdname project
+project_ <- function(dots, at) {
   
   stopifnot(
     all(at > 0),
@@ -75,6 +83,7 @@ project_fn <- function(dist1, dist2_list) {
 #' 
 #' @param ... Survival distributions to be used in the
 #'   projection.
+#' @param dots Used to work around non-standard evaluation.
 #' @param weights A vector of weights used in pooling.
 #'   
 #' @return A `surv_pooled` object.
@@ -86,9 +95,16 @@ project_fn <- function(dist1, dist2_list) {
 #' dist2 <- define_survival(distribution = "gompertz", rate = .5, shape = 1)
 #' pooled_dist <- pool(dist1, dist2, weights = c(0.25, 0.75))
 #' 
-pool <- function(..., weights=1) {
+pool <- function(..., weights = 1) {
   
   dots <- list(...)
+  
+  pool_(dots, weights)
+}
+
+#' @export
+#' @rdname pool
+pool_ <- function(dots, weights = 1) {
   
   stopifnot(
     all(weights > 0),
@@ -215,6 +231,7 @@ apply_or = function(dist, or, log_or = FALSE) {
 #' 
 #' @param ... Survival distributions to be used in the
 #'   projection.
+#' @param dots Used to work around non-standard evaluation.
 #'   
 #' @return A `surv_add_haz` object.
 #' @export
@@ -229,6 +246,13 @@ add_hazards <- function(...) {
   
   dots <- list(...)
   
+  add_hazards_(dots)
+}
+
+#' @export
+#' @rdname add_hazards
+add_hazards_ <- function(dots) {
+  
   structure(
     list(
       dists = dots
@@ -239,17 +263,19 @@ add_hazards <- function(...) {
 
 #' Set Covariates of a Survival Distribution
 #' 
-#' Set the covariate levels of a survival model to be
+#' Set the covariate levels of a survival model to be 
 #' represented in survival projections.
 #' 
 #' @param dist a survfit or flexsurvreg object
-#' @param ... Covariate values representing the group for
-#'   which survival probabilities will be generated when
+#' @param ... Covariate values representing the group for 
+#'   which survival probabilities will be generated when 
 #'   evaluated.
-#' @param data A an optional data frame representing
-#'   multiple sets of covariate values for which survival
+#' @param covariates Used to work around non-standard
+#'   evaluation.
+#' @param data A an optional data frame representing 
+#'   multiple sets of covariate values for which survival 
 #'   probabilities will be generated. Can be used to 
-#'   generate aggregate survival for a heterogenous set of
+#'   generate aggregate survival for a heterogenous set of 
 #'   subjects.
 #'   
 #' @return A `surv_model` object.
@@ -267,9 +293,15 @@ add_hazards <- function(...) {
 #' mixed_model <- set_covariates(fs1, data = cohort)
 #' 
 set_covariates <- function(dist, ..., data = NULL) {
+  covariates <- data.frame(...)
+  
+  set_covariates_(dist, covariates, data)
+}
+
+set_covariates_ <- function(dist, covariates, data = NULL) {
   
   data <- rbind(
-    data.frame(...),
+    covariates,
     data
   )
   
