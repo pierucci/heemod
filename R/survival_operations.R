@@ -298,6 +298,8 @@ set_covariates <- function(dist, ..., data = NULL) {
   set_covariates_(dist, covariates, data)
 }
 
+#' @export
+#' @rdname set_covariates
 set_covariates_ <- function(dist, covariates, data = NULL) {
   
   data <- rbind(
@@ -333,31 +335,30 @@ set_covariates_ <- function(dist, covariates, data = NULL) {
 #' @return a [ggplot2::ggplot()] object.
 #' @export
 #'
-plot.surv_obj <- 
-  function(x, times, type = c("surv", "prob"), 
-           join_col = "red", join_pch = 20, join_size = 3, 
-           ...){
-    type <- match.arg(type)
-    y_ax_label <- c(surv = "survival", prob = "probability")[type]
-    res1 <- data.frame(times = times,
-                       res = compute_surv(x, times, ..., type = type))
-    
-    this_plot <- 
-      ggplot2::ggplot(res1, ggplot2::aes(x = times, y = res)) + 
-      ggplot2::geom_line() + 
-      ggplot2::scale_x_continuous(name = "time") + 
-      ggplot2::scale_y_continuous(name = y_ax_label)
-    
-    if("at" %in% names(x))
-      this_plot <- this_plot +
-      ggplot2::geom_point(data = dplyr::filter(res1, times == x$at),
-                          ggplot2::aes(x = times, y = res),
-                          pch = join_pch, size = join_size, 
-                          col = join_col)
-    
-    this_plot
-    
-  }
+plot.surv_obj <- function(x, times, type = c("surv", "prob"), 
+                          join_col = "red", join_pch = 20,
+                          join_size = 3, ...){
+  type <- match.arg(type)
+  y_ax_label <- c(surv = "survival", prob = "probability")[type]
+  res1 <- data.frame(times = times,
+                     res = compute_surv(x, times, ..., type = type))
+  
+  this_plot <- 
+    ggplot2::ggplot(res1, ggplot2::aes_string(x = "times", y = "res")) + 
+    ggplot2::geom_line() + 
+    ggplot2::scale_x_continuous(name = "time") + 
+    ggplot2::scale_y_continuous(name = y_ax_label)
+  
+  if("at" %in% names(x))
+    this_plot <- this_plot +
+    ggplot2::geom_point(data = dplyr::filter_(res1, ~ times == x$at),
+                        ggplot2::aes_string(x = "times", y = "res"),
+                        pch = "join_pch", size = "join_size", 
+                        col = "join_col")
+  
+  this_plot
+  
+}
 
 plot.surv_projection <- plot.surv_obj
 plot.surv_ph <- plot.surv_obj
