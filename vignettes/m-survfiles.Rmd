@@ -78,15 +78,17 @@ sapply_matrix(temp1$OS2.fit, "[[", "AIC")
 When a modeler has decided to run the economic analysis using a particular set of fits, the specification must be included in the reference file as the “use_fit” element. “use_fit” is a list with one element for each strategy in the analysis. Each element of the list is itself a list, with two elements, “psf” and “os”. And each of those elements contains the name of a distribution. For example, if
 
 ```{r}
-choices <- list(A = list(os = "exp", pfs = "gamma"),
+use_fits <- list(A = list(os = "exp", pfs = "gamma"),
                 B = list(os = "exp", pfs = "lnorm"))
 ```
 then the analysis will use an exponential survival model for overall survival for both strategies, but will use the gamma survival model for progression-free survival for A, and a lognormal survival model for progression-free survival for B.
 
+The same specification file that was used for survival_fits_from_tabular can be used for run_model_tabular. run_model_tabular uses the information in the specification file to pick up the desired fits from those created earlier. No survival fitting happens when running  run_model_tabular, only selection.  The selection is governed by the `use_fits` element of the reference file.
+
 In this example, we’ve used a different choice. Here is the use_fits element of this file:
 ```{r}
 ref <- heemod:::read_file(file.path(base_dir, spec_file))
-ref[ref$data == "use_fits", "file"]
+eval(parse(text = ref[ref$data == "use_fits", "file"]))
 ```
 
 ```{r}
@@ -95,5 +97,9 @@ surv_example <- run_model_tabular(base_dir, spec_file,
                                   save = FALSE, overwrite= FALSE)
 ```
 Note that we got a warning here because partitioned survival models do not use the “method” element.
+But the model has run as requested:
+```{r fig.width=8, fig.height=5}
+plot(surv_example$model_runs)
+```
 
-The same specification file that was used for survival_fits_from_tabular can be used for run_model_tabular. run_model_tabular uses the information in the specification file to pick up the desired fits from those created earlier. No survival fitting happens when running  run_model_tabular, only selection.
+
