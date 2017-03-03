@@ -40,7 +40,19 @@ reference:
   - title: Survival data
     contents:
     - define_survival
-    - get_probs_from_surv
+    - define_spline_survival
+    - compute_surv
+    - apply_af
+    - apply_hr
+    - apply_or
+    - add_hazards
+    - pool
+    - project
+    - set_covariates
+  - title: Calibration
+    contents:
+    - calibrate_model
+    - define_calibration_fn
   - title: Convenience functions
     contents:
     - combine_probs
@@ -58,7 +70,7 @@ reference:
     - get_code
     - heemod
     - run_model_tabular
-    
+
 articles:
   - title: Introduction
     contents:
@@ -80,4 +92,4 @@ articles:
     contents:
     - h-tabular
     - i-reproduction
-    
+    - k-calibration

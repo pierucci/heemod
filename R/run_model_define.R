@@ -235,7 +235,8 @@ run_model_ <- function(uneval_strategy_list,
       ce = ce,
       root_strategy = root_strategy,
       central_strategy = central_strategy,
-      noncomparable_strategy = noncomparable_strategy
+      noncomparable_strategy = noncomparable_strategy,
+      state_time_limit = state_time_limit
     ),
     class = c("run_model", class(res))
   )
@@ -433,6 +434,14 @@ get_ce <- function(x) {
   x$ce
 }
 
+get_ce_cost <- function(x) {
+  get_ce(x)[[1]]
+}
+
+get_ce_effect <- function(x) {
+  get_ce(x)[[2]]
+}
+
 get_parameters <- function(x) {
   x$parameters
 }
@@ -463,4 +472,42 @@ get_expand_limit <- function(x, strategy) {
 
 get_eval_strategy_list <- function(x) {
   x$eval_strategy_list
+}
+
+get_parameter_values <- function(x, ...) {
+  UseMethod("get_parameter_values")
+}
+
+get_parameter_values.updated_model <- function(x, ...) {
+  get_parameter_values(get_model(x), ...)
+}
+
+get_parameter_values.run_model <- function(x, parameter_names,
+                                           cycles = rep(1, length(parameter_names)),
+                                           strategy = 1) {
+  strategy <- check_strategy_index(x, strategy)
+  
+  stopifnot(
+    cycles > 0,
+    cycles <= get_cycles(x),
+    all(parameter_names %in% get_parameter_names(x))
+  )
+  
+  stats::setNames(
+    lapply(
+      seq_along(parameter_names),
+      function(i) {
+        as.vector(unlist(
+          get_eval_strategy_list(x)[[strategy]]$parameters[cycles[i], parameter_names[i]]
+        ))
+      }),
+    parameter_names)
+}
+
+get_uneval_strategy_list <- function(x) {
+  x$uneval_strategy_list
+}
+
+get_state_time_limit <- function(x) {
+  x$state_time_limit
 }

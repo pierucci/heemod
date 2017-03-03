@@ -1,12 +1,13 @@
 Package: heemod
 Title: Models for Health Economic Evaluation
-Version: 0.8.0
+Version: 0.8.0.9000
 Authors@R: c(
     person("Antoine", "Filipovic-Pierucci", email = "pierucci@gmail.com", role = c("aut", "cre")),
     person("Kevin", "Zarca", email = "kevin.zarca@urc-eco.fr", role = "aut"),
     person("Matthew", "Wiener", role = "ctb"),
     person("Zdenek", "Kabat", role = "ctb"),
-    person("Vojtech", "Filipec", role = "ctb")
+    person("Vojtech", "Filipec", role = "ctb"),
+	  person("Jordan", "Amdahl", role=c("ctb"))
     )
 Description: Health Economic Evaluation Modelling:
     decision trees and cohort simulations. Provides a simple
@@ -16,13 +17,14 @@ Description: Health Economic Evaluation Modelling:
     (non-homogeneous Markov models and semi-Markov models)
     are supported.
 Depends: R (>= 3.2.2)
-Imports: dplyr,
+Imports:  dplyr,
           ggplot2 (>= 2.2.0),
           graphics,
           grDevices,
           lazyeval,
           memoise,
           mvnfast,
+          plyr,
           pryr,
           rgho,
           stats,
@@ -34,19 +36,21 @@ License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
-Suggests: diagram,
-          flexsurv,
-          Hmisc,
-          knitr,
-          logitnorm,
-          parallel,
-          formatR,
-          mgcv,
-          readxl,
-          rmarkdown,
-          survival,
-          testthat,
-          triangle
+Suggests:
+    diagram,
+    flexsurv,
+    formatR,
+    Hmisc,
+    knitr,
+    logitnorm,
+    mgcv,
+    optimx,
+    parallel,
+    readxl,
+    rmarkdown,
+    survival,
+    testthat,
+    triangle
 URL: https://github.com/pierucci/heemod, https://pierucci.org
 BugReports: https://github.com/pierucci/heemod/issues
 Roxygen: list(markdown = TRUE)

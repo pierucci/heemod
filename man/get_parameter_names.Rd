@@ -7,14 +7,12 @@
 get_parameter_names(x)
 }
 \arguments{
-\item{x}{\code{uneval_parameters} or
-\code{eval_parameters} object.}
+\item{x}{An object with parameters.}
 }
 \value{
 A character vector of parameter names.
 }
 \description{
-Extract parameters names from an \code{uneval_parameters}
-or \code{eval_parameters} object.
+Extract parameters names.
 }
 \keyword{internal}

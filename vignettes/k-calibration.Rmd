@@ -1,0 +1,226 @@
+---
+title: "Calibrating `heemod` models"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Calibrating heemod models}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r, echo=FALSE, include=FALSE}
+library(heemod)
+```
+ 
+```{r, include = FALSE}
+param <- define_parameters(
+    age_init = 60,
+    sex = 0,
+    # age increases with cycles
+    age = age_init + markov_cycle,
+    
+    # operative mortality rates
+    omrPTHR = .02,
+    omrRTHR = .02,
+    
+    # re-revision mortality rate
+    rrr = .04,
+    
+    # parameters for calculating primary revision rate
+    cons = -5.49094,
+    ageC = -.0367,
+    maleC = .768536,
+    lambda = exp(cons + ageC * age_init + maleC * sex),
+    gamma = 1.45367786,
+    
+    rrNP1 = .260677,
+    
+    # revision probability of primary procedure
+    standardRR = 1 - exp(lambda * ((markov_cycle - 1) ^ gamma -
+                                     markov_cycle ^ gamma)),
+    np1RR = 1 - exp(lambda * rrNP1 * ((markov_cycle - 1) ^ gamma - 
+                                        markov_cycle ^ gamma)),
+    
+    # age-related mortality rate
+    sex_cat = ifelse(sex == 0, "FMLE", "MLE"),
+    mr = get_who_mr(age, sex_cat,
+                    country = "GBR", local = TRUE),
+    
+    # state values
+    u_SuccessP = .85,
+    u_RevisionTHR = .30,
+    u_SuccessR = .75,
+    c_RevisionTHR = 5294
+)
+
+mat_standard <- define_transition(
+    state_names = c(
+      "PrimaryTHR",
+      "SuccessP",
+      "RevisionTHR",
+      "SuccessR",
+      "Death"
+    ),
+    0, C, 0,          0, omrPTHR,
+    0, C, standardRR, 0, mr,
+    0, 0, 0,          C, omrRTHR+mr,
+    0, 0, rrr,        C, mr,
+    0, 0, 0,          0, 1
+)
+
+mat_np1 <- define_transition(
+    state_names = c(
+      "PrimaryTHR",
+      "SuccessP",
+      "RevisionTHR",
+      "SuccessR",
+      "Death"
+    ),
+    0, C, 0,          0, omrPTHR,
+    0, C, np1RR,      0, mr,
+    0, 0, 0,          C, omrRTHR+mr,
+    0, 0, rrr,        C, mr,
+    0, 0, 0,          0, 1
+)
+
+mod_standard <- define_strategy(
+  transition = mat_standard,
+  PrimaryTHR = define_state(
+    utility = 0,
+    cost = 394
+  ),
+  SuccessP = define_state(
+    utility = discount(u_SuccessP, .015),
+    cost = 0
+  ),
+  RevisionTHR = define_state(
+    utility = discount(u_RevisionTHR, .015),
+    cost = discount(c_RevisionTHR, .06)
+  ),
+  SuccessR = define_state(
+    utility = discount(u_SuccessR, .015),
+    cost = 0
+  ),
+  Death = define_state(
+    utility = 0,
+    cost = 0
+  )
+)
+
+mod_np1 <- define_strategy(
+  transition = mat_np1,
+  PrimaryTHR = define_state(
+    utility = 0,
+    cost = 579
+  ),
+  SuccessP = define_state(
+    utility = discount(u_SuccessP, .015),
+    cost = 0
+  ),
+  RevisionTHR = define_state(
+    utility = discount(u_RevisionTHR, .015),
+    cost = discount(c_RevisionTHR, .06)
+  ),
+  SuccessR = define_state(
+    utility = discount(u_SuccessR, .015),
+    cost = 0
+  ),
+  Death = define_state(
+    utility = 0,
+    cost = 0
+  )
+)
+
+res_mod <- run_model(
+  standard = mod_standard,
+  np1 = mod_np1,
+  parameters = param,
+  cycles = 60,
+  cost = cost,
+  effect = utility,
+  method = "end"
+)
+```
+
+The parameters for health economic models can be difficult to measure, either because they cannot be observed directly, or because appropriate data are not systematically gathered in the area of interest. When expected model results are know, _model calibration_ is the search for the appropriate value of initially unknown parameters that allow to obtain these results.
+
+For example the shape and scale parameters of a Weibull survival model can be unknown parameter values. But from the litterature we can know the expected probability of being alive at time *t*. If this probability is a result from the model, we can find the value of the shape and scale parameters that allow the model results to match, as closely as possible, the observed probability of being alive.
+
+In order to perform calibration, the user must provide:
+
+  1. A heemod object from `run_model()` of `update()`^[Calibrating models from `update()` is *extremely* time-consuming.].
+  2. The names of the parameters of the model to calibrate (the parameters for which we seek appropriate values).
+  3. A function that when applied to the model returns the result we want to match with reference values.
+  4. The target values we would like the model results to match.
+
+For this example we will use the result from the assessment of a new total hip replacement previously described in `vignette("d-non-homogeneous", "heemod")`.
+
+We will calibrate the parameters `gamma` (a Weibull survival parameter) and `rrNP1` (the relative risk associated with the new treatment), which originally have values of 1.45 and 0.26 respectively.
+
+The original number of patients with a THR revision after 20 cycles are found in this way:
+```{r message=FALSE}
+library(dplyr)
+get_counts(res_mod) %>% 
+  filter(markov_cycle == 20 & state_names == "RevisionTHR")
+```
+We want to calibrate `gamma` and `rrNP1` to obtain 3 patients for the `standard` strategy and 1 patient for the `np1` strategy at time 20. We need to define a function to extract the values we want to change from the model and return them as a numeric vector:
+```{r}
+extract_values <- function(x) {
+  filter(
+    get_counts(x),
+    markov_cycle == 20 & state_names == "RevisionTHR"
+  )$count
+}
+extract_values(res_mod)
+```
+Any arbitrary function of any model output would work, as long as it returns numeric values.
+
+A convenience function `define_calibration_fn()` exists to help easily define calibration functions.
+```{r}
+calib_fn <- define_calibration_fn(
+  type = "count",
+  strategy_names = c("standard", "np1"),
+  element_names = c("RevisionTHR", "RevisionTHR"),
+  cycles = c(20, 20)
+)
+calib_fn(res_mod)
+```
+
+We can now call `calibrate_model()`, and give the values we want to reach as `target_values`.
+```{r}
+res_cal <- calibrate_model(
+  res_mod,
+  parameter_names = c("gamma", "rrNP1"),
+  fn_values = extract_values,
+  target_values = c(2.5, 0.8)
+)
+res_cal
+```
+The new parameter values are `r sprintf("%.2f", res_cal$gamma)` for `gamma` and `r sprintf("%.2f", res_cal$rrNP1)` for `rrNP1`. The `convcode` code at 0 indicates the calibration was successful.
+
+It is possible to specify several possible starting values for the calibration procedure in order to explore the parameter space:
+```{r eval = FALSE}
+start <- data.frame(
+  gamma = c(1.0, 1.5, 2.0),
+  rrNP1 = c(0.2, 0.3, 0.4)
+)
+
+res_cal_2 <- calibrate_model(
+  res_mod,
+  parameter_names = c("gamma", "rrNP1"),
+  fn_values = extract_values,
+  target_values = c(3, 1),
+  initial_values = start
+)
+```
+
+Additional options to control the optimization process can be passed to `calibrate_model()`. These options are parameters of the  [optimx](https://CRAN.R-project.org/package=optimx) function, such as `upper` and `lower` to specify upper and lower values, `method` to change the optimization method, etc.
+
+Calibration uses optimization to minimize the sum of squared errors between calculated and desired values, and so is subject to all the many difficulties of optimization. Different optimization methods, for example Nelder-Mead (which does not require gradients) and BFGS or conjugate gradient methods, which do require gradients but can approximate them numerically, may work better for different problems. Some attempted optimizations may not converge.
+
+It may be impossible to evaluate the function at badly-specified
+initial parameter values (for example, if a negative initial value is given for a parameter that must be positive); using box limits on some parameters may help with this.
+
+Even if the calibration converges from different initial values, it may not converge to the same parameter values every time; in general, an underconstrained model can have different parameter sets that fit equally well. For these and other reasons, the user is advised to carefully check the results of calibrations.
