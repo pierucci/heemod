@@ -177,7 +177,7 @@ extract_stratum <- function(sf, index) {
 #'   
 #' @keywords internal
 #'   
-extract_strata = function(sf) {
+extract_strata <- function(sf) {
   if (is.null(sf$strata)) {
     extract_stratum(sf, 1)
   } else {
@@ -198,7 +198,7 @@ extract_strata = function(sf) {
 #' @return The per-cycle event probabilities.
 #'   
 #' @keywords internal
-calc_prob_from_surv = function(x) {
+calc_prob_from_surv <- function(x) {
   - diff(x) / x[-length(x)]
 }
 
@@ -213,7 +213,7 @@ calc_prob_from_surv = function(x) {
 #'   
 #' @keywords internal
 #' 
-calc_surv_from_prob = function(x) {
+calc_surv_from_prob <- function(x) {
   cumprod(x[1] - x[-1])
 }
 
@@ -392,10 +392,9 @@ eval_surv.flexsurvreg <- function(x, time, cycle_length = 1,
   
   # Calculate survival probabilities for each distinct level/time,
   surv_df <- data %>%
-    dplyr::slice(rep(seq_len(n_obs), each = n_time)) %>%
-    dplyr::mutate(
-      t = rep(time_surv, n_obs),
-      value = do.call(x$dfns$p, fncall))
+    dplyr::slice(rep(seq_len(n_obs), each = n_time))
+  surv_df$t <- rep(time_surv, n_obs)
+  surv_df$value <- do.call(x$dfns$p, fncall)
   
   # Join to the full data, then summarize over times.
   if(x$ncovs > 0) {
