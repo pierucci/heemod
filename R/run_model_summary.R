@@ -117,7 +117,8 @@ scale.run_model <- function(x, center = TRUE, scale = TRUE) {
   res <- tibble::tibble(
     .strategy_names = get_strategy_names(x),
     .cost = get_cost(x),
-    .effect = get_effect(x)
+    .effect = get_effect(x),
+    .n_indiv = get_n_indiv(x)
   )
   
   if (center) {
@@ -128,8 +129,8 @@ scale.run_model <- function(x, center = TRUE, scale = TRUE) {
   }
   
   if (scale) {
-    res$.cost = res$.cost / sum(get_init(x))
-    res$.effect = res$.effect / sum(get_init(x))
+    res$.cost = res$.cost / res$.n_indiv
+    res$.effect = res$.effect / res$.n_indiv
   }
   
   res[order(res$.effect), ]
@@ -204,12 +205,9 @@ print.summary_run_model <- function(x, ...) {
     plur(x$cycles)
   ))
   cat("Initial state counts:\n\n")
-  print(matrix(
-    get_init(x),
-    dimnames = list(
-      names(get_init(x)),
-      "N"
-    )
+  print(paste(
+    to_text_dots(get_uneval_init(x)),
+    collapse = "\n"
   ))
   cat(sprintf(
     "\nCounting method: '%s'.\n\n", x$method

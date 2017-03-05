@@ -134,7 +134,7 @@ eval_strategy <- function(strategy, parameters, cycles,
                                 strategy_name = strategy_name)
   
   init <- unlist(eval_init(x = init, parameters[1, ]))
-  inflow <- eval_init(x = inflow, parameters)
+  inflow <- eval_inflow(x = inflow, parameters)
   
   if (! any(init > 0)) {
     stop("At least one init count must be > 0.")
@@ -174,12 +174,38 @@ eval_strategy <- function(strategy, parameters, cycles,
       states = states,
       counts = count_table,
       values = values,
-      init = init,
+      eval_init = init,
+      eval_inflow = inflow,
+      n_indiv = sum(eval_init, eval_inflow),
       cycles = cycles,
       expand_limit = expand_limit
     ),
     class = c("eval_strategy")
   )
+}
+
+get_eval_init <- function(x) {
+  UseMethod("get_eval_init")
+}
+
+get_eval_init.eval_strategy <- function(x) {
+  x$eval_init
+}
+
+get_eval_inflow <- function(x) {
+  UseMethod("get_eval_inflow")
+}
+
+get_eval_inflow.eval_strategy <- function(x) {
+  x$eval_inflow
+}
+
+get_n_indiv <- function(x) {
+  UseMethod("get_n_indiv")
+}
+
+get_n_indiv.eval_strategy <- function(x) {
+  x$n_indiv
 }
 
 #' Compute Count of Individual in Each State per Cycle
