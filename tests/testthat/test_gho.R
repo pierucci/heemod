@@ -1,5 +1,18 @@
 context("GHO data")
 
+http_proxy <- Sys.getenv("http_proxy")
+http_proxy_user <- Sys.getenv("http_proxy_user")
+
+if (http_proxy != "" && ! is.na(http_proxy)) {
+  if (http_proxy_user != "" && ! is.na(http_proxy_user)) {
+    http_proxy <- gsub(
+      pattern = "//",
+      replacement = paste0("//", http_proxy_user, "@"),
+      x = http_proxy)
+  }
+  options(rgho.http_proxy = http_proxy)
+}
+
 test_that(
   "GHO API", {
     res_latest <- get_who_mr(
