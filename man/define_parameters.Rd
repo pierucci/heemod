@@ -39,11 +39,11 @@ Vector length should not be explicitly set, but should
 instead be stated relatively to \code{markov_cycle}
 (whose length depends on the number of simulation
 cycles). Alternatively, \code{dplyr} functions such as
-\code{n()} or \code{row_numbers()} can be used.
+\code{\link[dplyr:n]{dplyr::n()}} or \code{\link[dplyr:row_numbers]{dplyr::row_numbers()}} can be used.
 
 This function relies heavily on the \code{dplyr} package.
 Parameter definitions should thus mimic the use of
-functions such as \code{mutate}.
+functions such as \code{\link[dplyr:mutate]{dplyr::mutate()}}.
 
 Variable names are searched first in the parameter
 definition (only parameters defined earlier are visible)

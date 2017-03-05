@@ -12,11 +12,11 @@
 #' instead be stated relatively to `markov_cycle` 
 #' (whose length depends on the number of simulation 
 #' cycles). Alternatively, `dplyr` functions such as 
-#' `n()` or `row_numbers()` can be used.
+#' [dplyr::n()] or [dplyr::row_numbers()] can be used.
 #' 
 #' This function relies heavily on the `dplyr` package.
 #' Parameter definitions should thus mimic the use of 
-#' functions such as `mutate`.
+#' functions such as [dplyr::mutate()].
 #' 
 #' Variable names are searched first in the parameter 
 #' definition (only parameters defined earlier are visible) 
