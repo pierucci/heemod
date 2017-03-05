@@ -1,4 +1,4 @@
-## heemod 0.8.0.9000
+## heemod 0.8.0.9001
 
 `heemod` can now be cited with :
 
@@ -15,6 +15,8 @@ Package heemod.” _ArXiv e-prints_. R package version
 
   * Operations on survival functions, see `vignette("j-survival")`. Thanks to [Jordan Amdahl](https://github.com/jrdnmdhl).
   * Model calibration with `calibrate_model()`. Thanks to [Matthew Wiener](https://github.com/MattWiener).
+  * State membership correction works for partitioned survival model.
+  * Custom state membership correction functions can be passed to the `method` argument of `run_model()`.
 
 ### Backend changes
 

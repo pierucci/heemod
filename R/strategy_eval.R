@@ -139,9 +139,9 @@ eval_strategy <- function(strategy, parameters, cycles,
   count_table <- compute_counts(
     x = transition,
     init = init,
-    method = method,
     inflow = inflow
-  )
+  ) %>% 
+    correct_counts(method = method)
   
   values <- compute_values(states, count_table)
   
@@ -185,7 +185,6 @@ eval_strategy <- function(strategy, parameters, cycles,
 #' @param init numeric vector, same length as number of 
 #'   model states. Number of individuals in each model state
 #'   at the beginning.
-#' @param method Counting method.
 #' @param inflow numeric vector, similar to `init`.
 #'   Number of new individuals in each state per cycle.
 #'   
@@ -198,7 +197,7 @@ compute_counts <- function(x, ...) {
 
 #' @export
 compute_counts.eval_matrix <- function(x, init,
-                                       method, inflow,
+                                       inflow,
                                        ...) {
   
   if (! length(init) == get_matrix_order(x)) {
@@ -240,38 +239,7 @@ compute_counts.eval_matrix <- function(x, init,
   
   colnames(res) <- get_state_names(x)
   
-  n0 <- res[- nrow(res), ]
-  n1 <- res[-1, ]
-  
-  switch(
-    method,
-    "beginning" = {
-      out <- n1
-    },
-    "end" = {
-      out <- n0
-    },
-    "half-cycle" = {
-      warning(
-        "Method 'half-cycle' is deprecated and will be removed soon.\n",
-        "Consider using the 'life-table' method instead.\n",
-        "See https://github.com/pierucci/heemod/issues/173 for a discussion of the reasons.",
-        call. = FALSE
-      )
-      out <- n1
-      out[1, ] <- out[1, ] + init / 2
-      out[nrow(out), ] <- out[nrow(out), ] + out[nrow(out), ] / 2
-    },
-    "life-table" = {
-      out <- (n0 + n1) / 2
-    },
-    {
-      stop(sprintf("Unknown counting method, '%s'.", method))
-    }
-  )
-  
-  structure(out, class = c("cycle_counts", class(out)))
-  
+  structure(res, class = c("cycle_counts", class(res)))
 }
 
 #' Compute State Values per Cycle
