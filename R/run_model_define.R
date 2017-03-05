@@ -227,6 +227,7 @@ get_total_state_values <- function(x) {
   res <- as.list(colSums((x$values)[- 1]))
   class(res) <- "data.frame"
   attr(res, "row.names") <- c(NA, -1)
+  res$.n_indiv <- get_n_indiv(x)
   res
 }
 
@@ -284,6 +285,10 @@ get_central_strategy.run_model <- function(x, ...) {
 
 get_effect <- function(x) {
   get_model_results(x)$.effect
+}
+
+get_n_indiv.run_model <- function(x) {
+  get_model_results(x)$.n_indiv
 }
 
 #' Get Strategy Values
@@ -390,12 +395,12 @@ get_counts.list <- function(x, ...) {
   x$counts
 }
 
-get_init <- function(x) {
-  UseMethod("get_init")
+get_uneval_init <- function(x) {
+  UseMethod("get_uneval_init")
 }
 
-get_init.run_model <- function(x) {
-  get_eval_strategy_list(x)[[1]]$init
+get_uneval_init.run_model <- function(x) {
+  x$init
 }
 
 get_ce <- function(x) {
