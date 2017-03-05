@@ -1,6 +1,6 @@
-correct_counts <- function(x,
-                           method = c("life-table", "beginning",
-                                      "end")) {
+correct_counts <- function(x, method = c("life-table",
+                                         "beginning",
+                                         "end")) {
   
   if (! is.function(method)) {
     method <- match.arg(method)
