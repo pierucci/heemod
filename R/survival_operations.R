@@ -17,25 +17,28 @@
 #' dist2 <- define_survival(distribution = "gompertz", rate = .5, shape = 1)
 #' proj_dist <- project(dist1, dist2, at=20)
 project <- function(..., at) {
-  dots <- list(...)
-  
+  .dots <- list(...)
+  project_(.dots, at)
+  }
+
+  project_ <- function(.dots, at){
   stopifnot(
     all(at > 0),
     all(is.finite(at)),
     !is.unsorted(at, strictly=T),
-    length(at) == length(dots) - 1
+    length(at) == length(.dots) - 1
   )
   
   # Restructure so that first distribution is "alone"
   # and subsequent distributions are put in a list along
   # with their cut point.
   dist_list <- list()
-  for (i in seq_along(dots)) {
+  for (i in seq_along(.dots)) {
     if (i==1) {
-      dist_list[[i]] <- dots[[i]]
+      dist_list[[i]] <- .dots[[i]]
     } else {
       dist_list[[i]] <- list(
-        dist = dots[[i]],
+        dist = .dots[[i]],
         at = at[i-1]
       )
     }
