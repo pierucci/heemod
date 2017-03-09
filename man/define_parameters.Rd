@@ -32,7 +32,7 @@ time dependent by using the \code{markov_cycle}
 parameter.
 }
 \details{
-Parameters are defined sequencially, parameters defined
+Parameters are defined sequentially, parameters defined
 earlier can be called in later expressions.
 
 Vector length should not be explicitly set, but should

@@ -2,13 +2,18 @@
 % Please edit documentation in R/survival_operations.R
 \name{add_hazards}
 \alias{add_hazards}
+\alias{add_hazards_}
 \title{Add Hazards}
 \usage{
 add_hazards(...)
+
+add_hazards_(dots)
 }
 \arguments{
 \item{...}{Survival distributions to be used in the
 projection.}
+
+\item{dots}{Used to work around non-standard evaluation.}
 }
 \value{
 A \code{surv_add_haz} object.

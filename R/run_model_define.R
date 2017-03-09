@@ -53,16 +53,13 @@ run_model <- function(...,
                       parameters = define_parameters(),
                       init = c(1000L, rep(0L, get_state_number(get_states(list(...)[[1]])) - 1)),
                       cycles = 1,
-                      method = c("life-table", "beginning", "end",
-                                 "half-cycle"),
+                      method = "life-table",
                       cost = NULL, effect = NULL,
                       state_time_limit = NULL,
                       central_strategy = NULL,
                       inflow = rep(0L, get_state_number(get_states(list(...)[[1]])))) {
   
   uneval_strategy_list <- list(...)
-  
-  method <- match.arg(method)
   
   run_model_(
     uneval_strategy_list = uneval_strategy_list,

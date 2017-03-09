@@ -2,9 +2,12 @@
 % Please edit documentation in R/survival_operations.R
 \name{set_covariates}
 \alias{set_covariates}
+\alias{set_covariates_}
 \title{Set Covariates of a Survival Distribution}
 \usage{
 set_covariates(dist, ..., data = NULL)
+
+set_covariates_(dist, covariates, data = NULL)
 }
 \arguments{
 \item{dist}{a survfit or flexsurvreg object}
@@ -18,6 +21,9 @@ multiple sets of covariate values for which survival
 probabilities will be generated. Can be used to
 generate aggregate survival for a heterogenous set of
 subjects.}
+
+\item{covariates}{Used to work around non-standard
+evaluation.}
 }
 \value{
 A \code{surv_model} object.

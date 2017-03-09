@@ -35,9 +35,9 @@
 #'   0, 1
 #' )
 #' 
-get_who_mr_ <- function(age, sex = NULL, country,
-                        year = "latest", pool = FALSE,
-                        local = FALSE) {
+get_who_mr_memo <- function(age, sex = NULL, country,
+                            year = "latest", pool = FALSE,
+                            local = FALSE) {
   if (is.null(sex) && ! pool) {
     stop("'sex' must be provided for non-pooled results.")
   }
@@ -81,7 +81,7 @@ get_who_mr_ <- function(age, sex = NULL, country,
 #' @rdname who-mortality
 #' @export
 get_who_mr <- memoise::memoise(
-  get_who_mr_,
+  get_who_mr_memo,
   ~ memoise::timeout(options()$heemod.memotime)
 )
 
