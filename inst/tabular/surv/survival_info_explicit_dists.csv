@@ -1,0 +1,7 @@
+data,val
+survivalDataDirectory,survival_data
+fit_metric,AIC
+fit_name_pfs,PFS.fit
+fit_file_pfs,PFS.surv.fit
+fit_name_ofs,OS.fit
+fit_file_ofs,OS.surv.fit
