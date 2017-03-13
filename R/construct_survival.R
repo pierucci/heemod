@@ -16,11 +16,11 @@ construct_survival <-
     
     
     
-    surv_def$dist <-
+    surv_def$dist <- 
       lapply(surv_def$dist, function(this_dist){
-        lazyeval::lazy_(substitute(this_dist), env = parent.frame())
+        lazyeval::lazy_(this_dist, 
+                        env = parent.frame())
       })
-      
         
     res1 <-
       lapply(strategies,
