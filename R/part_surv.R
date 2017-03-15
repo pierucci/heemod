@@ -84,6 +84,9 @@ define_part_surv <- function(pfs, os, state_names,
 #' @rdname define_part_surv
 define_part_surv_ <- function(pfs, os, state_names,
                               cycle_length = 1) {
+
+  if(is.null(names(state_names)))
+     state_names <- fix_part_surv_state_names(state_names)
   
   stopifnot(
     inherits(pfs, "lazy"),

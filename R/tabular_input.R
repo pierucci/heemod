@@ -307,9 +307,15 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
                                           state_names,
                                           save_fits = FALSE,
                                           just_load = TRUE)
-    use_fits_text <- ref[ref$data == "use_fits", "file"]
-    use_fits <- eval(parse(text = use_fits_text))
-    tm_info <- combine_part_surv_(fit_matrix, use_fits)
+    assign("fit_matrix", fit_matrix, df_env)
+    use_fits_file <- ref[ref$data == "use_fits", "full_file"]
+    use_fits <- read_file(use_fits_file)
+    tm_info <- construct_survival(use_fits, env = df_env)
+    tm_info <- 
+      lapply(tm_info, function(x){
+        define_part_surv_(x$pfs, x$os, 
+                          state_names = state_names)
+      })
   }
   
   if (length(pb <- setdiff(names(state_info), names(tm_info)))) {
