@@ -1,0 +1,5 @@
+.strategy,.type,dist
+A,pfs,fit('exp')
+A,os,fit('exp')
+B,pfs,fit('exp')
+B,os,fit('exp')

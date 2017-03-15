@@ -74,13 +74,27 @@ sapply_matrix(temp1$OS2.fit, "[[", "AIC")
 ```
 `heemod` does not automatically choose a distribution to use in the survival model - the modeler must choose the most appropriate distribution for each set of survival data.
 
+When a modeler has decided to run the economic analysis using a particular set of fits, the specification must be included in a file.  The name of the file goes in the
+specification file, in a row with `data` element `use_fits`.
 
-When a modeler has decided to run the economic analysis using a particular set of fits, the specification must be included in the reference file as the “use_fit” element. “use_fit” is a list with one element for each strategy in the analysis. Each element of the list is itself a list, with two elements, “psf” and “os”. And each of those elements contains the name of a distribution. For example, if
+The file has three or four columns: \itemize{
+\item{`.strategy`, corresponding to the strategies in the model;}
+\item{`.type`, which for each row is either 'pfs' or 'os';}
+\item{`dist`,  specifying the survival distribution to use;}
+\item{`until` (optionally), specifying when the distribution ceases to apply.}
+}
+`until` needs to be specified only if there is more than one row with the same
+`.strategy` and `.type`.  In that case, each distribution will pick up where
+the previous one left off.   (The rows need not be presented in order, though
+that is a good practice for readability; the code will sort distributions into
+order by `until`.)   Here we don't require it.
 
-```{r}
-use_fits <- list(A = list(os = "exp", pfs = "gamma"),
-                B = list(os = "exp", pfs = "lnorm"))
+If we define `use_fits` as
+```{r define_fits}
+use_fits_file <- file.path(base_dir, "use_fits_example0.csv")
+use_fits <- heemod:::read_file(use_fits_file)
 ```
+
 then the analysis will use an exponential survival model for overall survival for both strategies, but will use the gamma survival model for progression-free survival for A, and a lognormal survival model for progression-free survival for B.
 
 The same specification file that was used for survival_fits_from_tabular can be used for run_model_tabular. run_model_tabular uses the information in the specification file to pick up the desired fits from those created earlier. No survival fitting happens when running  run_model_tabular, only selection.  The selection is governed by the `use_fits` element of the reference file.
@@ -88,7 +102,9 @@ The same specification file that was used for survival_fits_from_tabular can be 
 In this example, we’ve used a different choice. Here is the use_fits element of this file:
 ```{r}
 ref <- heemod:::read_file(file.path(base_dir, spec_file))
-eval(parse(text = ref[ref$data == "use_fits", "file"]))
+use_fits_file <- file.path(base_dir, ref[ref$data == "use_fits", "file"])
+use_fits <- heemod:::read_file(use_fits_file)
+use_fits
 ```
 
 ```{r}
@@ -102,4 +118,19 @@ But the model has run as requested:
 plot(surv_example$model_runs)
 ```
 
+We can also mix explicit survival distribution definitions with fits,
+as shown below.
+```{r}
+spec_file <- "example_oncSpecs_nomatrix_mixed.csv"
+ref <- heemod:::read_file(file.path(base_dir, spec_file))
+mixed_use_fits_file <- file.path(base_dir, ref[ref$data == "use_fits", "file"])
+mixed_use_fits <- heemod:::read_file(mixed_use_fits_file)
+mixed_use_fits
+```
 
+```{r fig.width = 8, fig.height = 5, run_mixed_dist}
+surv_example_mixed <- run_model_tabular(base_dir, spec_file,
+                                  run_psa = FALSE, run_demo = FALSE,
+                                  save = FALSE, overwrite= FALSE)
+plot(surv_example_mixed$model_runs)
+```
