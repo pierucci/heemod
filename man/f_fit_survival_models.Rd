@@ -14,7 +14,8 @@ f_fit_survival_models(survdata, dists = c("exp", "weibull", "lnorm", "gamma",
 \item{dists}{Distributional forms to be considered in fitting using
 \code{flexsurvreg}.  By default, includes exponential, Weibull,
 lognormal, gamma, gompertz, and generalized gamma.  Kaplan-Meier
-curves will also be stored automatically.}
+curves will also be stored automatically, with distribution
+name "km".}
 
 \item{time_col_name}{Name of the column in survdata with event times.}
 
@@ -22,8 +23,8 @@ curves will also be stored automatically.}
 indicators.}
 
 \item{treatment_col_name}{Name of the column in survdata that holds the
-treatment group names (for example "control", "treatment", "dose1", and
-so on).}
+treatment group names (for example "control", "treatment",
+"dose1", and so on).}
 
 \item{covariate_col_names}{Not yet implemented}
 
@@ -46,9 +47,4 @@ depending on context) was observed, while 0
 means the event was censored.  So the Kaplan-Meier plot will have
 a drop anywhere the censor column contains a 1, and will not
 contain a drop when the censor column contains a 0.
-
-We don't return a special object for the Kaplan-Meier curve; that
-does not depend on the distribution, and can be obtained from
-any of the fitted objects by using the summary.flexsurvreg function
-with type = "survival".
 }

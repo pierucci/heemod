@@ -430,10 +430,11 @@ dist_from_fits <- function(this_fit){
 #' @param dists Distributional forms to be considered in fitting using
 #'     `flexsurvreg`.  By default, includes exponential, Weibull, 
 #'     lognormal, gamma, gompertz, and generalized gamma.  Kaplan-Meier
-#'     curves will also be stored automatically. 
+#'     curves will also be stored automatically, with distribution
+#'     name "km".
 #' @param treatment_col_name Name of the column in survdata that holds the
-#'     treatment group names (for example "control", "treatment", "dose1", and 
-#'     so on).
+#'     treatment group names (for example "control", "treatment", 
+#'     "dose1", and so on).
 #' @param time_col_name Name of the column in survdata with event times.
 #' @param censor_col_name Name of the column in survdata with censorship
 #'     indicators.   
@@ -452,10 +453,6 @@ dist_from_fits <- function(this_fit){
 #'  a drop anywhere the censor column contains a 1, and will not
 #'  contain a drop when the censor column contains a 0.
 #'  
-#'  We don't return a special object for the Kaplan-Meier curve; that
-#'     does not depend on the distribution, and can be obtained from
-#'     any of the fitted objects by using the summary.flexsurvreg function
-#'     with type = "survival". 
 f_fit_survival_models <- 
   function(survdata,
            dists = c("exp", "weibull", "lnorm", "gamma", 
@@ -496,6 +493,11 @@ f_fit_survival_models <-
                                  censor_col_name, ")",
                                  " ~", sep = "")
     
+    ## we're going to add "km" to the fit distributions
+    ##   and put a survfit object there
+    
+    dists <- c(dists, "km")
+    
     ## cycle through combinations of distributions and subsets,
     ##   getting survival analysis results at each step
     conditions <- expand.grid(dist = dists, group = names(groups_list),
@@ -512,18 +514,24 @@ f_fit_survival_models <-
           this_formula <- paste(formula_base_string, treatment_col_name)
         else
           this_formula <- paste(formula_base_string, "1")
-        
-        this_fit <- try(
-          flexsurv::flexsurvreg(stats::as.formula(this_formula), data = this_data,
-                              dist = conditions[i, "dist"])
+        this_formula <- stats::as.formula(this_formula)
+        if(conditions[i, "dist"] == "km"){
+          this_fit <- survival::survfit(this_formula,
+                                        data = this_data) 
+        }
+        else{
+          this_fit <- try(
+            flexsurv::flexsurvreg(this_formula, 
+                                  data = this_data,
+                                  dist = conditions[i, "dist"])
         )
+        }
       })
     all_res <- f_add_surv_fit_metrics(all_res, metrics = c("BIC","m2LL"))
     dim(all_res) <- c(length(dists), length(names(groups_list)))
     dimnames(all_res) <- list(dists, names(groups_list))
     all_res
   }
-
 
 
 #' Choose the best model out of a set based on a metric.
