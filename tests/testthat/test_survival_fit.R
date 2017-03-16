@@ -178,7 +178,8 @@ test_that("we handle fitting errors",
                                          fit_indiv_groups = FALSE)
             )
             expect_equal(sapply(fit, class),
-                         c("flexsurvreg", "flexsurvreg", "try-error")
+                         c("flexsurvreg", "flexsurvreg", 
+                           "try-error", "survfit")
                          )
             }
           )
