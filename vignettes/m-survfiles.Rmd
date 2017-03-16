@@ -1,5 +1,5 @@
 ---
-title: "Survival models"
+title: "Running survival models from tabular data"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
@@ -19,20 +19,24 @@ library(flexsurv)
 
 Running an oncology cost/benefit model in heemod involves several steps:
 
-Fit available survival data under different distributional assumptions.
+* Fit available survival data under different distributional assumptions.
 
-Examine the survival fits and decide which ones are most appropriate to use in the cost/benefit analysis.
+* Examine the survival fits and decide which ones are most appropriate to use in the economic model.
 
-Run the cost/benefit model in heemod with the chosen survival fits.
+* Run the economic model in heemod with the chosen survival fits.
 
-This document will demonstrate how to accomplish those steps in heemod.
+This document will demonstrate how to accomplish those steps in heemod,
+using simulated data sets included with the package.
 
 ```{r fits}
 base_dir <- system.file("tabular\\surv", package = "heemod")
 spec_file <- "example_oncSpecs_nomatrix.csv"
 ```
 
-General information on the files needed to run heemod from tabular input can be found in this vignette from the package, and in the others that can be found here. Here we will deal only with those aspects specific to fitting survival curves from data and using them to run economic models.
+Other vignettes cover more general information on the files needed to run heemod from [tabular input](h-tabular.html), and additional
+information on [survival curve fitting](j-survival.html). 
+Here we will deal only with those aspects specific to fitting survival curves
+from data and using them to run economic models.
 
 The source of the survival data, as well as the names and locations of the resulting fits, are specified in a file with the following rows:
 
@@ -54,7 +58,13 @@ print(surv_info)
 
 Here the fit names are not simply “OS.fit” and “PFS.fit”, but “OS2.fit” and “PFS2.fit”, a change that merely demonstrates that we can use different names if we choose.
 
-To actually create the fits, we use the function partitioned_survival_from_tabular. Here we use save_fits = TRUE; it is also possible to set  save_fits = FALSE to obtain the fits in R without saving them to a file. The specification file will be used again to run the economic model, but to create the fits it needs only the survivalInformation field. If desired, the rest of the fields can be added later.
+The function `partitioned_survival_from_tabular` fits the survival models 
+to data.
+Here we use `save_fits = TRUE`; it is also possible to set `save_fits = FALSE`
+to obtain the fits in R without saving them to a file. The specification file
+will be used again to run the economic model, but to create the fits it need
+only the `survivalInformation field`. If desired, the rest of the fields can be
+added later.
 
 The distributions currently used for survival fits are exponential, Weibull, lognormal, gamma, Gompertz, and generalized gamma. If fitting fails for some distribution, `heemod` will note the error and continue, so results will be available for the other distributional assumptions.
 
@@ -63,7 +73,10 @@ temp1 <- survival_fits_from_tabular(base_dir, spec_file,
                                     save_fits = TRUE)[[1]]
 ```
 
-Fit quality can be examined using the negative log-likelihood, the Aikake and Bayes information critera, and various kinds of graphs. (`sapply_matrix` returns a matrix of the results of `sapply` with the same dimension and dimension names as the original matrix.)
+Fit quality can be examined using the negative log-likelihood, the Aikake
+and Bayes information critera, and various kinds of graphs. 
+(`sapply_matrix` returns a matrix of the results of `sapply` with the same
+dimension and dimension names as the original matrix.)
 
 ```{r}
 names(temp1)
