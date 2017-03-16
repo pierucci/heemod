@@ -49,20 +49,18 @@ construct_survival <-
             gsub("zrw1", paste("'", this_strategy, "'", sep = ""), res)
           res <- gsub("zrw2", this_type, res)
           res <- gsub("fit_matrix", fit_matrix_name, res)
-          res <- parse(text = res)
+          ## res <- parse(text = res)
         }
         res
       })
     
-##    if(!is.null(env)){
-    surv_def$dist <-
-      lapply(surv_def$dist, function(this_dist) {
-          if(is.character(this_dist))
-            lazyeval::as.lazy(this_dist, env)
-          else  
-            lazyeval::as.lazy(eval(this_dist, env))
-      })
-##    }
+    # surv_def$dist <-
+    #   lapply(surv_def$dist, function(this_dist) {
+    #       if(is.character(this_dist))
+    #         lazyeval::as.lazy(this_dist, env)
+    #       else  
+    #         lazyeval::as.lazy(eval(this_dist, env))
+    #   })
     surv_def <- tibble::as_tibble(surv_def)
     
     res1 <-
@@ -80,9 +78,19 @@ construct_survival <-
                           if ("until" %in% names(surv_def_strategy)) {
                             this_part <-
                               dplyr::arrange(this_part, until)
-                            project_(this_part$dist,
-                                     this_part$until[!is.na(this_part$until)])
-                          }
+                            piece1 <- paste(this_part$dist, collapse = ", ")
+                            piece1 <- paste("list(", piece1, ")")
+                            piece2 <- paste(this_part$until[!is.na(this_part$until)], 
+                                            collapse = ", ")
+                            piece2 <- paste("c(", piece2, ")")
+                            as.expression(
+                              paste("project_(", 
+                                    piece1,  
+                                    ", ", 
+                                    piece2,
+                                    ")")
+                            )
+                            }
                           else{
                             if (nrow(this_part) > 1) {
                               print(this_part)
@@ -94,7 +102,15 @@ construct_survival <-
                             this_part$dist[[1]]
                           }
                         })
-               names(res2) <- types
+                res2 <-
+                  lapply(res2, function(x) {
+                      if(is.character(x))
+                        lazyeval::as.lazy(x, env)
+                      else
+                        lazyeval::as.lazy(eval(x, env), env)
+                  })
+
+              names(res2) <- types
                res2
              })
     names(res1) <- strategies

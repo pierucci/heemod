@@ -4,13 +4,16 @@
 \alias{construct_survival}
 \title{construct a survival object from tabular specification}
 \usage{
-construct_survival(surv_def, fit_matrix_name = "fit_matrix", env = NULL)
+construct_survival(surv_def, fit_matrix_name = "fit_matrix",
+  env = new.env())
 }
 \arguments{
 \item{surv_def}{a data frame with the specification.  See details.}
 
 \item{fit_matrix_name}{the name of the matrix from which to take fits.
 Typically produced by \code{\link[=survival_fits_from_tabular]{survival_fits_from_tabular()}}.}
+
+\item{env}{an environment}
 }
 \value{
 a list with one element for each strategy.   Each element
@@ -22,7 +25,11 @@ commonality that they can be used in \code{\link[=compute_surv]{compute_surv()}}
 construct a survival object from tabular specification
 }
 \details{
-columns:  .strategy, .type, dist, until
+This function is meant to be used only from within
+tabular_input.R.   It won't work well otherwise, in that
+the environment is unlikely to have what you need.
+
+columns of surv_def:  .strategy, .type, dist, until
 dist can be either the name of a distribution
 along with parameters, or a reference to a fit
 for example:  fit('exp') or exp(rate = 0.5)
