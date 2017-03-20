@@ -59,39 +59,132 @@
     <div class="page-header toc-ignore">
       <h1>Survival models</h1>
             
-            <h4 class="date">2017-02-13</h4>
+            <h4 class="date">2017-02-26</h4>
           </div>
 
     
     
 <div class="contents">
-<p>Input transition probabilities from defined distributions:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">surv_dist1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_survival.html">define_survival</a></span>(
-  <span class="dt">distribution =</span> <span class="st">"weibull"</span>,
-  <span class="dt">shape =</span> <span class="dv">2</span>,
-  <span class="dt">scale =</span> <span class="dv">5</span>
+<p>The <code>heemod</code> package provides a number of ways to estimate transition probabilities from survival distributions. Survival distributions can come from at least three different sources:</p>
+<ul>
+<li>User-definded parametric distributions.</li>
+<li>Fitted parametric distributions with <code>flexsurv::flexsurvreg()</code>.</li>
+<li>Fitted Kaplan-Meiers with <code>survival::survfit()</code>.</li>
+</ul>
+<p>Once defined, each of these types of distributions can be combined and modified using a standard set of operations.</p>
+<p>User-defined parametric distributions are created using the <code><a href="../reference/define_survival.html">define_survival()</a></code> and <code><a href="../reference/define_spline_survival.html">define_spline_survival()</a></code> functions:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">surv_dist_1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_survival.html">define_survival</a></span>(
+  <span class="dt">distribution =</span> <span class="st">"exp"</span>,
+  <span class="dt">rate =</span> .<span class="dv">5</span>
+)
+
+surv_dist_2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_spline_survival.html">define_spline_survival</a></span>(
+  <span class="dt">scale =</span> <span class="st">"odds"</span>,
+  <span class="dt">gamma =</span> <span class="kw">c</span>(-<span class="fl">11.643</span>, <span class="fl">1.843</span>, <span class="fl">0.208</span>),
+  <span class="dt">knots =</span> <span class="kw">c</span>(<span class="fl">4.077537</span>, <span class="fl">5.883183</span>, <span class="fl">6.458338</span>)
 )</code></pre></div>
-<p>From fitted models:</p>
+<p>Fitted parametric models are created using <code>flexsurv::flexsurvreg()</code> and <code>flexsurv::flexsurvspline()</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(flexsurv)
 
-fitw &lt;-<span class="st"> </span><span class="kw">flexsurvreg</span>(
+fit_w &lt;-<span class="st"> </span><span class="kw">flexsurvreg</span>(
   <span class="dt">formula =</span> <span class="kw">Surv</span>(futime, fustat) ~<span class="st"> </span><span class="dv">1</span>,
   <span class="dt">data =</span> ovarian, <span class="dt">dist =</span> <span class="st">"weibull"</span>
 )
-<span class="kw">plot</span>(fitw)</code></pre></div>
+<span class="kw">plot</span>(fit_w)</code></pre></div>
 <p><img src="j-survival_files/figure-html/unnamed-chunk-2-1.png" width="576"></p>
-<p>For the example we define a simple model with only 1 strategy:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit_spl &lt;-<span class="st"> </span><span class="kw">flexsurvspline</span>(
+  <span class="dt">formula =</span> <span class="kw">Surv</span>(futime, fustat) ~<span class="st"> </span><span class="dv">1</span>,
+  <span class="dt">data =</span> ovarian,
+  <span class="dt">scale =</span> <span class="st">"odds"</span>,
+  <span class="dt">k=</span><span class="dv">1</span>
+)
+<span class="kw">plot</span>(fit_spl)</code></pre></div>
+<p><img src="j-survival_files/figure-html/unnamed-chunk-2-2.png" width="576"></p>
+<p>Fitted models can include covariates. In order to use a model with covariates in heemod, you can use the <code><a href="../reference/set_covariates.html">set_covariates()</a></code> function on the fitted model and provide as additional arguments the covariate values you want to model. You can also provide a data frame of covariate levels to aggregate survival probabilites over different groups. By default, heemod will aggregate over predicted survival probabilities for each subject in the dataset to which the model was fit.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit_cov &lt;-<span class="st"> </span><span class="kw">flexsurvreg</span>(
+  <span class="dt">formula =</span> <span class="kw">Surv</span>(rectime, censrec) ~<span class="st"> </span>group,
+  <span class="dt">dist =</span> <span class="st">"weibull"</span>,
+  <span class="dt">data =</span> bc
+)
+<span class="kw">plot</span>(fit_cov)</code></pre></div>
+<p><img src="j-survival_files/figure-html/unnamed-chunk-3-1.png" width="576"></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fitcov_good   &lt;-<span class="st"> </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(fit_cov, <span class="dt">group =</span> <span class="st">"Good"</span>)
+fitcov_medium &lt;-<span class="st"> </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(fit_cov, <span class="dt">group =</span> <span class="st">"Medium"</span>)
+fitcov_poor   &lt;-<span class="st"> </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(fit_cov, <span class="dt">group =</span> <span class="st">"Poor"</span>)</code></pre></div>
+<p>Similar functionality is also available for Kaplan-Meiers created using <code>survival::survfit()</code></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(survival)
+
+km_1 &lt;-<span class="st"> </span><span class="kw">survfit</span>(
+  <span class="dt">formula =</span> <span class="kw">Surv</span>(futime, fustat) ~<span class="st"> </span><span class="dv">1</span>,
+  <span class="dt">data =</span> ovarian
+)
+km_cov &lt;-<span class="st"> </span><span class="kw">survfit</span>(
+  <span class="dt">formula =</span> <span class="kw">Surv</span>(rectime, censrec) ~<span class="st"> </span>group,
+  <span class="dt">data =</span> bc
+)
+<span class="kw">plot</span>(km_cov)</code></pre></div>
+<p><img src="j-survival_files/figure-html/unnamed-chunk-4-1.png" width="576"></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">km_good   &lt;-<span class="st"> </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(km_cov, <span class="dt">group =</span> <span class="st">"Good"</span>)
+km_medium &lt;-<span class="st"> </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(km_cov, <span class="dt">group =</span> <span class="st">"Medium"</span>)
+km_poor   &lt;-<span class="st"> </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(km_cov, <span class="dt">group =</span> <span class="st">"Poor"</span>)</code></pre></div>
+<p>Once defined, treatment effects of various types can be applied to any survival distribution:</p>
+<ul>
+<li>Hazard ratio: <code><a href="../reference/apply_hr.html">apply_hr()</a></code>.</li>
+<li>Odds ratio: <code><a href="../reference/apply_or.html">apply_or()</a></code>.</li>
+<li>Acceleration factor: <code><a href="../reference/apply_af.html">apply_af()</a></code>.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">km_poor_ph &lt;-<span class="st"> </span><span class="kw"><a href="../reference/apply_hr.html">apply_hr</a></span>(km_poor, <span class="dt">hr =</span> <span class="fl">0.5</span>)
+km_medium_af &lt;-<span class="st"> </span><span class="kw"><a href="../reference/apply_af.html">apply_af</a></span>(km_medium, <span class="dt">af =</span> <span class="fl">1.2</span>)</code></pre></div>
+<p>In addition, distributions can be combined using a variety of operations:</p>
+<ul>
+<li>Use one (or more) survival distributions to project from another: <code><a href="../reference/project.html">project()</a></code>.</li>
+<li>Pool two (or more) survival distributions: <code><a href="../reference/pool.html">pool()</a></code>.</li>
+<li>Combine two (or more) survival distributions as independent risks: <code><a href="../reference/add_hazards.html">add_hazards()</a></code>.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">km_poor_proj &lt;-<span class="st"> </span><span class="kw"><a href="../reference/project.html">project</a></span>(
+  km_poor,
+  fitcov_poor,
+  <span class="dt">at =</span> <span class="dv">365</span>
+)
+models_all &lt;-<span class="st"> </span><span class="kw"><a href="../reference/pool.html">pool</a></span>(
+  fitcov_good, fitcov_medium, fitcov_poor,
+  <span class="dt">weights =</span> <span class="kw">c</span>(<span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>)
+)
+combined_risks &lt;-<span class="st"> </span><span class="kw"><a href="../reference/add_hazards.html">add_hazards</a></span>(
+  fit_w, fitcov_good
+)</code></pre></div>
+<p>The transition or survival probabilities are computed with <code><a href="../reference/compute_surv.html">compute_surv()</a></code>. Time (usually <code>model_time</code> or <code>state_time</code>) needs to be passed to the function as a <code>time</code> argument.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/compute_surv.html">compute_surv</a></span>(surv_dist_2, <span class="dt">time =</span> <span class="dv">1</span>:<span class="dv">5</span>)</code></pre></div>
+<pre><code>## [1] 8.780223e-06 2.271877e-05 3.500128e-05 4.649850e-05 5.747782e-05</code></pre>
+<p>All these operations can be chained with the <code>%&gt;%</code> piping operator.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit_cov %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(<span class="dt">group =</span> <span class="st">"Good"</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="../reference/apply_hr.html">apply_hr</a></span>(<span class="dt">hr =</span> <span class="dv">2</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="../reference/project.html">project</a></span>(
+    fitcov_poor,
+    <span class="dt">at =</span> <span class="dv">3</span>
+  ) %&gt;%
+<span class="st">  </span><span class="kw"><a href="../reference/pool.html">pool</a></span>(
+    fitcov_medium,
+    <span class="dt">weights =</span> <span class="kw">c</span>(<span class="fl">0.25</span>, <span class="fl">0.75</span>)
+  ) %&gt;%
+<span class="st">  </span><span class="kw"><a href="../reference/add_hazards.html">add_hazards</a></span>(
+    fit_w
+  ) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="../reference/compute_surv.html">compute_surv</a></span>(<span class="dt">time =</span> <span class="dv">1</span>:<span class="dv">5</span>)</code></pre></div>
+<pre><code>## [1] 0.0004011356 0.0004736851 0.0005069766 0.0005490092 0.0005692261</code></pre>
+<p>For the example we define a simple model with only 1 strategy.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">param &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_parameters.html">define_parameters</a></span>(
-  <span class="dt">p1 =</span> <span class="kw"><a href="../reference/get_probs_from_surv.html">get_probs_from_surv</a></span>(
-    surv_dist1,
-    <span class="dt">cycle =</span> markov_cycle <span class="co"># can also be state_cycle</span>
+  <span class="dt">p1 =</span> <span class="kw"><a href="../reference/compute_surv.html">compute_surv</a></span>(
+    surv_dist_1,
+    <span class="dt">time =</span> model_time <span class="co"># can also be state_time</span>
   ),
-  <span class="dt">p2 =</span> <span class="kw"><a href="../reference/get_probs_from_surv.html">get_probs_from_surv</a></span>(
-    fitw,
-    <span class="dt">cycle =</span> markov_cycle,
-    <span class="dt">cycle_length =</span> <span class="dv">365</span>, <span class="co"># time is in days in fitw, in years in markov_cycle</span>
-    <span class="dt">km_limit =</span> <span class="dv">2</span> <span class="co"># use KM estimates during the first 2 years</span>
-  )
+  <span class="dt">p2 =</span> km_medium %&gt;%
+<span class="st">    </span><span class="kw"><a href="../reference/project.html">project</a></span>(fitcov_medium, <span class="dt">at =</span> <span class="dv">730</span>) %&gt;%
+<span class="st">    </span><span class="kw"><a href="../reference/compute_surv.html">compute_surv</a></span>(
+      <span class="dt">time =</span> model_time,
+      <span class="dt">cycle_length =</span> <span class="dv">365</span>  <span class="co"># time is in days in km_medium, in years in model_time</span>
+    )
 )
 
 tm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_transition.html">define_transition</a></span>(
@@ -101,7 +194,7 @@ tm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_t
 )</code></pre></div>
 <pre><code>## No named state -&gt; generating names.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(tm)</code></pre></div>
-<p><img src="j-survival_files/figure-html/unnamed-chunk-3-1.png" width="672"></p>
+<p><img src="j-survival_files/figure-html/unnamed-chunk-9-1.png" width="576"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sA &lt;-<span class="st">  </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(
   <span class="dt">cost =</span> <span class="dv">10</span>, <span class="dt">ut =</span> <span class="dv">1</span>
 )
@@ -124,17 +217,12 @@ resTM &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_m
 )</code></pre></div>
 <pre><code>## No named model -&gt; generating names.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(resTM)</code></pre></div>
-<p><img src="j-survival_files/figure-html/unnamed-chunk-4-1.png" width="576"></p>
+<p><img src="j-survival_files/figure-html/unnamed-chunk-10-1.png" width="576"></p>
 <p>A partitioned survival model can also be computed:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">surv_dist2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_survival.html">define_survival</a></span>(
-  <span class="dt">distribution =</span> <span class="st">"exp"</span>,
-  <span class="dt">rate =</span> .<span class="dv">5</span>
-)
-
-ps &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_part_surv.html">define_part_surv</a></span>(
-  <span class="dt">pfs =</span> surv_dist2,
-  <span class="dt">os =</span> fitw,
-  <span class="dt">km_limit =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">2</span>), <span class="co"># 0 for pfs, 2 for os</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ps &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_part_surv.html">define_part_surv</a></span>(
+  <span class="dt">pfs =</span> surv_dist_1,
+  <span class="dt">os  =</span> km_1 %&gt;%
+<span class="st">    </span><span class="kw"><a href="../reference/project.html">project</a></span>(fit_w, <span class="dt">at =</span> <span class="dv">730</span>),
   <span class="dt">cycle_length =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">365</span>) <span class="co"># 1 for pfs, 365 for os</span>
 )</code></pre></div>
 <pre><code>## No named state -&gt; generating names.</code></pre>
@@ -149,7 +237,7 @@ resPS &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_m
 )</code></pre></div>
 <pre><code>## No named model -&gt; generating names.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(resPS)</code></pre></div>
-<p><img src="j-survival_files/figure-html/unnamed-chunk-6-1.png" width="576"></p>
+<p><img src="j-survival_files/figure-html/unnamed-chunk-11-1.png" width="576"></p>
 </div>
   </div>
 

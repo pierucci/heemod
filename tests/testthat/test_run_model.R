@@ -234,9 +234,6 @@ test_that(
     res_e <- run_model(mod1, mod2,
                         parameters = par1, cost = x, effect = y,
                         method = "end")
-    res_h <- suppressWarnings(run_model(mod1, mod2,
-                        parameters = par1, cost = x, effect = y,
-                        method = "half-cycle"))
     res_l <- run_model(mod1, mod2,
                         parameters = par1, cost = x, effect = y,
                         method = "life-table")
@@ -252,10 +249,6 @@ test_that(
     expect_equal(
       round(summary(res_e)$res_comp$.icer[2], 3),
       1
-    )
-    expect_equal(
-      round(summary(res_h)$res_comp$.icer[2], 3),
-      1.017
     )
     expect_equal(
       round(summary(res_l)$res_comp$.icer[2], 3),

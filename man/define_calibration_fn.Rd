@@ -12,20 +12,23 @@ define_calibration_fn(type, strategy_names, element_names, cycles,
 
 \item{strategy_names}{Names of strategies.}
 
-\item{element_names}{Names of states (for counts) or of state values (for values).}
+\item{element_names}{Names of states (for counts) or of
+state values (for values).}
 
 \item{cycles}{Cycles of interest.}
 
-\item{groups}{Optional grouping of values (values in a same group have the same \code{groups}).}
+\item{groups}{Optional grouping of values (values in a
+same group have the same \code{groups}).}
 
-\item{aggreg_fn}{A function to aggregate values in a same group.}
+\item{aggreg_fn}{A function to aggregate values in a same
+group.}
 }
 \value{
 A numeric vector.
 }
 \description{
-Define a function to be passed to the \code{fn_values} argument of
-\code{\link[=calibrate_model]{calibrate_model()}}.
+Define a function to be passed to the \code{fn_values}
+argument of \code{\link[=calibrate_model]{calibrate_model()}}.
 }
 \examples{
 example("run_model")

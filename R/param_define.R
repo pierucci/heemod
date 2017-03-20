@@ -5,14 +5,14 @@
 #' time dependent by using the `markov_cycle` 
 #' parameter.
 #' 
-#' Parameters are defined sequencially, parameters defined 
+#' Parameters are defined sequentially, parameters defined 
 #' earlier can be called in later expressions.
 #' 
 #' Vector length should not be explicitly set, but should 
 #' instead be stated relatively to `markov_cycle` 
 #' (whose length depends on the number of simulation 
 #' cycles). Alternatively, `dplyr` functions such as 
-#' [dplyr::n()] or [dplyr::row_numbers()] can be used.
+#' [dplyr::n()] or [dplyr::row_number()] can be used.
 #' 
 #' This function relies heavily on the `dplyr` package.
 #' Parameter definitions should thus mimic the use of 

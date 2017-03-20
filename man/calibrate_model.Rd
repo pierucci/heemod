@@ -5,7 +5,7 @@
 \title{Calibrate Model Parameters}
 \usage{
 calibrate_model(x, parameter_names, fn_values, target_values,
-  initial_values = NULL, ...)
+  initial_values = NULL, method = c("Nelder-Mead", "BFGS"), ...)
 }
 \arguments{
 \item{x}{Result from \code{\link[=run_model]{run_model()}} or \code{\link[=update]{update()}}.}
@@ -21,6 +21,9 @@ output from \code{fn_values}.}
 
 \item{initial_values}{Optional starting values. See
 details.}
+
+\item{method}{Optimisation method (\code{Nelder-Mead} or
+\code{BFGS}).}
 
 \item{...}{Optional arguments passed to
 \code{\link[optimx:optimx]{optimx::optimx()}}.}
@@ -50,8 +53,8 @@ Passing in multiple initial values allows (among other
 things) the user to check whether the calibration gets
 the same results from different starting points.
 
-Multi-dimensionnal problems are optimized with
-\code{\link[optimx:optimx]{optimx::optimx()}}, 1-dimensionnal problems with
+Multi-dimensional problems are optimized with
+\code{\link[optimx:optimx]{optimx::optimx()}}, 1-dimensional problems with
 \code{\link[stats:optimise]{stats::optimise()}} (except when a \code{method} is given).
 \code{convcode} is always \code{NA} with \code{\link[stats:optimise]{stats::optimise()}}.
 

@@ -14,11 +14,6 @@
 #'   and `"death"`. See examples.
 #' @param terminal_state Should a terminal state be 
 #'   included? Only used when state names are not provided.
-#' @param km_limit Up to what time should Kaplan-Meier
-#'   estimates be used? Model predictions will be used
-#'   thereafter. Either a length 2 vector (for `pfs`
-#'   and `os` respectively) or a single values (used
-#'   for both distributions).
 #' @param cycle_length The value of a Markov cycle in
 #'   absolute time units.
 #'   
@@ -48,7 +43,6 @@
 #' 
 define_part_surv <- function(pfs, os, state_names,
                              terminal_state = FALSE,
-                             km_limit = 0,
                              cycle_length = 1) {
   
   if (missing(state_names)) {
@@ -78,14 +72,12 @@ define_part_surv <- function(pfs, os, state_names,
     pfs = lazyeval::lazy_(substitute(pfs), env = parent.frame()),
     os = lazyeval::lazy_(substitute(os), env = parent.frame()),
     state_names = state_names,
-    km_limit = km_limit,
     cycle_length = cycle_length)
 }
 
 #' @export
 #' @rdname define_part_surv
 define_part_surv_ <- function(pfs, os, state_names,
-                              km_limit = 0,
                               cycle_length = 1) {
   
   stopifnot(
@@ -101,17 +93,9 @@ define_part_surv_ <- function(pfs, os, state_names,
       "death"
     )),
     ! any(duplicated(names(state_names))),
-    
-    length(km_limit) %in% 1:2,
-    all(km_limit >= 0),
-    
     length(cycle_length) %in% 1:2,
     all(cycle_length > 0)
   )
-  
-  if (length(km_limit) == 1) {
-    km_limit <- rep(km_limit, 2)
-  }
   
   if (length(cycle_length) == 1) {
     cycle_length <- rep(cycle_length, 2)
@@ -121,7 +105,6 @@ define_part_surv_ <- function(pfs, os, state_names,
     pfs = pfs,
     os = os,
     state_names = state_names,
-    km_limit = km_limit,
     cycle_length = cycle_length
   )
   
@@ -137,15 +120,16 @@ get_state_names.part_surv <- function(x) {
 
 eval_transition.part_surv <- function(x, parameters) {
   
+  time_ <- c(0, parameters$markov_cycle)
+  
   pfs_dist <- lazyeval::lazy_eval(
     x$pfs, 
     data = dplyr::slice(parameters, 1)
   )
   
-  pfs_surv <- get_probs_from_surv(
+  pfs_surv <- compute_surv(
     pfs_dist,
-    cycle = parameters$markov_cycle,
-    km_limit = x$km_limit[1],
+    time = time_,
     cycle_length = x$cycle_length[1],
     type = "surv"
   )
@@ -155,14 +139,12 @@ eval_transition.part_surv <- function(x, parameters) {
     data = dplyr::slice(parameters, 1)
   )
   
-  os_surv <- get_probs_from_surv(
+  os_surv <- compute_surv(
     os_dist,
-    cycle = parameters$markov_cycle,
-    km_limit = x$km_limit[2],
+    time = time_,
     cycle_length = x$cycle_length[2],
     type = "surv"
   )
-  
   
   structure(
     list(
@@ -174,7 +156,7 @@ eval_transition.part_surv <- function(x, parameters) {
 }
 
 compute_counts.eval_part_surv <- function(x, init,
-                                          method, inflow) {
+                                          inflow) {
   
   stopifnot(
     length(x$state_names) %in% 3:4,
@@ -188,11 +170,6 @@ compute_counts.eval_part_surv <- function(x, init,
     length(init) == length(x$state_names),
     all(init[-1] == 0)
   )
-  
-  if (method != "end") {
-    warning("Currently only counting method 'end' is supported with partitioned survival models. ",
-            "Option 'method' is ignored.")
-  }
   
   res <- data.frame(
     progression_free = x$pfs_surv,

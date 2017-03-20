@@ -307,44 +307,40 @@ test_that(
     
     expect_identical(
       dim(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "end", inflow = infw)),
+        lm, init = c(10, 0), method = "end", inflow = infw) %>% 
+          heemod:::correct_counts(method = "end")),
       c(2L, 2L)
     )
     expect_identical(
       dim(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "beginning", inflow = infw)),
+        lm, init = c(10, 0), method = "beginning", inflow = infw) %>% 
+          heemod:::correct_counts(method = "beginning")),
       c(2L, 2L)
     )
     expect_identical(
       dim(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "life-table", inflow = infw)),
-      c(2L, 2L)
-    )
-    expect_identical(
-      suppressWarnings(dim(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "half-cycle", inflow = infw))),
+        lm, init = c(10, 0), method = "life-table", inflow = infw) %>% 
+          heemod:::correct_counts(method = "life-table")),
       c(2L, 2L)
     )
     
     expect_equivalent(
       unlist(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "end", inflow = infw)),
+        lm, init = c(10, 0), method = "end", inflow = infw) %>% 
+          heemod:::correct_counts(method = "end")),
       c(10, 5, 0, 5)
     )
     expect_equivalent(
       unlist(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "beginning", inflow = infw)),
+        lm, init = c(10, 0), method = "beginning", inflow = infw) %>% 
+          heemod:::correct_counts(method = "beginning")),
       c(5.00, 4.35, 5.00, 5.65)
     )
     expect_equivalent(
       unlist(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "life-table", inflow = infw)),
+        lm, init = c(10, 0), method = "life-table", inflow = infw) %>% 
+          heemod:::correct_counts(method = "life-table")),
       c(7.500, 4.675, 2.500, 5.325)
-    )
-    expect_equivalent(
-      suppressWarnings(unlist(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "half-cycle", inflow = infw))),
-      c(10.000,  6.525,  5.000,  8.475)
     )
   }
 )
