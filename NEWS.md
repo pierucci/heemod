@@ -1,4 +1,11 @@
-## heemod 0.8.0.9000
+## heemod 0.8.0.9001
+
+`heemod` can now be cited with :
+
+Filipović-Pierucci A, Zarca K and Durand-Zaleski I (2017).
+“Markov Models for Health Economic Evaluation: The R
+Package heemod.” _ArXiv e-prints_. R package version
+0.8.0, 1702.03252, <URL: https://pierucci.org/heemod>.
 
 ### Breaking changes
 
@@ -8,6 +15,13 @@
 
   * Operations on survival functions, see `vignette("j-survival")`. Thanks to [Jordan Amdahl](https://github.com/jrdnmdhl).
   * Model calibration with `calibrate_model()`. Thanks to [Matthew Wiener](https://github.com/MattWiener).
+  * State membership correction works for partitioned survival model.
+  * Custom state membership correction functions can be passed to the `method` argument of `run_model()`.
+
+### Backend changes
+
+  * Renamed memoised functions.
+  * NSE aliases (`*_`) to survival operation functions.
 
 ## heemod 0.8.0
 

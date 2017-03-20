@@ -4,7 +4,7 @@
 #' 1 cycle.
 #' 
 #' As with [define_parameters()], state values are
-#' defined sequencially. Later state definition can thus
+#' defined sequentially. Later state definition can thus
 #' only refer to values defined earlier.
 #' 
 #' For the `modify` function, existing values are 

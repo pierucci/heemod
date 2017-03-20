@@ -112,7 +112,28 @@ test_that(
         "example_multinom_params.csv",
         package = "heemod"
       )))
-    ## can't test identity because of environments, so test results
+    
+    expect_identical(
+      names(from_file$params),
+      c("p_AA", "p_AB", "p_AC", "p_AD")
+    )
+    expect_identical(
+      round(sapply(from_file$params, "[[", "expr"), 4),
+      c(p_AA = 721.0000, p_AB = 0.7240, p_AC = 0.2401, p_AD = 0.0358)
+    )
+    
+    expect_error(
+      create_parameters_from_tabular(read_file(system.file(
+        "tabular/test",
+        "example_multinom_params_dup_name.csv",
+        package = "heemod"
+      ))),
+      "some variables appear as individual parameters and in a multinomial: p_AB"
+    )
+    
+    
+    ## can't test identity of multinomial part
+    ##   because of environments, so test results
     set.seed(5)
     from_input_draws <- eval_resample(from_input, 10)
     set.seed(5)
@@ -747,3 +768,4 @@ test_that(
     )
   }
 )
+

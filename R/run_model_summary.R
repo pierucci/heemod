@@ -140,7 +140,7 @@ scale.run_model <- function(x, center = TRUE, scale = TRUE) {
 #' Compute ICER for Markov models.
 #' 
 #' Models are ordered by effectiveness and ICER are computed
-#' sequencially.
+#' sequentially.
 #' 
 #' @param x Result of [run_model()].
 #' @param strategy_order Order in which the strategies 

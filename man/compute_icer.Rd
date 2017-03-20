@@ -23,6 +23,6 @@ Compute ICER for Markov models.
 }
 \details{
 Models are ordered by effectiveness and ICER are computed
-sequencially.
+sequentially.
 }
 \keyword{internal}

@@ -306,44 +306,40 @@ test_that(
     
     expect_identical(
       dim(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "end", inflow = c(0, 0))),
+        lm, init = c(10, 0), inflow = c(0, 0)) %>% 
+          heemod:::correct_counts(method = "end")),
       c(2L, 2L)
     )
     expect_identical(
       dim(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "beginning", inflow = c(0, 0))),
+        lm, init = c(10, 0), inflow = c(0, 0)) %>% 
+          heemod:::correct_counts(method = "beginning")),
       c(2L, 2L)
     )
     expect_identical(
       dim(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "life-table", inflow = c(0, 0))),
-      c(2L, 2L)
-    )
-    expect_identical(
-      suppressWarnings(dim(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "half-cycle", inflow = c(0, 0)))),
+        lm, init = c(10, 0), inflow = c(0, 0)) %>% 
+          heemod:::correct_counts(method = "life-table")),
       c(2L, 2L)
     )
     
     expect_equivalent(
       unlist(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "end", inflow = c(0, 0))),
+        lm, init = c(10, 0), inflow = c(0, 0)) %>% 
+          heemod:::correct_counts(method = "end")),
       c(10, 5, 0, 5)
     )
     expect_equivalent(
       unlist(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "beginning", inflow = c(0, 0))),
+        lm, init = c(10, 0), inflow = c(0, 0)) %>% 
+          heemod:::correct_counts(method = "beginning")),
       c(5.00, 4.35, 5.00, 5.65)
     )
     expect_equivalent(
       unlist(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "life-table", inflow = c(0, 0))),
+        lm, init = c(10, 0), inflow = c(0, 0)) %>% 
+          heemod:::correct_counts(method = "life-table")),
       c(7.500, 4.675, 2.500, 5.325)
-    )
-    expect_equivalent(
-      suppressWarnings(unlist(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "half-cycle", inflow = c(0, 0)))),
-      c(10.000,  6.525,  5.000,  8.475)
     )
   }
 )

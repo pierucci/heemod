@@ -607,6 +607,22 @@ create_parameters_from_tabular <- function(param_defs,
     
   }
   
+  ## if there are multinomials specified, 
+  ##  fix them up in the parameters and redefine
+  param_defs_new <- 
+    modify_param_defs_for_multinomials(param_defs, psa)
+  
+  parameters <- define_parameters_(
+    lazyeval::as.lazy_dots(
+      stats::setNames(
+        as.character(lapply(param_defs_new$value, function(x) x)),
+        param_defs_new$parameter
+      ),
+      env = df_env
+    )
+  )
+  
+  
   list(
     params = parameters,
     dsa_params = dsa,
@@ -1106,3 +1122,74 @@ save_graph <- function(plot, path, file_name) {
   print(plot)
   grDevices::dev.off()
 }
+
+
+modify_param_defs_for_multinomials <- function(param_defs, psa) {
+  param_names <- param_defs[, 1]
+  multinom_pos <- grep("\\+", param_names)
+  
+  multinom_vars <-
+    lapply(multinom_pos,
+           function(i) {
+             strsplit(param_names[[i]], "+", fixed = TRUE)[[1]]
+           })
+  multinom_vars <-
+    lapply(multinom_vars, function(x) {
+      gsub("[[:space:]]", "", x)
+    })
+  
+  duplicates <- 
+    sapply(param_defs$parameter, function(x){
+      x %in% unlist(multinom_vars)
+    })
+  if(any(duplicates)){
+    stop("some variables appear as individual parameters ",
+         "and in a multinomial: ",
+         paste(param_defs$parameter[duplicates], collapse = ", ")
+         )
+  }
+  
+  multinom_counts <-
+    lapply(multinom_vars,
+           function(x) {
+             sapply(psa$list_qdist[x],
+                    function(y) {
+                      eval(expression(n),
+                           environment(y))
+                    })
+           })
+  
+  multinom_probs <- lapply(multinom_counts,
+                           function(x) {
+                             x / sum(x)
+                           })
+  
+  replacements <- 
+    lapply(multinom_probs, function(x){
+      zz <- data.frame(parameter = names(x),
+                 value = x)
+      rownames(zz) <- NULL
+      zz
+    })
+
+  ## now we need to put these where they initially appeared
+  ##   in the parameter file
+  
+  param_defs <- param_defs[, c("parameter", "value")]
+  param_defs_old <- param_defs
+  for(i in rev(seq(along = multinom_pos))){
+    this_pos <- multinom_pos[i]
+    start_index <- 1:(this_pos - 1)
+    end_index <- 
+      if(this_pos == nrow(param_defs))
+        numeric(0)
+      else
+        (this_pos + 1):nrow(param_defs)
+    param_defs <- rbind(param_defs[start_index,],
+                        replacements[[i]],
+                        param_defs[end_index,])
+    
+  }
+  param_defs
+}
+

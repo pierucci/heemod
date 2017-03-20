@@ -2,49 +2,48 @@
 % Please edit documentation in R/survival_eval.R
 \name{eval_surv}
 \alias{eval_surv}
-\alias{eval_surv_}
-\alias{eval_surv_.survfit}
-\alias{eval_surv_.flexsurvreg}
-\alias{eval_surv_.surv_model}
-\alias{eval_surv_.surv_projection}
-\alias{eval_surv_.surv_pooled}
-\alias{eval_surv_.surv_ph}
-\alias{eval_surv_.surv_aft}
-\alias{eval_surv_.surv_po}
-\alias{eval_surv_.surv_add_haz}
-\alias{eval_surv_.surv_dist}
+\alias{eval_surv.survfit}
+\alias{eval_surv.flexsurvreg}
+\alias{eval_surv.surv_model}
+\alias{eval_surv.surv_projection}
+\alias{eval_surv.surv_pooled}
+\alias{eval_surv.surv_ph}
+\alias{eval_surv.surv_aft}
+\alias{eval_surv.surv_po}
+\alias{eval_surv.surv_add_haz}
+\alias{eval_surv.surv_dist}
 \title{Evaluate Survival Distributions}
 \usage{
-eval_surv_(x, time, cycle_length = 1, type = c("prob", "surv"), ...)
+eval_surv(x, time, cycle_length = 1, type = c("prob", "surv"), ...)
 
-\method{eval_surv_}{survfit}(x, time, cycle_length = 1, type = c("prob",
+\method{eval_surv}{survfit}(x, time, cycle_length = 1, type = c("prob",
   "surv"), ...)
 
-\method{eval_surv_}{flexsurvreg}(x, time, cycle_length = 1, type = c("prob",
+\method{eval_surv}{flexsurvreg}(x, time, cycle_length = 1, type = c("prob",
   "surv"), ...)
 
-\method{eval_surv_}{surv_model}(x, time, cycle_length = 1, type = c("prob",
+\method{eval_surv}{surv_model}(x, time, cycle_length = 1, type = c("prob",
   "surv"), ...)
 
-\method{eval_surv_}{surv_projection}(x, time, cycle_length = 1,
+\method{eval_surv}{surv_projection}(x, time, cycle_length = 1,
   type = c("prob", "surv"), ...)
 
-\method{eval_surv_}{surv_pooled}(x, time, cycle_length = 1, type = c("prob",
+\method{eval_surv}{surv_pooled}(x, time, cycle_length = 1, type = c("prob",
   "surv"), ...)
 
-\method{eval_surv_}{surv_ph}(x, time, cycle_length = 1, type = c("prob",
+\method{eval_surv}{surv_ph}(x, time, cycle_length = 1, type = c("prob",
   "surv"), ...)
 
-\method{eval_surv_}{surv_aft}(x, time, cycle_length = 1, type = c("prob",
+\method{eval_surv}{surv_aft}(x, time, cycle_length = 1, type = c("prob",
   "surv"), ...)
 
-\method{eval_surv_}{surv_po}(x, time, cycle_length = 1, type = c("prob",
+\method{eval_surv}{surv_po}(x, time, cycle_length = 1, type = c("prob",
   "surv"), ...)
 
-\method{eval_surv_}{surv_add_haz}(x, time, cycle_length = 1,
-  type = c("prob", "surv"), ...)
+\method{eval_surv}{surv_add_haz}(x, time, cycle_length = 1, type = c("prob",
+  "surv"), ...)
 
-\method{eval_surv_}{surv_dist}(x, time, cycle_length = 1, type = c("prob",
+\method{eval_surv}{surv_dist}(x, time, cycle_length = 1, type = c("prob",
   "surv"), ...)
 }
 \arguments{
