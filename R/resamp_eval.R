@@ -95,8 +95,8 @@ get_cycles.psa <- function(x) {
   get_cycles(get_model(x))
 }
 
-get_init.psa <- function(x) {
-  get_init(get_model(x))
+get_uneval_init.psa <- function(x) {
+  get_uneval_init(get_model(x))
 }
 
 get_method.psa <- function(x) {

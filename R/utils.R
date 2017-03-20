@@ -283,7 +283,6 @@ to_text_dots <- function(x, name = TRUE) {
     ))
   }
   
-  
   if (name) {
     stopifnot(
       length(n) == length(ex)

@@ -85,3 +85,5 @@ eval_init <- function(x, parameters) {
   
   dplyr::mutate_(.data = parameters, .dots = x)[to_keep]
 }
+
+eval_inflow <- eval_init

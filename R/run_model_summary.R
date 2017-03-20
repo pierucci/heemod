@@ -67,7 +67,7 @@ summary.run_model <- function(object, threshold = NULL, ...) {
       res_nmb = res_nmb,
       res_nmb_strat = res_nmb_strat,
       cycles = get_cycles(object),
-      init = get_init(object),
+      init = get_uneval_init(object),
       method = get_method(object),
       frontier = get_frontier(get_model_results(object))
     ),
@@ -205,12 +205,12 @@ print.summary_run_model <- function(x, ...) {
     plur(x$cycles)
   ))
   cat("Initial state counts:\n\n")
-  print(paste(
+  cat(paste(
     to_text_dots(get_uneval_init(x)),
     collapse = "\n"
   ))
   cat(sprintf(
-    "\nCounting method: '%s'.\n\n", x$method
+    "\n\nCounting method: '%s'.\n\n", x$method
   ))
   
   print_results(x$res_values, x$res_comp, x$res_nmb)
@@ -219,7 +219,9 @@ print.summary_run_model <- function(x, ...) {
 print_results <- function(res_values, res_comp, res_nmb) {
   cat("Values:\n\n")
   rownames(res_values) <- res_values$.strategy_names
-  res_values <- dplyr::select_(res_values, ~ - .strategy_names)
+  res_values <- dplyr::select_(res_values,
+                               ~ - .strategy_names,
+                               ~ - .n_indiv)
   print(res_values)
   
   if (! is.null(res_nmb)) {

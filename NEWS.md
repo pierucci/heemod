@@ -3,6 +3,8 @@
 ## New features
 
   * Model calibration with `calibrate_model()`.
+  * `init` and `inflow` can refer to values from `define_parameters()`, and are thus accesible to PSA / DSA.
+  * `inflow` can be time-varying.
 
 # heemod 0.8.0
 

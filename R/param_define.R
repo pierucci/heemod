@@ -209,7 +209,15 @@ check_init.default <- function(x, ref) {
   
   if (is.null(names(x))) {
     names(x) <- get_state_names(ref)
+  } else if (! all(names(x) == get_state_names(ref))) {
+    stop("'init' or 'inflow' names are not all state names.")
   }
   
-  lazyeval::as.lazy_dots(lapply(x, function(x) x))
+  define_init_(lazyeval::as.lazy_dots(lapply(x, function(x) x)))
+}
+
+check_inflow <- function(x, ...) {
+  res <- check_init(x, ...)
+  structure(res,
+            class = c("uneval_inflow", class(res)))
 }

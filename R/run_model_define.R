@@ -62,6 +62,9 @@ run_model <- function(...,
   
   uneval_strategy_list <- list(...)
   
+  init <- check_init(init, uneval_strategy_list[[1]])
+  inflow <- check_inflow(inflow, uneval_strategy_list[[1]])
+  
   method <- match.arg(method)
   
   run_model_(
@@ -287,8 +290,12 @@ get_effect <- function(x) {
   get_model_results(x)$.effect
 }
 
-get_n_indiv.run_model <- function(x) {
+get_n_indiv.default <- function(x) {
   get_model_results(x)$.n_indiv
+}
+
+get_n_indiv.combined_model <- function(x) {
+  get_n_indiv.default(x)
 }
 
 #' Get Strategy Values
@@ -399,8 +406,16 @@ get_uneval_init <- function(x) {
   UseMethod("get_uneval_init")
 }
 
-get_uneval_init.run_model <- function(x) {
+get_uneval_init.default <- function(x) {
   x$init
+}
+
+get_uneval_inflow <- function(x) {
+  UseMethod("get_uneval_inflow")
+}
+
+get_uneval_inflow.default <- function(x) {
+  x$inflow
 }
 
 get_ce <- function(x) {
