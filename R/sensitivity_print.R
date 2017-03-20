@@ -12,6 +12,12 @@
 #' @param result Plot cost, effect, or ICER.
 #' @param widest_on_top logical. Should bars be sorted so
 #'   widest are on top?
+#' @param limits_by_bars logical.   Should the limits
+#'   used for each parameter be printed in the plot,
+#'   next to the bars?
+#' @param shorten_labels should we shorten the presentation
+#'   of the parameters on the plot to highlight where the
+#'   values differ?
 #' @param bw Black & white plot for publications?
 #' @param remove_ns Remove variables that are not sensitive.
 #' @param ... Additional arguments passed to `plot`.
@@ -22,6 +28,8 @@
 plot.dsa <- function(x, type = c("simple", "difference"),
                      result = c("cost", "effect", "icer"),
                      strategy = NULL, widest_on_top = TRUE,
+                     limits_by_bars = TRUE,
+                     shorten_labels = FALSE,
                      remove_ns = FALSE,
                      bw = FALSE, ...) {
   
@@ -136,6 +144,20 @@ plot.dsa <- function(x, type = c("simple", "difference"),
   
   l <- diff(range(tab[[var_plot]])) * .1
   
+  if(type == "difference")
+    tab$.strategy_names <- "difference"
+  if(shorten_labels){
+    odds <- seq(from = 1, to = nrow(tab), by = 2)
+    evens <- odds + 1
+    new_digits <- digits_at_diff(as.numeric(tab$.par_value[odds]), 
+                                 as.numeric(tab$.par_value[evens]),
+                                 addl_digits = 2)
+    tab$.par_value[odds] <- new_digits$x
+    tab$.par_value[evens] <- new_digits$y
+    if(limits_by_bars) l <- l * (1 + 0.075 * max(new_digits$nd))
+    
+  }
+  
   res <- ggplot2::ggplot(tab, ggplot2::aes_string(
     y = ".par_names",
     yend = ".par_names",
@@ -147,16 +169,19 @@ plot.dsa <- function(x, type = c("simple", "difference"),
     ggplot2::ylab("Variable") +
     ggplot2::xlab(xl) +
     ggplot2::xlim(min(tab[[var_plot]]) - l, max(tab[[var_plot]]) + l) +
-    ggplot2::geom_text(
-      ggplot2::aes_string(
-        x = var_plot,
-        y = ".par_names",
-        label = ".par_value",
-        hjust = ".hjust"
-      )
-    ) +
     ggplot2::facet_wrap(stats::as.formula("~ .strategy_names"))
   
+  if(limits_by_bars){
+    res <- res + 
+      ggplot2::geom_text(
+        ggplot2::aes_string(
+          x = var_plot,
+          y = ".par_names",
+          label = ".par_value",
+          hjust = ".hjust"
+      )
+    )
+  }
   if (bw) {
     res <- res +
       ggplot2::scale_color_grey(start = 0, end = .8) +

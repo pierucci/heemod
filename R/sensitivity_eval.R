@@ -29,10 +29,14 @@ run_dsa <- function(model, dsa) {
       model,
       strategy = n,
       newdata = dsa$dsa
-    ) 
-    res <- tab %>% 
+    )
+    extra_step <- tab %>% 
       dplyr::mutate_if(
         names(tab) %in% dsa$variables,
+        function(x){lapply(x, function(y){list(expr = lazyeval::lazy_eval(y))})})
+    res <- extra_step %>% 
+      dplyr::mutate_if(
+        names(extra_step) %in% dsa$variables,
         dplyr::funs(to_text_dots),
         name = FALSE
       )
