@@ -194,7 +194,7 @@ res_cal <- calibrate_model(
   res_mod,
   parameter_names = c("gamma", "rrNP1"),
   fn_values = extract_values,
-  target_values = c(3, 1)
+  target_values = c(2.5, 0.8)
 )
 res_cal
 ```

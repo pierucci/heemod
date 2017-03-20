@@ -82,12 +82,32 @@
     </div>
 
     <div class="contents">
-    <div id="heemod-0-8-0" class="section level1">
-<h1 class="hasAnchor">
-<a href="#heemod-0-8-0" class="anchor"> </a>heemod 0.8.0</h1>
-<div id="breaking-changes" class="section level2">
+    <div id="heemod-0-8-0-9000" class="section level2">
 <h2 class="hasAnchor">
-<a href="#breaking-changes" class="anchor"> </a>Breaking changes</h2>
+<a href="#heemod-0-8-0-9000" class="anchor"> </a>heemod 0.8.0.9000</h2>
+<div id="breaking-changes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#breaking-changes" class="anchor"> </a>Breaking changes</h3>
+<ul>
+<li>
+<code>get_probs_from_surv()</code>=&gt;<code><a href="../reference/compute_surv.html">compute_surv()</a></code>.</li>
+</ul>
+</div>
+<div id="new-features" class="section level3">
+<h3 class="hasAnchor">
+<a href="#new-features" class="anchor"> </a>New features</h3>
+<ul>
+<li>Operations on survival functions, see <code><a href="../articles/j-survival.html">vignette("j-survival")</a></code>. Thanks to <a href="https://github.com/jrdnmdhl">Jordan Amdahl</a>.</li>
+<li>Model calibration with <code><a href="../reference/calibrate_model.html">calibrate_model()</a></code>. Thanks to <a href="https://github.com/MattWiener">Matthew Wiener</a>.</li>
+</ul>
+</div>
+</div>
+    <div id="heemod-0-8-0" class="section level2">
+<h2 class="hasAnchor">
+<a href="#heemod-0-8-0" class="anchor"> </a>heemod 0.8.0</h2>
+<div id="breaking-changes-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#breaking-changes-1" class="anchor"> </a>Breaking changes</h3>
 <ul>
 <li>
 <code>strategy</code> becomes a reserved parameter name.</li>
@@ -102,11 +122,11 @@
 <code><a href="../reference/probability.html">prob_to_prob()</a></code>=&gt;<code><a href="../reference/probability.html">rescale_prob()</a></code>.</li>
 </ul>
 </div>
-<div id="new-features" class="section level2">
-<h2 class="hasAnchor">
-<a href="#new-features" class="anchor"> </a>New features</h2>
+<div id="new-features-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#new-features-1" class="anchor"> </a>New features</h3>
 <ul>
-<li>Transition probabilities from survival models with <code><a href="../reference/get_probs_from_surv.html">get_probs_from_surv()</a></code>:
+<li>Transition probabilities from survival models with <code>get_probs_from_surv()</code>:
 <ul>
 <li>Parametrically defined by <code><a href="../reference/define_survival.html">define_survival()</a></code>.</li>
 <li>Or fitted on data by the <code>flexsurv</code> package.</li>
@@ -122,9 +142,9 @@
 <li>Covariance analysis on strategy differences, more options for <code>gam()</code> fitting.</li>
 </ul>
 </div>
-<div id="other-features" class="section level2">
-<h2 class="hasAnchor">
-<a href="#other-features" class="anchor"> </a>Other features</h2>
+<div id="other-features" class="section level3">
+<h3 class="hasAnchor">
+<a href="#other-features" class="anchor"> </a>Other features</h3>
 <ul>
 <li>Convenience function <code><a href="../reference/rescale_discount_rate.html">rescale_discount_rate()</a></code>.</li>
 <li>Better error messages at parameter evaluation.</li>
@@ -135,17 +155,17 @@
 <li>New parameters can be added with <code><a href="../reference/modify.html">modify()</a></code>.</li>
 </ul>
 </div>
-<div id="backend-changes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#backend-changes" class="anchor"> </a>Backend changes</h2>
+<div id="backend-changes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#backend-changes" class="anchor"> </a>Backend changes</h3>
 <ul>
 <li>Cleaner handling of clusters.</li>
 <li>Package <code>diagram</code>, <code>Hmisc</code> and <code>logitnorm</code> moved from <code>Imports</code> to <code>Suggests</code>.</li>
 </ul>
 </div>
-<div id="bugfixes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#bugfixes" class="anchor"> </a>Bugfixes</h2>
+<div id="bugfixes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#bugfixes" class="anchor"> </a>Bugfixes</h3>
 <ul>
 <li>Fixed sevral bugs that would return incorrect efficiency frontiers in some situations, or would return duplicated strategy names in some edge cases (thanks to <a href="https://github.com/daniels4321">Vince Daniels</a>).</li>
 <li>Fixed a failure of tabular input when a column could be read as all numeric.</li>
@@ -157,38 +177,38 @@
 <li>PSA and DSA tabular files were not saved.</li>
 </ul>
 </div>
-<div id="acknowledments" class="section level2">
-<h2 class="hasAnchor">
-<a href="#acknowledments" class="anchor"> </a>Acknowledments</h2>
+<div id="acknowledments" class="section level3">
+<h3 class="hasAnchor">
+<a href="#acknowledments" class="anchor"> </a>Acknowledments</h3>
 <ul>
 <li>Thanks to <a href="https://github.com/MattWiener">Matthew Wiener</a>, especially for the survival analysis code.</li>
 </ul>
 </div>
 </div>
-    <div id="heemod-0-7-1" class="section level1">
-<h1 class="hasAnchor">
-<a href="#heemod-0-7-1" class="anchor"> </a>heemod 0.7.1</h1>
-<div id="bugfixes-1" class="section level2">
+    <div id="heemod-0-7-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bugfixes-1" class="anchor"> </a>Bugfixes</h2>
+<a href="#heemod-0-7-1" class="anchor"> </a>heemod 0.7.1</h2>
+<div id="bugfixes-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#bugfixes-1" class="anchor"> </a>Bugfixes</h3>
 <ul>
 <li>Fixed an error resulting in incorrect covariance analysis results when relations between values and parameters were negative.</li>
 </ul>
 </div>
 </div>
-    <div id="heemod-0-7-0" class="section level1">
-<h1 class="hasAnchor">
-<a href="#heemod-0-7-0" class="anchor"> </a>heemod 0.7.0</h1>
-<div id="breaking-changes-1" class="section level2">
+    <div id="heemod-0-7-0" class="section level2">
 <h2 class="hasAnchor">
-<a href="#breaking-changes-1" class="anchor"> </a>Breaking changes</h2>
+<a href="#heemod-0-7-0" class="anchor"> </a>heemod 0.7.0</h2>
+<div id="breaking-changes-2" class="section level3">
+<h3 class="hasAnchor">
+<a href="#breaking-changes-2" class="anchor"> </a>Breaking changes</h3>
 <ul>
 <li>Some plotting arguments changed (e.g. <code>type</code>=&gt;<code>results</code>).</li>
 </ul>
 </div>
-<div id="new-features-1" class="section level2">
-<h2 class="hasAnchor">
-<a href="#new-features-1" class="anchor"> </a>New features</h2>
+<div id="new-features-2" class="section level3">
+<h3 class="hasAnchor">
+<a href="#new-features-2" class="anchor"> </a>New features</h3>
 <ul>
 <li>Added covariance analysis for PSA with <code>type = "cov"</code> plot.</li>
 <li>All plotting functions can now represent multiple strategies with facets.</li>
@@ -197,9 +217,9 @@
 <li>Remove variables that are not sensitive in DSA with <code>remove_ns</code>.</li>
 </ul>
 </div>
-<div id="backend-changes-1" class="section level2">
-<h2 class="hasAnchor">
-<a href="#backend-changes-1" class="anchor"> </a>Backend changes</h2>
+<div id="backend-changes-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#backend-changes-1" class="anchor"> </a>Backend changes</h3>
 <ul>
 <li>Important object structure change (from attributes to lists).</li>
 <li>More systematic use of getter functions.</li>
@@ -212,59 +232,59 @@
 </ul>
 </div>
 </div>
-    <div id="heemod-0-6-0" class="section level1">
-<h1 class="hasAnchor">
-<a href="#heemod-0-6-0" class="anchor"> </a>heemod 0.6.0</h1>
-<div id="breaking-changes-2" class="section level2">
+    <div id="heemod-0-6-0" class="section level2">
 <h2 class="hasAnchor">
-<a href="#breaking-changes-2" class="anchor"> </a>Breaking changes</h2>
+<a href="#heemod-0-6-0" class="anchor"> </a>heemod 0.6.0</h2>
+<div id="breaking-changes-3" class="section level3">
+<h3 class="hasAnchor">
+<a href="#breaking-changes-3" class="anchor"> </a>Breaking changes</h3>
 <ul>
 <li>Base model cannot be specified anymore: it is always the least costly model.</li>
 <li>Renamed arguement <code>transition_matrix</code> =&gt; <code>transition</code> in <code><a href="../reference/define_strategy.html">define_strategy()</a></code>.</li>
 </ul>
 </div>
-<div id="new-features-2" class="section level2">
-<h2 class="hasAnchor">
-<a href="#new-features-2" class="anchor"> </a>New features</h2>
+<div id="new-features-3" class="section level3">
+<h3 class="hasAnchor">
+<a href="#new-features-3" class="anchor"> </a>New features</h3>
 <ul>
 <li>Parallel computing with <code><a href="../reference/cluster.html">use_cluster()</a></code>.</li>
 <li>Compute average values from PSA.</li>
 </ul>
 </div>
-<div id="bugfixes-2" class="section level2">
-<h2 class="hasAnchor">
-<a href="#bugfixes-2" class="anchor"> </a>Bugfixes</h2>
+<div id="bugfixes-2" class="section level3">
+<h3 class="hasAnchor">
+<a href="#bugfixes-2" class="anchor"> </a>Bugfixes</h3>
 <ul>
 <li>Acceptability curve returns probabilities at 0.</li>
 <li>Correctly identify efficiency frontier.</li>
 <li>ICER are computed on the efficiency frontier.</li>
 </ul>
 </div>
-<div id="acknowledments-1" class="section level2">
-<h2 class="hasAnchor">
-<a href="#acknowledments-1" class="anchor"> </a>Acknowledments</h2>
+<div id="acknowledments-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#acknowledments-1" class="anchor"> </a>Acknowledments</h3>
 <ul>
 <li>Thanks to <a href="https://github.com/MattWiener">Matthew Wiener</a>, <a href="https://github.com/zkabat">Zdenek Kabat</a> and <a href="https://github.com/vojtech-filipec">Vojtech Filipec</a> for their great contributions to this update.</li>
 </ul>
 </div>
 </div>
-    <div id="heemod-0-5-1" class="section level1">
-<h1 class="hasAnchor">
-<a href="#heemod-0-5-1" class="anchor"> </a>heemod 0.5.1</h1>
-<div id="bugfixes-3" class="section level2">
+    <div id="heemod-0-5-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bugfixes-3" class="anchor"> </a>Bugfixes</h2>
+<a href="#heemod-0-5-1" class="anchor"> </a>heemod 0.5.1</h2>
+<div id="bugfixes-3" class="section level3">
+<h3 class="hasAnchor">
+<a href="#bugfixes-3" class="anchor"> </a>Bugfixes</h3>
 <ul>
 <li>Added <code>formatR</code> to suggest list.</li>
 </ul>
 </div>
 </div>
-    <div id="heemod-0-5-0" class="section level1">
-<h1 class="hasAnchor">
-<a href="#heemod-0-5-0" class="anchor"> </a>heemod 0.5.0</h1>
-<div id="breaking-changes-3" class="section level2">
+    <div id="heemod-0-5-0" class="section level2">
 <h2 class="hasAnchor">
-<a href="#breaking-changes-3" class="anchor"> </a>Breaking changes</h2>
+<a href="#heemod-0-5-0" class="anchor"> </a>heemod 0.5.0</h2>
+<div id="breaking-changes-4" class="section level3">
+<h3 class="hasAnchor">
+<a href="#breaking-changes-4" class="anchor"> </a>Breaking changes</h3>
 <ul>
 <li>Some functions were renamed for clarification:
 <ul>
@@ -293,9 +313,9 @@
 </li>
 </ul>
 </div>
-<div id="new-features-3" class="section level2">
-<h2 class="hasAnchor">
-<a href="#new-features-3" class="anchor"> </a>New features</h2>
+<div id="new-features-4" class="section level3">
+<h3 class="hasAnchor">
+<a href="#new-features-4" class="anchor"> </a>New features</h3>
 <ul>
 <li>Values and probabilities can depend on state time with <code>state_cycle</code>, allowing to reproduce the results of microsimulations.</li>
 <li>
@@ -305,21 +325,21 @@
 <li>Additional output: csv files for many of the tabular results.</li>
 </ul>
 </div>
-<div id="bugfixes-4" class="section level2">
-<h2 class="hasAnchor">
-<a href="#bugfixes-4" class="anchor"> </a>Bugfixes</h2>
+<div id="bugfixes-4" class="section level3">
+<h3 class="hasAnchor">
+<a href="#bugfixes-4" class="anchor"> </a>Bugfixes</h3>
 <ul>
 <li>Edges where P=0 are not plotted anymore for transition matrices.</li>
 <li>There used to be a potential error when you wanted to save output but there had been no psa.</li>
 </ul>
 </div>
 </div>
-    <div id="heemod-0-4-0" class="section level1">
-<h1 class="hasAnchor">
-<a href="#heemod-0-4-0" class="anchor"> </a>heemod 0.4.0</h1>
-<div id="new-features-4" class="section level2">
+    <div id="heemod-0-4-0" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-features-4" class="anchor"> </a>New features</h2>
+<a href="#heemod-0-4-0" class="anchor"> </a>heemod 0.4.0</h2>
+<div id="new-features-5" class="section level3">
+<h3 class="hasAnchor">
+<a href="#new-features-5" class="anchor"> </a>New features</h3>
 <ul>
 <li>
 <code>update()</code> for heterogeneity analysis and to compute population-level values, with vignette.</li>
@@ -342,43 +362,43 @@
 <li>Smart sex code conversion for <code><a href="../reference/who-mortality.html">get_who_mr()</a></code>.</li>
 </ul>
 </div>
-<div id="bug-fixes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#bug-fixes" class="anchor"> </a>Bug fixes</h2>
+<div id="bug-fixes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"> </a>Bug fixes</h3>
 <ul>
 <li>
 <em>really</em> fixed problem when the argument to <code><a href="../reference/discount.html">discount()</a></code> was not defined as a parameter.</li>
 </ul>
 </div>
-<div id="backend-changes-2" class="section level2">
-<h2 class="hasAnchor">
-<a href="#backend-changes-2" class="anchor"> </a>Backend changes</h2>
+<div id="backend-changes-2" class="section level3">
+<h3 class="hasAnchor">
+<a href="#backend-changes-2" class="anchor"> </a>Backend changes</h3>
 <ul>
 <li>
 <code>eval_model_newdata()</code>, the function behind resampling and sensitivity analysis now returns list-variables.</li>
 </ul>
 </div>
-<div id="acknowledments-2" class="section level2">
-<h2 class="hasAnchor">
-<a href="#acknowledments-2" class="anchor"> </a>Acknowledments</h2>
+<div id="acknowledments-2" class="section level3">
+<h3 class="hasAnchor">
+<a href="#acknowledments-2" class="anchor"> </a>Acknowledments</h3>
 <ul>
 <li>Thanks to <a href="https://github.com/MattWiener">Matthew Wiener</a>, <a href="https://github.com/zkabat">Zdenek Kabat</a> and <a href="https://github.com/vojtech-filipec">Vojtech Filipec</a> for their great contributions to this update.</li>
 </ul>
 </div>
 </div>
-    <div id="heemod-0-3-3" class="section level1">
-<h1 class="hasAnchor">
-<a href="#heemod-0-3-3" class="anchor"> </a>heemod 0.3.3</h1>
-<div id="new-features-5" class="section level2">
+    <div id="heemod-0-3-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-features-5" class="anchor"> </a>New features</h2>
+<a href="#heemod-0-3-3" class="anchor"> </a>heemod 0.3.3</h2>
+<div id="new-features-6" class="section level3">
+<h3 class="hasAnchor">
+<a href="#new-features-6" class="anchor"> </a>New features</h3>
 <ul>
 <li>Added a vignette to exactly reproduce results from Decision Modelling for Health Economic Evaluation.</li>
 </ul>
 </div>
-<div id="bug-fixes-1" class="section level2">
-<h2 class="hasAnchor">
-<a href="#bug-fixes-1" class="anchor"> </a>Bug fixes</h2>
+<div id="bug-fixes-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#bug-fixes-1" class="anchor"> </a>Bug fixes</h3>
 <ul>
 <li>Fixed problem when argument to <code><a href="../reference/discount.html">discount()</a></code> was not defined as a parameter.</li>
 <li>Corrected several errors in the vignettes (thanks to <a href="https://github.com/MichaelSvm">Michael Schenkenberg</a> from SBU, Stockholm, Sweden).</li>
@@ -386,43 +406,43 @@
 </ul>
 </div>
 </div>
-    <div id="heemod-0-3-2" class="section level1">
-<h1 class="hasAnchor">
-<a href="#heemod-0-3-2" class="anchor"> </a>heemod 0.3.2</h1>
-<div id="bug-fixes-2" class="section level2">
+    <div id="heemod-0-3-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-2" class="anchor"> </a>Bug fixes</h2>
+<a href="#heemod-0-3-2" class="anchor"> </a>heemod 0.3.2</h2>
+<div id="bug-fixes-2" class="section level3">
+<h3 class="hasAnchor">
+<a href="#bug-fixes-2" class="anchor"> </a>Bug fixes</h3>
 <ul>
 <li>Fix mishandling of matrix index with <code>C</code> in <code>eval_matrix()</code> (thanks to <a href="https://github.com/MattWiener">Matthew Wiener</a>).</li>
 <li>Fix problem with upcoming version of <code>tidyr</code>.</li>
 </ul>
 </div>
 </div>
-    <div id="heemod-0-3-1" class="section level1">
-<h1 class="hasAnchor">
-<a href="#heemod-0-3-1" class="anchor"> </a>heemod 0.3.1</h1>
-<div id="backend-changes-3" class="section level2">
+    <div id="heemod-0-3-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#backend-changes-3" class="anchor"> </a>Backend changes</h2>
+<a href="#heemod-0-3-1" class="anchor"> </a>heemod 0.3.1</h2>
+<div id="backend-changes-3" class="section level3">
+<h3 class="hasAnchor">
+<a href="#backend-changes-3" class="anchor"> </a>Backend changes</h3>
 <ul>
 <li>A single set of parameters is now used for a set of models.</li>
 </ul>
 </div>
-<div id="bug-fixes-3" class="section level2">
-<h2 class="hasAnchor">
-<a href="#bug-fixes-3" class="anchor"> </a>Bug fixes</h2>
+<div id="bug-fixes-3" class="section level3">
+<h3 class="hasAnchor">
+<a href="#bug-fixes-3" class="anchor"> </a>Bug fixes</h3>
 <ul>
 <li>Correct error in probabilistic analysis vignette.</li>
 <li>Fix incompatibility with upcoming <code>dplyr</code> update.</li>
 </ul>
 </div>
 </div>
-    <div id="heemod-0-3-0" class="section level1">
-<h1 class="hasAnchor">
-<a href="#heemod-0-3-0" class="anchor"> </a>heemod 0.3.0</h1>
-<div id="new-features-6" class="section level2">
+    <div id="heemod-0-3-0" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-features-6" class="anchor"> </a>New features</h2>
+<a href="#heemod-0-3-0" class="anchor"> </a>heemod 0.3.0</h2>
+<div id="new-features-7" class="section level3">
+<h3 class="hasAnchor">
+<a href="#new-features-7" class="anchor"> </a>New features</h3>
 <ul>
 <li>
 <code>shiny</code> interface.</li>
@@ -432,12 +452,12 @@
 </ul>
 </div>
 </div>
-    <div id="heemod-0-2-0" class="section level1">
-<h1 class="hasAnchor">
-<a href="#heemod-0-2-0" class="anchor"> </a>heemod 0.2.0</h1>
-<div id="new-features-7" class="section level2">
+    <div id="heemod-0-2-0" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-features-7" class="anchor"> </a>New features</h2>
+<a href="#heemod-0-2-0" class="anchor"> </a>heemod 0.2.0</h2>
+<div id="new-features-8" class="section level3">
+<h3 class="hasAnchor">
+<a href="#new-features-8" class="anchor"> </a>New features</h3>
 <ul>
 <li>Added ability to plot matrix.</li>
 <li>Added framework for probabilistic uncertainty analysis.</li>
@@ -449,16 +469,16 @@
 <li>Plotting for sensitivity and probabilistic analysis.</li>
 </ul>
 </div>
-<div id="bug-fixes-4" class="section level2">
-<h2 class="hasAnchor">
-<a href="#bug-fixes-4" class="anchor"> </a>Bug fixes</h2>
+<div id="bug-fixes-4" class="section level3">
+<h3 class="hasAnchor">
+<a href="#bug-fixes-4" class="anchor"> </a>Bug fixes</h3>
 <ul>
 <li>added <code>*_</code> functions.</li>
 </ul>
 </div>
-<div id="removed" class="section level2">
-<h2 class="hasAnchor">
-<a href="#removed" class="anchor"> </a>Removed</h2>
+<div id="removed" class="section level3">
+<h3 class="hasAnchor">
+<a href="#removed" class="anchor"> </a>Removed</h3>
 <ul>
 <li>
 <code>run_model_newdata()</code> cannot run <code>uneval_model</code> anymore.</li>
@@ -466,9 +486,9 @@
 </ul>
 </div>
 </div>
-    <div id="heemod-0-1-0" class="section level1">
-<h1 class="hasAnchor">
-<a href="#heemod-0-1-0" class="anchor"> </a>heemod 0.1.0</h1>
+    <div id="heemod-0-1-0" class="section level2">
+<h2 class="hasAnchor">
+<a href="#heemod-0-1-0" class="anchor"> </a>heemod 0.1.0</h2>
 <ul>
 <li>Intial CRAN submission.</li>
 </ul>
@@ -480,6 +500,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#heemod-0-8-0-9000">0.8.0.9000</a></li>
         <li><a href="#heemod-0-8-0">0.8.0</a></li>
         <li><a href="#heemod-0-7-1">0.7.1</a></li>
         <li><a href="#heemod-0-7-0">0.7.0</a></li>

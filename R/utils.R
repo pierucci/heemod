@@ -402,3 +402,12 @@ to_dots.list <- function(x) {
     lapply(x, f)
   )
 }
+
+clean_factors <- function(x) {
+  for (n in names(x)) {
+    if (inherits(x[[n]], "factor")) {
+      x[[n]] <- as.character(x[[n]])
+    }
+  }
+  x
+}

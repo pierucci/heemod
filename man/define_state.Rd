@@ -30,7 +30,7 @@ Define the values characterising a Markov Model state for
 }
 \details{
 As with \code{\link[=define_parameters]{define_parameters()}}, state values are
-defined sequencially. Later state definition can thus
+defined sequentially. Later state definition can thus
 only refer to values defined earlier.
 
 For the \code{modify} function, existing values are
