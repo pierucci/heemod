@@ -210,8 +210,8 @@ scale.dsa <- function(x, center = TRUE, scale = TRUE) {
   if (scale) {
     res <- res %>% 
       dplyr::mutate_(
-        .cost = ~ .cost / sum(get_init(get_model(x))),
-        .effect = ~ .effect / sum(get_init(get_model(x)))
+        .cost = ~ .cost / .n_indiv,
+        .effect = ~ .effect / .n_indiv
       )
   }
   

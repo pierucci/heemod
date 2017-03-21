@@ -2,8 +2,7 @@ context("Heterogeneity & Demographic")
 
 test_that(
   "Demographic analysis", {
-    mod1 <-
-      define_strategy(
+    mod1 <- define_strategy(
         transition = define_transition(
           .4, .6,
           .1, .9
@@ -18,8 +17,7 @@ test_that(
         )
       )
     
-    mod2 <-
-      define_strategy(
+    mod2 <- define_strategy(
         transition = define_transition(
           .5, .5,
           .1, .9

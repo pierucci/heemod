@@ -33,10 +33,10 @@
 eval_strategy <- function(strategy, parameters, cycles, 
                           init, method, expand_limit,
                           inflow, strategy_name) {
+  
   stopifnot(
     cycles > 0,
-    length(cycles) == 1,
-    all(init >= 0)
+    length(cycles) == 1
   )
   
   uneval_transition <- get_transition(strategy)
@@ -96,16 +96,12 @@ eval_strategy <- function(strategy, parameters, cycles,
     ))
     
     for (st in to_expand) {
-      init <- insert(
-        init,
-        which(get_state_names(uneval_transition) == st),
-        rep(0, expand_limit[st])
+      init <- expand_state(
+        init, state_name = st, cycles = expand_limit[st]
       )
       
-      inflow <- insert(
-        inflow,
-        which(get_state_names(uneval_transition) == st),
-        rep(0, expand_limit[st])
+      inflow <- expand_state(
+        inflow, state_name = st, cycles = expand_limit[st]
       )
     }
     
@@ -129,6 +125,17 @@ eval_strategy <- function(strategy, parameters, cycles,
                                 cycles = cycles,
                                 strategy_name = strategy_name)
   
+  e_init <- unlist(eval_init(x = init, parameters[1, ]))
+  e_inflow <- eval_inflow(x = inflow, parameters)
+  
+  if (any(is.na(e_init)) || any(is.na(e_inflow))) {
+    stop("Missing values not allowed in 'init' or 'inflow'.")
+  }
+  
+  if (! any(e_init > 0)) {
+    stop("At least one init count must be > 0.")
+  }
+  
   states <- eval_state_list(uneval_states, parameters)
   
   transition <- eval_transition(uneval_transition,
@@ -136,8 +143,8 @@ eval_strategy <- function(strategy, parameters, cycles,
   
   count_table <- compute_counts(
     x = transition,
-    init = init,
-    inflow = inflow
+    init = e_init,
+    inflow = e_inflow
   ) %>% 
     correct_counts(method = method)
   
@@ -159,12 +166,38 @@ eval_strategy <- function(strategy, parameters, cycles,
       states = states,
       counts = count_table,
       values = values,
-      init = init,
+      e_init = e_init,
+      e_inflow = e_inflow,
+      n_indiv = sum(e_init, unlist(e_inflow)),
       cycles = cycles,
       expand_limit = expand_limit
     ),
     class = c("eval_strategy")
   )
+}
+
+get_eval_init <- function(x) {
+  UseMethod("get_eval_init")
+}
+
+get_eval_init.eval_strategy <- function(x) {
+  x$e_init
+}
+
+get_eval_inflow <- function(x) {
+  UseMethod("get_eval_inflow")
+}
+
+get_eval_inflow.eval_strategy <- function(x) {
+  x$e_inflow
+}
+
+get_n_indiv <- function(x) {
+  UseMethod("get_n_indiv")
+}
+
+get_n_indiv.eval_strategy <- function(x) {
+  x$n_indiv
 }
 
 #' Compute Count of Individual in Each State per Cycle
@@ -214,8 +247,10 @@ compute_counts.eval_matrix <- function(x, init,
     ))
   }
   
+  i <- 0
   add_and_mult <- function(x, y) {
-    (x + inflow) %*% y
+    i <<- i + 1
+    (x + unlist(inflow[i, ])) %*% y
   }
   
   list_counts <- Reduce(

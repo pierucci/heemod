@@ -10,8 +10,7 @@ test_that(
       .4, .6,
       .1, .9
     )
-    mod1 <-
-      define_strategy(
+    mod1 <- define_strategy(
         transition =  mat1,
         s1,
         define_state(
@@ -20,8 +19,7 @@ test_that(
         )
       )
     
-    mod2 <-
-      define_strategy(
+    mod2 <- define_strategy(
         transition = define_transition(
           .5, .5,
           .1, .9
@@ -61,7 +59,8 @@ test_that(
     "B"), 0.5, 0.5, 0.1, 0.9), A = define_state(cost = 789 * 
     age/10, ly = 1), B = define_state(cost = 456 * age/10, 
     ly = 1 * age/200)), parameters = define_parameters(age_init = 60, 
-    age = age_init + markov_cycle), init = c(1, 0), cycles = 10, 
+    age = age_init + markov_cycle), init = define_init(A = 1L, 
+    B = 0L), inflow = define_inflow(A = 0L, B = 0L), cycles = 10, 
     method = "beginning", cost = cost, effect = ly)')
     expect_identical(
       formatR::tidy_source(
@@ -74,7 +73,8 @@ test_that(
     "B"), 0.5, 0.5, 0.1, 0.9), A = define_state(cost = 789 * 
     age/10, ly = 1), B = define_state(cost = 456 * age/10, 
     ly = 1 * age/200)), parameters = define_parameters(age_init = 60, 
-    age = age_init + markov_cycle), init = c(1, 0), cycles = 10, 
+    age = age_init + markov_cycle), init = define_init(A = 1L, 
+    B = 0L), inflow = define_inflow(A = 0L, B = 0L), cycles = 10, 
     method = "beginning", cost = cost, effect = ly)'
     )
     expect_identical(
@@ -82,7 +82,8 @@ test_that(
         text = get_code(res, sub = TRUE), width.cutoff = 57,
         output = FALSE)$text.tidy,
       'run_model(I = m_i, II = m_ii, parameters = define_parameters(age_init = 60, 
-    age = age_init + markov_cycle), init = c(1, 0), cycles = 10, 
+    age = age_init + markov_cycle), init = define_init(A = 1L, 
+    B = 0L), inflow = define_inflow(A = 0L, B = 0L), cycles = 10, 
     method = "beginning", cost = cost, effect = ly)'
     )
     expect_identical(
