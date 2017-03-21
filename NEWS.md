@@ -1,4 +1,4 @@
-## heemod 0.8.0.9001
+## heemod 0.8.0.9002
 
 `heemod` can now be cited with :
 
@@ -6,6 +6,10 @@ Filipović-Pierucci A, Zarca K and Durand-Zaleski I (2017).
 “Markov Models for Health Economic Evaluation: The R
 Package heemod.” _ArXiv e-prints_. R package version
 0.8.0, 1702.03252, <URL: https://pierucci.org/heemod>.
+
+  * Model calibration with `calibrate_model()`.
+  * `init` and `inflow` can refer to values from `define_parameters()`, and are thus accesible to PSA / DSA.
+  * `inflow` can be time-varying.
 
 ### Breaking changes
 

@@ -92,7 +92,7 @@ combine_models <- function(newmodels, weights, oldmodel) {
       eval_strategy_list = list_eval_models, 
       eval_model_list = list_eval_models, 
       parameters = get_parameters(oldmodel),
-      init = get_init(oldmodel),
+      init = get_uneval_init(oldmodel),
       cycles = get_cycles(oldmodel),
       method = get_method(oldmodel),
       ce = get_ce(oldmodel),
@@ -126,8 +126,11 @@ get_noncomparable_strategy.combined_model <- function(x, ...) {
 get_parameters.combined_model <- function(x) {
   get_parameters(get_oldmodel(x))
 }
-get_init.combined_model <- function(x) {
-  get_init(get_oldmodel(x))
+get_uneval_init.combined_model <- function(x) {
+  get_uneval_init(get_oldmodel(x))
+}
+get_eval_init.combined_model <- function(x) {
+  get_eval_init(get_oldmodel(x))
 }
 get_cycles.combined_model <- function(x) {
   get_cycles(get_oldmodel(x))
