@@ -271,7 +271,7 @@ test_that(
     )
     
     expect_equivalent(
-      get_init(rm),
+      get_eval_init(get_eval_strategy_list(rm)[[1]]),
       c(1000, 0)
     )
     

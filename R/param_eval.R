@@ -79,3 +79,11 @@ eval_parameters <- function(x, cycles = 1,
     class = c("eval_parameters", class(res))
   )
 }
+
+eval_init <- function(x, parameters) {
+  to_keep <- names(x)
+  
+  dplyr::mutate_(.data = parameters, .dots = x)[to_keep]
+}
+
+eval_inflow <- eval_init
