@@ -273,12 +273,15 @@ clean_factors <- function(x) {
 
 to_text_dots <- function(x, name = TRUE) {
   n <- names(x)
-  ex <- unlist(lapply(
-    x,
-    function(y) if (any(is.na(y))) NA else
-      deparse(y$expr, width.cutoff = 500L)
-  ))
-  
+  ex <- if (is.atomic(x)) {
+    format(x)
+  } else {
+    unlist(lapply(
+      x,
+      function(y) if (any(is.na(y))) NA else
+        deparse(y$expr, width.cutoff = 500L)
+    ))
+  }
   
   if (name) {
     stopifnot(
