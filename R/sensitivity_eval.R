@@ -80,7 +80,7 @@ run_dsa <- function(model, dsa) {
       model = model,
       resolved_newdata = resolved_newdata
     ),
-    class = c("dsa", class(res))
+    class = c("dsa", "list")
   )
 }
 

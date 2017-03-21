@@ -106,19 +106,8 @@ plot.dsa <- function(x, type = c("simple", "difference"),
       ) %>%
       dplyr::select(-.extra_vars) %>%
       dplyr::arrange(., .par_names, .strategy_names)
-    save_class <- class(x)
-    class(x) <- "list"
     x$dsa <- temp
-    class(x) <- save_class
   }                    
-  # else{
-  #   save_class <- class(x)
-  #   class(x) <- "list"
-  #   x$dsa <- dplyr::filter(x$dsa, .par_names %in% x$variables) %>%
-  #     dplyr::mutate(.par_value = to_text_dots(.$.par_value, name = FALSE)
-  #   )
-  #   class(x) <- save_class
-  # }
 
   tab <- summary(x, center = FALSE)$res_comp %>% 
     dplyr::left_join(
@@ -288,13 +277,10 @@ scale.dsa <- function(x, center = TRUE, scale = TRUE) {
 
 #' @export
 summary.dsa <- function(object, ...) {
-  save_class <- class(object)
-  class(object) <- "list"
   object$dsa  <- dplyr::filter(object$dsa, .par_names %in% object$variables) %>%
     dplyr::mutate(.par_value = to_text_dots(.$.par_value, name = FALSE)
     )
-  class(object) <- save_class
-  
+
   res <- object %>% 
     scale(...) %>% 
     dplyr::group_by_(~ .par_names, ~ .par_value)  %>% 
