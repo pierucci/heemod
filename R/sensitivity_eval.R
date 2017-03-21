@@ -3,13 +3,15 @@
 #' @param model An evaluated Markov model.
 #' @param dsa An object returned by 
 #'   [define_dsa()].
+#' @param resolve_labels logical. should expressions that will eventually be
+#'   used as labels when the dsa is plotted be resolved to values?
 #'   
 #' @return A `data.frame` with one row per model and 
 #'   parameter value.
 #' @export
 #' 
 #' @example inst/examples/example_run_dsa.R
-run_dsa <- function(model, dsa) {
+run_dsa <- function(model, dsa, resolve_labels = FALSE) {
   
   if (! all(c(".cost", ".effect") %in% names(get_model_results(model)))) {
     stop("No cost and/or effect defined, sensitivity analysis unavailable.")
@@ -30,13 +32,34 @@ run_dsa <- function(model, dsa) {
       strategy = n,
       newdata = dsa$dsa
     )
-    extra_step <- tab %>% 
+    if(resolve_labels){
+      resolved_newdata <-
+        eval_newdata(new_parameters = tab[, names(tab) %in% dsa$variables],
+                     strategy = model$uneval_strategy_list[[n]],
+                     old_parameters = get_parameters(model),
+                     cycles = 1,
+                     init = get_init(model),
+                     method = get_method(model),
+                     inflow = get_inflow(model),
+                     strategy_name = n,
+                     expand_limit = get_expand_limit(model, n))$parameters
+
+      for(this_col in dsa$variables){
+        tab[, this_col][[1]] <-
+          lapply(tab[, this_col][[1]],
+                 function(x){
+                   if(inherits(x, "lazy")){
+                      x <- list(expr = lazy_eval(x, resolved_newdata))
+                   }
+                 x
+                 }
+          )
+
+      }
+    }
+     res <- tab %>%
       dplyr::mutate_if(
         names(tab) %in% dsa$variables,
-        function(x){lapply(x, function(y){list(expr = lazyeval::lazy_eval(y))})})
-    res <- extra_step %>% 
-      dplyr::mutate_if(
-        names(extra_step) %in% dsa$variables,
         dplyr::funs(to_text_dots),
         name = FALSE
       )
