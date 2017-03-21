@@ -6,8 +6,8 @@
 \usage{
 \method{plot}{dsa}(x, type = c("simple", "difference"), result = c("cost",
   "effect", "icer"), strategy = NULL, widest_on_top = TRUE,
-  limits_by_bars = TRUE, shorten_labels = FALSE, remove_ns = FALSE,
-  bw = FALSE, ...)
+  limits_by_bars = TRUE, resolve_labels = FALSE, shorten_labels = FALSE,
+  remove_ns = FALSE, bw = FALSE, ...)
 }
 \arguments{
 \item{x}{A result of \code{\link[=run_dsa]{run_dsa()}}.}
@@ -25,7 +25,10 @@ widest are on top?}
 used for each parameter be printed in the plot,
 next to the bars?}
 
-\item{shorten_labels}{should we shorten the presentation
+\item{resolve_labels}{logical. Should we resolve all labels
+to numbers instead of expressions (if there are any)?}
+
+\item{shorten_labels}{logical. should we shorten the presentation
 of the parameters on the plot to highlight where the
 values differ?}
 

@@ -15,7 +15,9 @@
 #' @param limits_by_bars logical.   Should the limits
 #'   used for each parameter be printed in the plot,
 #'   next to the bars?
-#' @param shorten_labels should we shorten the presentation
+#' @param resolve_labels logical. Should we resolve all labels
+#'   to numbers instead of expressions (if there are any)?
+#' @param shorten_labels logical. should we shorten the presentation
 #'   of the parameters on the plot to highlight where the
 #'   values differ?
 #' @param bw Black & white plot for publications?
@@ -29,6 +31,7 @@ plot.dsa <- function(x, type = c("simple", "difference"),
                      result = c("cost", "effect", "icer"),
                      strategy = NULL, widest_on_top = TRUE,
                      limits_by_bars = TRUE,
+                     resolve_labels = FALSE,
                      shorten_labels = FALSE,
                      remove_ns = FALSE,
                      bw = FALSE, ...) {
@@ -91,6 +94,32 @@ plot.dsa <- function(x, type = c("simple", "difference"),
     }
   )
   
+  if(resolve_labels){
+
+    temp <- x$dsa %>%
+      dplyr::mutate(.extra_vars = x$resolved_newdata[.strategy_names]) %>% 
+      dplyr::mutate(.par_value = mapply(function(val, extra_vars){
+        #list(expr = 
+      list(expr = lazyeval::lazy_eval(val, extra_vars))
+      #)
+        }, .par_value, .extra_vars, SIMPLIFY = FALSE)
+      ) %>%
+      dplyr::select(-.extra_vars) %>%
+      dplyr::arrange(., .par_names, .strategy_names)
+    save_class <- class(x)
+    class(x) <- "list"
+    x$dsa <- temp
+    class(x) <- save_class
+  }                    
+  # else{
+  #   save_class <- class(x)
+  #   class(x) <- "list"
+  #   x$dsa <- dplyr::filter(x$dsa, .par_names %in% x$variables) %>%
+  #     dplyr::mutate(.par_value = to_text_dots(.$.par_value, name = FALSE)
+  #   )
+  #   class(x) <- save_class
+  # }
+
   tab <- summary(x, center = FALSE)$res_comp %>% 
     dplyr::left_join(
       summary(model_ref, center = FALSE)$res_comp %>%
@@ -133,6 +162,9 @@ plot.dsa <- function(x, type = c("simple", "difference"),
       )
   }
   
+  
+  
+  
   if (widest_on_top) {
     tab$.par_names <- stats::reorder(
       tab$.par_names,
@@ -143,6 +175,8 @@ plot.dsa <- function(x, type = c("simple", "difference"),
   }
   
   l <- diff(range(tab[[var_plot]])) * .1
+  
+  
   
   if(type == "difference")
     tab$.strategy_names <- "difference"
@@ -254,6 +288,13 @@ scale.dsa <- function(x, center = TRUE, scale = TRUE) {
 
 #' @export
 summary.dsa <- function(object, ...) {
+  save_class <- class(object)
+  class(object) <- "list"
+  object$dsa  <- dplyr::filter(object$dsa, .par_names %in% object$variables) %>%
+    dplyr::mutate(.par_value = to_text_dots(.$.par_value, name = FALSE)
+    )
+  class(object) <- save_class
+  
   res <- object %>% 
     scale(...) %>% 
     dplyr::group_by_(~ .par_names, ~ .par_value)  %>% 

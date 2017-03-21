@@ -4,16 +4,13 @@
 \alias{run_dsa}
 \title{Run Sensitivity Analysis}
 \usage{
-run_dsa(model, dsa, resolve_labels = FALSE)
+run_dsa(model, dsa)
 }
 \arguments{
 \item{model}{An evaluated Markov model.}
 
 \item{dsa}{An object returned by
 \code{\link[=define_dsa]{define_dsa()}}.}
-
-\item{resolve_labels}{logical. should expressions that will eventually be
-used as labels when the dsa is plotted be resolved to values?}
 }
 \value{
 A \code{data.frame} with one row per model and

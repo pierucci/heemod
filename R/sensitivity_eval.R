@@ -3,15 +3,12 @@
 #' @param model An evaluated Markov model.
 #' @param dsa An object returned by 
 #'   [define_dsa()].
-#' @param resolve_labels logical. should expressions that will eventually be
-#'   used as labels when the dsa is plotted be resolved to values?
-#'   
 #' @return A `data.frame` with one row per model and 
 #'   parameter value.
 #' @export
 #' 
 #' @example inst/examples/example_run_dsa.R
-run_dsa <- function(model, dsa, resolve_labels = FALSE) {
+run_dsa <- function(model, dsa) {
   
   if (! all(c(".cost", ".effect") %in% names(get_model_results(model)))) {
     stop("No cost and/or effect defined, sensitivity analysis unavailable.")
@@ -23,6 +20,7 @@ run_dsa <- function(model, dsa, resolve_labels = FALSE) {
   strategy_names <- get_strategy_names(model)
   
   list_res <- list()
+  resolved_newdata <- list()
   for (n in strategy_names) {
     message(sprintf(
       "Running DSA on strategy '%s'...", n
@@ -32,9 +30,12 @@ run_dsa <- function(model, dsa, resolve_labels = FALSE) {
       strategy = n,
       newdata = dsa$dsa
     )
-    if(resolve_labels){
-      resolved_newdata <-
-        eval_newdata(new_parameters = tab[, names(tab) %in% dsa$variables],
+      this_resolved_newdata <-
+        tab[, names(tab) %in% dsa$variables] %>%
+        dplyr::rowwise() %>%
+        dplyr::do_(., x = 
+
+        ~ eval_newdata(new_parameters = .,
                      strategy = model$uneval_strategy_list[[n]],
                      old_parameters = get_parameters(model),
                      cycles = 1,
@@ -43,30 +44,19 @@ run_dsa <- function(model, dsa, resolve_labels = FALSE) {
                      inflow = get_inflow(model),
                      strategy_name = n,
                      expand_limit = get_expand_limit(model, n))$parameters
+        ) %>%
+        dplyr::ungroup() 
 
-      for(this_col in dsa$variables){
-        tab[, this_col][[1]] <-
-          lapply(tab[, this_col][[1]],
-                 function(x){
-                   if(inherits(x, "lazy")){
-                      x <- list(expr = lazy_eval(x, resolved_newdata))
-                   }
-                 x
-                 }
-          )
-
-      }
-    }
-     res <- tab %>%
-      dplyr::mutate_if(
-        names(tab) %in% dsa$variables,
-        dplyr::funs(to_text_dots),
-        name = FALSE
-      )
+     res <- tab
     list_res <- c(
       list_res,
       list(res)
     )
+    resolved_newdata <- c(
+      resolved_newdata,
+      list(this_resolved_newdata)
+    )
+    names(resolved_newdata)[length(resolved_newdata)] <- n
   }
   
   for (i in seq_along(strategy_names)) {
@@ -87,7 +77,8 @@ run_dsa <- function(model, dsa, resolve_labels = FALSE) {
     list(
       dsa = res,
       variables = dsa$variables,
-      model = model
+      model = model,
+      resolved_newdata = resolved_newdata
     ),
     class = c("dsa", class(res))
   )
