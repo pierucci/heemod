@@ -25,7 +25,7 @@ test_that(
     expect_identical(get_counts(get_model(result_1core$dsa)),
                      get_counts(get_model(result_2core$dsa)))
     ## demographic analysis
-    expect_equal(result_1core$demographics$updated_model,
-                 result_2core$demographics$updated_model)
+    expect_equivalent(result_1core$demographics$updated_model[-3],
+                      result_2core$demographics$updated_model[-3])
   }
 )

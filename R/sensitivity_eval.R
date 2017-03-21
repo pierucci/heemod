@@ -14,7 +14,7 @@ run_dsa <- function(model, dsa) {
     stop("No cost and/or effect defined, sensitivity analysis unavailable.")
   }
   
-  init <- get_init(model)
+  init <- get_uneval_init(model)
   cycles <- get_cycles(model)
   method <- get_method(model)
   strategy_names <- get_strategy_names(model)
