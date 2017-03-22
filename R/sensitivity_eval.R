@@ -39,7 +39,7 @@ run_dsa <- function(model, dsa) {
                      strategy = model$uneval_strategy_list[[n]],
                      old_parameters = get_parameters(model),
                      cycles = 1,
-                     init = get_init(model),
+                     init = get_uneval_init(model),
                      method = get_method(model),
                      inflow = get_inflow(model),
                      strategy_name = n,
@@ -54,7 +54,7 @@ run_dsa <- function(model, dsa) {
     )
     resolved_newdata <- c(
       resolved_newdata,
-      list(this_resolved_newdata)
+      this_resolved_newdata$x[1]
     )
     names(resolved_newdata)[length(resolved_newdata)] <- n
   }
