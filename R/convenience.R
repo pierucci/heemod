@@ -188,7 +188,6 @@ utility_by_time_from_death.run_model <-
 #'   \code{age_start_change_per_cycle}.
 #' @param min_val minimum value the interpolation can take on.
 #'
-#' @details  
 #' @return a function that calculates the decline in efficacy
 #'   based on cycle and, if specified, patient age at the
 #'   start of a simulation.
@@ -507,4 +506,73 @@ least_cost <- function(x) {
 }
 
 
+#' Cost of administration for an intravenous treatment
+#'
+#' @param iv_time The infusion time, in units compatible with the costs
+#' @param cost_first_unit cost for the first time unit
+#' @param cost_addl_units cost for the second time unit
+#'
+#' @return the cost
+#'
+#' @examples
+#' cost_iv_administration(0.5, 100, 20) # = 50
+#' cost_iv_administration(1.5, 100, 20) # = 110
+cost_iv_administration <- 
+  function(iv_time, cost_first_unit, cost_addl_units){
+    pmin(iv_time, 1) * cost_first_unit + 
+      pmax(iv_time - 1, 0) * cost_addl_units
+    
+  }
+
+
+#' Cost of administration for an intravenous treatment
+#'
+#' @param data_table a data frame; see details
+#' @param compound the name of the compound
+#'
+#' @details `data_table` must have columns `compound`, `param`,
+#'   and `value`.   The required values are found in `data_table`
+#'   using [look_up()].
+#' @return  the cost
+#' @export
+#'
+#' @examples
+#' exampleParams <- 
+#'   data.frame(compound = "X", 
+#'   param = c("cost_admin_first_hr", "cost_admin_addl_hr",
+#'             "iv_time_hr"),
+#'   value = c(100, 20, 1.5))
+#'   cost_iv_compound_administration(exampleParams, "X")
+cost_iv_compound_administration <- 
+  function(data_table, compound,
+           time_col = "iv_time_hr",
+           first_cost_col = "cost_admin_first_hr",
+           addl_cost_col = "cost_admin_addl_hr")
+    {
+    stopifnot(all(c("compound", "param", "value") %in%
+                names(data_table)))
+    if(!(compound %in% unique(data_table$compound)))
+      stop(compound, 
+           " not present in 'compound' column of data_table")
+    all_cols <- c(time_col, first_cost_col, addl_cost_col)
+    cols_present <- all_cols %in% unique(data_table$param)
+    if(!all(cols_present))
+      stop("columns", 
+           paste(all_cols[!cols_present], sep = ","),
+           "are not in data_table"
+      )
+  iv_time <- 
+    look_up(data_table, compound = compound, 
+            param = time_col, value = "value"
+            )
+  cost_first_unit <- 
+    look_up(data_table, compound = compound, 
+            param = first_cost_col, value = "value"
+            )
+  cost_addl_units <- 
+    look_up(data_table, compound = compound, 
+            param = addl_cost_col, value = "value"
+            )
+  cost_iv_administration(iv_time, cost_first_unit, cost_addl_units)
+}
 
