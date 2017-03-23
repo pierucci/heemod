@@ -17,8 +17,8 @@
 #' things) the user to check whether the calibration gets 
 #' the same results from different starting points.
 #' 
-#' Multi-dimensionnal problems are optimized with 
-#' [optimx::optimx()], 1-dimensionnal problems with 
+#' Multi-dimensional problems are optimized with 
+#' [optimx::optimx()], 1-dimensional problems with 
 #' [stats::optimise()] (except when a `method` is given).
 #' `convcode` is always `NA` with [stats::optimise()].
 #' 
@@ -212,7 +212,7 @@ fn_calibrate.run_model <- function(x, parameter_names,
   new_model <- run_model_(
     parameters = parameters,
     uneval_strategy_list = get_uneval_strategy_list(x),
-    init = get_init(x),
+    init = get_uneval_init(x),
     cycles = get_cycles(x),
     method = get_method(x),
     cost = get_ce_cost(x),
@@ -241,7 +241,7 @@ fn_calibrate.updated_model <- function(x, parameter_names,
   new_model <- run_model_(
     parameters = parameters,
     uneval_strategy_list = get_uneval_strategy_list(x),
-    init = get_init(x),
+    init = get_uneval_init(x),
     cycles = get_cycles(x),
     method = get_method(x),
     cost = get_ce_cost(x),

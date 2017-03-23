@@ -2,9 +2,12 @@
 % Please edit documentation in R/survival_operations.R
 \name{project}
 \alias{project}
+\alias{project_}
 \title{Project Beyond a Survival Distribution with Another}
 \usage{
 project(..., at)
+
+project_(dots, at)
 }
 \arguments{
 \item{...}{Survival distributions to be used in the
@@ -12,13 +15,15 @@ projection.}
 
 \item{at}{A vector of times corresponding to the cut
 point(s) to be used.}
+
+\item{dots}{Used to work around non-standard evaluation.}
 }
 \value{
 A \code{surv_projection} object.
 }
 \description{
 Project survival from a survival distribution using one
-or survival distributions using the specified cut points.
+or more survival distributions using the specified cut points.
 }
 \examples{
 

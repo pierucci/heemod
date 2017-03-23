@@ -14,8 +14,6 @@ compute_counts(x, ...)
 model states. Number of individuals in each model state
 at the beginning.}
 
-\item{method}{Counting method.}
-
 \item{inflow}{numeric vector, similar to \code{init}.
 Number of new individuals in each state per cycle.}
 }

@@ -104,7 +104,7 @@ define_part_surv_ <- function(pfs, os, state_names,
     length(cycle_length) %in% 1:2,
     all(cycle_length > 0)
   )
-
+  
   if (length(cycle_length) == 1) {
     cycle_length <- rep(cycle_length, 2)
   }
@@ -128,6 +128,8 @@ get_state_names.part_surv <- function(x) {
 
 eval_transition.part_surv <- function(x, parameters) {
   
+  time_ <- c(0, parameters$markov_cycle)
+  
   pfs_dist <- lazyeval::lazy_eval(
     x$pfs, 
     data = dplyr::slice(parameters, 1)
@@ -135,7 +137,7 @@ eval_transition.part_surv <- function(x, parameters) {
   
   pfs_surv <- compute_surv(
     pfs_dist,
-    time = parameters$markov_cycle - 1,
+    time = time_,
     cycle_length = x$cycle_length[1],
     type = "surv"
   )
@@ -147,11 +149,10 @@ eval_transition.part_surv <- function(x, parameters) {
   
   os_surv <- compute_surv(
     os_dist,
-    time = parameters$markov_cycle - 1,
+    time = time_,
     cycle_length = x$cycle_length[2],
     type = "surv"
   )
-  
   
   structure(
     list(
@@ -163,7 +164,7 @@ eval_transition.part_surv <- function(x, parameters) {
 }
 
 compute_counts.eval_part_surv <- function(x, init,
-                                          method, inflow) {
+                                          inflow) {
   
   stopifnot(
     length(x$state_names) %in% 3:4,
@@ -177,11 +178,6 @@ compute_counts.eval_part_surv <- function(x, init,
     length(init) == length(x$state_names),
     all(init[-1] == 0)
   )
-  
-  if (method != "end") {
-    warning("Currently only counting method 'end' is supported with partitioned survival models. ",
-            "Option 'method' is ignored.")
-  }
   
   res <- data.frame(
     progression_free = x$pfs_surv,

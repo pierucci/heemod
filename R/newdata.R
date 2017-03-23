@@ -25,7 +25,7 @@ eval_strategy_newdata <- function(x, strategy = 1, newdata) {
   strategy <- check_strategy_index(x = x, i = strategy)
   
   cycles <- get_cycles(x)
-  init <- get_init(x)
+  init <- get_uneval_init(x)
   inflow <- get_inflow(x)
   method <- get_method(x)
   old_parameters <- get_parameters(x)

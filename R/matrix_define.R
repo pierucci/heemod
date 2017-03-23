@@ -60,6 +60,7 @@ define_transition <- function(..., state_names) {
 }
 
 #' @rdname define_transition
+#' @export
 define_transition_ <- function(.dots, state_names) {
   
   n <- sqrt(length(.dots))

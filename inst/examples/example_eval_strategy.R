@@ -14,12 +14,12 @@ mod <- define_strategy(
 )
 
 heemod:::eval_strategy(
-  mod,
-  param,
-  init = c(10, 5),
+  strategy = mod,
+  parameters = param,
+  init = define_init(A = 10, B = 5),
   cycles = 5,
   method = "end",
-  inflow = c(0, 0),
+  inflow = define_inflow(A = 0, B = 0),
   strategy_name = "A",
   expand_limit = c(A = 5, B = 5)
 )

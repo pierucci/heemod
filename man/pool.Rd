@@ -2,15 +2,20 @@
 % Please edit documentation in R/survival_operations.R
 \name{pool}
 \alias{pool}
+\alias{pool_}
 \title{Pool Two or More Survival Distributions}
 \usage{
 pool(..., weights = 1)
+
+pool_(dots, weights = 1)
 }
 \arguments{
 \item{...}{Survival distributions to be used in the
 projection.}
 
 \item{weights}{A vector of weights used in pooling.}
+
+\item{dots}{Used to work around non-standard evaluation.}
 }
 \value{
 A \code{surv_pooled} object.

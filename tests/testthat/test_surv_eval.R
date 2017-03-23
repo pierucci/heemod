@@ -447,7 +447,7 @@ test_that(
     expect_equal(fs2_weighted1_prob, fs2_weighted2_prob)
     
     # Should also give a warning
-    expect_warning(
+    expect_message(
       fs3 %>% compute_surv(time=seq_len(10), cycle_length=100, type="prob"),
       "No covariates provided, returning aggregate survial across all subjects."
     )

@@ -53,8 +53,7 @@ run_model <- function(...,
                       parameters = define_parameters(),
                       init = c(1000L, rep(0L, get_state_number(get_states(list(...)[[1]])) - 1)),
                       cycles = 1,
-                      method = c("life-table", "beginning", "end",
-                                 "half-cycle"),
+                      method = "life-table",
                       cost = NULL, effect = NULL,
                       state_time_limit = NULL,
                       central_strategy = NULL,
@@ -62,7 +61,8 @@ run_model <- function(...,
   
   uneval_strategy_list <- list(...)
   
-  method <- match.arg(method)
+  init <- check_init(init, uneval_strategy_list[[1]])
+  inflow <- check_inflow(inflow, uneval_strategy_list[[1]])
   
   run_model_(
     uneval_strategy_list = uneval_strategy_list,
@@ -146,38 +146,6 @@ run_model_ <- function(uneval_strategy_list,
     stop("State value names differ between models.")
   }
   
-  if (! length(init) == get_state_number(uneval_strategy_list[[1]])) {
-    stop(sprintf(
-      "Length of 'init' vector (%i) differs from number of states (%i).",
-      length(init),
-      get_state_number(uneval_strategy_list[[1]])
-    ))
-  }
-  
-  if (! any(init > 0)) {
-    stop("At least one init count must be > 0.")
-  }
-  
-  if (is.null(names(init))) {
-    names(init) <- get_state_names(uneval_strategy_list[[1]])
-  }
-  
-  if (! all(sort(names(init)) == sort(get_state_names(uneval_strategy_list[[1]])))) {
-    stop("Names of 'init' vector differ from state names.")
-  }
-  
-  if (! length(inflow) == get_state_number(uneval_strategy_list[[1]])) {
-    stop(sprintf(
-      "Length of 'inflow' vector (%i) differs from number of states (%i).",
-      length(inflow),
-      get_state_number(uneval_strategy_list[[1]])
-    ))
-  }
-  
-  if (! all(names(inflow) == names(init))) {
-    stop("Names of 'inflow' must be similar to 'init'.")
-  }
-  
   state_time_limit <- complete_stl(
     state_time_limit,
     state_names = get_state_names(uneval_strategy_list[[1]]),
@@ -202,7 +170,7 @@ run_model_ <- function(uneval_strategy_list,
   
   list_res <- lapply(eval_strategy_list, get_total_state_values)
   
-  for (n in strategy_names){
+  for (n in strategy_names) {
     list_res[[n]]$.strategy_names <- n
   }
   
@@ -259,6 +227,7 @@ get_total_state_values <- function(x) {
   res <- as.list(colSums((x$values)[- 1]))
   class(res) <- "data.frame"
   attr(res, "row.names") <- c(NA, -1)
+  res$.n_indiv <- get_n_indiv(x)
   res
 }
 
@@ -316,6 +285,14 @@ get_central_strategy.run_model <- function(x, ...) {
 
 get_effect <- function(x) {
   get_model_results(x)$.effect
+}
+
+get_n_indiv.default <- function(x) {
+  get_model_results(x)$.n_indiv
+}
+
+get_n_indiv.combined_model <- function(x) {
+  get_n_indiv.default(x)
 }
 
 #' Get Strategy Values
@@ -422,12 +399,20 @@ get_counts.list <- function(x, ...) {
   x$counts
 }
 
-get_init <- function(x) {
-  UseMethod("get_init")
+get_uneval_init <- function(x) {
+  UseMethod("get_uneval_init")
 }
 
-get_init.run_model <- function(x) {
+get_uneval_init.default <- function(x) {
   x$init
+}
+
+get_uneval_inflow <- function(x) {
+  UseMethod("get_uneval_inflow")
+}
+
+get_uneval_inflow.default <- function(x) {
+  x$inflow
 }
 
 get_ce <- function(x) {

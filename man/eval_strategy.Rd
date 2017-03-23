@@ -25,8 +25,8 @@ at the beginning.}
 \item{expand_limit}{A named vector of state expansion
 limits.}
 
-\item{inflow}{Numeric vector, similar to \code{init}.
-Number of new individuals in each state per cycle.}
+\item{inflow}{Numeric vector, similar to \code{init}. Number
+of new individuals in each state per cycle.}
 
 \item{strategy_name}{Name of the strategy.}
 }
@@ -42,10 +42,7 @@ evaluated version of the objects and the count of
 individual per state per model cycle.
 }
 \details{
-\code{init} need not be integer. E.g. specifying a vector
-of type \code{c(A = 1, B = 0, C = 0, ...)} returns the
-probabilities for an individual starting in state A to be
-in each state, per cycle.
+\code{init} need not be integer. E.g. \code{c(A = 1, B = 0.5, C = 0.1, ...)}.
 }
 \examples{
 param <- define_parameters(
@@ -64,12 +61,12 @@ mod <- define_strategy(
 )
 
 heemod:::eval_strategy(
-  mod,
-  param,
-  init = c(10, 5),
+  strategy = mod,
+  parameters = param,
+  init = define_init(A = 10, B = 5),
   cycles = 5,
   method = "end",
-  inflow = c(0, 0),
+  inflow = define_inflow(A = 0, B = 0),
   strategy_name = "A",
   expand_limit = c(A = 5, B = 5)
 )
