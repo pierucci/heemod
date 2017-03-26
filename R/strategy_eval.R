@@ -287,24 +287,31 @@ compute_counts.eval_matrix <- function(x, init,
 #'   state value and one row per cycle.
 #'   
 #' @keywords internal
-compute_values <- function(states, counts) {
+## slightly harder to read than the original version, but much faster
+## identical results to within a little bit of numerical noise
+compute_values <- function(states, counts){
+  states_names <- get_state_names.default(states)
+  state_values_names <- get_state_value_names.eval_state_list(states)
+  num_cycles <- nrow(counts)
   
-  states_names <- get_state_names(states)
-  state_values_names <- get_state_value_names(states)
+  dims <- c(num_cycles, length(state_values_names), length(states_names))
   
-  res <- data.frame(
-    markov_cycle = states[[1]]$markov_cycle
-  )
-  # bottleneck!
-  for (state_value in state_values_names) {
-    res[state_value] <- 0
-    
-    for (state in states_names) {
-      res[state_value] <-
-        res[state_value] +
-        counts[, state] * 
-        states[[state]][, state_value]
-    }
-  }
-  res
+  zz <- array(unlist(states), dim = dims + c(0, 1, 0))
+  
+  ## now drop markov_cycles
+  mc_col <- match("markov_cycle", names(states[[1]]))
+  zz2 <- zz[, -mc_col, , drop = FALSE]
+  
+  ## arrange the counts into the correct shape (making sure they're
+  ##   in the same order as the states)
+  counts_mat <- array(unlist(counts[, states_names]), dim = dims[c(1, 3, 2)])
+  counts_mat <- aperm(counts_mat, c(1, 3, 2))
+  
+  ## multiply and sum, then turn into a data frame
+  res1 <- rowSums(zz2 * counts_mat, dims = 2)
+  res2 <- data.frame(markov_cycle = states[[1]]$markov_cycle, res1)
+  names(res2)[-1] <- state_values_names
+  
+  res2
+  
 }
