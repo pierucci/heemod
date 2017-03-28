@@ -513,7 +513,7 @@ least_cost <- function(x) {
 #' @param cost_addl_units cost for the second time unit
 #'
 #' @return the cost
-#'
+#' @export
 #' @examples
 #' cost_iv_administration(0.5, 100, 20) # = 50
 #' cost_iv_administration(1.5, 100, 20) # = 110
@@ -529,7 +529,8 @@ cost_iv_administration <-
 #'
 #' @param data_table a data frame; see details
 #' @param compound the name of the compound
-#'
+#' @param time_col,first_cost_col,addl_cost_col column names
+#'   in data_table
 #' @details `data_table` must have columns `compound`, `param`,
 #'   and `value`.   The required values are found in `data_table`
 #'   using [look_up()].
