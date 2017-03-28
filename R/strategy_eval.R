@@ -289,29 +289,29 @@ compute_counts.eval_matrix <- function(x, init,
 #' @keywords internal
 ## slightly harder to read than the original version, but much faster
 ## identical results to within a little bit of numerical noise
-compute_values <- function(states, counts){
-  states_names <- get_state_names.default(states)
-  state_values_names <- get_state_value_names.eval_state_list(states)
+compute_values <- function(states, counts) {
+
+  states_names <- heemod:::get_state_names.default(states)
+  state_values_names <- heemod:::get_state_value_names.eval_state_list(states)
   num_cycles <- nrow(counts)
-  
+
+  ## combine the list of states into a single large array
   dims <- c(num_cycles, length(state_values_names), length(states_names))
-  
-  zz <- array(unlist(states), dim = dims + c(0, 1, 0))
-  
-  ## now drop markov_cycles
+  dims2 <- dims + c(0, 1, 0)
+  state_val_array <- array(unlist(states), dim = dims2)
+
+  ## get rid of markov_cycle
   mc_col <- match("markov_cycle", names(states[[1]]))
-  zz2 <- zz[, -mc_col, , drop = FALSE]
-  
-  ## arrange the counts into the correct shape (making sure they're
-  ##   in the same order as the states)
+  state_val_arra <- state_val_array[, -mc_col,]
+
+  ## put counts into a similar large array
   counts_mat <- array(unlist(counts[, states_names]), dim = dims[c(1, 3, 2)])
   counts_mat <- aperm(counts_mat, c(1, 3, 2))
-  
-  ## multiply and sum, then turn into a data frame
-  res1 <- rowSums(zz2 * counts_mat, dims = 2)
-  res2 <- data.frame(markov_cycle = states[[1]]$markov_cycle, res1)
+
+  vals_x_counts <- state_val_array * counts_mat
+  wtd_sums <- rowSums(vals_x_counts, dims = 2)
+  res2 <- data.frame(markov_cycle = states[[1]]$markov_cycle, wtd_sums)
   names(res2)[-1] <- state_values_names
-  
+
   res2
-  
 }
