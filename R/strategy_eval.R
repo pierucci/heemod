@@ -291,8 +291,8 @@ compute_counts.eval_matrix <- function(x, init,
 ## identical results to within a little bit of numerical noise
 compute_values <- function(states, counts) {
 
-  states_names <- heemod:::get_state_names.default(states)
-  state_values_names <- heemod:::get_state_value_names.eval_state_list(states)
+  states_names <- get_state_names.default(states)
+  state_values_names <- get_state_value_names.eval_state_list(states)
   num_cycles <- nrow(counts)
 
   ## combine the list of states into a single large array
@@ -302,7 +302,7 @@ compute_values <- function(states, counts) {
 
   ## get rid of markov_cycle
   mc_col <- match("markov_cycle", names(states[[1]]))
-  state_val_arra <- state_val_array[, -mc_col,]
+  state_val_array <- state_val_array[, -mc_col, , drop = FALSE]
 
   ## put counts into a similar large array
   counts_mat <- array(unlist(counts[, states_names]), dim = dims[c(1, 3, 2)])
