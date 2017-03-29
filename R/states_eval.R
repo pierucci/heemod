@@ -54,7 +54,7 @@ discount_hack <- function(.dots) {
     } else if (is.call(x)) {
       if (discount_check(x[[1]], env)) {
         x <- pryr::standardise_call(x)
-        x$x <- substitute((.x * rep(1, n())), list(.x = x$x))
+        x$x <- substitute((.x * rep(x = 1, times = n())), list(.x = x$x))
       }
       as.call(lapply(x, f, env = env))
     } else if (is.pairlist(x)) {
@@ -83,7 +83,14 @@ discount_hack <- function(.dots) {
 
 # Ensure only heemod version of discount gets used
 discount_check <- function(x, env) {
-  if (identical(x, quote(discount))) {
+  if (identical(x, quote(discount)) ||
+      identical(x, quote(heemod::discount))) {
+    if (identical(x, quote(heemod::discount)) &&
+        (packageVersion("dplyr") <= "0.5" ||
+         packageVersion("lazyeval") <= "0.2")) {
+      warning("Install the development version of 'lazyeval' and 'dplyr' ",
+              'to avoid the error \'could not find function "n"\'.')
+    }
     if (identical(environment(eval(x, envir = env)),
                   asNamespace("heemod"))) {
       TRUE
