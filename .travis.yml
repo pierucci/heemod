@@ -13,6 +13,9 @@ branches:
     - /^hotfix\/.*$/
     - /^release\/.*$/
 
+r_github_packages:		
+  - hadley/devtools
+
 r_packages:
   - covr
 
