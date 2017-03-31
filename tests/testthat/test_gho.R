@@ -26,16 +26,32 @@ test_that(
       country = "FRA",
       year = 2015
     )
-    res_pooled <- get_who_mr(
+    res_nosex <- get_who_mr(
       age = 0:99,
-      sex = rep(c("MLE", "FMLE"), 50),
       country = "FRA",
-      pool = TRUE
+      year = 2015
     )
-    res_pooled_nosex <- get_who_mr(
+    res_global <- get_who_mr(
       age = 0:99,
+      region = "GLOBAL",
+      year = 2015
+    )
+    res_fra_global <- get_who_mr(
+      age = 0:99,
+      region = "GLOBAL",
       country = "FRA",
-      pool = TRUE
+      year = 2015
+    )
+    res_eur <- get_who_mr(
+      age = 0:99,
+      region = "EUR",
+      year = 2015
+    )
+    res_eur_fmle <- get_who_mr(
+      age = 0:99,
+      sex = "FMLE",
+      region = "EUR",
+      year = 2015
     )
     
     expect_identical(
@@ -47,13 +63,26 @@ test_that(
       res_2015
     )
     expect_identical(
-      res_pooled,
-      res_pooled_nosex
-    )
-    expect_identical(
-      round(head(res_pooled), 5),
+      round(head(res_nosex), 5),
       c(0.00356, 2e-04, 2e-04, 2e-04, 2e-04, 7e-05)
     )
+    expect_identical(
+      round(head(res_global), 5),
+      c(0.03282, 0.00282, 0.00282, 0.00282, 0.00282, 0.00125)
+    )
+    expect_identical(
+      res_fra_global,
+      res_nosex
+    )
+    expect_identical(
+      round(head(res_eur), 5),
+      c(0.00801, 0.00033, 0.00033, 0.00033, 0.00033, 0.00021)
+    )
+    expect_identical(
+      round(head(res_eur_fmle), 5),
+      c(0.00712, 0.00030, 0.00030, 0.00030, 0.00030, 0.00018)
+    )
+    
     expect_error(
       get_who_mr(age = -2, sex = rep(c("MLE", "FMLE"), 50),
                  country = "FRA"))
@@ -72,12 +101,6 @@ test_that(
     expect_error(
       suppressWarnings(get_who_mr(age = 0:99, sex = rep(c("MLE", "FMLE"), 50),
                  country = "FRA", year = 2050)))
-    expect_error(
-      get_who_mr(
-        age = 0:99,
-        country = "FRA"
-      )
-    )
   })
 
 test_that(
@@ -159,8 +182,8 @@ test_that(
 
 test_that(
   "Local data works", {
-    mr_aus_p <- get_who_mr(10, sex = "FMLE", country = "AUS",
-                         local = TRUE, pool = TRUE)
+    mr_aus_p <- get_who_mr(10, country = "AUS",
+                         local = TRUE)
     mr_aus <- get_who_mr(10, sex = "FMLE", country = "AUS",
                            local = TRUE)
     
