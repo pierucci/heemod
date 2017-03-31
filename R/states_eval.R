@@ -86,8 +86,8 @@ discount_check <- function(x, env) {
   if (identical(x, quote(discount)) ||
       identical(x, quote(heemod::discount))) {
     if (identical(x, quote(heemod::discount)) &&
-        (packageVersion("dplyr") <= "0.5" ||
-         packageVersion("lazyeval") <= "0.2")) {
+        (utils::packageVersion("dplyr") <= "0.5" ||
+         utils::packageVersion("lazyeval") <= "0.2")) {
       warning("Install the development version of 'lazyeval' and 'dplyr' ",
               'to avoid the error \'could not find function "n"\'.')
     }
