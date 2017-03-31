@@ -308,6 +308,7 @@ compute_values <- function(states, counts) {
   counts_mat <- array(unlist(counts[, states_names]), dim = dims[c(1, 3, 2)])
   counts_mat <- aperm(counts_mat, c(1, 3, 2))
 
+  # multiply, sum, and add markov_cycle back in
   vals_x_counts <- state_val_array * counts_mat
   wtd_sums <- rowSums(vals_x_counts, dims = 2)
   res2 <- data.frame(markov_cycle = states[[1]]$markov_cycle, wtd_sums)
