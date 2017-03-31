@@ -17,10 +17,10 @@
 #' @param sex sex as `"FMLE"`-`"MLE"`, 
 #'   `0`-`1` (male = 0, female = 1) or 
 #'   `1`-`2` (male = 1, female = 2).
+#' @param region Region code. Assumed NULL if provided along with `country`
 #' @param country Country code (see details).
 #' @param year Use data from that year. Defaults to 
 #'   `"latest"`.
-#' @param pool Pool female and male mortality rates?
 #' @param local Fetch mortality data from package cached 
 #'   data?
 #'   
@@ -35,18 +35,21 @@
 #'   0, 1
 #' )
 #' 
-get_who_mr_memo <- function(age, sex = NULL, country,
-                            year = "latest", pool = FALSE,
-                            local = FALSE) {
-  if (is.null(sex) && ! pool) {
-    stop("'sex' must be provided for non-pooled results.")
+get_who_mr_memo <- function(age, sex = NULL, region = NULL, country = NULL,
+                            year = "latest", local = FALSE) {
+  if (is.null(region) & is.null(country)){
+    message('Assuming region == "GLOBAL"')
+    region <- "GLOBAL"
+  } else if (!is.null(region) & !is.null(country)){
+    region <- NULL
   }
-  if (! local) {
+  if (!local) {
     message("Fetching mortality data from WHO server.")
     mr_data <- try(get_gho_mr(
+      sex = sex,
+      region = region,
       country = country,
-      year = as.character(year),
-      pool = pool
+      year = as.character(year)
     ), silent = TRUE)
     
     if (inherits(mr_data, "try-error"))
@@ -58,7 +61,7 @@ get_who_mr_memo <- function(age, sex = NULL, country,
     mr_data <- get_package_mr(
       country = country,
       year = as.character(year),
-      pool = pool
+      pool = is.null(sex)
     )
   }
   
@@ -66,10 +69,13 @@ get_who_mr_memo <- function(age, sex = NULL, country,
     AGEGROUP =  trans_age_gho(age)
   )
   
-  if (! pool) {
+  if (!is.null(sex)) {
     ref_data$SEX <- trans_sex_gho(sex)
   }
-  
+  if (!is.null(country)) {
+    ref_data$COUNTRY <- country
+  }
+
   suppressMessages({
     dplyr::left_join(
       ref_data,
@@ -85,13 +91,16 @@ get_who_mr <- memoise::memoise(
   ~ memoise::timeout(options()$heemod.memotime)
 )
 
-get_gho_mr <- function(country, year, pool) {
+get_gho_mr <- function(sex, region, country, year) {
   mr_data <- rgho::get_gho_data(
     dimension = "GHO",
     code = "LIFE_0000000029",
-    filter = list(
-      COUNTRY = country
-    )
+    filter = as.list(
+      c(
+        REGION = if(!is.null(region)) region,
+        COUNTRY = if(!is.null(country)) country
+      )
+    ) 
   )
   
   years <- unique(mr_data$YEAR)
@@ -100,10 +109,10 @@ get_gho_mr <- function(country, year, pool) {
     study_year <- max(years)
     message(sprintf("Using latest year: %s", study_year))
     
-  } else if (! year %in% years) {
+  } else if (!year %in% years) {
     stop(sprintf(
-      "Mortality data for YEAR '%s' not available for COUNTRY '%s'.",
-      year, country
+      "Mortality data for YEAR '%s' not available",
+      year
     ))
   } else {
     study_year <- year
@@ -111,44 +120,64 @@ get_gho_mr <- function(country, year, pool) {
   
   mr_data_year <- mr_data[mr_data$YEAR == study_year, ]
   
-  if (nrow(mr_data_year) != 44) {
+  if (nrow(mr_data_year) %% 44 != 0) {
     stop("Strange GHO mortality data.")
   }
   
-  if (pool) {
+  if (is.null(country) | is.null(sex)) {
     mr_data_year <- pool_data(mr_data_year,
-                              country, study_year)
+                              sex,
+                              region, 
+                              country, 
+                              study_year)
   }
   
   mr_data_year
 }
 
-pool_data <- function(mr_data, country, year) {
+pool_data <- function(mr_data, sex, region, country, year) {
   pop_data <- rgho::get_gho_data(
     dimension = "GHO",
     code = "LIFE_0000000031",
-    filter = list(
-      COUNTRY = country,
-      YEAR = year
-    )
+    filter = as.list(
+      c(
+        YEAR = year,
+        REGION = if(!is.null(region)) region,
+        COUNTRY = if (!is.null(country)) country
+      )
+    ) 
   )
   
   if (nrow(pop_data) == 0) {
     stop("No population structure for the selected year, cannot pool rates.")
   }
-  if (nrow(pop_data) != 44) {
+  if (nrow(pop_data) %% 44 != 0) {
     stop("Strange population structure data.")
   }
-  
+  exists_col_country <- "COUNTRY" %in% colnames(pop_data)
+  cols <- c("AGEGROUP", "SEX", "REGION", if (exists_col_country) "COUNTRY")
   suppressMessages({
-    pop_data %>% 
-      dplyr::select_(
-        "AGEGROUP", "SEX",
-        weight = ~ Numeric
+    pop_weight <- pop_data %>% 
+      dplyr::select(
+        one_of(cols),
+        weight = Numeric
       ) %>% 
-      dplyr::left_join(mr_data) %>% 
-      dplyr::group_by_("AGEGROUP") %>% 
-      dplyr::summarise_(
+      dplyr::left_join(mr_data)
+    
+    if(exists_col_country && length(unique(pop_weight$COUNTRY)) > 1){
+      pop_weight <<- dplyr::filter(pop_weight, !is.na(COUNTRY))
+    }
+    
+    
+    pop_group <- if ((is.null(country) | !exists_col_country) & is.null(sex)){
+      dplyr::group_by_(pop_weight, "AGEGROUP")
+    } else if (is.null(sex)){
+      dplyr::group_by_(pop_weight, "AGEGROUP", "COUNTRY")
+    } else if (is.null(country) | !exists_col_country){
+      dplyr::group_by_(pop_weight, "AGEGROUP", "SEX")
+    } 
+    dplyr::summarise_(
+        pop_group,
         Numeric = ~ sum(Numeric * weight) / sum(weight)
       )
   })

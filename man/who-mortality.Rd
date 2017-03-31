@@ -6,11 +6,11 @@
 \alias{get_who_mr}
 \title{Use WHO Mortality Rate}
 \usage{
-get_who_mr_memo(age, sex = NULL, country, year = "latest", pool = FALSE,
-  local = FALSE)
+get_who_mr_memo(age, sex = NULL, region = NULL, country = NULL,
+  year = "latest", local = FALSE)
 
-get_who_mr(age, sex = NULL, country, year = "latest", pool = FALSE,
-  local = FALSE)
+get_who_mr(age, sex = NULL, region = NULL, country = NULL,
+  year = "latest", local = FALSE)
 }
 \arguments{
 \item{age}{age as a continuous variable.}
@@ -19,12 +19,12 @@ get_who_mr(age, sex = NULL, country, year = "latest", pool = FALSE,
 \code{0}-\code{1} (male = 0, female = 1) or
 \code{1}-\code{2} (male = 1, female = 2).}
 
+\item{region}{Region code. Assumed NULL if provided along with \code{country}}
+
 \item{country}{Country code (see details).}
 
 \item{year}{Use data from that year. Defaults to
 \code{"latest"}.}
-
-\item{pool}{Pool female and male mortality rates?}
 
 \item{local}{Fetch mortality data from package cached
 data?}
