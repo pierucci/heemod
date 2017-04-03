@@ -8,7 +8,8 @@ survival_from_data(base_dir, surv_dir, data_files = NULL, fit_files = NULL,
   fit_names = NULL, time_col_name = "time", censor_col_name = "status",
   treatment_col_name = "treatment", fit_metric = "AIC", best_only = TRUE,
   dists = c("exp", "weibull", "lnorm", "gamma", "gompertz", "gengamma"),
-  use_envir = NULL, save_fits = TRUE, just_load = FALSE)
+  use_envir = NULL, save_fits = TRUE, just_load = FALSE,
+  set_definitions = NULL)
 }
 \arguments{
 \item{base_dir}{base directory for the analysis.}
@@ -36,6 +37,8 @@ be returned?}
 
 \item{just_load}{If TRUE, data files are ignored in favor of loading fits
 from \code{fit_files}}
+
+\item{set_definitions}{definitions of different subsets to fit}
 }
 \value{
 A list with two elements:  \itemize{

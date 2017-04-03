@@ -62,8 +62,11 @@ The function `partitioned_survival_from_tabular` fits the survival models
 to data.
 Here we use `save_fits = TRUE`; it is also possible to set `save_fits = FALSE`
 to obtain the fits in R without saving them to a file. The specification file
-will be used again to run the economic model, but to create the fits it need
-only the `survivalInformation field`. If desired, the rest of the fields can be
+will be used again to run the economic model, but to create the fits it needs
+only the `tm` field. `tm` stands for "transition matrix", because the `heemod` package
+initially took only Markov transition matrices; now it can take the information
+to specify partitioned survival models also - in this case, the survival information
+file just discussed.  If desired, the rest of the fields can be
 added later.
 
 The distributions currently used for survival fits are exponential, Weibull, lognormal, gamma, Gompertz, and generalized gamma. If fitting fails for some distribution, `heemod` will note the error and continue, so results will be available for the other distributional assumptions.
@@ -83,7 +86,7 @@ names(temp1)
 ```
 
 ```{r}
-sapply_matrix(temp1$OS2.fit, "[[", "AIC")
+sapply_matrix(temp1$OS2.fit$all, "[[", "AIC")
 ```
 `heemod` does not automatically choose a distribution to use in the survival model - the modeler must choose the most appropriate distribution for each set of survival data.
 
@@ -106,11 +109,14 @@ If we define `use_fits` as
 ```{r define_fits}
 use_fits_file <- file.path(base_dir, "use_fits_example0.csv")
 use_fits <- heemod:::read_file(use_fits_file)
+use_fits
 ```
 
 then the analysis will use an exponential survival model for overall survival for both strategies, but will use the gamma survival model for progression-free survival for A, and a lognormal survival model for progression-free survival for B.
 
-The same specification file that was used for survival_fits_from_tabular can be used for run_model_tabular. run_model_tabular uses the information in the specification file to pick up the desired fits from those created earlier. No survival fitting happens when running  run_model_tabular, only selection.  The selection is governed by the `use_fits` element of the reference file.
+We can also use `fit('km')` to get the Kaplan-Meier curve for a given fit.
+
+The same specification file that was used for `survival_fits_from_tabular` can be used for `run_model_tabular`. `run_model_tabular` uses the information in the specification file to pick up the desired fits from those created earlier. No survival fitting happens when running  run_model_tabular, only selection.  The selection is governed by the `use_fits` element of the reference file.
 
 In this example, we’ve used a different choice. Here is the use_fits element of this file:
 ```{r}
@@ -125,8 +131,7 @@ surv_example <- run_model_tabular(base_dir, spec_file,
                                   run_psa = FALSE, run_demo = FALSE,
                                   save = FALSE, overwrite= FALSE)
 ```
-Note that we got a warning here because partitioned survival models do not use the “method” element.
-But the model has run as requested:
+The model has run as requested:
 ```{r fig.width=8, fig.height=5}
 plot(surv_example$model_runs)
 ```
