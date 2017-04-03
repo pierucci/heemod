@@ -30,6 +30,7 @@ construct_survival <-
     ## if we have something of the form fit_matrix("exp") on a line
     ##   with .strategy A and .type os, replace it with
     ##   fit_matrix[["exp", "A"]]$os.
+    ## 'A' would be in .strategy, 'os' would be in .type
     
     surv_def$dist <-
       lapply(seq(along = surv_def$dist), function(i) {
@@ -39,16 +40,23 @@ construct_survival <-
           res <- surv_def[i, "dist"]
         else{
           this_dist <- as.character(surv_def[i, "dist"])
-          this_strategy <- as.character(surv_def[i, ".strategy"][[1]])
-          this_type <- as.character(surv_def[i, ".type"][[1]])
+          this_strategy <- as.character(surv_def[[i, ".strategy"]])
+          this_type <- as.character(surv_def[[i, ".type"]])
+          if(".subset" %in% names(surv_def))
+            this_subset <- as.character(surv_def[[i, ".subset"]])
+          else
+            this_subset <- "all"
           res <-
             gsub("fit\\((.*)\\)",
-                 "fit_matrix[[\\1, zrw1]]\\$zrw2",
+                 "fit_matrix[[zrw3]][[\\1, zrw1]]\\$zrw2",
                  this_dist)
           res <-
             gsub("zrw1", paste("'", this_strategy, "'", sep = ""), res)
           res <- gsub("zrw2", this_type, res)
           res <- gsub("fit_matrix", fit_matrix_name, res)
+          res <- gsub("zrw3", 
+                      paste("'", this_subset, "'", sep = ""), 
+                      res)
           ## res <- parse(text = res)
         }
         res

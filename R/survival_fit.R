@@ -44,7 +44,7 @@ survival_fits_from_ref_struc <- function(ref, df_env = new.env(),
                    surv_ref_full_file)
   
   ## does some error checking
-  si <- get_survival_input(read_file(surv_ref_full_file)) 
+  si <- get_survival_input(read_file(surv_ref_full_file), location) 
   
   ## load or fit survival models into the environment
   survival_from_data(location, 
@@ -60,7 +60,8 @@ survival_fits_from_ref_struc <- function(ref, df_env = new.env(),
                      best_only = FALSE,
                      use_envir = df_env,
                      save_fits = save_fits,
-                     just_load = just_load)
+                     just_load = just_load,
+                     set_definitions = si$set_definitions)
 }
 
 #' @export
@@ -111,27 +112,40 @@ part_survs_from_surv_inputs <-  function(surv_inputs, state_names){
   os_fit_ind <- grep("os", fit_names, ignore.case = TRUE)
   pfs_fit_ind <- grep("pfs", fit_names, ignore.case = TRUE)
 
-  pieces <- seq_len(length(surv_inputs[[pfs_fit_ind]]))
+  
+  ## the pieces of surv_inputs[[pfs_fit_ind]] and 
+  ##   surv_inputs[[os_fit_ind]] are now the different
+  ##   subsets; within each of thos
+  
+  subsets <- names(surv_inputs[[pfs_fit_ind]])
+  pieces <- seq_len(length(surv_inputs[[pfs_fit_ind]][[1]]))
   
   part_survs <-
-    lapply(pieces, function(this_piece) {
-      define_part_surv(
-        pfs = surv_inputs[[pfs_fit_ind]][[this_piece]],
-        os = surv_inputs[[os_fit_ind]][[this_piece]],
-        state_names = state_names
+    lapply(subsets, function(this_subset){
+      
+      this_subset_part_surv <- 
+        lapply(pieces, function(this_piece) {
+          define_part_surv(
+            pfs = surv_inputs[[pfs_fit_ind]][[this_subset]][[this_piece]],
+            os = surv_inputs[[os_fit_ind]][[this_subset]][[this_piece]],
+            state_names = state_names
       )
     })
-  
-  dim(part_survs) <- dim(surv_inputs[[pfs_fit_ind]])
-  dimnames(part_survs) <- dimnames(surv_inputs[[pfs_fit_ind]])
-  class(part_survs) <- c("part_surv_mat", "matrix")
+      dim(this_subset_part_surv) <- 
+        dim(surv_inputs[[pfs_fit_ind]][[this_subset]])
+      dimnames(this_subset_part_surv) <- 
+        dimnames(surv_inputs[[pfs_fit_ind]][[this_subset]])
+      class(this_subset_part_surv) <- c("part_surv_mat", "matrix")
+      this_subset_part_surv
+    })
+  names(part_survs) <- subsets
   part_survs
 }
 
 
 #' Make sure survival inputs have the correct formats
-#'
-#' @param surv_ref - data frame with survival data information
+#' @param location base directory for the analysis
+#' @param surv_ref data frame with survival data information
 #'
 #' @details For survival analysis, we need, for each condition
 #'   (frequently progression-free survival and overall survival)
@@ -158,7 +172,7 @@ part_survs_from_surv_inputs <-  function(surv_inputs, state_names){
 #' @return a list with elements \itemize{\item{fit_files},
 #'   \item{fit_names}, \item{surv_data_files}, \item{fit_metric}}.
 #'
-get_survival_input <- function(surv_ref) {
+get_survival_input <- function(surv_ref, location = NULL) {
   
   if(! identical(names(surv_ref), c("data", "val")))
     stop(
@@ -202,6 +216,18 @@ get_survival_input <- function(surv_ref) {
   if(length(dists_index) ==1)
     dists <- surv_ref[dists_index, "val"]
   
+  set_definitions <- NULL
+  sets_index <- grep("sets", surv_ref$data)
+  if(length(sets_index) > 1)
+    stop("can have only one entry containing 'sets' ",
+         "in the survival information file.")
+  if(length(sets_index) == 1){
+    set_definitions <- read_file(file.path(location,
+                                surv_data_dir,
+                                surv_ref[sets_index, "val"]
+                                )
+    )
+  }
   surv_data_indices <- grep("surv_data_file", surv_ref$data)
   fit_file_indices <- grep("fit_file", surv_ref$data)
   fit_name_indices <- grep("fit_name", surv_ref$data)
@@ -271,7 +297,8 @@ get_survival_input <- function(surv_ref) {
       time_col_name = time_col_name,
       censor_col_name = censor_col_name,
       treatment_col_name = treatment_col_name,
-      dists = dists
+      dists = dists,
+      set_definitions = set_definitions
     )
   )
   
@@ -295,6 +322,7 @@ get_survival_input <- function(surv_ref) {
 #' @param save_fits should fits be saved to disk?  Can be useful for testing.
 #' @param just_load If TRUE, data files are ignored in favor of loading fits
 #'    from `fit_files`
+#' @param set_definitions definitions of different subsets to fit
 #' @return A list with two elements:  \itemize{
 #'    \item{`best_models`, 
 #'    a list with the fits for each data file passed in; and} 
@@ -331,7 +359,8 @@ survival_from_data <-
                      "gompertz", "gengamma"),
            use_envir = NULL,
            save_fits = TRUE,
-           just_load = FALSE){
+           just_load = FALSE,
+           set_definitions = NULL){
     
     if(length(data_files) == 0 & length(fit_files) == 0)
       stop("must specify at least one of data_files or fit_files")
@@ -339,6 +368,11 @@ survival_from_data <-
        length(fit_files) != length(fit_names))
       stop(paste("must specify the same number of fit_files and",
                  "fit_names if any fit_names are specified."))
+
+    if(is.null(set_definitions)) 
+      set_definitions <- data.frame(set_name = "all",
+                         condition = "TRUE",
+                         stringsAsFactors = FALSE)
     
     if(!is.null(base_dir))
       full_path <- file.path(base_dir, surv_dir)
@@ -367,20 +401,35 @@ survival_from_data <-
           this_data
         }
         else{
-          surv_models <- f_fit_survival_models(this_data,
-                                               dists = dists,
-                                               time_col_name = time_col_name, 
-                                               censor_col_name = censor_col_name, 
-                                               treatment_col_name = treatment_col_name,
-                                               covariate_col_names = NULL, 
-                                               fit_indiv_groups = TRUE)
-          if(best_only)
-            apply(surv_models, 2, f_get_best_surv_model, 
-                  metric = fit_metric)
-          else
-            surv_models
+          surv_models <- 
+            lapply(seq(along = set_definitions$set_name), function(this_set){
+              subset_data <- 
+                this_data %>% filter_(.dots = strsplit(set_definitions[this_set, "condition"],
+                                                       ",")[[1]])
+              these_surv_fits <- 
+                f_fit_survival_models(subset_data, #this_data,
+                                  dists = dists,
+                                  time_col_name = time_col_name, 
+                                  censor_col_name = censor_col_name, 
+                                  treatment_col_name = treatment_col_name,
+                                  covariate_col_names = NULL, 
+                                  fit_indiv_groups = TRUE)
+            
+            if(best_only)
+              res <- apply(these_surv_fits, 2, f_get_best_surv_model, 
+                           metric = fit_metric)
+            else
+              res <- these_surv_fits
+            attr(res, "set_definition") <- set_definitions[[this_set, "condition"]]
+            res
+              }
+            )
+          names(surv_models) <- set_definitions$set_name
+          attr(surv_models, "set_definitions") <- set_definitions
+          surv_models
         }
-      })
+      }
+      )
       ## best_dists <- lapply(best_models, dist_from_fits)
       if(length(fit_files) > 0 & save_fits == TRUE){
         ## eventually may want a different format for saving these
@@ -574,16 +623,21 @@ f_get_best_surv_model <-
 
 #' recombine elements from different part_surv ojects
 #'
-#' @param fit_matrix a matrix of partitioned survival 
+#' @param fit_matrix a list.   See details.  
+#' @param choices a list specifying which fits to use; see below.
+#' @param ... additional named arguments when using `combine_part_surv`;
+#'   see below.
+#' @param subset the subset of data for which you want fits
+#' @details 
+#' 
+#'  `fit_matrix` is a list, with each element corresponding to a subset
+#'  of the data that was fit.  
+#'  Each element contains amatrix of partitioned survival 
 #'   (`part_surv`) objects, generally
 #'   from `partitioned_survival_from_tabular`.
 #'   Each row corresponding to a distribution and each column
 #'   to a group or condition for which a partitioned survival object
 #'   was created.
-#' @param choices a list specifying which fits to use; see below.
-#' @param ... additional named arguments when using `combine_part_surv`;
-#'   see below.
-#' @details 
 #'   The `choices` argument in `choose_part_surv_` and the
 #'   `...` argument in `choose_part_surv` specify which elements of which fit
 #'   survival objects to combine.  
@@ -594,7 +648,6 @@ f_get_best_surv_model <-
 #'   must be a distribution type (a distribution used in the survival
 #'   fit).   Each name should be one of the groups 
 #'   or subgroups; that is, a column name of `fit_matrix`. 
-#'   
 #'
 #' @return a list of partitioned survival objects
 #' @export
@@ -614,18 +667,23 @@ f_get_best_surv_model <-
 #' ## the Weibull fit for overall survival; for B, use the exponential
 #' ## and lognormal fits respectively.
 #' combine_part_surv(fit_matrix, A = list(pfs = "exp", os = "weibull"), 
-#'                               B = list(pfs = "exp", os = "lnorm"))
+#'                              B = list(pfs = "exp", os = "lnorm"),
+#'                              subset = "all")
 #' combine_part_surv_(fit_matrix, 
-#'                   choices = list(A = list(pfs = "exp", os = "weibull"), 
-#'                                  B = list(pfs = "exp", os = "lnorm")))
-combine_part_surv <- function(fit_matrix, ...) {
+#'                    choices = list(A = list(pfs = "exp", os = "weibull"), 
+#'                                   B = list(pfs = "exp", os = "lnorm"),
+#'                                   subset = "all))
+combine_part_surv <- function(fit_matrix, ..., subset) {
   choices <- list(...)
-  combine_part_surv_(fit_matrix, choices)
+  combine_part_surv_(fit_matrix, choices, subset)
 }
 
 #' @export
 #' @rdname combine_part_surv
-combine_part_surv_ <- function(fit_matrix, choices){
+combine_part_surv_ <- function(fit_matrix, choices, subset){
+  if(!(subset %in% names(fit_matrix)))
+    stop(subset, " must be a name of fit_matrix")
+  fit_matrix <- fit_matrix[[subset]]
   if(!all(names(choices) %in% colnames(fit_matrix)))
     stop("names of selections must be column names ",
          "of fit_matrix (names of strategies)")
@@ -633,7 +691,9 @@ combine_part_surv_ <- function(fit_matrix, choices){
     stop("values of arguments other than fit_matrix must be
          row names of fit_matrix")
   
-  if(!all(sapply(fit_matrix, function(this_obj){inherits(this_obj, "part_surv")})))
+  if(!all(sapply(fit_matrix, function(this_obj){
+    inherits(this_obj, "part_surv")}))
+  )
     stop("the elements of fit_matrix must be of class 'part_surv'")
   
   choice_ind <-

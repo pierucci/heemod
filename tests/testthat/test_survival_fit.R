@@ -93,7 +93,8 @@ test_that("getting survival inputs works",
                 censor_col_name = "status",
                 treatment_col_name = "treatment",
                 dists = c("exp", "weibull", "lnorm", "gamma", 
-                          "gompertz", "gengamma")
+                          "gompertz", "gengamma"),
+                set_definitions = NULL
               )
             
             expect_identical(get_survival_input(ref_1), input)
@@ -185,39 +186,42 @@ test_that("we handle fitting errors",
           )
 
 
-test_that("subsetting fit objects works",
-          {
-          fit_matrix <- 
-            partitioned_survival_from_tabular(base_dir = system.file("tabular\\surv", 
-                                                          package = "heemod"), 
-                                              ref_file = "example_oncSpecs.csv", 
-                                              df_env = new.env(), 
-                                              state_names = c("ProgressionFree", "Progressive", 
-                                              "Terminal", "Death"), 
-                                             save_fits = FALSE)
-          ## not concerned about the particular test, just
-          ##   that it finishes as opposed to giving an error
-          expect_equal(names(combine_part_surv(fit_matrix, 
-                              A = list(pfs = "exp", os = "weibull"),
-                              B = list(pfs = "exp", os = "lnorm"))),
-                         c("A", "B")
-                         )
-          
-          
-          expect_error(combine_part_surv(fit_matrix, 
-                                         A = list(pfs = "exp", os = "weibull"),
-                                         Z = list(pfs = "exp", os = "lnorm")),
-                       "column names of fit_matrix")
-          expect_error(combine_part_surv(fit_matrix, 
-                                         A = list(pfs = "exp", os = "weibul"),
-                                         B = list(pfs = "exp", os = "lnorm")), 
-                       "row names of fit_matrix")
-          expect_error(combine_part_surv(fit_matrix, 
-                                         A = list(PFS = "exp", os = "weibull"),
-                                         B = list(pfs = "exp", os = "lnorm")), 
-                       "only names os and pfs")
-          })
-
-
+ test_that("subsetting fit objects works",
+           {
+           fit_matrix <- 
+             partitioned_survival_from_tabular(base_dir = system.file("tabular\\surv", 
+                                                           package = "heemod"), 
+                                               ref_file = "example_oncSpecs.csv", 
+                                               df_env = new.env(), 
+                                               state_names = c("ProgressionFree", "Progressive", 
+                                               "Terminal", "Death"), 
+                                              save_fits = FALSE)
+           ## not concerned about the particular test, just
+           ##   that it finishes as opposed to giving an error
+           expect_equal(names(combine_part_surv(fit_matrix, 
+                               A = list(pfs = "exp", os = "weibull"),
+                               B = list(pfs = "exp", os = "lnorm"),
+                              subset = "all")),
+                          c("A", "B")
+                          )
+           
+           
+           expect_error(combine_part_surv(fit_matrix, 
+                                          A = list(pfs = "exp", os = "weibull"),
+                                          Z = list(pfs = "exp", os = "lnorm"),
+                                          subset = "all"),
+                        "column names of fit_matrix")
+           expect_error(combine_part_surv(fit_matrix, 
+                                          A = list(pfs = "exp", os = "weibul"),
+                                          B = list(pfs = "exp", os = "lnorm"),
+                                          subset = "all"), 
+                        "row names of fit_matrix")
+           expect_error(combine_part_surv(fit_matrix, 
+                                          A = list(PFS = "exp", os = "weibull"),
+                                          B = list(pfs = "exp", os = "lnorm"),
+                                          subset = "all"), 
+                        "only names os and pfs")
+           })
+ 
 
 

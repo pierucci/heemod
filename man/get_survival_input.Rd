@@ -4,12 +4,12 @@
 \alias{get_survival_input}
 \title{Make sure survival inputs have the correct formats}
 \usage{
-get_survival_input(surv_ref)
+get_survival_input(surv_ref, location = NULL)
 }
 \arguments{
-\item{surv_ref}{\itemize{
-\item data frame with survival data information
-}}
+\item{surv_ref}{data frame with survival data information}
+
+\item{location}{base directory for the analysis}
 }
 \value{
 a list with elements \itemize{\item{fit_files},

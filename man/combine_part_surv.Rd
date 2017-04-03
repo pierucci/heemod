@@ -5,20 +5,17 @@
 \alias{combine_part_surv_}
 \title{recombine elements from different part_surv ojects}
 \usage{
-combine_part_surv(fit_matrix, ...)
+combine_part_surv(fit_matrix, ..., subset)
 
-combine_part_surv_(fit_matrix, choices)
+combine_part_surv_(fit_matrix, choices, subset)
 }
 \arguments{
-\item{fit_matrix}{a matrix of partitioned survival
-(\code{part_surv}) objects, generally
-from \code{partitioned_survival_from_tabular}.
-Each row corresponding to a distribution and each column
-to a group or condition for which a partitioned survival object
-was created.}
+\item{fit_matrix}{a list.   See details.}
 
 \item{...}{additional named arguments when using \code{combine_part_surv};
 see below.}
+
+\item{subset}{the subset of data for which you want fits}
 
 \item{choices}{a list specifying which fits to use; see below.}
 }
@@ -29,6 +26,14 @@ a list of partitioned survival objects
 recombine elements from different part_surv ojects
 }
 \details{
+\code{fit_matrix} is a list, with each element corresponding to a subset
+of the data that was fit.
+Each element contains amatrix of partitioned survival
+(\code{part_surv}) objects, generally
+from \code{partitioned_survival_from_tabular}.
+Each row corresponding to a distribution and each column
+to a group or condition for which a partitioned survival object
+was created.
 The \code{choices} argument in \code{choose_part_surv_} and the
 \code{...} argument in \code{choose_part_surv} specify which elements of which fit
 survival objects to combine.
@@ -39,24 +44,4 @@ the two elements of a partial survival object, and each element
 must be a distribution type (a distribution used in the survival
 fit).   Each name should be one of the groups
 or subgroups; that is, a column name of \code{fit_matrix}.
-}
-\examples{
-fit_matrix <- 
-  partitioned_survival_from_tabular(base_dir = system.file("tabular\\\\surv", 
-                                                package = "heemod"), 
-                                  ref_file = "example_oncSpecs.csv", 
-                                  df_env = new.env(), 
-                                  state_names = c("ProgressionFree", "Progressive", 
-                                  "Terminal", "Death"), 
-                                  save_fits = FALSE,
-                                  just_load = FALSE)
-## create new partitioned survival objects.   For group A,
-## use the exponential fit for progression-free survival, and
-## the Weibull fit for overall survival; for B, use the exponential
-## and lognormal fits respectively.
-combine_part_surv(fit_matrix, A = list(pfs = "exp", os = "weibull"), 
-                              B = list(pfs = "exp", os = "lnorm"))
-combine_part_surv_(fit_matrix, 
-                  choices = list(A = list(pfs = "exp", os = "weibull"), 
-                                 B = list(pfs = "exp", os = "lnorm")))
 }
