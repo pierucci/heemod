@@ -4,6 +4,7 @@
 #' @param fit_tib the name of the tibble from which to take fits.
 #'   Typically produced by [survival_fits_from_tabular()].
 #' @param env an environment
+#' @param state_names names of the model states
 #' @details  This function is meant to be used only from within
 #'   tabular_input.R.   It won't work well otherwise, in that
 #'   the environment is unlikely to have what you need.
@@ -19,113 +20,58 @@
 #'   commonality that they can be used in [compute_surv()].
 #'
 #' @examples
+
 construct_survival <-
-  function(surv_def, fit_matrix_name = "fit_matrix",
+  function(surv_def, fit_tibble,
+           state_names,
            env = new.env()) {
-    strategies <- unique(surv_def$.strategy)
-    types <- unique(surv_def$.type)
     
-    ## evaluate distribution text to get distributions
-    surv_def$dist <- interpret_surv_def_text(surv_def)
-    surv_def <- tibble::as_tibble(surv_def)
+    if(!(".subset" %in% names(surv_def)))
+      surv_def$.subset <- "all"
     
-    ## now join together the different distributions with
-    ##   the same strategy and type
+    surv_def_2 <- 
+      surv_def %>% 
+      dplyr::mutate(dist = gsub("fit\\((.*)\\)", "\\1", dist)) %>%
+      dplyr::mutate(dist = gsub("'", "", dist)) %>%
+      dplyr::mutate(dist = gsub('"', '', dist)) %>%
+      dplyr::mutate(.type = toupper(.type))
     
-    res1 <-
-      lapply(strategies,
-             function(this_strategy) {
-               surv_def_strategy <-
-                 dplyr::filter(surv_def,
-                               .strategy == this_strategy)
-               res2 <- 
-                 lapply(types,
-                        function(this_type) {
-                          this_part <-
-                            dplyr::filter(surv_def_strategy,
-                                          .type == this_type)
-                          ## this block joins together the fits
-                          ##   covering different time periods
-                          join_fits_across_time(this_part)
-                        })
-                res2 <-
-                  lapply(res2, function(x) {
-                      if(is.character(x))
-                        lazyeval::as.lazy(x, env)
-                      else
-                        lazyeval::as.lazy(eval(x, env), env)
-                  })
-              names(res2) <- types
-               res2
-             })
-    names(res1) <- strategies
-    res1
+    fit_tibble <-
+      dplyr::mutate(fit_tibble, type = toupper(type)) 
+    
+    surv_def_3 <- 
+      surv_def_2 %>% dplyr::left_join(., fit_tibble,
+                                      by = c(".strategy" = "treatment",
+                                             ".type" = "type",
+                                             "dist" = "dist",
+                                             ".subset" = "set_name")
+                                        
+      )
+    
+    
+    
+    surv_def_4 <- 
+      surv_def_3 %>% 
+      dplyr::group_by(.strategy, .type, .subset) %>%
+      dplyr::do(fit = join_fits_across_time(.)) %>%
+      dplyr::ungroup()
+    surv_def_5 <- 
+      surv_def_4 %>%
+      dplyr::group_by(.strategy, .subset) %>%
+      dplyr::rename(type = .type) %>%
+      dplyr::do(part_surv = make_part_surv_from_small_tibble(.,
+                      state_names = state_names))
+    surv_def_5
   }
 
-## if we have something of the form fit_matrix("exp") on a line
-##   with .strategy A and .type os, replace it with
-##   fit_matrix[["exp", "A"]]$os.
-## 'A' would be in .strategy, 'os' would be in .type
-
-interpret_surv_def_text <- function(surv_def){
-  lapply(seq(along = surv_def$dist), function(i) {
-    is_define_dist <-
-      length(grep("define_survival", surv_def[i, "dist"])) > 0
-    if (is_define_dist)
-      res <- surv_def[i, "dist"]
-    else{
-      this_dist <- as.character(surv_def[i, "dist"])
-      this_strategy <- as.character(surv_def[[i, ".strategy"]])
-      this_type <- as.character(surv_def[[i, ".type"]])
-      if(".subset" %in% names(surv_def))
-        this_subset <- as.character(surv_def[[i, ".subset"]])
-      else
-        this_subset <- "all"
-
-      string
-            
-      ## (hopefully) new structure
-      res <-
-        gsub("fit\\((.*)\\)",
-             "fit_matrix[[zrw2]][[\\1, zrw1]][[zrw3]]",
-             this_dist)
-      
-      
-      
-      res <-
-        gsub("zrw1", paste("'", this_strategy, "'", sep = ""), res)
-      res <- gsub("zrw2", this_type, res)
-      res <- gsub("fit_matrix", fit_matrix_name, res)
-      res <- gsub("zrw3", 
-                  paste("'", this_subset, "'", sep = ""), 
-                  res)
-      ## res <- parse(text = res)
-    }
-    res
-  })
-}
-
-
-## if 'until' is one of the names, join the distributions
-##  across time, ordered by until.   If 'until' is not
-##  one of the names, make sure there's only one element
-##  and return it.
 join_fits_across_time <- function(this_part){
   if ("until" %in% names(this_part)) {
     this_part <-
       dplyr::arrange(this_part, until)
-    piece1 <- paste(this_part$dist, collapse = ", ")
-    piece1 <- paste("list(", piece1, ")")
-    piece2 <- paste(this_part$until[!is.na(this_part$until)], 
-                    collapse = ", ")
-    piece2 <- paste("c(", piece2, ")")
-    as.expression(
-      paste("project_(", 
-            piece1,  
-            ", ", 
-            piece2,
-            ")")
-    )
+    
+    project_(dots = this_part$fit, 
+             at= this_part$until[!is.na(this_part$until)])
+    
   }  
   else{
     if (nrow(this_part) > 1) {
@@ -135,7 +81,8 @@ join_fits_across_time <- function(this_part){
         "strategy and type unless 'until' is also specified"
       )
     }
-    this_part$dist[[1]]
+    this_part$fit[[1]]
   }
   
 }
+

@@ -35,7 +35,7 @@
 #'
 #' @examples
 #' fit_matrix <-
-#'   partitioned_survival_from_tabular(base_dir = system.file("tabular/surv",
+#'   partitioned_survival_from_tabular(base_dir = system.file("tabular\surv",
 #'                                                 package = "heemod"),
 #'                                   ref_file = "example_oncSpecs.csv",
 #'                                   df_env = new.env(),

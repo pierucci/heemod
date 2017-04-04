@@ -116,44 +116,24 @@ part_survs_from_surv_inputs <-  function(surv_inputs, state_names){
   ## the output will be a smaller tibble, with all the columns
   ##   except type and fit, and a new column part_surv
   
-  make_part_surv_from_small_tibble <- function(st, state_names){
-    pfs_row <- grep("pfs", st$type, ignore.case = TRUE)
-    os_row <- grep("os", st$type, ignore.case = TRUE)
-    stopifnot(length(pfs_row) == 1,
-              length(os_row) == 1
-    )
-    define_part_surv(pfs = st[[pfs_row, "fit"]],
-                     os = st[[os_row, "fit"]],
-                     state_names = state_names)
-      }
-  
   
   surv_inputs %>%
     dplyr::group_by(treatment, set_name, dist, set_def) %>%
       dplyr::do(part_surv = make_part_surv_from_small_tibble(.,
                               state_names = state_names))
-
-  # part_survs <-
-  #   lapply(subsets, function(this_subset){
-  #     
-  #     this_subset_part_surv <- 
-  #       lapply(pieces, function(this_piece) {
-  #         define_part_surv(
-  #           pfs = surv_inputs[[pfs_fit_ind]][[this_subset]][[this_piece]],
-  #           os = surv_inputs[[os_fit_ind]][[this_subset]][[this_piece]],
-  #           state_names = state_names
-  #     )
-  #   })
-  #     dim(this_subset_part_surv) <- 
-  #       dim(surv_inputs[[pfs_fit_ind]][[this_subset]])
-  #     dimnames(this_subset_part_surv) <- 
-  #       dimnames(surv_inputs[[pfs_fit_ind]][[this_subset]])
-  #     class(this_subset_part_surv) <- c("part_surv_mat", "matrix")
-  #     this_subset_part_surv
-  #   })
-  # names(part_survs) <- subsets
-  # part_survs
 }
+
+make_part_surv_from_small_tibble <- function(st, state_names){
+  pfs_row <- grep("pfs", st$type, ignore.case = TRUE)
+  os_row <- grep("os", st$type, ignore.case = TRUE)
+  stopifnot(length(pfs_row) == 1,
+            length(os_row) == 1
+  )
+  define_part_surv(pfs = st[[pfs_row, "fit"]],
+                   os = st[[os_row, "fit"]],
+                   state_names = state_names)
+}
+
 
 
 #' Make sure survival inputs have the correct formats

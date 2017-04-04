@@ -4,11 +4,12 @@
 \alias{construct_survival}
 \title{construct a survival object from tabular specification}
 \usage{
-construct_survival(surv_def, fit_matrix_name = "fit_matrix",
-  env = new.env())
+construct_survival(surv_def, fit_tibble, state_names, env = new.env())
 }
 \arguments{
 \item{surv_def}{a data frame with the specification.  See details.}
+
+\item{state_names}{names of the model states}
 
 \item{env}{an environment}
 

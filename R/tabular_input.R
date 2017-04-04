@@ -297,43 +297,52 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
       rownames(tab_undefined) <- NULL
       print(tab_undefined)
       stop("Undefined probabilities in the transition matrix (see above).")
-      }
+    }
+    one_way <- setdiff(names(state_info), names(tm_info))
+    other_way <- setdiff(names(tm_info), names(state_info))
   }
   
   
   if(trans_type == "part_surv"){
     fit_tib <- 
-      partitioned_survival_from_ref_struc(ref, df_env,
-                                          state_names,
+      survival_fits_from_ref_struc(ref, df_env,
                                           save_fits = FALSE,
-                                          just_load = TRUE)
+                                          just_load = TRUE)[[1]]
+
     assign("fit_tib", fit_tib, df_env)
     use_fits_file <- ref[ref$data == "use_fits", "full_file"]
     use_fits <- read_file(use_fits_file)
-    tm_info <- construct_survival(use_fits, env = df_env)
-    tm_info <- 
-      lapply(tm_info, function(x){
-        define_part_surv_(x$pfs, x$os, 
-                          state_names = state_names)
-      })
+    tm_info <- construct_survival(use_fits, fit_tib, env = df_env,
+                                    state_names = state_names)
+    one_way <- setdiff(names(state_info), unique(tm_info$.strategy))
+    other_way <- setdiff(unique(tm_info$.strategy), names(state_info))
   }
   
-  if (length(pb <- setdiff(names(state_info), names(tm_info)))) {
+  if (length(pb <- union(one_way, other_way))) {
     stop(sprintf(
       "Mismatching model names between TM file and state file: %s.",
       paste(pb, collapse = ", ")
     ))
   }
   
-  tm_info <- tm_info[names(state_info)]
-  
+  if(trans_type == "part_surv")
+    tm_info <- 
+      dplyr::filter(tm_info, .strategy %in% names(state_info))
+  else
+    tm_info <- tm_info[names(state_info)]
   
   
   if (options()$heemod.verbose) message("*** Defining models...")
   models <- lapply(
     seq_along(state_info),
     function(i) {
-      create_model_from_tabular(state_info[[i]], tm_info[[i]],
+      if(inherits(tm_info, "tbl_df"))
+        this_tm <- dplyr::filter(tm_info,
+                          .strategy == names(state_info)[i])$part_surv[[1]]
+      else
+        this_tm <- tm_info[[i]]
+      create_model_from_tabular(state_info[[i]], 
+                                this_tm,
                                 df_env = df_env)
     })  
   
@@ -1152,14 +1161,17 @@ save_graph <- function(plot, path, file_name) {
 
 transition_type <- function(tm_info){
   which_defines <- NULL
-  if(all(sort(names(tm_info)[1:10]) == 
-         sort(c("type", "treatment",	"data_directory",
-           "data_file",	"fit_directory",	"fit_name",
-           "fit_file",	"time_col",	"treatment_col",
-           "censor_col"))))
-    which_defines <- "part_surv"
-  if(all(names(tm_info)[1:4] == c(".model", "from", "to", "prob")))
+  if(all(names(tm_info)[1:4] == c(".model", "from", "to", "prob"))){
     which_defines <- "matrix"
+  }
+  else{
+    if(all(sort(names(tm_info)[1:10]) == 
+           sort(c("type", "treatment",	"data_directory",
+             "data_file",	"fit_directory",	"fit_name",
+             "fit_file",	"time_col",	"treatment_col",
+             "censor_col"))))
+      which_defines <- "part_surv"
+  }
   if(is.null(which_defines))
     stop("the data frame tm_info must define ",
          "either a transition matrix or a partitioned survival object")
