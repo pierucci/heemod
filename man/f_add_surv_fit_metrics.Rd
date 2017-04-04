@@ -2,7 +2,62 @@
 % Please edit documentation in R/survival_fit.R
 \name{f_add_surv_fit_metrics}
 \alias{f_add_surv_fit_metrics}
-\title{Calculate additional metrics to evaluate fit of survival model.}
+\title{#' recombine elements from different part_surv ojects
+#'
+#' @param fit_matrix a list.   See details.
+#' @param choices a list specifying which fits to use; see below.
+#' @param ... additional named arguments when using \code{combine_part_surv};
+#'   see below.
+#' @param subset the subset of data for which you want fits
+#' @details
+#'
+#'  \code{fit_matrix} is a list, with each element corresponding to a subset
+#'  of the data that was fit.
+#'  Each element contains amatrix of partitioned survival
+#'   (\code{part_surv}) objects, generally
+#'   from \code{partitioned_survival_from_tabular}.
+#'   Each row corresponding to a distribution and each column
+#'   to a group or condition for which a partitioned survival object
+#'   was created.
+#'   The \code{choices} argument in \code{choose_part_surv_} and the
+#'   \code{...} argument in \code{choose_part_surv} specify which elements of which fit
+#'   survival objects to combine.
+#'   \code{choices} is a list, where the name of each element should be the name of
+#'   one of the strategies.   Each of those elements should be a list with elements
+#'   named pfs and os, for
+#'   the two elements of a partial survival object, and each element
+#'   must be a distribution type (a distribution used in the survival
+#'   fit).   Each name should be one of the groups
+#'   or subgroups; that is, a column name of \code{fit_matrix}.
+#'
+#' @return a list of partitioned survival objects
+#' @export
+#'
+#' @examples
+#' fit_matrix <-
+#'   partitioned_survival_from_tabular(base_dir = system.file("tabular/surv",
+#'                                                 package = "heemod"),
+#'                                   ref_file = "example_oncSpecs.csv",
+#'                                   df_env = new.env(),
+#'                                   state_names = c("ProgressionFree", "Progressive",
+#'                                   "Terminal", "Death"),
+#'                                   save_fits = FALSE,
+#'                                   just_load = FALSE)
+#' ## create new partitioned survival objects.   For group A,
+#' ## use the exponential fit for progression-free survival, and
+#' ## the Weibull fit for overall survival; for B, use the exponential
+#' ## and lognormal fits respectively.
+#' combine_part_surv(fit_matrix, A = list(pfs = "exp", os = "weibull"),
+#'                              B = list(pfs = "exp", os = "lnorm"),
+#'                              subset = "all")
+#' combine_part_surv_(fit_matrix,
+#'                    choices = list(A = list(pfs = "exp", os = "weibull"),
+#'                                   B = list(pfs = "exp", os = "lnorm"),
+#'                                   subset = "all))
+combine_part_surv <- function(fit_matrix, ..., subset) {
+choices <- list(...)
+combine_part_surv_(fit_matrix, choices, subset)
+}}
 \usage{
 f_add_surv_fit_metrics(surv_fits, metrics = c("BIC", "m2LL"))
 }
@@ -17,9 +72,92 @@ A list object of parametric survival fits, containing additional fields for
 the calculated fit metrics.
 }
 \description{
-Calculate additional metrics to evaluate fit of survival model.
+#' @export
+#' @rdname combine_part_surv
+combine_part_surv_ <- function(fit_matrix, choices, subset){
+if(!(subset %in% names(fit_matrix)))
+stop(subset, " must be a name of fit_matrix")
+fit_matrix <- fit_matrix[[subset]]
+if(!all(names(choices) %in% colnames(fit_matrix)))
+stop("names of selections must be column names ",
+"of fit_matrix (names of strategies)")
+if(!all(unlist(choices) %in% rownames(fit_matrix)))
+stop("values of arguments other than fit_matrix must be
+row names of fit_matrix")
+
+if(!all(sapply(fit_matrix, function(this_obj){
+inherits(this_obj, "part_surv")}))
+)
+stop("the elements of fit_matrix must be of class 'part_surv'")
+
+choice_ind <-
+lapply(names(choices), function(this_name) {
+this_choice <- choices[[this_name]]
+if(!identical(sort(names(this_choice)),
+c("os", "pfs"))){
+stop(paste("only names os and pfs allowed as elements of additional arguments"))
+}\preformatted{  cbind(names(this_choice),
+        unlist(this_choice),
+        rep(this_name, length(names(this_choice))))
+})
+}
+
+part_survs <-
+lapply(choice_ind, function(this_ind) {
+## pieces <- choice_ind[this_ind[, -1]]
+pfs_ind <- this_ind[match("pfs", this_ind[, 1]), 2:3]
+os_ind <- this_ind[match("os", this_ind[, 1]), 2:3]\preformatted{  pfs_piece <- fit_matrix[[pfs_ind[1], pfs_ind[2]]]
+  os_piece <- fit_matrix[[os_ind[1], os_ind[2]]]
+  if (!identical(get_state_names(pfs_piece),
+                 get_state_names(os_piece)))
+    stop("state names of pfs and os parts must be the same")
+  
+  if (!identical(pfs_piece$cycle_length, os_piece$cycle_length))
+    stop("cycle_length elements of pfs_piece and os_piece must be identical")
+  
+  define_part_surv_(
+    pfs = pfs_piece$pfs,
+    os = os_piece$os,
+    state_names = get_state_names(pfs_piece),
+    cycle_length = pfs_piece$cycle_length
+  )
+})
+}
+
+names(part_survs) <- names(choices)
+part_survs
+}
+
+[[subset]: R:[subset
+[[this_name]: R:[this_name
+[this_ind[, -1]: R:this_ind[,%20-1
+[match("pfs", this_ind[, 1]: R:match(%22pfs%22,%20this_ind[,%201
+[match("os", this_ind[, 1]: R:match(%22os%22,%20this_ind[,%201
+[[pfs_ind[1]: R:[pfs_ind[1
+[2]: R:2
+[[os_ind[1]: R:[os_ind[1
+[2]: R:2
 }
 \details{
+#' Create partial survival objects from fit files
+#'
+#' @param file_name loadable .RData file containing a fit matrix.
+#' @param obj_name the name of the fit matrix inside the .RData file.
+#' @param ... additional arguments for \code{\link[=combine_part_surv]{combine_part_surv()}}.
+#'
+#' @inherit combine_part_surv return
+#' @export
+#'
+combine_part_surv_from_fit_file <-
+function(file_name, obj_name, ...){
+load(file_name)
+fit_matrix <- get(obj_name)
+part_surv_matrix <- part_survs_from_surv_inputs(fit_matrix)
+combine_part_surv(part_surv_matrix, ...)
+}
+
+Calculate additional metrics to evaluate fit of survival model.
+
 Currently calculates only:
 \itemize{\item Bayesian information criterion (BIC)
 \item -2*log likelihood (-2LL)}  (Objects come with AIC already calculated.)

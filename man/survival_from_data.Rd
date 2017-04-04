@@ -2,7 +2,7 @@
 % Please edit documentation in R/survival_fit.R
 \name{survival_from_data}
 \alias{survival_from_data}
-\title{Title Get survival analysis curves from data}
+\title{Make sure survival inputs have the correct formats}
 \usage{
 survival_from_data(base_dir, surv_dir, data_files = NULL, fit_files = NULL,
   fit_names = NULL, time_col_name = "time", censor_col_name = "status",
@@ -39,8 +39,17 @@ be returned?}
 from \code{fit_files}}
 
 \item{set_definitions}{definitions of different subsets to fit}
+
+\item{location}{base directory for the analysis}
+
+\item{surv_ref}{data frame with survival data information}
 }
 \value{
+a list with elements \itemize{\item{fit_files},
+\item{fit_names}, \item{surv_data_files}, \item{fit_metric}}.
+
+Title Get survival analysis curves from data
+
 A list with two elements:  \itemize{
 \item{\code{best_models},
 a list with the fits for each data file passed in; and}
@@ -50,9 +59,31 @@ get probabilities.}
 }
 }
 \description{
-Title Get survival analysis curves from data
+Make sure survival inputs have the correct formats
 }
 \details{
+For survival analysis, we need, for each condition
+(frequently progression-free survival and overall survival)
+at least two, and possibly three, elements represented in
+the survival reference file.
+\itemize{
+\item{\code{surv_data_file}:  the name of the file
+with the survival data}
+\item{\code{fit_file}: the name of a file with fits.  If
+\code{surv_data_file} is not provided, the fit will
+be read in from this file; if \code{surv_data_file}
+is provided, the fit will be written into this file.}
+\item{\code{fit_name}:  name to give the survival fit so
+that it can be referred to to extract probabilities.}
+}
+The names for the three fields are \code{fit_name_<label>},
+\code{surv_data_file_<label>}, and \code{fit_file_<label>}, where
+\code{<label>} identifies that the fields go together for a single fit.
+The labels for the two conditions must be \code{pfs} and \code{os}
+(or \code{PFS} and \code{OS}; they are not case sensitive).
+At least one of \code{surv_data_file} and \code{fit_file}
+must be provided.
+
 By default, the function fits with six different distribution fucntions:
 exponential,  Weibull,  lognormal, Gompertz, gamma, and generalized gamma.
 

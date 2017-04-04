@@ -37,20 +37,20 @@ partitioned_survival_from_ref_struc(ref, df_env, state_names,
 \item{state_names}{names of states in the strategies}
 }
 \value{
-a matrix of partitioned survival objects
+a tibble of partitioned survival objects
 (for \code{part_surv_from_tabular})
 or a list (for \code{survival_fits_from_tabular}),
 with each element being a similar
-matrix of flexsurvreg fits for either overall survival
+tibble of flexsurvreg fits for either overall survival
 or progression-free survival.
-The rows correspond to different distributions used in survival fitting,
-the columns to different subsets of the data.
+There are columns to distinguish the different distributions used
+used in survival fitting, different treatments, and different subsets.
 }
 \description{
 Create a partitioned survival model object from tabular input
 }
 \examples{
-fit_matrix <- partitioned_survival_from_tabular(system.file("tabular\\\\surv",
+fit_tibble <- partitioned_survival_from_tabular(system.file("tabular\\\\surv",
                                                             package = "heemod"), 
                                   "example_oncSpecs.csv", new.env(), 
                                   c("ProgressionFree", "Progressive", 

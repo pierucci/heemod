@@ -302,12 +302,12 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   
   
   if(trans_type == "part_surv"){
-    fit_matrix <- 
+    fit_tib <- 
       partitioned_survival_from_ref_struc(ref, df_env,
                                           state_names,
                                           save_fits = FALSE,
                                           just_load = TRUE)
-    assign("fit_matrix", fit_matrix, df_env)
+    assign("fit_tib", fit_tib, df_env)
     use_fits_file <- ref[ref$data == "use_fits", "full_file"]
     use_fits <- read_file(use_fits_file)
     tm_info <- construct_survival(use_fits, env = df_env)
@@ -1152,7 +1152,11 @@ save_graph <- function(plot, path, file_name) {
 
 transition_type <- function(tm_info){
   which_defines <- NULL
-  if(all(names(tm_info)[1:2] == c("data", "val")))
+  if(all(sort(names(tm_info)[1:10]) == 
+         sort(c("type", "treatment",	"data_directory",
+           "data_file",	"fit_directory",	"fit_name",
+           "fit_file",	"time_col",	"treatment_col",
+           "censor_col"))))
     which_defines <- "part_surv"
   if(all(names(tm_info)[1:4] == c(".model", "from", "to", "prob")))
     which_defines <- "matrix"
