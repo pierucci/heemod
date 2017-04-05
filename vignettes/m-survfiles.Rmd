@@ -86,7 +86,7 @@ names(temp1)
 ```
 
 ```{r}
-sapply_matrix(temp1$OS2.fit$all, "[[", "AIC")
+extract_surv_fit_metrics(temp1, c("AIC", "BIC"))
 ```
 `heemod` does not automatically choose a distribution to use in the survival model - the modeler must choose the most appropriate distribution for each set of survival data.
 

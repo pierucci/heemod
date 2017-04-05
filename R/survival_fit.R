@@ -19,7 +19,7 @@
 #'   There are columns to distinguish the different distributions used
 #'   used in survival fitting, different treatments, and different subsets.
 #' @examples 
-#' fit_tibble <- partitioned_survival_from_tabular(system.file("tabular\\surv",
+#' fit_tibble <- partitioned_survival_from_tabular(system.file("tabular/surv",
 #'                                                             package = "heemod"), 
 #'                                   "example_oncSpecs.csv", new.env(), 
 #'                                   c("ProgressionFree", "Progressive", 
@@ -49,7 +49,7 @@ survival_fits_from_ref_struc <- function(ref, df_env = new.env(),
   survival_specs <- read_file(file.path(surv_ref_full_file))
   dists = c("exp", "weibull", "lnorm", "gamma", 
             "gompertz", "gengamma")
-  survival_from_data_2(location,
+  survival_from_data(location,
                      survival_specs,
                      use_envir = df_env,
                      dists = dists,
@@ -134,181 +134,11 @@ make_part_surv_from_small_tibble <- function(st, state_names){
                    state_names = state_names)
 }
 
-
-
-#' Make sure survival inputs have the correct formats
-#' @param location base directory for the analysis
-#' @param surv_ref data frame with survival data information
+#' Title Get survival analysis curves from data
 #'
-#' @details For survival analysis, we need, for each condition
-#'   (frequently progression-free survival and overall survival)
-#'   at least two, and possibly three, elements represented in
-#'   the survival reference file.
-#'   \itemize{
-#'     \item{`surv_data_file`:  the name of the file 
-#'        with the survival data}
-#'     \item{`fit_file`: the name of a file with fits.  If
-#'     `surv_data_file` is not provided, the fit will
-#'     be read in from this file; if `surv_data_file`
-#'     is provided, the fit will be written into this file.}
-#'     \item{`fit_name`:  name to give the survival fit so
-#'     that it can be referred to to extract probabilities.}
-#'     }
-#'     The names for the three fields are `fit_name_<label>`,
-#'     `surv_data_file_<label>`, and `fit_file_<label>`, where
-#'     `<label>` identifies that the fields go together for a single fit.
-#'     The labels for the two conditions must be `pfs` and `os` 
-#'     (or `PFS` and `OS`; they are not case sensitive).
-                                   
-#' At least one of `surv_data_file` and `fit_file`
-#'   must be provided.
-#' @return a list with elements \itemize{\item{fit_files},
-#'   \item{fit_names}, \item{surv_data_files}, \item{fit_metric}}.
-#'
-# get_survival_input <- function(surv_ref, location = NULL) {
-#   
-#   surv_ref_col_names <- c("type", "treatment", "data_directory", "data_file",
-#                           "fit_directory", "fit_name", "fit_fil",
-#                           "time_col", "treatment_col", "censor_col")
-#   if(! identical(names(surv_ref), surv_ref_col_names))
-#     stop(
-#       paste("surv_ref must have column names:\n",
-#             paste(surv_ref_col_names, sep = ", "),
-#             paste("\n(actual_names", paste(names(surv_ref),collapse = ", "),
-#                   ")"
-#             )
-#       )
-#     )
-# 
-#   dists <- c("exp", "weibull", "lnorm", "gamma", 
-#              "gompertz", "gengamma")
-#   
-#   time_col_index <- grep("time_col_name", surv_ref$data)
-#   censor_col_index <- grep("censor_col_name", surv_ref$data)
-#   treatment_col_index <- grep("treatment_col_name", surv_ref$data)
-#   dists_index <- grep("dists", surv_ref$data)
-#   
-#   if(length(time_col_index) > 1)
-#     stop("must have at most one time_col_name; default = 'time'")
-#   if(length(censor_col_index) > 1)
-#     stop("must have at most one censor_col_name; default = 'status'")
-#   if(length(treatment_col_index) > 1)
-#     stop("must have at most one treatment_col_name; default = 'treatment'")
-#   if(length(dists_index) > 1)
-#     stop(paste('must have at most one line specificying distributions;\n',
-#                'default = c("exp", "weibull", "lnorm", "gamma", 
-#                "gompertz", "gengamma")'))
-#   
-#   if(length(time_col_index) == 1)
-#     time_col_name <- surv_ref[time_col_index, "val"]
-#   if(length(censor_col_index) == 1)
-#     censor_col_name <- surv_ref[censor_col_index, "val"]
-#   if(length(treatment_col_index) == 1)
-#     treatment_col_name <- surv_ref[treatment_col_index, "val"]
-#   if(length(dists_index) ==1)
-#     dists <- surv_ref[dists_index, "val"]
-#   
-#   set_definitions <- NULL
-#   sets_index <- grep("sets", surv_ref$data)
-#   if(length(sets_index) > 1)
-#     stop("can have only one entry containing 'sets' ",
-#          "in the survival information file.")
-#   if(length(sets_index) == 1){
-#     set_definitions <- read_file(file.path(location,
-#                                 surv_data_dir,
-#                                 surv_ref[sets_index, "val"]
-#                                 )
-#     )
-#   }
-#   surv_data_indices <- grep("surv_data_file", surv_ref$data)
-#   fit_file_indices <- grep("fit_file", surv_ref$data)
-#   fit_name_indices <- grep("fit_name", surv_ref$data)
-#   
-#   surv_data_names <- surv_ref[surv_data_indices, "data"]
-#   fit_file_names <- surv_ref[fit_file_indices, "data"]
-#   fit_name_names <- surv_ref[fit_name_indices, "data"]
-#   
-#   surv_data_files = as.vector(surv_ref[surv_data_indices, "val"])
-#   fit_files = as.vector(surv_ref[fit_file_indices, "val"])
-#   fit_names = as.vector(surv_ref[fit_name_indices, "val"])
-#   
-#   fit_metric = surv_ref[surv_ref$data == "fit_metric", "val"]
-#   
-#   lff <- length(fit_file_names)
-#   lsdn <- length(surv_data_names)
-#   
-#   if(lff == 0 & lsdn == 0)
-#     stop(paste("survival reference file must define at least one of",
-#                "fit_file and surv_data_file for survival analysis"))
-#   if(lff != 0 & lsdn != 0 & (lff != lsdn))
-#     stop(paste("when both fit_file and surv_data_name elements are",
-#                "specified,\nshould have the same number of elements"))
-#   
-#   if(length(fit_names) != max(lff, lsdn))
-#     stop(paste("ref file should have the same number of fit_name", 
-#                "elements as fit_file or surv_data_file elements"))
-#   
-#   suffixes <- cbind(surv_data_names, fit_name_names, fit_file_names)
-#   
-#   
-#   suffixes <- gsub("fit_file", "", suffixes)
-#   suffixes <- gsub("fit_name", "", suffixes)
-#   suffixes <- gsub("surv_data_file", "", suffixes)
-#   
-#   
-#   for (i in 1:ncol(suffixes))
-#     suffixes[, i] <- sort(suffixes[, i])
-#   num_suffixes <- apply(suffixes, 1, function(x) {
-#     length(unique(x))
-#   })
-#   if (any(num_suffixes != 1)){
-#     print(table(suffixes))
-#     stop("suffixes do not match")
-#   }
-#   
-#   os_suffix_pos <- grep("os", suffixes[,1], ignore.case = TRUE)
-#   pfs_suffix_pos <- grep("pfs", suffixes[,1], ignore.case = TRUE)
-#   
-#   if(length(os_suffix_pos) != 1 | length(pfs_suffix_pos) != 1)
-#     stop("must have each suffix OS and PFS once (not case-sensitive)")
-#   if(os_suffix_pos == pfs_suffix_pos)
-#     stop("os and pfs suffixes must be distinct")
-#   
-#   
-#   fit_files <- fit_files[order(fit_file_names)]
-#   fit_names <- fit_names[order(fit_name_names)]
-#   surv_data_files <- surv_data_files[order(surv_data_names)]
-#   
-#   return(
-#     list(
-#       surv_data_dir = surv_data_dir, 
-#       fit_files = fit_files,
-#       fit_names = fit_names,
-#       surv_data_files = surv_data_files,
-#       fit_metric = fit_metric,
-#       time_col_name = time_col_name,
-#       censor_col_name = censor_col_name,
-#       treatment_col_name = treatment_col_name,
-#       dists = dists,
-#       set_definitions = set_definitions
-#     )
-#   )
-#   
-# }
-
-
-  #' Title Get survival analysis curves from data
-  #'
-  #' @param base_dir base directory for the analysis.
-#' @param surv_dir subdirectory in which survival data and fits are stored.
-#' @param data_files files containing survival data.
-#' @param fit_files Files containing fits.
-#' @param fit_names name(s) to save the fits to, if they are being saved in a file
-#' @param time_col_name,censor_col_name,treatment_col_name
-#'    columns to be used in the analysis
-#' @param fit_metric  Once of AIC, BIC, or m2LL
-#' @param best_only should only the best fit for each condition
-#'   be returned?
+#' @param location base directory for the analysis.
+#' @param survival_specs a data.frame containing information
+#'   on how to perform each fit - see @details.
 #' @param dists the distributions to use to fit the survival function
 #' @param use_envir An environment for the results to be saved in.
 #' @param save_fits should fits be saved to disk?  Can be useful for testing.
@@ -325,143 +155,20 @@ make_part_surv_from_small_tibble <- function(st, state_names){
 #' @details By default, the function fits with six different distribution fucntions:
 #' exponential,  Weibull,  lognormal, Gompertz, gamma, and generalized gamma.
 #' 
+#' survival_specs contains information about how to create the fits:
+#'   the directory (or directories) in which
+#'   files are located, the file names, the names of the columns
+#'   that should be used for time, events, and censorship status,
+#'   and where and under what names to save the fits.
 #' If data_files is NULL and fit files exists, then fit_files
 #'   should have the names of files in which survival models are kept.
 #'   If data_files is not NULL, then survival models will be fit from
 #'   the data in data_files (using the `flexsurvreg` package), and if fit_files
 #'   is also not NULL, the survival models will be saved in fit_files.
 #'   
-#'   If `best_only = TRUE`, then `best_models` will be a vector
-#'   of models, one for each group.   
-#'   If `best_only = FALSE`, `best_models`
-#'   will have a matrix of models, with each row corresponding to a 
-#'   distribution and each column to a group.
-#'
 
 
 survival_from_data <- 
-  function(base_dir, surv_dir, data_files = NULL, 
-           fit_files = NULL, fit_names = NULL, 
-           time_col_name = "time",
-           censor_col_name = "status",
-           treatment_col_name = "treatment",
-           fit_metric = "AIC",
-           best_only = TRUE,
-           dists = c("exp", "weibull", "lnorm", "gamma", 
-                     "gompertz", "gengamma"),
-           use_envir = NULL,
-           save_fits = TRUE,
-           just_load = FALSE,
-           set_definitions = NULL){
-    
-    if(length(data_files) == 0 & length(fit_files) == 0)
-      stop("must specify at least one of data_files or fit_files")
-    if(length(fit_files) > 0 & 
-       length(fit_files) != length(fit_names))
-      stop(paste("must specify the same number of fit_files and",
-                 "fit_names if any fit_names are specified."))
-
-    if(is.null(set_definitions)) 
-      set_definitions <- data.frame(set_name = "all",
-                         condition = "TRUE",
-                         stringsAsFactors = FALSE)
-    
-    if(!is.null(base_dir))
-      full_path <- file.path(base_dir, surv_dir)
-    else
-      full_path <- surv_dir
-    
-    if(length(data_files) > 0 & !just_load){
-      ## read data from files and fit models 
-      survdata <- lapply(data_files, function(this_file){
-        ## if the "file name" begins with "list(", then
-        ##   it just needs to be evaluated into a list.
-        really_a_list_expr <- substring(this_file, 1, 5) == "list("
-        if(really_a_list_expr){
-          res <- eval(parse(text = this_file))
-        }
-        else{
-          res <- read_file(file.path(full_path, this_file))
-          class(res) <- c("survdata", class(res))
-        }
-        res
-      })
-      ## now if we have a list from above, leave it alone; 
-      ##  otherwise fit the data
-      best_models <- lapply(survdata, function(this_data){
-        if(class(this_data)[1] == "list"){
-          this_data
-        }
-        else{
-          surv_models <- 
-            lapply(seq(along = set_definitions$set_name), function(this_set){
-              subset_data <- 
-                this_data %>% filter_(.dots = strsplit(set_definitions[this_set, "condition"],
-                                                       ",")[[1]])
-              these_surv_fits <- 
-                f_fit_survival_models(subset_data, #this_data,
-                                  dists = dists,
-                                  time_col_name = time_col_name, 
-                                  censor_col_name = censor_col_name, 
-                                  treatment_col_name = treatment_col_name,
-                                  covariate_col_names = NULL, 
-                                  fit_indiv_groups = TRUE)
-            
-            if(best_only)
-              res <- apply(these_surv_fits, 2, f_get_best_surv_model, 
-                           metric = fit_metric)
-            else
-              res <- these_surv_fits
-            attr(res, "set_definition") <- set_definitions[[this_set, "condition"]]
-            res
-              }
-            )
-          names(surv_models) <- set_definitions$set_name
-          attr(surv_models, "set_definitions") <- set_definitions
-          surv_models
-        }
-      }
-      )
-      ## best_dists <- lapply(best_models, dist_from_fits)
-      if(length(fit_files) > 0 & save_fits == TRUE){
-        ## eventually may want a different format for saving these
-        ## currently dump for a readable version, save for a complete version
-        for(i in seq(along = fit_names)){
-          assign(fit_names[i], best_models[[i]])
-          write_to_me <- paste(file.path(full_path, fit_files[i]), ".R", sep = "")
-          suppressMessages(
-            ## suppressMessages because we know we're going to get a warning
-            ##   that it may not be possible to completely deparse an object
-            ##   from flexsurv
-            dump(c(fit_names[i]), file = write_to_me)
-          )
-          save_to_me <- gsub(".R$", ".Rdata", write_to_me)
-          ## save(list = c(fit_names[i], "best_dists"), file = save_to_me)
-          save(list = c(fit_names[i]), file = save_to_me)
-        }
-      }
-      if(!is.null(use_envir))
-        for(i in seq(along = fit_names))
-          assign(fit_names[i], best_models[[i]], envir = use_envir)
-      
-    } #close if(length(data_files) > 0)
-    
-    else{   # that is, if we did not get data files - we'll load previous fits
-      for(this_fit_file in fit_files){
-        load(paste(file.path(full_path, this_fit_file), ".RData", sep = ""))
-        if(!is.null(use_envir))
-          load(paste(file.path(full_path, this_fit_file), ".RData", sep = ""), 
-               envir = use_envir)
-      }
-      best_models <- mget(fit_names)
-    }
-    names(best_models) <- fit_names
-    res <- list(best_models, envir = use_envir)
-    res
-  }
-
-
-survival_from_data_2 <- 
   function(location,
            survival_specs,
            use_envir = df_env,
@@ -757,13 +464,9 @@ f_fit_survival_models <-
         )
         }
       })
-    all_res <- f_add_surv_fit_metrics(all_res, metrics = c("BIC","m2LL"))
+    all_res <- 
+      f_add_surv_fit_metrics(all_res, metrics = c("BIC","m2LL"))
 
-    # all_res_mat <- all_res
-    # dim(all_res_mat) <- c(length(dists), length(names(groups_list)))
-    # dimnames(all_res_mat) <- list(dists, names(groups_list))
-    # all_res_mat
-     
       tibble::tibble(dist = rep(dists, length(groups_list)),
                      treatment = rep(names(groups_list), each = length(dists)),
                      fit = all_res)
@@ -807,140 +510,6 @@ f_get_best_surv_model <-
     attr(best_model, "dist") <- names(sorted)[1]
     best_model
   }
-
-
-#' #' recombine elements from different part_surv ojects
-#' #'
-#' #' @param fit_matrix a list.   See details.  
-#' #' @param choices a list specifying which fits to use; see below.
-#' #' @param ... additional named arguments when using `combine_part_surv`;
-#' #'   see below.
-#' #' @param subset the subset of data for which you want fits
-#' #' @details 
-#' #' 
-#' #'  `fit_matrix` is a list, with each element corresponding to a subset
-#' #'  of the data that was fit.  
-#' #'  Each element contains amatrix of partitioned survival 
-#' #'   (`part_surv`) objects, generally
-#' #'   from `partitioned_survival_from_tabular`.
-#' #'   Each row corresponding to a distribution and each column
-#' #'   to a group or condition for which a partitioned survival object
-#' #'   was created.
-#' #'   The `choices` argument in `choose_part_surv_` and the
-#' #'   `...` argument in `choose_part_surv` specify which elements of which fit
-#' #'   survival objects to combine.  
-#' #'   `choices` is a list, where the name of each element should be the name of
-#' #'   one of the strategies.   Each of those elements should be a list with elements 
-#' #'   named pfs and os, for
-#' #'   the two elements of a partial survival object, and each element
-#' #'   must be a distribution type (a distribution used in the survival
-#' #'   fit).   Each name should be one of the groups 
-#' #'   or subgroups; that is, a column name of `fit_matrix`. 
-#' #'
-#' #' @return a list of partitioned survival objects
-#' #' @export
-#' #'
-#' #' @examples
-#' #' fit_matrix <- 
-#' #'   partitioned_survival_from_tabular(base_dir = system.file("tabular\\surv", 
-#' #'                                                 package = "heemod"), 
-#' #'                                   ref_file = "example_oncSpecs.csv", 
-#' #'                                   df_env = new.env(), 
-#' #'                                   state_names = c("ProgressionFree", "Progressive", 
-#' #'                                   "Terminal", "Death"), 
-#' #'                                   save_fits = FALSE,
-#' #'                                   just_load = FALSE)
-#' #' ## create new partitioned survival objects.   For group A,
-#' #' ## use the exponential fit for progression-free survival, and
-#' #' ## the Weibull fit for overall survival; for B, use the exponential
-#' #' ## and lognormal fits respectively.
-#' #' combine_part_surv(fit_matrix, A = list(pfs = "exp", os = "weibull"), 
-#' #'                              B = list(pfs = "exp", os = "lnorm"),
-#' #'                              subset = "all")
-#' #' combine_part_surv_(fit_matrix, 
-#' #'                    choices = list(A = list(pfs = "exp", os = "weibull"), 
-#' #'                                   B = list(pfs = "exp", os = "lnorm"),
-#' #'                                   subset = "all))
-#' combine_part_surv <- function(fit_matrix, ..., subset) {
-#'   choices <- list(...)
-#'   combine_part_surv_(fit_matrix, choices, subset)
-#' }
-#' 
-#' #' @export
-#' #' @rdname combine_part_surv
-#' combine_part_surv_ <- function(fit_matrix, choices, subset){
-#'   if(!(subset %in% names(fit_matrix)))
-#'     stop(subset, " must be a name of fit_matrix")
-#'   fit_matrix <- fit_matrix[[subset]]
-#'   if(!all(names(choices) %in% colnames(fit_matrix)))
-#'     stop("names of selections must be column names ",
-#'          "of fit_matrix (names of strategies)")
-#'   if(!all(unlist(choices) %in% rownames(fit_matrix)))
-#'     stop("values of arguments other than fit_matrix must be
-#'          row names of fit_matrix")
-#'   
-#'   if(!all(sapply(fit_matrix, function(this_obj){
-#'     inherits(this_obj, "part_surv")}))
-#'   )
-#'     stop("the elements of fit_matrix must be of class 'part_surv'")
-#'   
-#'   choice_ind <-
-#'     lapply(names(choices), function(this_name) {
-#'       this_choice <- choices[[this_name]]
-#'       if(!identical(sort(names(this_choice)),
-#'                     c("os", "pfs"))){
-#'         stop(paste("only names os and pfs allowed as elements of additional arguments"))
-#'       }
-#'       
-#'       cbind(names(this_choice),
-#'             unlist(this_choice),
-#'             rep(this_name, length(names(this_choice))))
-#'     })
-#'   
-#'   part_survs <-
-#'     lapply(choice_ind, function(this_ind) {
-#'       ## pieces <- choice_ind[this_ind[, -1]]
-#'       pfs_ind <- this_ind[match("pfs", this_ind[, 1]), 2:3]
-#'       os_ind <- this_ind[match("os", this_ind[, 1]), 2:3]
-#'       
-#'       pfs_piece <- fit_matrix[[pfs_ind[1], pfs_ind[2]]]
-#'       os_piece <- fit_matrix[[os_ind[1], os_ind[2]]]
-#'       if (!identical(get_state_names(pfs_piece),
-#'                      get_state_names(os_piece)))
-#'         stop("state names of pfs and os parts must be the same")
-#'       
-#'       if (!identical(pfs_piece$cycle_length, os_piece$cycle_length))
-#'         stop("cycle_length elements of pfs_piece and os_piece must be identical")
-#'       
-#'       define_part_surv_(
-#'         pfs = pfs_piece$pfs,
-#'         os = os_piece$os,
-#'         state_names = get_state_names(pfs_piece),
-#'         cycle_length = pfs_piece$cycle_length
-#'       )
-#'     })
-#'   names(part_survs) <- names(choices)
-#'   part_survs
-#' }
-#' 
-#' 
-#' #' Create partial survival objects from fit files
-#' #'
-#' #' @param file_name loadable .RData file containing a fit matrix.
-#' #' @param obj_name the name of the fit matrix inside the .RData file.
-#' #' @param ... additional arguments for [combine_part_surv()].
-#' #'
-#' #' @inherit combine_part_surv return
-#' #' @export
-#' #'
-#' combine_part_surv_from_fit_file <- 
-#'   function(file_name, obj_name, ...){
-#'     load(file_name)
-#'     fit_matrix <- get(obj_name)
-#'     part_surv_matrix <- part_survs_from_surv_inputs(fit_matrix)
-#'     combine_part_surv(part_surv_matrix, ...)
-#'   }
-
 
 #'
 #' Calculate additional metrics to evaluate fit of survival model.
@@ -1000,3 +569,25 @@ add_m2LL <- function(surv_fits)
   }
   out
 }
+
+#' Title
+#'
+#' @param fit_tib a tibble of fits, for example from
+#'   [survival_fits_from_tabular()]
+#' @param metric which metrics to add
+#'
+#' @return a tibble with the added columns
+#' @export
+#'
+#' @examples
+extract_surv_fit_metrics <- 
+  function(fit_tib, metric = c("AIC", "BIC","m2LL")){
+    ## metric <- match.arg(metric)
+    fit_tib <- 
+      fit_tib %>% dplyr::filter(dist != "km")
+     extracted <- 
+       fit_tib %>%
+       dplyr::rowwise() %>%
+       dplyr::do(data.frame(.$fit[metric]))
+     tibble::as_tibble(cbind.data.frame(fit_tib, extracted))
+  }

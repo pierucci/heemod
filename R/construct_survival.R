@@ -1,7 +1,7 @@
 #' construct a survival object from tabular specification
 #'
 #' @param surv_def a data frame with the specification.  See details.
-#' @param fit_tib the name of the tibble from which to take fits.
+#' @param fit_tibble the name of the tibble from which to take fits.
 #'   Typically produced by [survival_fits_from_tabular()].
 #' @param env an environment
 #' @param state_names names of the model states
@@ -29,18 +29,29 @@ construct_survival <-
     if(!(".subset" %in% names(surv_def)))
       surv_def$.subset <- "all"
     
-    surv_def_2 <- 
-      surv_def %>% 
+    surv_def <- tibble::as_tibble(surv_def)
+    fit_tibble <-
+      dplyr::mutate(fit_tibble, type = toupper(type)) 
+    
+    
+    ## we handle directly defined distributions
+    ##   (those defined with define_survival())
+    ##   separately from fits
+    with_direct_dist <- 
+      dplyr::filter(surv_def, grepl("^define_survival", dist))
+    should_be_fits <- 
+      dplyr::filter(surv_def, !grepl("^define_survival", dist))
+    
+    ## reduce fit expressions to distribution names
+    should_be_fits_2 <- 
+      should_be_fits %>% 
       dplyr::mutate(dist = gsub("fit\\((.*)\\)", "\\1", dist)) %>%
       dplyr::mutate(dist = gsub("'", "", dist)) %>%
       dplyr::mutate(dist = gsub('"', '', dist)) %>%
       dplyr::mutate(.type = toupper(.type))
-    
-    fit_tibble <-
-      dplyr::mutate(fit_tibble, type = toupper(type)) 
-    
-    surv_def_3 <- 
-      surv_def_2 %>% dplyr::left_join(., fit_tibble,
+    ## and join in the fits and subset definitions
+    should_be_fits_3 <- 
+      should_be_fits_2 %>% dplyr::left_join(., fit_tibble,
                                       by = c(".strategy" = "treatment",
                                              ".type" = "type",
                                              "dist" = "dist",
@@ -48,10 +59,22 @@ construct_survival <-
                                         
       )
     
-    
-    
+    ## for directly defined distributions, join to make the
+    ##   extra columns, then move the defined distributions 
+    ##   over to the fits column
+    direct_dist_def_3 <- 
+      with_direct_dist %>%
+      dplyr::left_join(., fit_tibble,
+                       by = c(".strategy" = "treatment",
+                              ".type" = "type",
+                              "dist" = "dist",
+                              ".subset" = "set_name")
+      )
+    direct_dist_def_3$fit <- direct_dist_def_3$dist
+
+    ## and now we can re-unite them and continue
     surv_def_4 <- 
-      surv_def_3 %>% 
+      rbind(should_be_fits_3, direct_dist_def_3) %>% 
       dplyr::group_by(.strategy, .type, .subset) %>%
       dplyr::do(fit = join_fits_across_time(.)) %>%
       dplyr::ungroup()

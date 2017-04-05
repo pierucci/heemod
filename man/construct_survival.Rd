@@ -9,12 +9,12 @@ construct_survival(surv_def, fit_tibble, state_names, env = new.env())
 \arguments{
 \item{surv_def}{a data frame with the specification.  See details.}
 
+\item{fit_tibble}{the name of the tibble from which to take fits.
+Typically produced by \code{\link[=survival_fits_from_tabular]{survival_fits_from_tabular()}}.}
+
 \item{state_names}{names of the model states}
 
 \item{env}{an environment}
-
-\item{fit_tib}{the name of the tibble from which to take fits.
-Typically produced by \code{\link[=survival_fits_from_tabular]{survival_fits_from_tabular()}}.}
 }
 \value{
 a list with one element for each strategy.   Each element
