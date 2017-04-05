@@ -30,6 +30,7 @@ test_that(
       age = 0:99,
       country = "FRA",
       year = 2015
+
     )
     res_global <- get_who_mr(
       age = 0:99,
@@ -53,7 +54,7 @@ test_that(
       region = "EUR",
       year = 2015
     )
-    
+
     expect_identical(
       head(res_latest),
       c(0.00391, 0.00018, 0.00023, 0.00018, 0.00023, 7e-05)
@@ -76,11 +77,11 @@ test_that(
     )
     expect_identical(
       round(head(res_eur), 5),
-      c(0.00801, 0.00033, 0.00033, 0.00033, 0.00033, 0.00021)
+      c(0.00798, 0.00033, 0.00033, 0.00033, 0.00033, 0.00021)
     )
     expect_identical(
       round(head(res_eur_fmle), 5),
-      c(0.00712, 0.00030, 0.00030, 0.00030, 0.00030, 0.00018)
+      c(0.00709, 0.00030, 0.00030, 0.00030, 0.00030, 0.00018)
     )
     
     expect_error(
