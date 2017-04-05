@@ -155,8 +155,6 @@ plot.dsa <- function(x, type = c("simple", "difference"),
   
   l <- diff(range(tab[[var_plot]])) * .1
   
-  
-  
   if (type == "difference") {
     tab$.strategy_names <- "difference"
   }
@@ -291,4 +289,17 @@ tidy_dsa <- function(x) {
   tab <- summary(x)$res_comp
   tab %>% 
     tidyr::gather()
+}
+
+digits_at_diff <- function(x, y, addl_digits = 1){
+  stopifnot(length(x) == length(y))
+  diff <- abs(x - y)
+  num_digits <- -floor(log(diff, 10)) + addl_digits
+  round_x <- 
+    sapply(seq(along = x), 
+           function(i){round(x[i], num_digits[i])})
+  round_y <- 
+    sapply(seq(along = y), 
+           function(i){round(y[i], num_digits[i])})
+  list(x = round_x, y = round_y, nd = num_digits)
 }
