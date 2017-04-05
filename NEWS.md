@@ -1,4 +1,4 @@
-## heemod 0.8.0.9004
+## heemod 0.8.0.9005
 
 `heemod` can now be cited with :
 
@@ -22,6 +22,7 @@ Package heemod.” _ArXiv e-prints_. R package version
   * State membership correction works for partitioned survival model.
   * Custom state membership correction functions can be passed to the `method` argument of `run_model()`.
   * `get_who__mr()` can take a `region` argument, and automatically pool results when `sex` is not passed.
+  * Additional DSA plotting options.
   
 ### Bugfixes
 

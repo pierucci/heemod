@@ -10,16 +10,17 @@
 #' @param strategy Name or index of strategies to plot.
 #' @param type Type of plot (see details).
 #' @param result Plot cost, effect, or ICER.
-#' @param widest_on_top logical. Should bars be sorted so
+#' @param widest_on_top logical. Should bars be sorted so 
 #'   widest are on top?
-#' @param limits_by_bars logical.   Should the limits
-#'   used for each parameter be printed in the plot,
-#'   next to the bars?
-#' @param resolve_labels logical. Should we resolve all labels
-#'   to numbers instead of expressions (if there are any)?
-#' @param shorten_labels logical. should we shorten the presentation
-#'   of the parameters on the plot to highlight where the
-#'   values differ?
+#' @param limits_by_bars logical. Should the limits used
+#'   for each parameter be printed in the plot, next to the
+#'   bars?
+#' @param resolve_labels logical. Should we resolve all
+#'   labels to numbers instead of expressions (if there are
+#'   any)?
+#' @param shorten_labels logical. Should we shorten the
+#'   presentation of the parameters on the plot to highlight
+#'   where the values differ?
 #' @param bw Black & white plot for publications?
 #' @param remove_ns Remove variables that are not sensitive.
 #' @param ... Additional arguments passed to `plot`.
@@ -94,21 +95,13 @@ plot.dsa <- function(x, type = c("simple", "difference"),
     }
   )
   
-  if(resolve_labels){
-
-    temp <- x$dsa %>%
-      dplyr::mutate(.extra_vars = x$resolved_newdata[.strategy_names]) %>% 
-      dplyr::mutate(.par_value = mapply(function(val, extra_vars){
-        #list(expr = 
-      list(expr = lazyeval::lazy_eval(val, extra_vars))
-      #)
-        }, .par_value, .extra_vars, SIMPLIFY = FALSE)
-      ) %>%
-      dplyr::select(-.extra_vars) %>%
-      dplyr::arrange(., .par_names, .strategy_names)
-    x$dsa <- temp
-  }                    
-
+  if (resolve_labels) {
+    x$dsa <- x$dsa %>%
+      dplyr::mutate_(
+        .par_value = ~ .par_value_eval
+      )
+  }
+  
   tab <- summary(x, center = FALSE)$res_comp %>% 
     dplyr::left_join(
       summary(model_ref, center = FALSE)$res_comp %>%
@@ -151,9 +144,6 @@ plot.dsa <- function(x, type = c("simple", "difference"),
       )
   }
   
-  
-  
-  
   if (widest_on_top) {
     tab$.par_names <- stats::reorder(
       tab$.par_names,
@@ -167,9 +157,11 @@ plot.dsa <- function(x, type = c("simple", "difference"),
   
   
   
-  if(type == "difference")
+  if (type == "difference") {
     tab$.strategy_names <- "difference"
-  if(shorten_labels){
+  }
+  
+  if (shorten_labels) {
     odds <- seq(from = 1, to = nrow(tab), by = 2)
     evens <- odds + 1
     new_digits <- digits_at_diff(as.numeric(tab$.par_value[odds]), 
@@ -177,8 +169,8 @@ plot.dsa <- function(x, type = c("simple", "difference"),
                                  addl_digits = 2)
     tab$.par_value[odds] <- new_digits$x
     tab$.par_value[evens] <- new_digits$y
-    if(limits_by_bars) l <- l * (1 + 0.075 * max(new_digits$nd))
     
+    if (limits_by_bars) l <- l * (1 + 0.075 * max(new_digits$nd))
   }
   
   res <- ggplot2::ggplot(tab, ggplot2::aes_string(
@@ -194,7 +186,7 @@ plot.dsa <- function(x, type = c("simple", "difference"),
     ggplot2::xlim(min(tab[[var_plot]]) - l, max(tab[[var_plot]]) + l) +
     ggplot2::facet_wrap(stats::as.formula("~ .strategy_names"))
   
-  if(limits_by_bars){
+  if (limits_by_bars) {
     res <- res + 
       ggplot2::geom_text(
         ggplot2::aes_string(
@@ -202,9 +194,10 @@ plot.dsa <- function(x, type = c("simple", "difference"),
           y = ".par_names",
           label = ".par_value",
           hjust = ".hjust"
+        )
       )
-    )
   }
+  
   if (bw) {
     res <- res +
       ggplot2::scale_color_grey(start = 0, end = .8) +
@@ -277,10 +270,6 @@ scale.dsa <- function(x, center = TRUE, scale = TRUE) {
 
 #' @export
 summary.dsa <- function(object, ...) {
-  object$dsa  <- dplyr::filter(object$dsa, .par_names %in% object$variables) %>%
-    dplyr::mutate(.par_value = to_text_dots(.$.par_value, name = FALSE)
-    )
-
   res <- object %>% 
     scale(...) %>% 
     dplyr::group_by_(~ .par_names, ~ .par_value)  %>% 

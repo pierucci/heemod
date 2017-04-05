@@ -19,8 +19,12 @@ run_dsa <- function(model, dsa) {
   method <- get_method(model)
   strategy_names <- get_strategy_names(model)
   
+  n_par <- length(dsa$variables)
+  pos_par <- cumsum(c(1, rep(c(n_par, n_par+1), n_par)))
+  pos_par <- pos_par[-length(pos_par)]
+  
   list_res <- list()
-  resolved_newdata <- list()
+  e_newdata <- list()
   for (n in strategy_names) {
     message(sprintf(
       "Running DSA on strategy '%s'...", n
@@ -30,33 +34,26 @@ run_dsa <- function(model, dsa) {
       strategy = n,
       newdata = dsa$dsa
     )
-      this_resolved_newdata <-
-        tab[, names(tab) %in% dsa$variables] %>%
-        dplyr::rowwise() %>%
-        dplyr::do_(., x = 
-
-        ~ eval_newdata(new_parameters = .,
-                     strategy = model$uneval_strategy_list[[n]],
-                     old_parameters = get_parameters(model),
-                     cycles = 1,
-                     init = get_uneval_init(model),
-                     method = get_method(model),
-                     inflow = get_inflow(model),
-                     strategy_name = n,
-                     expand_limit = get_expand_limit(model, n))$parameters
-        ) %>%
-        dplyr::ungroup() 
-
-     res <- tab
+    
+    res <- tab %>% 
+      dplyr::mutate_if(
+        names(tab) %in% dsa$variables,
+        dplyr::funs(to_text_dots),
+        name = FALSE
+      )
+    
     list_res <- c(
       list_res,
       list(res)
     )
-    resolved_newdata <- c(
-      resolved_newdata,
-      this_resolved_newdata$x[1]
-    )
-    names(resolved_newdata)[length(resolved_newdata)] <- n
+    
+    e_newdata <- c(
+      e_newdata,
+      list(unlist(lapply(
+        tab$.mod,
+        function(x) x$parameters[1, dsa$variables]))[pos_par]))
+    
+    names(e_newdata)[length(e_newdata)] <- n
   }
   
   for (i in seq_along(strategy_names)) {
@@ -64,21 +61,25 @@ run_dsa <- function(model, dsa) {
   }
   
   res <- Reduce(dplyr::bind_rows, list_res) %>% 
-    tidyr::gather_(".par_names", ".par_value",
-                   dsa$variables, na.rm = TRUE)
+    tidyr::gather_(
+      ".par_names", ".par_value",
+      dsa$variables, na.rm = TRUE) %>% 
+    dplyr::rowwise()
+  
   res <- res %>% 
-    dplyr::rowwise() %>% 
     dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
     dplyr::bind_cols(res %>% dplyr::select_(~ - .mod)) %>% 
     dplyr::ungroup() %>% 
-    dplyr::mutate_(.dots = get_ce(model))
+    dplyr::mutate(
+      .par_value_eval = unlist(e_newdata)) %>% 
+    dplyr::mutate_(
+      .dots = get_ce(model))
   
   structure(
     list(
       dsa = res,
       variables = dsa$variables,
-      model = model,
-      resolved_newdata = resolved_newdata
+      model = model
     ),
     class = c("dsa", "list")
   )
@@ -86,4 +87,17 @@ run_dsa <- function(model, dsa) {
 
 get_model.dsa <- function(x) {
   x$model
+}
+
+digits_at_diff <- function(x, y, addl_digits = 1){
+  stopifnot(length(x) == length(y))
+  diff <- abs(x - y)
+  num_digits <- -floor(log(diff, 10)) + addl_digits
+  round_x <- 
+    sapply(seq(along = x), 
+           function(i){round(x[i], num_digits[i])})
+  round_y <- 
+    sapply(seq(along = y), 
+           function(i){round(y[i], num_digits[i])})
+  list(x = round_x, y = round_y, nd = num_digits)
 }

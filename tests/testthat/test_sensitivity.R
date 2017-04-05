@@ -249,5 +249,5 @@ test_that(
 
     plot(x0, resolve_labels = TRUE)
     plot(x0, resolve_labels = TRUE, shorten_labels = TRUE)
-      }
+  }
 )
