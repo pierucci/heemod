@@ -239,12 +239,15 @@ test_that(
       r, .05, .1
     )
     
-    
-    x <- summary(run_dsa(res2, ds))
+    x0 <- run_dsa(res2, ds)
+    x <- summary(x0)
     
     .icer <- c(NA, 3988, NA, 668, NA, 1634, NA,
                1086, NA, 978, NA, 1300)
     
     expect_identical(round(x$res_comp$.icer), .icer)
-  }
+
+    plot(x0, resolve_labels = TRUE)
+    plot(x0, resolve_labels = TRUE, shorten_labels = TRUE)
+      }
 )

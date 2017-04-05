@@ -3,7 +3,6 @@
 #' @param model An evaluated Markov model.
 #' @param dsa An object returned by 
 #'   [define_dsa()].
-#'   
 #' @return A `data.frame` with one row per model and 
 #'   parameter value.
 #' @export
@@ -21,6 +20,7 @@ run_dsa <- function(model, dsa) {
   strategy_names <- get_strategy_names(model)
   
   list_res <- list()
+  resolved_newdata <- list()
   for (n in strategy_names) {
     message(sprintf(
       "Running DSA on strategy '%s'...", n
@@ -29,17 +29,34 @@ run_dsa <- function(model, dsa) {
       model,
       strategy = n,
       newdata = dsa$dsa
-    ) 
-    res <- tab %>% 
-      dplyr::mutate_if(
-        names(tab) %in% dsa$variables,
-        dplyr::funs(to_text_dots),
-        name = FALSE
-      )
+    )
+      this_resolved_newdata <-
+        tab[, names(tab) %in% dsa$variables] %>%
+        dplyr::rowwise() %>%
+        dplyr::do_(., x = 
+
+        ~ eval_newdata(new_parameters = .,
+                     strategy = model$uneval_strategy_list[[n]],
+                     old_parameters = get_parameters(model),
+                     cycles = 1,
+                     init = get_uneval_init(model),
+                     method = get_method(model),
+                     inflow = get_inflow(model),
+                     strategy_name = n,
+                     expand_limit = get_expand_limit(model, n))$parameters
+        ) %>%
+        dplyr::ungroup() 
+
+     res <- tab
     list_res <- c(
       list_res,
       list(res)
     )
+    resolved_newdata <- c(
+      resolved_newdata,
+      this_resolved_newdata$x[1]
+    )
+    names(resolved_newdata)[length(resolved_newdata)] <- n
   }
   
   for (i in seq_along(strategy_names)) {
@@ -60,9 +77,10 @@ run_dsa <- function(model, dsa) {
     list(
       dsa = res,
       variables = dsa$variables,
-      model = model
+      model = model,
+      resolved_newdata = resolved_newdata
     ),
-    class = c("dsa", class(res))
+    class = c("dsa", "list")
   )
 }
 
