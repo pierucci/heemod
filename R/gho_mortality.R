@@ -4,20 +4,20 @@
 #' a given country.
 #' 
 #' Locally cached data is used in case of connection 
-#' problems, of if `local = TRUE`. For memory space 
-#' reasons local data is only available for WHO high-income 
+#' problems, of if `local = TRUE`. For memory space reasons
+#' local data is only available for WHO high-income 
 #' countries, and only for the latest year.
 #' 
-#' The results of `get_who_mr` are memoised for
-#' `options("heemod.memotime")` (default: 1 hour) to
+#' The results of `get_who_mr` are memoised for 
+#' `options("heemod.memotime")` (default: 1 hour) to 
 #' increase resampling performance.
 #' 
 #' @name who-mortality
 #' @param age age as a continuous variable.
-#' @param sex sex as `"FMLE"`-`"MLE"`, 
-#'   `0`-`1` (male = 0, female = 1) or 
-#'   `1`-`2` (male = 1, female = 2).
-#' @param region Region code. Assumed NULL if provided along with `country`
+#' @param sex sex as `"FMLE"`-`"MLE"`, `0`-`1` (male = 0,
+#'   female = 1) or `1`-`2` (male = 1, female = 2).
+#' @param region Region code. Assumed `NULL` if provided along
+#'   with `country`.
 #' @param country Country code (see details).
 #' @param year Use data from that year. Defaults to 
 #'   `"latest"`.
@@ -25,8 +25,7 @@
 #'   data?
 #'   
 #' @return This function should be used within 
-#'   [define_transition()] or 
-#'   [define_parameters()].
+#'   [define_transition()] or [define_parameters()].
 #'   
 #' @examples 
 #' 
@@ -37,12 +36,17 @@
 #' 
 get_who_mr_memo <- function(age, sex = NULL, region = NULL, country = NULL,
                             year = "latest", local = FALSE) {
-  if (is.null(region) & is.null(country)){
-    message('Assuming region == "GLOBAL"')
+  if (is.null(region) && is.null(country)){
+    message("Assuming 'region' is GLOBAL.")
     region <- "GLOBAL"
-  } else if (!is.null(region) & !is.null(country)){
+    
+  } else if (!is.null(country)) {
+    if (! is.null(region)) {
+      message("'country' provided, ignoring 'region' argument.")
+    }
     region <- NULL
   }
+  
   if (!local) {
     message("Fetching mortality data from WHO server.")
     mr_data <- try(get_gho_mr(
@@ -52,11 +56,15 @@ get_who_mr_memo <- function(age, sex = NULL, region = NULL, country = NULL,
       year = as.character(year)
     ), silent = TRUE)
     
-    if (inherits(mr_data, "try-error"))
+    if (inherits(mr_data, "try-error")) {
       warning("Failed to fetch mortality data from WHO server.")
+    }
   }
   
   if (local || inherits(mr_data, "try-error")) {
+    if (is.null(country)) {
+      stop("Regional mortality rates cannot be estimated from local data.")
+    }
     message("Fetching mortality data from package cached data.")
     mr_data <- get_package_mr(
       country = country,
@@ -97,8 +105,8 @@ get_gho_mr <- function(sex, region, country, year) {
     code = "LIFE_0000000029",
     filter = as.list(
       c(
-        REGION = if(!is.null(region)) region,
-        COUNTRY = if(!is.null(country)) country
+        REGION = if (!is.null(region)) region,
+        COUNTRY = if (!is.null(country)) country
       )
     ) 
   )
@@ -107,11 +115,11 @@ get_gho_mr <- function(sex, region, country, year) {
   
   if (year == "latest") {
     study_year <- max(years)
-    message(sprintf("Using latest year: %s", study_year))
+    message(sprintf("Using latest year: %s.", study_year))
     
   } else if (!year %in% years) {
     stop(sprintf(
-      "Mortality data for YEAR '%s' not available",
+      "Mortality data for YEAR '%s' not available.",
       year
     ))
   } else {
@@ -124,12 +132,13 @@ get_gho_mr <- function(sex, region, country, year) {
     stop("Strange GHO mortality data.")
   }
   
-  if (is.null(country) | is.null(sex)) {
-    mr_data_year <- pool_data(mr_data_year,
-                              sex,
-                              region, 
-                              country, 
-                              study_year)
+  if (is.null(country) || is.null(sex)) {
+    mr_data_year <- pool_data(
+      mr_data_year,
+      sex,
+      region, 
+      country, 
+      study_year)
   }
   
   mr_data_year
@@ -142,8 +151,8 @@ pool_data <- function(mr_data, sex, region, country, year) {
     filter = as.list(
       c(
         YEAR = year,
-        REGION = if(!is.null(region)) region,
-        COUNTRY = if (!is.null(country)) country
+        REGION = if(! is.null(region)) region,
+        COUNTRY = if (! is.null(country)) country
       )
     ) 
   )
@@ -156,26 +165,29 @@ pool_data <- function(mr_data, sex, region, country, year) {
   }
   exists_col_country <- "COUNTRY" %in% colnames(pop_data)
   cols <- c("AGEGROUP", "SEX", "REGION", if (exists_col_country) "COUNTRY")
+  
   suppressMessages({
     pop_weight <- pop_data %>% 
-      dplyr::select(
-        dplyr::one_of(cols),
-        weight = Numeric
+      dplyr::select_(
+        .dots = c(cols, weight = "Numeric")
       ) %>% 
       dplyr::left_join(mr_data)
     
-    if(exists_col_country && length(unique(pop_weight$COUNTRY)) > 1){
-      pop_weight <<- dplyr::filter(pop_weight, !is.na(COUNTRY))
+    if (exists_col_country && length(unique(pop_weight$COUNTRY)) > 1){
+      pop_weight <- dplyr::filter_(pop_weight, ~ !is.na(COUNTRY))
     }
     
     
-    pop_group <- if ((is.null(country) | !exists_col_country) & is.null(sex)){
+    pop_group <- if ((is.null(country) || !exists_col_country) && is.null(sex)) {
       dplyr::group_by_(pop_weight, "AGEGROUP")
+      
     } else if (is.null(sex)){
       dplyr::group_by_(pop_weight, "AGEGROUP", "COUNTRY")
+      
     } else if (is.null(country) | !exists_col_country){
       dplyr::group_by_(pop_weight, "AGEGROUP", "SEX")
-    } 
+    }
+    
     dplyr::summarise_(
         pop_group,
         Numeric = ~ sum(Numeric * weight) / sum(weight)
@@ -271,4 +283,3 @@ trans_sex_gho <- function(sex) {
     stop("Error during conversion of labels for 'sex'.")
   }
 }
-

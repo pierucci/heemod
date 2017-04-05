@@ -1,4 +1,4 @@
-## heemod 0.8.0.9003
+## heemod 0.8.0.9004
 
 `heemod` can now be cited with :
 
@@ -21,6 +21,7 @@ Package heemod.” _ArXiv e-prints_. R package version
   * Model calibration with `calibrate_model()`. Thanks to [Matthew Wiener](https://github.com/MattWiener).
   * State membership correction works for partitioned survival model.
   * Custom state membership correction functions can be passed to the `method` argument of `run_model()`.
+  * `get_who__mr()` can take a `region` argument, and automatically pool results when `sex` is not passed.
   
 ### Bugfixes
 
