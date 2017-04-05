@@ -21,8 +21,6 @@ female = 1) or \code{1}-\code{2} (male = 1, female = 2).}
 \item{region}{Region code. Assumed \code{NULL} if provided along
 with \code{country}.}
 
-\item{region}{Region code. Assumed NULL if provided along with \code{country}}
-
 \item{country}{Country code (see details).}
 
 \item{year}{Use data from that year. Defaults to
