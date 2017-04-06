@@ -19,18 +19,18 @@ surv_dist4 <- define_survival(
 
 
 suppressMessages(
-ps <- define_part_surv(
-  pfs = project(surv_dist3, surv_dist4, at=365),
-  os = project(surv_dist1, surv_dist2, at=365),
-  cycle_length = c(365, 365)
-)
+  ps <- define_part_surv(
+    pfs = project(surv_dist3, surv_dist4, at=365),
+    os = project(surv_dist1, surv_dist2, at=365),
+    cycle_length = c(365, 365)
+  )
 )
 suppressMessages(
-ps1 <- define_part_surv(
-  pfs = project(surv_dist3, surv_dist4, at=365) %>% apply_hr(0.8),
-  os = project(surv_dist1, surv_dist2, at=365) %>% apply_hr(0.8),
-  cycle_length = c(365, 365)
-)
+  ps1 <- define_part_surv(
+    pfs = project(surv_dist3, surv_dist4, at=365) %>% apply_hr(0.8),
+    os = project(surv_dist1, surv_dist2, at=365) %>% apply_hr(0.8),
+    cycle_length = c(365, 365)
+  )
 )
 
 sA <-  define_state(
@@ -76,13 +76,14 @@ test_that(
       data = flexsurv::bc)
     km_medium <- set_covariates(km_cov, group = "Medium")
     
-    ps <- define_part_surv(
-      pfs = surv_dist_1,
-      os = km_medium %>%
-        project(fitcov_medium, 
-                at = 730),
-      cycle_length = c(1, 365)  # 1 for pfs, 365 for os
-    )
+    suppressMessages({
+      ps <- define_part_surv(
+        pfs = surv_dist_1,
+        os = km_medium %>%
+          project(fitcov_medium, 
+                  at = 730),
+        cycle_length = c(1, 365)  # 1 for pfs, 365 for os
+      )})
     
     sA <- define_state(cost = 10, ut = 1)
     sB <- define_state(cost = 20, ut = 0.5)
@@ -149,59 +150,52 @@ test_that(
   }
 )
 
-ps <- define_part_surv(
-  pfs = project(surv_dist3),
-  os = project(surv_dist1),
-  state_names = c("ProgressionFree", "Progressive", "Death"),
-  cycle_length = c(365, 365)
-)
-
-test_that("errors with inappropriate state names",
-          {
-            expect_error(
-              ps <- define_part_surv(
-                pfs = project(surv_dist3),
-                os = project(surv_dist1),
-                state_names = c("NoDisease", "Progressive", "Death"),
-                cycle_length = c(365, 365)
-              ),
-              "progression free state (only) must have 'free' in its name",
-              fixed = TRUE
-            )
-            expect_error(
-              ps <- define_part_surv(
-                pfs = project(surv_dist3),
-                os = project(surv_dist1),
-                state_names = c("ProgressionFree", "Progressive", "Kaput"),
-                cycle_length = c(365, 365)
-              ),
-              "state representing death",
-              fixed = TRUE
-            )
-            expect_error(
-              ps <- define_part_surv(
-                pfs = project(surv_dist3),
-                os = project(surv_dist1),
-                state_names = c("ProgressionFree", "Progressive",
-                                "uh-oh", "Death"),
-                cycle_length = c(365, 365)
-              ),
-              "if there are four states, you must have a state called 'terminal'",
-              fixed = TRUE
-            )
-            expect_error(
-              ps <- define_part_surv(
-                pfs = project(surv_dist3),
-                os = project(surv_dist1),
-                state_names = c(
-                  "ProgressionFree",
-                  "Progressivebutfree",
-                  "terminal",
-                  "Death"
-                ),
-                cycle_length = c(365, 365)
-              ),
-              "progression free state (only) must have 'free' in its name",
-              fixed = TRUE
-            )
-          })
+suppressMessages({
+  ps <- define_part_surv(
+    pfs = project(surv_dist3),
+    os = project(surv_dist1),
+    state_names = c("ProgressionFree", "Progressive", "Death"),
+    cycle_length = c(365, 365)
+  )
+})
+test_that(
+  "errors with inappropriate state names", {
+    expect_error(
+      define_part_surv(
+        pfs = project(surv_dist3),
+        os = project(surv_dist1),
+        state_names = c("NoDisease", "Progressive", "Death"),
+        cycle_length = c(365, 365)
+      )
+    )
+    expect_error(
+      define_part_surv(
+        pfs = project(surv_dist3),
+        os = project(surv_dist1),
+        state_names = c("ProgressionFree", "Progressive", "Kaput"),
+        cycle_length = c(365, 365)
+      )
+    )
+    expect_error(
+      define_part_surv(
+        pfs = project(surv_dist3),
+        os = project(surv_dist1),
+        state_names = c("ProgressionFree", "Progressive",
+                        "uh-oh", "Death"),
+        cycle_length = c(365, 365)
+      )
+    )
+    expect_error(
+      define_part_surv(
+        pfs = project(surv_dist3),
+        os = project(surv_dist1),
+        state_names = c(
+          "ProgressionFree",
+          "Progressivebutfree",
+          "terminal",
+          "Death"
+        ),
+        cycle_length = c(365, 365)
+      )
+    )
+  })

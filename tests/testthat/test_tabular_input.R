@@ -127,8 +127,7 @@ test_that(
         "tabular/test",
         "example_multinom_params_dup_name.csv",
         package = "heemod"
-      ))),
-      "some variables appear as individual parameters and in a multinomial: p_AB"
+      )))
     )
     
     

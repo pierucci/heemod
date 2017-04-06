@@ -286,7 +286,7 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   tm_info <- read_file(ref$full_file[ref$data == "tm"])
   trans_type <- transition_type(tm_info)
   
-  if(trans_type == "matrix"){
+  if (trans_type == "matrix") {
     tm_info <- parse_multi_spec(
       tm_info,
       group_vars = c("from", "to"))
@@ -297,19 +297,16 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
       rownames(tab_undefined) <- NULL
       print(tab_undefined)
       stop("Undefined probabilities in the transition matrix (see above).")
-      }
-  }
-  
-  
-  if(trans_type == "part_surv"){
-    fit_matrix <- 
-      partitioned_survival_from_ref_struc(ref, df_env,
-                                          state_names,
-                                          save_fits = FALSE,
-                                          just_load = TRUE)
-    use_fits_text <- ref[ref$data == "use_fits", "file"]
-    use_fits <- eval(parse(text = use_fits_text))
-    tm_info <- combine_part_surv_(fit_matrix, use_fits)
+    }
+  } else if (trans_type == "part_surv") {
+    # fit_matrix <- partitioned_survival_from_ref_struc(
+    #   ref, df_env,
+    #   state_names,
+    #   save_fits = FALSE,
+    #   just_load = TRUE)
+    # use_fits_text <- ref[ref$data == "use_fits", "file"]
+    # use_fits <- eval(parse(text = use_fits_text))
+    # tm_info <- combine_part_surv_(fit_matrix, use_fits)
   }
   
   if (length(pb <- setdiff(names(state_info), names(tm_info)))) {
@@ -727,18 +724,19 @@ create_options_from_tabular <- function(opt) {
 create_model_from_tabular <- function(state_info,
                                       tm_info,
                                       df_env = globalenv()) {
-  if(length(tm_info) == 0) {
+  if (length(tm_info) == 0) {
     stop("A transition object must be defined.")
   }
   
-  if(! inherits(state_info, "data.frame")) {
-    stop("'state_info' must be a data frame")
+  if (! inherits(state_info, "data.frame")) {
+    stop("'state_info' must be a data frame.")
   }
   
-  if(!is.null(tm_info) && ! inherits(tm_info, c("data.frame", "part_surv"))) {
+  if (!is.null(tm_info) &&
+      ! inherits(tm_info, c("data.frame", "part_surv"))) {
     stop("'tm_info' must be either a data frame ",
          "defining a transition matrix or a part_surv object ",
-         "defining a partitioned survival model")
+         "defining a partitioned survival model.")
   }
   
   if (options()$heemod.verbose) message("**** Defining state list...")
@@ -746,11 +744,16 @@ create_model_from_tabular <- function(state_info,
                                        df_env = df_env)
   if (options()$heemod.verbose) message("**** Defining TM...")
   
-  if(inherits(tm_info, "data.frame"))
-     TM <- create_matrix_from_tabular(tm_info, get_state_names(states),
-                                      df_env = df_env)
-  if(inherits(tm_info, "part_surv"))
+  if (inherits(tm_info, "data.frame")) {
+    TM <- create_matrix_from_tabular(
+      tm_info, get_state_names(states),
+      df_env = df_env)
+  }
+  
+  if (inherits(tm_info, "part_surv")) {
     TM <- tm_info
+  }
+  
   define_strategy_(transition = TM, states = states)
 }
 
@@ -1144,15 +1147,20 @@ save_graph <- function(plot, path, file_name) {
 }
 
 
-transition_type <- function(tm_info){
+transition_type <- function(tm_info) {
   which_defines <- NULL
-  if(all(names(tm_info)[1:2] == c("data", "val")))
+  if (all(names(tm_info)[1:2] == c("data", "val"))) {
     which_defines <- "part_surv"
-  if(all(names(tm_info)[1:4] == c(".model", "from", "to", "prob")))
+  }
+  
+  if (all(names(tm_info)[1:4] == c(".model", "from", "to", "prob"))) {
     which_defines <- "matrix"
-  if(is.null(which_defines))
-    stop("the data frame tm_info must define ",
-         "either a transition matrix or a partitioned survival object")
+  }
+  
+  if (is.null(which_defines)) {
+    stop("The data frame 'tm_info' must define ",
+         "either a transition matrix or a partitioned survival object.")
+  }
   which_defines
 }
 
@@ -1160,68 +1168,78 @@ modify_param_defs_for_multinomials <- function(param_defs, psa) {
   param_names <- param_defs[, 1]
   multinom_pos <- grep("\\+", param_names)
   
-  multinom_vars <-
-    lapply(multinom_pos,
-           function(i) {
-             strsplit(param_names[[i]], "+", fixed = TRUE)[[1]]
-           })
-  multinom_vars <-
-    lapply(multinom_vars, function(x) {
+  multinom_vars <- lapply(
+    multinom_pos,
+    function(i) {
+      strsplit(param_names[[i]], "+", fixed = TRUE)[[1]]
+    })
+  
+  multinom_vars <- lapply(
+    multinom_vars,
+    function(x) {
       gsub("[[:space:]]", "", x)
     })
   
-  duplicates <- 
-    sapply(param_defs$parameter, function(x){
+  duplicates <- sapply(
+    param_defs$parameter,
+    function(x){
       x %in% unlist(multinom_vars)
     })
-  if(any(duplicates)){
-    stop("some variables appear as individual parameters ",
+  
+  if (any(duplicates)) {
+    stop("Some variables appear as individual parameters ",
          "and in a multinomial: ",
          paste(param_defs$parameter[duplicates], collapse = ", ")
-         )
+    )
   }
   
-  multinom_counts <-
-    lapply(multinom_vars,
-           function(x) {
-             sapply(psa$list_qdist[x],
-                    function(y) {
-                      eval(expression(n),
-                           environment(y))
-                    })
-           })
+  multinom_counts <- lapply(
+    multinom_vars,
+    function(x) {
+      sapply(
+        psa$list_qdist[x],
+        function(y) {
+          eval(expression(n),
+               environment(y))
+        })
+    })
   
-  multinom_probs <- lapply(multinom_counts,
-                           function(x) {
-                             x / sum(x)
-                           })
+  multinom_probs <- lapply(
+    multinom_counts,
+    function(x) {
+      x / sum(x)
+    })
   
-  replacements <- 
-    lapply(multinom_probs, function(x){
-      zz <- data.frame(parameter = names(x),
-                 value = x)
+  replacements <- lapply(
+    multinom_probs,
+    function(x) {
+      zz <- data.frame(
+        parameter = names(x),
+        value = x)
       rownames(zz) <- NULL
       zz
     })
-
+  
   ## now we need to put these where they initially appeared
   ##   in the parameter file
   
   param_defs <- param_defs[, c("parameter", "value")]
   param_defs_old <- param_defs
-  for(i in rev(seq(along = multinom_pos))){
+  for (i in rev(seq(along = multinom_pos))) {
     this_pos <- multinom_pos[i]
     start_index <- 1:(this_pos - 1)
     end_index <- 
-      if(this_pos == nrow(param_defs))
+      if (this_pos == nrow(param_defs)) {
         numeric(0)
-      else
-        (this_pos + 1):nrow(param_defs)
-    param_defs <- rbind(param_defs[start_index,],
-                        replacements[[i]],
-                        param_defs[end_index,])
+    } else {
+      (this_pos + 1):nrow(param_defs)
+    }
     
+    param_defs <- rbind(
+      param_defs[start_index,],
+      replacements[[i]],
+      param_defs[end_index,])
   }
+  
   param_defs
 }
-
