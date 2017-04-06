@@ -12,14 +12,14 @@
 #' 
 #' Matric cells are listed by row.
 #' 
-#' The completary probability of all other row probabilities
-#' can be conveniently reffered as `C`.
+#' The complementary probability of all other row probabilities
+#' can be conveniently referred to as `C`.
 #' 
 #' Only matrix size is checked during this step (the matrix 
 #' must be square). Other conditions (such as row sums being
 #' equal to 1) are tested later, during model evaluation.
 #' 
-#' For the `modify` function existing matrix cells are 
+#' For the `modify` function, existing matrix cells are 
 #' replaced with the new expression. Cells are referenced by
 #' name. Cell naming follows the `cell_x_y` convention,
 #' with `x` being the row number and `y` the 
