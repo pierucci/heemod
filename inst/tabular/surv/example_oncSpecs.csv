@@ -1,0 +1,9 @@
+data,file
+state,example_oncStates.csv
+tm,survival_info.csv
+parameters,example_oncParams.csv
+,
+data,required_info
+demographics,example_demographics.csv
+output,output
+options,example_oncOptions.csv
