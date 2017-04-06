@@ -14,7 +14,7 @@ branches:
     - /^release\/.*$/
 
 r_github_packages:		
-  - hadley/devtools
+  - hadley/devtools@1302fef
 
 r_packages:
   - covr
