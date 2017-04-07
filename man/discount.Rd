@@ -11,17 +11,14 @@ discount(x, r, first = FALSE)
 
 \item{r}{discount rate.}
 
-\item{first}{logical. Should the discouting start at the
+\item{first}{logical. Should discouting start at the
 first value ?}
 }
 \value{
 A numeric vector of the same length as \code{x}.
 }
 \description{
-This function should only take as an \code{x} argument
-the names of variables already defined in
-\code{\link[=define_parameters]{define_parameters()}} or
-\code{\link[=define_state]{define_state()}}, and not numeric constants.
+Discount a Quantity Over Time
 }
 \examples{
 

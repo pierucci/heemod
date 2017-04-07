@@ -83,6 +83,7 @@
 #'   
 #' @importFrom utils read.csv
 #' @importFrom utils write.csv
+#' @importFrom utils packageVersion
 #'   
 #' @importFrom tools file_ext
 #' 

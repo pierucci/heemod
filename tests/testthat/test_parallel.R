@@ -18,8 +18,9 @@ test_that(
     ##   instead, we'll check parts that use multi-core processing
     ## 
     ##  parameters from the discrete sensitivity analysis
-    expect_identical(result_1core$dsa$dsa$.par_value,
-                     result_2core$dsa$dsa$.par_value)
+    expect_identical(sapply(result_1core$dsa$dsa$.par_value, lazyeval::lazy_eval),
+                     sapply(result_2core$dsa$dsa$.par_value, lazyeval::lazy_eval)
+    )
     ##  counts from all models from the discrete sensitivity analysis
     expect_identical(get_counts(get_model(result_1core$dsa)),
                      get_counts(get_model(result_2core$dsa)))

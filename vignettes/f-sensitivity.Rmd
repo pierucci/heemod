@@ -223,3 +223,12 @@ plot(res_dsa,
      result = "icer",
      type = "difference")
 ```
+
+It is also possible to leave the high and low parameter values off the plot:
+```{r, fig.width = 6, fig.align='center'}
+plot(res_dsa,
+     strategy = "comb",
+     result = "icer",
+     type = "difference",
+     limits_by_bars = FALSE)
+```
