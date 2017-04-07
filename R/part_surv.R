@@ -64,8 +64,14 @@ define_part_surv <- function(pfs, os, state_names,
         "death"
       )
     }
-  } else if (terminal_state) {
-    warning("Argument 'terminal_state' ignored when state names are given.")
+  }
+  
+  if (is.null(names(state_names))) {
+    if (terminal_state) {
+      warning("Argument 'terminal_state' ignored when state names are given.")
+    }
+    message("Trying to guess PFS model from state names...")
+    state_names <- guess_part_surv_state_names(state_names)
   }
   
   define_part_surv_(
@@ -74,6 +80,7 @@ define_part_surv <- function(pfs, os, state_names,
     state_names = state_names,
     cycle_length = cycle_length)
 }
+
 
 #' @export
 #' @rdname define_part_surv
@@ -192,4 +199,70 @@ compute_counts.eval_part_surv <- function(x, init,
   res <- res[x$state_names]
   
   structure(res, class = c("cycle_counts", class(res)))
+}
+
+guess_part_surv_state_names <- function(state_names) {
+  death_state <- c(
+    grep("death", state_names, ignore.case = TRUE),
+    grep("dead", state_names, ignore.case = TRUE)
+  )
+  progfree_state <- grep("free", state_names, ignore.case = TRUE)
+  progressive_state <- setdiff(
+    grep("progress", state_names, ignore.case = TRUE),
+    progfree_state)
+  terminal_state <- grep("terminal", state_names, ignore.case = TRUE)
+  
+  if (length(death_state) != 1) {
+    stop("State name representing death must contain ",
+         "'death' or 'dead' (case insensitive).")
+  }
+  
+  if (length(progfree_state) != 1) {
+    stop("Progression free state (only) must have 'free' in its name.")
+  }
+  
+  if (length(progressive_state) != 1) {
+    stop("Progression state must have 'progress' ",
+         "but not 'free', in its name.")
+  }
+  
+  if (length(state_names) == 3) {
+    names(state_names) <- c(
+      "progression_free",
+      "progression",
+      "death")[c(
+        progfree_state,
+        progressive_state,
+        death_state)]
+    
+  } else if (length(state_names) == 4) {
+    if (length(terminal_state) == 0) {
+      stop(
+        "If there are 4 states, a state must be called 'terminal' ",
+        "(not case sensitive)."
+      )
+    }
+    
+    names(state_names) <- c(
+      "progression_free",
+      "progression",
+      "terminal",
+      "death")[c(
+        progfree_state,
+        progressive_state,
+        terminal_state,
+        death_state)]
+    
+  } else {
+    stop("There must be 3 or 4 states.")
+  }
+  
+  message(sprintf(
+    "Successfully guessed PFS from state names:\n%s",
+    paste(paste0(
+      "  ", names(state_names), " = ", state_names),
+      collapse = "\n")
+  ))
+  
+  state_names
 }

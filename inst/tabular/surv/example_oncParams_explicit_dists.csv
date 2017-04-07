@@ -1,0 +1,9 @@
+parameter,value
+,
+use_rate,0.025
+pfs.tr.A,"get_surv_probs(explicit_dist(dist_name = ""exp"", rate = 1/100), treatment = NULL, km_until = km_until, markov_cycle = markov_cycle, markov_cycle_length = 1, pred_type = ""prob"")"
+pfs.tr.B,"get_surv_probs(explicit_dist(dist_name = ""exp"", rate = use_rate),  treatment = NULL, km_until = km_until, markov_cycle = markov_cycle, markov_cycle_length = 1, pred_type = ""prob"")"
+os.tr.A,"get_surv_probs(explicit_dist(dist_name = ""exp"", rate = 1/75), treatment = NULL, km_until = km_until, markov_cycle = markov_cycle, markov_cycle_length = 1, pred_type = ""prob"")"
+os.tr.B,"get_surv_probs(explicit_dist(dist_name = ""exp"", rate = 1/20), treatment = NULL, km_until = km_until, markov_cycle = markov_cycle, markov_cycle_length = 1, pred_type = ""prob"")"
+utility.dr,0.000671233
+cost.dr,0.000671233

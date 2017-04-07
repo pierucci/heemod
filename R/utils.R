@@ -13,14 +13,9 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
 
 #' Discount a Quantity Over Time
 #' 
-#' This function should only take as an `x` argument 
-#' the names of variables already defined in 
-#' [define_parameters()] or 
-#' [define_state()], and not numeric constants.
-#' 
 #' @param x numeric. A quantity to discount.
 #' @param r discount rate.
-#' @param first logical. Should the discouting start at the
+#' @param first logical. Should discouting start at the 
 #'   first value ?
 #'   
 #' @return A numeric vector of the same length as `x`.
