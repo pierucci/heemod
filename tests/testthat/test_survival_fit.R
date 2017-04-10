@@ -67,65 +67,41 @@ expect_error(
 
 })
 
-# test_that("getting survival inputs works",
-#           {
-#             ref_1 <- heemod:::read_file(system.file(
-#               "tabular/test",
-#               "survival_spec_1.csv",
-#               package = "heemod"
-#             ))
-#             mixed_order <- heemod:::read_file(system.file(
-#               "tabular/test",
-#               "survival_spec_2.csv",
-#               package = "heemod"
-#             ))
-#             ref_3 <- ref_1
-#             ref_3$data <- gsub("_pfs", "_pfs2", ref_1$data)
-#             input <- 
-#               list(
-#                 surv_data_dir = "survival_data",
-#                 fit_files = c("OS.surv.fit", "PFS.surv.fit"),
-#                 fit_names = c("OS.fit", "PFS.fit"),
-#                 surv_data_files = c("OS.data.csv",
-#                                     "PFS.data.csv"),
-#                 fit_metric = "AIC",
-#                 time_col_name = "time",
-#                 censor_col_name = "status",
-#                 treatment_col_name = "treatment",
-#                 dists = c("exp", "weibull", "lnorm", "gamma", 
-#                           "gompertz", "gengamma"),
-#                 set_definitions = NULL
-#               )
-#             
-#             expect_identical(get_survival_input(ref_1), input)
-#             expect_identical(get_survival_input(mixed_order), input)
-#             expect_identical(get_survival_input(ref_3), input)
-#             
-#             ref_error_1 <- read_file(system.file(
-#               "tabular/test",
-#               "survival_spec_error_1.csv",
-#               package = "heemod"
-#             ))
-#             
-#             
-#             expect_error(get_survival_input(ref_error_1),
-#                          "suffixes do not match")
-#             
-#             ref_error_2 <- read_file(system.file(
-#               "tabular/test",
-#               "survival_spec_error_2.csv",
-#               package = "heemod"
-#             ))
-#             expect_error(get_survival_input(ref_error_2),
-#                          "same number of elements")
-# 
-#             ref_error_3 <- ref_3
-#             ref_error_3$data <- gsub("_pfs", "_os", ref_3$data)
-#             expect_error(get_survival_input(ref_error_3),
-#                          "must have each suffix OS and PFS once"
-#                          )
-#           }
-# )
+test_that("getting survival inputs works",
+          {
+           ok_surv_info <- 
+             read_file(system.file("tabular/surv/survival_info.csv", 
+                                   package = "heemod"))
+           check_survival_specs(ok_surv_info)
+           for(i in 1:ncol(ok_surv_info)){
+             expect_error(check_survival_specs(ok_surv_info[, -i]),
+                          "missing names")
+             }
+           surv_info_extra <- ok_surv_info
+           surv_info_extra$extra_col <- 5
+           expect_error(check_survival_specs(surv_info_extra),
+                        "extra names")
+           expect_error(check_survival_specs(surv_info_extra),
+                        "extra_col")
+           surv_info_extra_row <- ok_surv_info[c(1, 1:nrow(ok_surv_info)),]
+           expect_error(check_survival_specs(surv_info_extra_row),
+                        "exactly one PFS and one OS entry")
+           surv_info_dup <- ok_surv_info
+           surv_info_dup[1, c("fit_directory", "fit_file", "time_col", "censor_col")] <- 
+             surv_info_dup[2, c("fit_directory", "fit_file", "time_col", "censor_col")]
+           expect_error(check_survival_specs(surv_info_dup),
+                        "same time column and censoring column")
+           surv_info_wrong_type <- ok_surv_info
+           surv_info_wrong_type[1, "type"] <- "oops"
+           expect_error(check_survival_specs(surv_info_wrong_type),
+                        "exactly one PFS and one OS entry")
+           surv_info_na <- ok_surv_info
+           surv_info_na[1, "time_col"] <- NA
+           expect_error(check_survival_specs(surv_info_na),
+                        "all elements of surv_specs must be filled in")
+           
+           }
+          )
 
 test_that("we handle fitting errors",
           {
@@ -184,44 +160,5 @@ test_that("we handle fitting errors",
                          )
             }
           )
-
-
- # test_that("subsetting fit objects works",
- #           {
- #           fit_matrix <- 
- #             partitioned_survival_from_tabular(base_dir = system.file("tabular\\surv", 
- #                                                           package = "heemod"), 
- #                                               ref_file = "example_oncSpecs.csv", 
- #                                               df_env = new.env(), 
- #                                               state_names = c("ProgressionFree", "Progressive", 
- #                                               "Terminal", "Death"), 
- #                                              save_fits = FALSE)
- #           ## not concerned about the particular test, just
- #           ##   that it finishes as opposed to giving an error
- #           expect_equal(names(combine_part_surv(fit_matrix, 
- #                               A = list(pfs = "exp", os = "weibull"),
- #                               B = list(pfs = "exp", os = "lnorm"),
- #                              subset = "all")),
- #                          c("A", "B")
- #                          )
- #           
- #           
- #           expect_error(combine_part_surv(fit_matrix, 
- #                                          A = list(pfs = "exp", os = "weibull"),
- #                                          Z = list(pfs = "exp", os = "lnorm"),
- #                                          subset = "all"),
- #                        "column names of fit_matrix")
- #           expect_error(combine_part_surv(fit_matrix, 
- #                                          A = list(pfs = "exp", os = "weibul"),
- #                                          B = list(pfs = "exp", os = "lnorm"),
- #                                          subset = "all"), 
- #                        "row names of fit_matrix")
- #           expect_error(combine_part_surv(fit_matrix, 
- #                                          A = list(PFS = "exp", os = "weibull"),
- #                                          B = list(pfs = "exp", os = "lnorm"),
- #                                          subset = "all"), 
- #                        "only names os and pfs")
- #           })
- # 
 
 

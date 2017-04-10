@@ -319,17 +319,6 @@ check_survival_specs <-
     if(any(is.na(surv_specs) | surv_specs == ""))
       stop("all elements of surv_specs must be filled in")
     
-    if(any(dups <- duplicated(surv_specs[, c("type", "treatment")]))){
-      print(surv_specs[dups,])
-      stop("survival fit specification can only have one row for fitting ",
-           "OS or PFS for a given treatment\n")
-    }
-    if(any(dups <- duplicated(surv_specs[, c("fit_directory", "fit_file", 
-                                             "time_col", "censor_col")]))){
-      print(surv_specs[dups,])
-      stop("can only specify a given data file in a given directory with ",
-           "the same time column and event column for one fit")
-    }
     ## sort survival specs by treatment, then PFS and OS
     ## our checks will make sure that we have the right entries,
     ##   and that they are in the right order
@@ -348,9 +337,21 @@ check_survival_specs <-
                                  by = 2))
     same_treatments <- 
       identical(surv_specs$treatment[os_ind],
-              surv_specs$treatment[pfs_ind])
+                surv_specs$treatment[pfs_ind])
     if(!all_even_os | !all_odd_pfs | !same_treatments)
       stop("each treatment must have exactly one PFS and one OS entry")
+
+    if(any(dups <- duplicated(surv_specs[, c("type", "treatment")]))){
+      print(surv_specs[dups,])
+      stop("survival fit specification can only have one row for fitting ",
+           "OS or PFS for a given treatment\n")
+    }
+    if(any(dups <- duplicated(surv_specs[, c("fit_directory", "fit_file", 
+                                             "time_col", "censor_col")]))){
+      print(surv_specs[dups,])
+      stop("can only specify a given data file in a given directory with ",
+           "the same time column and censoring column for one fit")
+    }
     surv_specs
   }
 

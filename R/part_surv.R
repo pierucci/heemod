@@ -300,13 +300,24 @@ construct_part_surv_tib <-
            state_names,
            env = new.env()) {
     
-    if(!(".subset" %in% names(surv_def)))
-      surv_def$.subset <- "all"
+    surv_def_names <- c(".strategy", ".type", "dist")
+    fit_tibble_names <- c("treatment", "type", "dist", "set_name", "fit")
+    if(!all(present_names <- surv_def_names %in% names(surv_def))){
+      stop("missing required names in 'surv_def': ",
+           paste(surv_def_names[!present_names], collapse = ", "))
+    }
+    if(!all(present_names <- fit_tibble_names %in% names(fit_tibble))){
+      stop("missing required names in 'fit_tibble: ",
+           paste(fit_tibble_names[!present_names], collapse = ", "))
+    }
     
+    if(!(".subset" %in% names(surv_def))){
+      surv_def$.subset <- "all"
+      message("no '.subset' column; defaulting to subset 'all'")
+    }
     surv_def <- tibble::as_tibble(surv_def)
     fit_tibble <-
       dplyr::mutate(fit_tibble, type = toupper(type)) 
-    
     
     ## we handle directly defined distributions
     ##   (those defined with define_survival())
@@ -330,7 +341,6 @@ construct_part_surv_tib <-
                                                    ".type" = "type",
                                                    "dist" = "dist",
                                                    ".subset" = "set_name")
-                                            
       )
     
     ## for directly defined distributions, join to make the
@@ -346,7 +356,7 @@ construct_part_surv_tib <-
       )
     direct_dist_def_3$fit <- direct_dist_def_3$dist
     
-    ## and now we can re-unite them and continue
+    ## and now we can rejoin them and continue
     surv_def_4 <- 
       rbind(should_be_fits_3, direct_dist_def_3) %>% 
       dplyr::group_by(.strategy, .type, .subset) %>%
