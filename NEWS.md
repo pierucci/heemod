@@ -1,4 +1,4 @@
-## heemod 0.8.0.9005
+## heemod 0.9.0
 
 `heemod` can now be cited with :
 
