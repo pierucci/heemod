@@ -123,16 +123,6 @@ part_survs_from_surv_inputs <-  function(surv_inputs, state_names){
                               state_names = state_names))
 }
 
-make_part_surv_from_small_tibble <- function(st, state_names){
-  pfs_row <- grep("pfs", st$type, ignore.case = TRUE)
-  os_row <- grep("os", st$type, ignore.case = TRUE)
-  stopifnot(length(pfs_row) == 1,
-            length(os_row) == 1
-  )
-  define_part_surv(pfs = st[[pfs_row, "fit"]],
-                   os = st[[os_row, "fit"]],
-                   state_names = state_names)
-}
 
 #' Title Get survival analysis curves from data
 #'

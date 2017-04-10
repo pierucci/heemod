@@ -393,4 +393,14 @@ join_fits_across_time <- function(this_part){
   
 }
 
+make_part_surv_from_small_tibble <- function(st, state_names){
+  pfs_row <- grep("pfs", st$type, ignore.case = TRUE)
+  os_row <- grep("os", st$type, ignore.case = TRUE)
+  stopifnot(length(pfs_row) == 1,
+            length(os_row) == 1
+  )
+  define_part_surv(pfs = st[[pfs_row, "fit"]],
+                   os = st[[os_row, "fit"]],
+                   state_names = state_names)
+}
 

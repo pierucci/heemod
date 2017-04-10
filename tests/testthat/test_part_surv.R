@@ -200,3 +200,30 @@ test_that(
     )
   })
 
+test_that(
+  "construct_part_surv_tib works",
+  {
+    
+    surv_def <- read_file(system.file("tabular/surv", 
+                                                "use_fits.csv", 
+                                                package = "heemod"))
+    fake_fit_tib <- read_file(system.file("tabular/surv",
+                                                   "fake_fit_tib.csv", 
+                                                   package = "heemod"))
+    state_names <- c("ProgressionFree", "ProgressiveDisease", 
+                     "Terminal", "Death")
+    ## basically just make sure it runs, since we're using fake fits
+    zz <- construct_part_surv_tib(surv_def, fake_fit_tib, state_names)
+    expect_identical(names(zz), c(".strategy", ".subset", "part_surv"))
+    expect_identical(class(zz[[1, 3]]), c("part_surv"))
+    surv_def_join <- read_file(system.file("tabular/surv", 
+                                                    "use_fits_with_join.csv", 
+                                                    package = "heemod"))
+    zz <- construct_part_surv_tib(surv_def_join, fake_fit_tib, state_names)
+    surv_def_join <- surv_def_join[, 1:3]
+    expect_error(construct_part_surv_tib(surv_def_join, 
+                                         fake_fit_tib, 
+                                         state_names),
+                 "unless 'until' is also specified", fixed = TRUE)
+  }
+)
