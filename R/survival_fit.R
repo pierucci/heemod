@@ -44,8 +44,7 @@ survival_fits_from_ref_struc <- function(ref, df_env = new.env(),
                    surv_ref_full_file)
   
   ## does some error checking
-  ## si <- get_survival_input(read_file(surv_ref_full_file), location) 
-  
+
   survival_specs <- read_file(file.path(surv_ref_full_file))
   dists = c("exp", "weibull", "lnorm", "gamma", 
             "gompertz", "gengamma")
@@ -189,11 +188,6 @@ survival_from_data <-
                               survival_specs$data_directory,
                               survival_specs$data_file)
 
-      ## get set definitions, if there are any
-      ## (if not, will return a data frame with no rows)
-      set_definitions <- 
-        get_set_definitions(file.path(location, 
-                                      survival_specs$data_directory))
       
      surv_models <- 
        lapply(seq(1:nrow(survival_specs)),
@@ -203,7 +197,13 @@ survival_from_data <-
                 this_data <- 
                  read_file(data_files[this_row]) %>%
                  dplyr::filter(treatment == this_treatment)
-               
+
+                ## get set definitions, if there are any
+                ## (if not, will return a data frame with no rows)
+                set_definitions <- 
+                  get_set_definitions(file.path(location, 
+                                                survival_specs$data_directory[this_row]))
+                
                class(this_data) <- c("survdata", class(this_data))
                
                these_sets <- 

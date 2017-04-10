@@ -103,6 +103,45 @@ test_that("getting survival inputs works",
            }
           )
 
+test_that("fitting works (including with subsets)",
+          {
+            location <- system.file("tabular/surv", package = "heemod")
+            ok_surv_info <- 
+              heemod:::read_file(system.file("tabular/surv/survival_info.csv", 
+                                    package = "heemod"))
+            these_fits <- 
+              heemod:::survival_from_data(location = location,
+                                 survival_specs = ok_surv_info,
+                                 dists = c("exp", "weibull"),
+                                 save_fits = FALSE,
+                                 use_envir = new.env())
+            expect_identical(names(these_fits), c("", "env"))
+            expect_identical(ls(these_fits$env), c("OS.A.fit",
+                                                   "OS.B.fit",
+                                                   "PFS.A.fit",
+                                                   "PFS.B.fit"))
+            expect_identical(names(these_fits[[1]]),
+                             c("type", "treatment", "set_name",
+                               "dist", "fit", "set_def"))
+            expect_identical(these_fits[[1]]$dist,
+                             rep(c("exp", "weibull", "km"), 10))
+            expect_identical(sapply(these_fits[[1]]$fit, class),
+                             rep(c("flexsurvreg", "flexsurvreg", "survfit"), 10))
+            combos <- table(these_fits[[1]][, c("treatment", "set_def")])
+            ## sorting to make sure things are in right order for tests -
+            ##   otherwise sometimes had problems with different locales
+            combos <- combos[c("A", "B"),]
+            combos <- combos[,c("time > 100", "time > 150",
+                               "time > 50", "TRUE")]
+            expect_identical(dimnames(combos),
+                             list(treatment = c("A", "B"),
+                                  set_def = c("time > 100", "time > 150",
+                                              "time > 50", "TRUE")))
+            expect_identical(as.numeric(combos),
+                             c(0, 6, 6, 0, 6, 0, 6, 6))
+            
+          })
+
 test_that("we handle fitting errors",
           {
             ## some data that causes an error when

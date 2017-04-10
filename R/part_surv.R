@@ -342,7 +342,12 @@ construct_part_surv_tib <-
                                                    "dist" = "dist",
                                                    ".subset" = "set_name")
       )
-    
+    if(any(problem <- sapply(should_be_fits_3$fit, is.na))){
+      print(surv_def[problem,])
+      stop("fit not found for lines ",
+           paste(which(problem), collapse = ", "),
+           "(shown above)")
+    }
     ## for directly defined distributions, join to make the
     ##   extra columns, then move the defined distributions 
     ##   over to the fits column

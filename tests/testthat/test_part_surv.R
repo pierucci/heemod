@@ -207,6 +207,7 @@ test_that(
     surv_def <- read_file(system.file("tabular/surv", 
                                                 "use_fits.csv", 
                                                 package = "heemod"))
+    surv_def$.subset <- "all"
     fake_fit_tib <- read_file(system.file("tabular/surv",
                                                    "fake_fit_tib.csv", 
                                                    package = "heemod"))
@@ -225,5 +226,12 @@ test_that(
                                          fake_fit_tib, 
                                          state_names),
                  "unless 'until' is also specified", fixed = TRUE)
+    bad_surv_def <- surv_def_join
+    bad_surv_def[[1, "dist"]] <- "fit('bad')"
+    expect_error(construct_part_surv_tib(bad_surv_def, 
+                                                  fake_fit_tib, 
+                                                  state_names),
+                 "fit not found")
+    
   }
 )

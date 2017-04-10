@@ -1,9 +1,9 @@
 .strategy,.type,dist,until
-fake_treatment,pfs,fit('km'),100
-fake_treatment,pfs,fit('exp'),
-fake_treatment,os,fit('km'),100
-fake_treatment,os,fit('exp'),
-not_real,pfs,fit('km'),100
-not_real,pfs,fit('exp'),
-not_real,os,fit('km'),100
-not_real,os,fit('exp'),
+A,pfs,fit('km'),100
+A,pfs,fit('exp'),
+A,os,fit('km'),100
+A,os,fit('exp'),
+B,pfs,fit('km'),100
+B,pfs,fit('exp'),
+B,os,fit('km'),100
+B,os,fit('exp'),

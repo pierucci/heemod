@@ -1,0 +1,6 @@
+treatment,set_name,condition
+A,all,TRUE
+B,all,TRUE
+A,GT50,time > 50
+B,GT100,time > 100
+A,GT150,time > 150
