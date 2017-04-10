@@ -1,0 +1,8 @@
+data,val
+survivalDataDirectory,survival_data
+fit_metric,AIC
+fit_name_pfs,PFS.fit
+surv_data_file_pfs,surv_data_PFS.csv
+fit_name_ofs,OS.fit
+surv_data_file_ofs,surv_data_OS.csv
+treatment_col_name,trt

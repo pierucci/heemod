@@ -31,7 +31,7 @@ substitute_dots <- function(.dots, .values) {
 #' Expand Time-Dependant States into Tunnel States
 #' 
 #' This function for transition matrices and state values 
-#' expands states relying on \code{state_time} in a serie
+#' expands states relying on `state_time` in a serie
 #' of tunnels states.
 #' 
 #' @param x A transition matrix or a state list.
@@ -115,10 +115,30 @@ expand_state.uneval_state_list <- function(x, state_name, cycles) {
   )
 }
 
+#' @export
+#' @rdname expand_state
+expand_state.uneval_inflow <- function(x, ...) {
+  expand_state.uneval_init(x, ...)
+}
+
+#' @export
+#' @rdname expand_state
+expand_state.uneval_init <- function(x, state_name, cycles) {
+  res <- insert(
+    x,
+    which(names(x) == state_name),
+    stats::setNames(
+      rep(list(lazyeval::lazy(0)), cycles),
+      sprintf(".%s_%i", state_name, seq_len(cycles) + 1))
+  )
+  
+  names(res)[which(names(res) == state_name)] <- sprintf(".%s_1", state_name)
+  structure(res, class = class(x))
+}
 
 #' Convert Lazy Dots to Expression List
 #' 
-#' This function is used by \code{\link{interp_heemod}}.
+#' This function is used by [interp_heemod()].
 #'
 #' @param .dots A lazy dots object.
 #'
@@ -133,10 +153,10 @@ as_expr_list <- function(.dots) {
 
 #' Interpolate Lazy Dots
 #' 
-#' Sequencially interpolates lazy dots, optionnaly using 
+#' Sequentially interpolates lazy dots, optionally using 
 #' external references.
 #' 
-#' The interpolation is sequencial: the second dot is 
+#' The interpolation is sequential: the second dot is 
 #' interpolated using the first, the third using the 
 #' interpolated first two, and so on.
 #' 

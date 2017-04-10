@@ -1,0 +1,4 @@
+parameter,value,low,high,psa
+p_AA,721,700,750,"binomial(.7, 1000)"
+p_AB,0.724,,,
+p_AB + p_AC + p_AD,,,,"multinomial(202, 67, 10)"

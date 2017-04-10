@@ -2,23 +2,23 @@
 % Please edit documentation in R/param_define.R
 \name{define_inflow}
 \alias{define_inflow}
+\alias{define_inflow_}
 \title{Define Inflow for a BIA}
 \usage{
 define_inflow(...)
+
+define_inflow_(.dots)
 }
 \arguments{
-\item{...}{Name-value pairs of expressions definig
-inflow.}
+\item{...}{Name-value pairs of expressions defining
+inflow counts.}
+
+\item{.dots}{Used to work around non-standard evaluation.}
 }
 \value{
 An object similar to the return value of
-  \code{\link{define_parameters}}.
+\code{\link[=define_parameters]{define_parameters()}}.
 }
 \description{
-This function is a placeholder.
-}
-\details{
-This function only takes constant values. Eventually
-time-dependant expression will be accepted (with
-model-time dependency only).
+Define Inflow for a BIA
 }

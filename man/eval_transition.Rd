@@ -12,8 +12,8 @@ eval_transition(x, ...)
 \item{parameters}{an \code{eval_parameters} object.}
 }
 \value{
-An \code{eval_matrix} object (actually a list of 
-  transition matrices, one per cycle).
+An \code{eval_matrix} object (actually a list of
+transition matrices, one per cycle).
 }
 \description{
 Evaluate a transition matrix using evaluated parameters.

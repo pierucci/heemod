@@ -14,8 +14,8 @@ rescale_discount_rate(x, from, to)
 \item{to}{Final time period.}
 }
 \value{
-Rate rescaled under the assumption of compound 
-  discounting.
+Rate rescaled under the assumption of compound
+discounting.
 }
 \description{
 Rescale a discount rate between two time frames.
@@ -23,7 +23,7 @@ Rescale a discount rate between two time frames.
 \details{
 Continuous discounting is assumed, i.e. when converting a
 long-term discount rate into a short-term rate, we assume
-that a partial gain from one short term is 
+that a partial gain from one short term is
 multiplicatively discounted in all following short terms.
 At the same time, we assume the short-term rate is
 time-invariant.

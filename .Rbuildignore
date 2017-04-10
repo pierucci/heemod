@@ -8,3 +8,5 @@
 ^vignettes/.*\.md$
 ^codecov\.yml$
 ^data-raw$
+^docs$
+^_pkgdown\.yml$

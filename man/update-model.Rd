@@ -13,7 +13,7 @@
   ...)
 }
 \arguments{
-\item{object}{The result of \code{\link{run_model}}.}
+\item{object}{The result of \code{\link[=run_model]{run_model()}}.}
 
 \item{newdata}{A \code{data.frame} of new parameter sets,
 one column per parameter and one row per parameter set.
@@ -36,14 +36,14 @@ a weighted analysis.}
 A \code{data.frame} with one row per model/value.
 }
 \description{
-Given a table of new parameter values with a new 
-parameter set per line, runs iteratively Markov models 
+Given a table of new parameter values with a new
+parameter set per line, runs iteratively Markov models
 over these sets.
 }
 \details{
 \code{newdata} must be a \code{data.frame} with the
-following properties: the column names must be parameter 
-names used in \code{\link{define_parameters}}; and an
+following properties: the column names must be parameter
+names used in \code{\link[=define_parameters]{define_parameters()}}; and an
 optional column \code{.weights} can give the respective
 weight of each row in the target population.
 
@@ -55,13 +55,13 @@ take the following values: \code{"cost"}, \code{"effect"}
 or \code{"icer"} to plot the heterogeneity of the
 respective values. Furthermore \code{"ce"} and
 \code{"count"} can produce from the combined model plots
-similar to those of \code{\link{run_model}}.
+similar to those of \code{\link[=run_model]{run_model()}}.
 }
 \section{Warning}{
 
-  
-  Histograms do not account for weights. On the other
-  hand summary results do.
+
+Histograms do not account for weights. On the other
+hand summary results do.
 }
 
 \examples{

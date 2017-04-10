@@ -9,7 +9,7 @@
   strategy = NULL, states = NULL, free_y = FALSE, bw = FALSE, ...)
 }
 \arguments{
-\item{x}{Result from \code{\link{run_model}}.}
+\item{x}{Result from \code{\link[=run_model]{run_model()}}.}
 
 \item{type}{Type of plot, see details.}
 
@@ -29,7 +29,7 @@ the plot.}
 \item{bw}{Black & white plot for publications?}
 
 \item{...}{Additional arguments passed to \code{plot}.
-  
+
 \code{type = "counts"} represents state
 memberships (corrected) by cycle, \code{type = "ce"}
 plots models on the cost-efficiency plane with the

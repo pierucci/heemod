@@ -11,7 +11,7 @@ check_names(x)
 }
 \value{
 Nothing, just throws an error if a reserved name
-  is encountered.
+is encountered.
 }
 \description{
 Throws an error if any of the names are reserved.

@@ -18,12 +18,12 @@ define_transition_(.dots, state_names)
 }
 \arguments{
 \item{...}{Name-value pairs of expressions definig matrix
-cells. Can refer to parameters defined with 
-\code{\link{define_parameters}}. For \code{plot}, 
+cells. Can refer to parameters defined with
+\code{\link[=define_parameters]{define_parameters()}}. For \code{plot},
 additional arguments passed to
-\code{\link[diagram]{plotmat}}.}
+\code{\link[diagram:plotmat]{diagram::plotmat()}}.}
 
-\item{state_names}{character vector, optional. State 
+\item{state_names}{character vector, optional. State
 names.}
 
 \item{.dots}{Used to work around non-standard evaluation.}
@@ -33,43 +33,43 @@ names.}
 \item{x}{An \code{uneval_matrix} to plot.}
 
 \item{relsize}{Argument passed to
-\code{\link[diagram]{plotmat}}.}
+\code{\link[diagram:plotmat]{diagram::plotmat()}}.}
 
-\item{shadow.size}{Argument passed to 
-\code{\link[diagram]{plotmat}}.}
+\item{shadow.size}{Argument passed to
+\code{\link[diagram:plotmat]{diagram::plotmat()}}.}
 
 \item{latex}{Argument passed to
-\code{\link[diagram]{plotmat}}.}
+\code{\link[diagram:plotmat]{diagram::plotmat()}}.}
 }
 \value{
 An object of class \code{uneval_matrix} (actually
-  a named list of \code{lazy} expressions).
+a named list of \code{lazy} expressions).
 }
 \description{
-Define a matrix of transition probabilities. Probability 
-can depend on parameters defined with 
-\code{\link{define_parameters}}, and can thus be 
+Define a matrix of transition probabilities. Probability
+can depend on parameters defined with
+\code{\link[=define_parameters]{define_parameters()}}, and can thus be
 time-dependent.
 }
 \details{
 Parameters names are searched first in a parameter object
-defined with \code{\link{define_parameters}} and linked 
-with the matrix through \code{\link{define_strategy}}; 
+defined with \code{\link[=define_parameters]{define_parameters()}} and linked
+with the matrix through \code{\link[=define_strategy]{define_strategy()}};
 then in the environment where the matrix was defined.
 
 Matric cells are listed by row.
 
-The completary probability of all other row probabilities
-can be conveniently reffered as \code{C}.
+The complementary probability of all other row probabilities
+can be conveniently referred to as \code{C}.
 
-Only matrix size is checked during this step (the matrix 
+Only matrix size is checked during this step (the matrix
 must be square). Other conditions (such as row sums being
 equal to 1) are tested later, during model evaluation.
 
-For the \code{modify} function existing matrix cells are 
+For the \code{modify} function, existing matrix cells are
 replaced with the new expression. Cells are referenced by
 name. Cell naming follows the \code{cell_x_y} convention,
-with \code{x} being the row number and \code{y} the 
+with \code{x} being the row number and \code{y} the
 column number.
 }
 \examples{

@@ -13,31 +13,31 @@ define_psa_(list_qdist, list_multi, correlation)
 \item{...}{Formulas defining parameter distributions.}
 
 \item{correlation}{A correlation matrix for parameters or
-the output of \code{\link{define_correlation}}.}
+the output of \code{\link[=define_correlation]{define_correlation()}}.}
 
 \item{list_qdist}{List of resampling functions.}
 
 \item{list_multi}{List of multinomial parameters.}
 }
 \value{
-An object of class \code{resamp_definition}. 
-  Contains \code{list_qdist}, a list of quantile 
-  functions and \code{correlation} a correlation matrix.
+An object of class \code{resamp_definition}.
+Contains \code{list_qdist}, a list of quantile
+functions and \code{correlation} a correlation matrix.
 }
 \description{
-Define the properties of parameter distributions and 
+Define the properties of parameter distributions and
 their correlation structure for probabilistic uncertainty
 analysis of Markov models.
 }
 \details{
-The distributions must be defined within \code{heemod} 
-(see \link[=distributions]{this list}), or defined with
-\code{\link{define_distribution}}.
+The distributions must be defined within \code{heemod}
+(see \link{distributions}), or defined with
+\code{\link[=define_distribution]{define_distribution()}}.
 
-If no correlation matrix is specified parameters are 
+If no correlation matrix is specified parameters are
 assumed to be independant.
 
-The correlation patrix need only be specified for 
+The correlation patrix need only be specified for
 correlated parameters.
 }
 \examples{

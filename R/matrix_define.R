@@ -2,48 +2,48 @@
 #' 
 #' Define a matrix of transition probabilities. Probability 
 #' can depend on parameters defined with 
-#' \code{\link{define_parameters}}, and can thus be 
+#' [define_parameters()], and can thus be 
 #' time-dependent.
 #' 
 #' Parameters names are searched first in a parameter object
-#' defined with \code{\link{define_parameters}} and linked 
-#' with the matrix through \code{\link{define_strategy}}; 
+#' defined with [define_parameters()] and linked 
+#' with the matrix through [define_strategy()]; 
 #' then in the environment where the matrix was defined.
 #' 
 #' Matric cells are listed by row.
 #' 
-#' The completary probability of all other row probabilities
-#' can be conveniently reffered as \code{C}.
+#' The complementary probability of all other row probabilities
+#' can be conveniently referred to as `C`.
 #' 
 #' Only matrix size is checked during this step (the matrix 
 #' must be square). Other conditions (such as row sums being
 #' equal to 1) are tested later, during model evaluation.
 #' 
-#' For the \code{modify} function existing matrix cells are 
+#' For the `modify` function, existing matrix cells are 
 #' replaced with the new expression. Cells are referenced by
-#' name. Cell naming follows the \code{cell_x_y} convention,
-#' with \code{x} being the row number and \code{y} the 
+#' name. Cell naming follows the `cell_x_y` convention,
+#' with `x` being the row number and `y` the 
 #' column number.
 #' 
 #' @param ... Name-value pairs of expressions definig matrix
 #'   cells. Can refer to parameters defined with 
-#'   \code{\link{define_parameters}}. For \code{plot}, 
+#'   [define_parameters()]. For `plot`, 
 #'   additional arguments passed to
-#'   \code{\link[diagram]{plotmat}}.
+#'   [diagram::plotmat()].
 #' @param state_names character vector, optional. State 
 #'   names.
-#' @param .OBJECT An object of class \code{uneval_matrix}.
-#' @param x An \code{uneval_matrix} to plot.
+#' @param .OBJECT An object of class `uneval_matrix`.
+#' @param x An `uneval_matrix` to plot.
 #' @param relsize Argument passed to
-#'   \code{\link[diagram]{plotmat}}.
+#'   [diagram::plotmat()].
 #' @param shadow.size Argument passed to 
-#'   \code{\link[diagram]{plotmat}}.
+#'   [diagram::plotmat()].
 #' @param latex Argument passed to
-#'   \code{\link[diagram]{plotmat}}.
+#'   [diagram::plotmat()].
 #' @param .dots Used to work around non-standard evaluation.
 #'   
-#' @return An object of class \code{uneval_matrix} (actually
-#'   a named list of \code{lazy} expressions).
+#' @return An object of class `uneval_matrix` (actually
+#'   a named list of `lazy` expressions).
 #' @export
 #' 
 #' @example inst/examples/example_define_transition.R
@@ -60,6 +60,7 @@ define_transition <- function(..., state_names) {
 }
 
 #' @rdname define_transition
+#' @export
 define_transition_ <- function(.dots, state_names) {
   
   n <- sqrt(length(.dots))
@@ -96,8 +97,8 @@ get_state_names.uneval_matrix <- function(x, ...){
 
 #' Return Markov Model Transition Matrix Order
 #' 
-#' A generic that works both with \code{uneval_matrix} and
-#' \code{eval_matrix}.
+#' A generic that works both with `uneval_matrix` and
+#' `eval_matrix`.
 #' 
 #' For internal use.
 #' 

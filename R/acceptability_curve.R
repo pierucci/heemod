@@ -1,13 +1,13 @@
 #' Acceptability Curve from Probabilistic Analysis
 #' 
-#' @param x Result from \code{\link{run_psa}}.
+#' @param x Result from [run_psa()].
 #' @param wtp_thresholds willingness to pay thresholds
 #'   
-#' @return A data frame with columns \code{.ceac} (the 
+#' @return A data frame with columns `.ceac` (the 
 #'   cost-effectiveness acceptability threshold), 
-#'   \code{.model} (treatments or models), \code{.n} (the 
+#'   `.model` (treatments or models), `.n` (the 
 #'   number of cases in which the treatment was most 
-#'   cost-effective), and \code{.p} (the proportion of cases
+#'   cost-effective), and `.p` (the proportion of cases
 #'   where the treatment was most effective).
 #'   
 #' @keywords internal

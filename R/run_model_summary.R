@@ -5,13 +5,13 @@ print.run_model <- function(x, ...) {
 
 #' Summarise Markov Model Results
 #' 
-#' @param object Output from \code{\link{run_model}}.
+#' @param object Output from [run_model()].
 #' @param threshold ICER threshold (possibly several) for
 #'   net monetary benefit computation.
 #' @param ... additional arguments affecting the summary 
 #'   produced.
 #'   
-#' @return A \code{summary_run_model} object.
+#' @return A `summary_run_model` object.
 #' @export
 summary.run_model <- function(object, threshold = NULL, ...) {
   if (! all(c(".cost", ".effect") %in% names(get_model_results(object)))) {
@@ -67,7 +67,7 @@ summary.run_model <- function(object, threshold = NULL, ...) {
       res_nmb = res_nmb,
       res_nmb_strat = res_nmb_strat,
       cycles = get_cycles(object),
-      init = get_init(object),
+      init = get_uneval_init(object),
       method = get_method(object),
       frontier = get_frontier(get_model_results(object))
     ),
@@ -100,13 +100,13 @@ get_effect <- function(x) {
 #' Normalize cost and effect values taking base model as a 
 #' reference.
 #' @name heemod_scale
-#' @param x Result of \code{\link{run_model}} or 
-#'   \code{\link{run_psa}}.
+#' @param x Result of [run_model()] or 
+#'   [run_psa()].
 #' @param center Center results around base model?
 #' @param scale Scale results to individual values?
 #'   
-#' @return Input with normalized \code{.cost} and 
-#'   \code{.effect}, ordered by \code{.effect}.
+#' @return Input with normalized `.cost` and 
+#'   `.effect`, ordered by `.effect`.
 #'   
 #' @keywords internal
 NULL
@@ -117,7 +117,8 @@ scale.run_model <- function(x, center = TRUE, scale = TRUE) {
   res <- tibble::tibble(
     .strategy_names = get_strategy_names(x),
     .cost = get_cost(x),
-    .effect = get_effect(x)
+    .effect = get_effect(x),
+    .n_indiv = get_n_indiv(x)
   )
   
   if (center) {
@@ -128,8 +129,8 @@ scale.run_model <- function(x, center = TRUE, scale = TRUE) {
   }
   
   if (scale) {
-    res$.cost = res$.cost / sum(get_init(x))
-    res$.effect = res$.effect / sum(get_init(x))
+    res$.cost = res$.cost / res$.n_indiv
+    res$.effect = res$.effect / res$.n_indiv
   }
   
   res[order(res$.effect), ]
@@ -140,15 +141,15 @@ scale.run_model <- function(x, center = TRUE, scale = TRUE) {
 #' Compute ICER for Markov models.
 #' 
 #' Models are ordered by effectiveness and ICER are computed
-#' sequencially.
+#' sequentially.
 #' 
-#' @param x Result of \code{\link{run_model}}.
+#' @param x Result of [run_model()].
 #' @param strategy_order Order in which the strategies 
 #'   should be sorted. Default: by increasing effect.
 #' @param threshold ICER threshold for net monetary benefit
 #'   computation.
 #'   
-#' @return A \code{data.frame} with computed ICER.
+#' @return A `data.frame` with computed ICER.
 #'   
 #' @keywords internal
 compute_icer <- function(x, strategy_order = order(x$.effect),
@@ -204,15 +205,12 @@ print.summary_run_model <- function(x, ...) {
     plur(x$cycles)
   ))
   cat("Initial state counts:\n\n")
-  print(matrix(
-    get_init(x),
-    dimnames = list(
-      names(get_init(x)),
-      "N"
-    )
+  cat(paste(
+    to_text_dots(get_uneval_init(x)),
+    collapse = "\n"
   ))
   cat(sprintf(
-    "\nCounting method: '%s'.\n\n", x$method
+    "\n\nCounting method: '%s'.\n\n", x$method
   ))
   
   print_results(x$res_values, x$res_comp, x$res_nmb)
@@ -221,7 +219,9 @@ print.summary_run_model <- function(x, ...) {
 print_results <- function(res_values, res_comp, res_nmb) {
   cat("Values:\n\n")
   rownames(res_values) <- res_values$.strategy_names
-  res_values <- dplyr::select_(res_values, ~ - .strategy_names)
+  res_values <- dplyr::select_(res_values,
+                               ~ - .strategy_names,
+                               ~ - .n_indiv)
   print(res_values)
   
   if (! is.null(res_nmb)) {

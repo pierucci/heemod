@@ -13,17 +13,12 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
 
 #' Discount a Quantity Over Time
 #' 
-#' This function should only take as an \code{x} argument 
-#' the names of variables already defined in 
-#' \code{\link{define_parameters}} or 
-#' \code{\link{define_state}}, and not numeric constants.
-#' 
 #' @param x numeric. A quantity to discount.
 #' @param r discount rate.
-#' @param first logical. Should the discouting start at the
+#' @param first logical. Should discouting start at the 
 #'   first value ?
 #'   
-#' @return A numeric vector of the same length as \code{x}.
+#' @return A numeric vector of the same length as `x`.
 #' @export
 #' 
 #' @examples
@@ -60,7 +55,7 @@ list_all_same <- function(x) {
 #'
 #' @param x integer.
 #'
-#' @return \code{"s"} or \code{""}.
+#' @return `"s"` or `""`.
 #'   
 #' @keywords internal
 plur <- function(x) {
@@ -75,8 +70,8 @@ plur_y <- function(x) {
 #' 
 #' Throws an error if any of the names are reserved.
 #' 
-#' Reserved names are \code{markov_cycle} and anything
-#' starting with \code{.}.
+#' Reserved names are `markov_cycle` and anything
+#' starting with `.`.
 #' 
 #' @param x A character vector of names.
 #'   
@@ -119,9 +114,9 @@ check_names <- function(x) {
 
 #' Make Syntactically Valid Names
 #' 
-#' Compared to \code{\link{make.names}} this function also 
-#' converts characters to lower case and replaces \code{.}
-#' by \code{_}.
+#' Compared to [make.names()] this function also 
+#' converts characters to lower case and replaces `.`
+#' by `_`.
 #' 
 #' @param x A character vector.
 #'   
@@ -134,7 +129,7 @@ make_names <- function(x) {
 
 #' Check Strategy Index
 #' 
-#' @param x A result from \code{\link{run_model}}.
+#' @param x A result from [run_model()].
 #' @param i A strategy index, character or numeric.
 #' @param allow_multiple logical. Allow multiple strategy
 #'   index?
@@ -174,12 +169,12 @@ check_strategy_index <- function(x, i, allow_multiple = FALSE) {
 #' 
 #' Compute a weighted summary of a numeric vector.
 #' 
-#' If \code{weights} is \code{NULL} an unweighted summar is
+#' If `weights` is `NULL` an unweighted summar is
 #' returned.
 #' 
 #' @param x A numeric vector.
 #' @param weights A vector of weights, same length as 
-#'   \code{x}.
+#'   `x`.
 #'   
 #' @return A vector with values \code{Min., 1st Qu., Median,
 #'   Mean, 3rd Qu., Max.}.
@@ -273,12 +268,15 @@ clean_factors <- function(x) {
 
 to_text_dots <- function(x, name = TRUE) {
   n <- names(x)
-  ex <- unlist(lapply(
-    x,
-    function(y) if (any(is.na(y))) NA else
-      deparse(y$expr, width.cutoff = 500L)
-  ))
-  
+  ex <- if (is.atomic(x)) {
+    format(x)
+  } else {
+    unlist(lapply(
+      x,
+      function(y) if (any(is.na(y))) NA else
+        deparse(y$expr, width.cutoff = 500L)
+    ))
+  }
   
   if (name) {
     stopifnot(
@@ -300,7 +298,7 @@ interleave <- function(...) {
 #' 
 #' Insert a vector in another vector.
 #' 
-#' To insert an element at the beginning use a \code{pos} 
+#' To insert an element at the beginning use a `pos` 
 #' value of 0.
 #' 
 #' Duplicated positions are not allowed.
@@ -371,8 +369,16 @@ pretty_names <- function(x) {
 }
 
 to_dots <- function(x) {
-  stopifnot(is.list(x))
-  
+  UseMethod("to_dots")
+}
+
+to_dots.default <- function(x) {
+  lazyeval::as.lazy_dots(lapply(
+    x, function(x) x
+  ))
+}
+
+to_dots.list <- function(x) {
   f <- function(x) {
     if (inherits(x, "character") || inherits(x, "factor")) {
       structure(
@@ -392,3 +398,11 @@ to_dots <- function(x) {
   )
 }
 
+clean_factors <- function(x) {
+  for (n in names(x)) {
+    if (inherits(x[[n]], "factor")) {
+      x[[n]] <- as.character(x[[n]])
+    }
+  }
+  x
+}

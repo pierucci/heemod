@@ -1,5 +1,3 @@
-# Sample .travis.yml for R projects
-
 language: r
 sudo: false
 cache: packages
@@ -8,10 +6,6 @@ r:
   - release
   - devel
 
-r_github_packages:
-  - hadley/devtools
-  - cran/survival
-
 branches:
   only:
     - master
@@ -19,9 +13,12 @@ branches:
     - /^hotfix\/.*$/
     - /^release\/.*$/
 
+r_github_packages:		
+  - hadley/devtools@1302fef
+
 r_packages:
   - covr
+  - Hmisc
 
 after_success:
   - Rscript -e 'library(covr); codecov()'
-  

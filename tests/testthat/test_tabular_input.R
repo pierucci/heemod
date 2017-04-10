@@ -101,24 +101,75 @@ test_that(
   }
 )
 
-test_that("can read multinomial parameters from file",
-          {
-            from_input <- 
-              define_psa(p_AA ~binomial(.7, 1000), 
-                         p_AB + p_AC + p_AD ~ multinomial(202, 67, 10))
-            from_file <-
-              create_parameters_from_tabular(read_file(system.file(
-                "tabular/test",
-                "example_multinom_params.csv",
-                package = "heemod"
-              )))
-            ## can't test identity because of environments, so test results
-            set.seed(5)
-            from_input_draws <- eval_resample(from_input, 10)
-            set.seed(5)
-            from_file_draws <- eval_resample(from_file$psa_params, 10)
-            expect_identical(from_input_draws, from_file_draws)
-          }
+test_that(
+  "can read multinomial parameters from file", {
+    from_input <- 
+      define_psa(p_AA ~binomial(.7, 1000), 
+                 p_AB + p_AC + p_AD ~ multinomial(202, 67, 10))
+    from_file <-
+      create_parameters_from_tabular(read_file(system.file(
+        "tabular/test",
+        "example_multinom_params.csv",
+        package = "heemod"
+      )))
+    
+    expect_identical(
+      names(from_file$params),
+      c("p_AA", "p_AB", "p_AC", "p_AD")
+    )
+    expect_identical(
+      round(sapply(from_file$params, "[[", "expr"), 4),
+      c(p_AA = 721.0000, p_AB = 0.7240, p_AC = 0.2401, p_AD = 0.0358)
+    )
+    
+    expect_error(
+      create_parameters_from_tabular(read_file(system.file(
+        "tabular/test",
+        "example_multinom_params_dup_name.csv",
+        package = "heemod"
+      )))
+    )
+    
+    
+    ## can't test identity of multinomial part
+    ##   because of environments, so test results
+    set.seed(5)
+    from_input_draws <- eval_resample(from_input, 10)
+    set.seed(5)
+    from_file_draws <- eval_resample(from_file$psa_params, 10)
+    expect_identical(from_input_draws, from_file_draws)
+  }
+)
+
+test_that(
+  "Bad spec file input is caught.", {
+    expect_error(
+      heemod:::gather_model_info(
+        system.file("tabular/test", package = "heemod"),
+        "bad_REFERENCE.csv")
+    )
+    expect_error(
+      heemod:::gather_model_info(
+        system.file("tabular/test/test_diff_mod_name", package = "heemod"),
+        "REFERENCE.csv"),
+      "newzzz"
+    )
+    expect_error(
+      capture.output(
+        heemod:::gather_model_info(
+          system.file("tabular/test", package = "heemod"),
+          "REFERENCE_1probmissing.csv")
+      ),
+      "Undefined probabilities"
+    )
+    expect_error(
+      heemod:::gather_model_info(
+        system.file("tabular/test", package = "heemod"),
+        "REFERENCE_missingfunctions.csv"),
+      "'source' directory missing: ",
+      fixed = TRUE
+    )
+  }
 )
 
 test_that(
@@ -141,23 +192,6 @@ test_that(
       fixed = TRUE
     )
     
-    expect_error(
-      heemod:::gather_model_info(
-        system.file("tabular/test", package = "heemod"),
-        "bad_REFERENCE.csv")
-    )
-    expect_error(
-      heemod:::gather_model_info(
-        system.file("tabular/test/test_diff_mod_name", package = "heemod"),
-        "REFERENCE.csv"),
-      "newzzz"
-    )
-    expect_error(
-      heemod:::gather_model_info(
-        system.file("tabular/test", package = "heemod"),
-        "REFERENCE_1probmissing.csv"),
-      "Undefined probabilities"
-    )
     
     dup_state <- structure(list(
       .model = c("standard", "standard", "standard", 
@@ -212,6 +246,11 @@ test_that(
     expect_error(
       heemod:::create_states_from_tabular(mult_disc_state)
     )
+  }
+)
+
+test_that(
+  "Bad transmission matrix input is caught.", {
     
     bad_tm <- structure(list(
       .model = c("standard", "standard", "standard", 
@@ -239,7 +278,11 @@ test_that(
           "SuccessfulRevisionzzz")
       )
     )
-    
+  }
+)
+
+test_that(
+  "Bad parameter file input is caught.", {
     pb_par <- structure(list(
       parameter = c("lngamma", "gamma"),
       value = c("0.3740968", 
@@ -309,6 +352,11 @@ test_that(
     expect_error(
       heemod:::create_parameters_from_tabular(pb_par)
     )
+  }
+)
+
+test_that(
+  "other bad input is caught.", {
     
     opt_pb <- structure(list(
       option = c("cost", "effect", "method", "method", 
@@ -719,3 +767,4 @@ test_that(
     )
   }
 )
+

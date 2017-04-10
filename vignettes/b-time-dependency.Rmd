@@ -23,7 +23,7 @@ These two situations can be modelled using the `model_time` (or its alias `marko
 
 ## How to specifiy time-dependency
 
-These variables takes increasing values with each cycles, starting from 1. For example the age of individuals at any moment can be defined as `Initial age + markov_cycle`. The time an individual spends in a state is equal to `state_cucle`.
+These variables takes increasing values with each cycles, starting from 1. For example the age of individuals at any moment can be defined as `Initial age + model_time`. The time an individual spends in a state is equal to `state_time`.
 
 Both variables can be used in `define_parameters()`, `define_state()`, or `define_transition()`:
 
@@ -59,7 +59,7 @@ run_model(
   I =  strat_1,
   II = strat_2,
   cycles = 100,
-  state_cycle_limit = list(
+  state_time_limit = list(
     I = c(B = 10, D = 20),
     II = c(B = 15)
   )

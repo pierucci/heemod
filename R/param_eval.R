@@ -1,12 +1,12 @@
 #' Evaluate Markov model parameters
 #' 
 #' Evaluate parameters specified through 
-#' \code{define_parameters}, for a given number of cycles.
+#' `define_parameters`, for a given number of cycles.
 #' 
-#' @param x an \code{uneval_parameters} object.
+#' @param x an `uneval_parameters` object.
 #' @param cycles integer. Number of cycles to simulate.
 #'   
-#' @return An object of class \code{eval_parameters} 
+#' @return An object of class `eval_parameters` 
 #'   (actually a data.frame with one column per parameter 
 #'   and one row per cycle).
 #'   
@@ -79,3 +79,11 @@ eval_parameters <- function(x, cycles = 1,
     class = c("eval_parameters", class(res))
   )
 }
+
+eval_init <- function(x, parameters) {
+  to_keep <- names(x)
+  
+  dplyr::mutate_(.data = parameters, .dots = x)[to_keep]
+}
+
+eval_inflow <- eval_init

@@ -12,12 +12,12 @@ eval_parameters(x, cycles = 1, strategy_name = NA)
 \item{cycles}{integer. Number of cycles to simulate.}
 }
 \value{
-An object of class \code{eval_parameters} 
-  (actually a data.frame with one column per parameter 
-  and one row per cycle).
+An object of class \code{eval_parameters}
+(actually a data.frame with one column per parameter
+and one row per cycle).
 }
 \description{
-Evaluate parameters specified through 
+Evaluate parameters specified through
 \code{define_parameters}, for a given number of cycles.
 }
 \examples{

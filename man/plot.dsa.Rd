@@ -6,10 +6,11 @@
 \usage{
 \method{plot}{dsa}(x, type = c("simple", "difference"), result = c("cost",
   "effect", "icer"), strategy = NULL, widest_on_top = TRUE,
+  limits_by_bars = TRUE, resolve_labels = FALSE, shorten_labels = FALSE,
   remove_ns = FALSE, bw = FALSE, ...)
 }
 \arguments{
-\item{x}{A result of \code{\link{run_dsa}}.}
+\item{x}{A result of \code{\link[=run_dsa]{run_dsa()}}.}
 
 \item{type}{Type of plot (see details).}
 
@@ -19,6 +20,18 @@
 
 \item{widest_on_top}{logical. Should bars be sorted so
 widest are on top?}
+
+\item{limits_by_bars}{logical. Should the limits used
+for each parameter be printed in the plot, next to the
+bars?}
+
+\item{resolve_labels}{logical. Should we resolve all
+labels to numbers instead of expressions (if there are
+any)?}
+
+\item{shorten_labels}{logical. Should we shorten the
+presentation of the parameters on the plot to highlight
+where the values differ?}
 
 \item{remove_ns}{Remove variables that are not sensitive.}
 
@@ -30,10 +43,10 @@ widest are on top?}
 A \code{ggplot2} object.
 }
 \description{
-Plot the results of a sensitivity analysis as a tornado 
+Plot the results of a sensitivity analysis as a tornado
 plot.
 }
 \details{
-Plot type \code{simple} plots variations of single strategy 
+Plot type \code{simple} plots variations of single strategy
 values, while \code{difference} plots incremental values.
 }

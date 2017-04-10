@@ -1,6 +1,6 @@
 #' Return Efficiency Frontier
 #' 
-#' @param x An \code{eval_strategy_list} object.
+#' @param x An `eval_strategy_list` object.
 #'   
 #' @return A vector of model names on the efficiency
 #'   frontier.

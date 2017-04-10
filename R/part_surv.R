@@ -4,25 +4,20 @@
 #' survival and overall survival.
 #' 
 #' @param pfs,os Either results from 
-#'   \code{\link[flexsurv]{flexsurvreg}} or 
-#'   \code{\link{define_survival}}.
+#'   [flexsurv::flexsurvreg()] or 
+#'   [define_survival()].
 #' @param state_names named character vector, length 3 or 4.
 #'   State names for progression-free state, progression, 
 #'   (optionally terminal) and death respectively. Elements 
-#'   should be named \code{"progression_free"}, 
-#'   \code{"progression"}, (optionally \code{"terminal"}), 
-#'   and \code{"death"}. See examples.
+#'   should be named `"progression_free"`, 
+#'   `"progression"`, (optionally `"terminal"`), 
+#'   and `"death"`. See examples.
 #' @param terminal_state Should a terminal state be 
 #'   included? Only used when state names are not provided.
-#' @param km_limit Up to what time should Kaplan-Meier
-#'   estimates be used? Model predictions will be used
-#'   thereafter. Either a length 2 vector (for \code{pfs}
-#'   and \code{os} respectively) or a single values (used
-#'   for both distributions).
 #' @param cycle_length The value of a Markov cycle in
 #'   absolute time units.
 #'   
-#' @return A \code{part_surv} object.
+#' @return A `part_surv` object.
 #' @export
 #' 
 #' @examples
@@ -48,7 +43,6 @@
 #' 
 define_part_surv <- function(pfs, os, state_names,
                              terminal_state = FALSE,
-                             km_limit = 0,
                              cycle_length = 1) {
   
   if (missing(state_names)) {
@@ -70,22 +64,27 @@ define_part_surv <- function(pfs, os, state_names,
         "death"
       )
     }
-  } else if (terminal_state) {
-    warning("Argument 'terminal_state' ignored when state names are given.")
+  }
+  
+  if (is.null(names(state_names))) {
+    if (terminal_state) {
+      warning("Argument 'terminal_state' ignored when state names are given.")
+    }
+    message("Trying to guess PFS model from state names...")
+    state_names <- guess_part_surv_state_names(state_names)
   }
   
   define_part_surv_(
     pfs = lazyeval::lazy_(substitute(pfs), env = parent.frame()),
     os = lazyeval::lazy_(substitute(os), env = parent.frame()),
     state_names = state_names,
-    km_limit = km_limit,
     cycle_length = cycle_length)
 }
+
 
 #' @export
 #' @rdname define_part_surv
 define_part_surv_ <- function(pfs, os, state_names,
-                              km_limit = 0,
                               cycle_length = 1) {
   
   stopifnot(
@@ -101,17 +100,9 @@ define_part_surv_ <- function(pfs, os, state_names,
       "death"
     )),
     ! any(duplicated(names(state_names))),
-    
-    length(km_limit) %in% 1:2,
-    all(km_limit >= 0),
-    
     length(cycle_length) %in% 1:2,
     all(cycle_length > 0)
   )
-  
-  if (length(km_limit) == 1) {
-    km_limit <- rep(km_limit, 2)
-  }
   
   if (length(cycle_length) == 1) {
     cycle_length <- rep(cycle_length, 2)
@@ -121,7 +112,6 @@ define_part_surv_ <- function(pfs, os, state_names,
     pfs = pfs,
     os = os,
     state_names = state_names,
-    km_limit = km_limit,
     cycle_length = cycle_length
   )
   
@@ -137,15 +127,16 @@ get_state_names.part_surv <- function(x) {
 
 eval_transition.part_surv <- function(x, parameters) {
   
+  time_ <- c(0, parameters$markov_cycle)
+  
   pfs_dist <- lazyeval::lazy_eval(
     x$pfs, 
     data = dplyr::slice(parameters, 1)
   )
   
-  pfs_surv <- get_probs_from_surv(
+  pfs_surv <- compute_surv(
     pfs_dist,
-    cycle = parameters$markov_cycle,
-    km_limit = x$km_limit[1],
+    time = time_,
     cycle_length = x$cycle_length[1],
     type = "surv"
   )
@@ -155,14 +146,12 @@ eval_transition.part_surv <- function(x, parameters) {
     data = dplyr::slice(parameters, 1)
   )
   
-  os_surv <- get_probs_from_surv(
+  os_surv <- compute_surv(
     os_dist,
-    cycle = parameters$markov_cycle,
-    km_limit = x$km_limit[2],
+    time = time_,
     cycle_length = x$cycle_length[2],
     type = "surv"
   )
-  
   
   structure(
     list(
@@ -174,7 +163,7 @@ eval_transition.part_surv <- function(x, parameters) {
 }
 
 compute_counts.eval_part_surv <- function(x, init,
-                                          method, inflow) {
+                                          inflow) {
   
   stopifnot(
     length(x$state_names) %in% 3:4,
@@ -188,11 +177,6 @@ compute_counts.eval_part_surv <- function(x, init,
     length(init) == length(x$state_names),
     all(init[-1] == 0)
   )
-  
-  if (method != "end") {
-    warning("Currently only counting method 'end' is supported with partitioned survival models. ",
-            "Option 'method' is ignored.")
-  }
   
   res <- data.frame(
     progression_free = x$pfs_surv,
@@ -215,4 +199,70 @@ compute_counts.eval_part_surv <- function(x, init,
   res <- res[x$state_names]
   
   structure(res, class = c("cycle_counts", class(res)))
+}
+
+guess_part_surv_state_names <- function(state_names) {
+  death_state <- c(
+    grep("death", state_names, ignore.case = TRUE),
+    grep("dead", state_names, ignore.case = TRUE)
+  )
+  progfree_state <- grep("free", state_names, ignore.case = TRUE)
+  progressive_state <- setdiff(
+    grep("progress", state_names, ignore.case = TRUE),
+    progfree_state)
+  terminal_state <- grep("terminal", state_names, ignore.case = TRUE)
+  
+  if (length(death_state) != 1) {
+    stop("State name representing death must contain ",
+         "'death' or 'dead' (case insensitive).")
+  }
+  
+  if (length(progfree_state) != 1) {
+    stop("Progression free state (only) must have 'free' in its name.")
+  }
+  
+  if (length(progressive_state) != 1) {
+    stop("Progression state must have 'progress' ",
+         "but not 'free', in its name.")
+  }
+  
+  if (length(state_names) == 3) {
+    names(state_names) <- c(
+      "progression_free",
+      "progression",
+      "death")[c(
+        progfree_state,
+        progressive_state,
+        death_state)]
+    
+  } else if (length(state_names) == 4) {
+    if (length(terminal_state) == 0) {
+      stop(
+        "If there are 4 states, a state must be called 'terminal' ",
+        "(not case sensitive)."
+      )
+    }
+    
+    names(state_names) <- c(
+      "progression_free",
+      "progression",
+      "terminal",
+      "death")[c(
+        progfree_state,
+        progressive_state,
+        terminal_state,
+        death_state)]
+    
+  } else {
+    stop("There must be 3 or 4 states.")
+  }
+  
+  message(sprintf(
+    "Successfully guessed PFS from state names:\n%s",
+    paste(paste0(
+      "  ", names(state_names), " = ", state_names),
+      collapse = "\n")
+  ))
+  
+  state_names
 }
