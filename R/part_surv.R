@@ -301,7 +301,7 @@ guess_part_surv_state_names <- function(state_names) {
 #'
 #' @param surv_def a data frame with the specification.  See details.
 #' @param fit_tibble the name of the tibble from which to take fits.
-#'   Typically produced by [survival_fits_from_tabular()].
+#   Typically produced by [survival_fits_from_tabular()].
 #' @param env an environment
 #' @param state_names names of the model states
 #' @details  This function is meant to be used only from within
@@ -319,7 +319,6 @@ guess_part_surv_state_names <- function(state_names) {
 #'   elements are survival objects of various kinds, with the
 #'   commonality that they can be used in [compute_surv()].
 #'
-#' @examples
 
 construct_part_surv_tib <-
   function(surv_def, fit_tibble,
