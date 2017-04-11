@@ -166,7 +166,9 @@ test_that(
         os = project(surv_dist1),
         state_names = c("NoDisease", "Progressive", "Death"),
         cycle_length = c(365, 365)
-      )
+      ),
+      "Progression free state (only) must have 'free' in its name",
+      fixed = TRUE
     )
     expect_error(
       define_part_surv(
@@ -174,7 +176,8 @@ test_that(
         os = project(surv_dist1),
         state_names = c("ProgressionFree", "Progressive", "Kaput"),
         cycle_length = c(365, 365)
-      )
+      ),
+      "State name representing death"
     )
     expect_error(
       define_part_surv(
@@ -183,7 +186,9 @@ test_that(
         state_names = c("ProgressionFree", "Progressive",
                         "uh-oh", "Death"),
         cycle_length = c(365, 365)
-      )
+      ),
+      "If there are 4 states, a state must be called 'terminal'",
+      fixed = TRUE
     )
     expect_error(
       define_part_surv(
@@ -196,7 +201,9 @@ test_that(
           "Death"
         ),
         cycle_length = c(365, 365)
-      )
+      ),
+      "Progression free state (only) must have 'free' in its name",
+      fixed = TRUE
     )
   })
 
@@ -232,6 +239,41 @@ test_that(
                                                   fake_fit_tib, 
                                                   state_names),
                  "fit not found")
-    
+    names(surv_def)[1] <- "strategy"
+    expect_error(construct_part_surv_tib(surv_def, fake_fit_tib, state_names),
+                 "missing required names in 'surv_def':", fixed = TRUE)
+    names(surv_def)[1] <- ".strategy"
+    names(fake_fit_tib)[1] <- ".strategy"
+    expect_error(construct_part_surv_tib(surv_def, fake_fit_tib, state_names),
+                 "missing required names in 'fit_tibble':", fixed = TRUE)
   }
 )
+
+test_that("making part_surv from survival fits works",
+          {
+            location <- system.file("tabular/surv", package = "heemod")
+            ok_surv_info <-
+              heemod:::read_file(system.file("tabular/surv/survival_info.csv",
+                                             package = "heemod"))
+            these_fits <-
+              heemod:::survival_from_data(
+                location = location,
+                survival_specs = ok_surv_info,
+                dists = c("exp", "weibull"),
+                save_fits = FALSE,
+                use_envir = new.env()
+              )
+            these_part_survs <- 
+              part_survs_from_surv_inputs(these_fits[[1]],
+                                          c("ProgressionFree",
+                                            "Progressive",
+                                            "Terminal",
+                                            "Death"))
+            expect_equal(nrow(these_part_survs), 15)
+            expect_identical(
+              names(these_part_survs),
+              c("treatment", "set_name", "dist", "set_def", "part_surv")
+            )
+            expect_identical(class(these_part_survs$part_surv[[1]]), "part_surv")
+          }
+          )

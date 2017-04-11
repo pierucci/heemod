@@ -139,7 +139,22 @@ test_that("fitting works (including with subsets)",
                                               "time > 50", "TRUE")))
             expect_identical(as.numeric(combos),
                              c(0, 6, 6, 0, 6, 0, 6, 6))
+            metrics <- extract_surv_fit_metrics(these_fits[[1]])
+            expect_identical(names(metrics),
+                             c("type", "treatment", "set_name", "dist", "fit",
+                               "set_def", "AIC", "BIC", "m2LL"))
+            expect_equal(nrow(metrics), 20)
+            expect_identical(round(metrics[1, c("AIC", "BIC", "m2LL")], 3),
+                             tibble::tribble(~AIC, ~BIC, ~m2LL,
+                                             494.77, 496.662, 492.77)
             
+                             )
+            ## make sure it works calling with just one row
+            metrics <- extract_surv_fit_metrics(these_fits[[1]][1,])
+            expect_identical(round(metrics[, c("AIC", "BIC", "m2LL")], 3),
+                             tibble::tribble(~AIC, ~BIC, ~m2LL,
+                                             494.77, 496.662, 492.77)
+                             )
           })
 
 test_that("we handle fitting errors",

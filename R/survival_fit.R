@@ -83,46 +83,6 @@ partitioned_survival_from_ref_struc <- function(ref, df_env,
   part_survs_from_surv_inputs(surv_inputs[[1]], state_names)
 }
 
-
-#' Convert saved fits to partitioned survival objects
-#'
-#' @param surv_inputs a list of matrices of `flexsurvreg` objects,
-#'  for example the first element of the output of `survival_from_data`.
-#' @param state_names names of states of the model
-#'
-#' @details `surv_inputs` must have one element with "OS" or
-#'   "os" in the name, containing the matrix of fits for overall survival,
-#'   and another element with "PFS" or "pfs" in the name, containing
-#'   the matrix of fits for progression-free survival.
-#' @return a matrix of partitioned survival objects.    The rows
-#'   correspond to different distributions used in survival fitting,
-#'   the columns to different subsets of the data.
-#' @export
-#'
-part_survs_from_surv_inputs <-  function(surv_inputs, state_names){
-    
-  ## switch the survival information to be by model instead of by fit type,
-  ##  and put into part_surv format; we'll end up with a matrix
-  
-
-  
-  ## surv_inputs is a tibble with columns
-  ##   type (PFS or OS), treatment, set_name (for data subsets),
-  ##   dist (for survival distribution assumptions),
-  ##   fit (for the fitted survival object) and set_def
-  ##   (how the subset of data was defined, just to keep it around)
-
-  ## the output will be a smaller tibble, with all the columns
-  ##   except type and fit, and a new column part_surv
-  
-  
-  surv_inputs %>%
-    dplyr::group_by(treatment, set_name, dist, set_def) %>%
-      dplyr::do(part_surv = make_part_surv_from_small_tibble(.,
-                              state_names = state_names))
-}
-
-
 #' Title Get survival analysis curves from data
 #'
 #' @param location base directory for the analysis.

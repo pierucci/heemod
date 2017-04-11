@@ -125,6 +125,32 @@ define_part_surv_ <- function(pfs, os, state_names,
   )
 }
 
+#' Convert saved fits to partitioned survival objects
+#'
+#' @param surv_inputs a list of matrices of `flexsurvreg` objects,
+#'  for example the first element of the output of `survival_from_data`.
+#' @param state_names names of states of the model
+#'
+#' @details  surv_inputs is a tibble with columns
+#'   type (PFS or OS, not case sensitive), treatment, 
+#'   set_name (for data subsets),
+#'   dist (for survival distribution assumptions),
+#'   fit (for the fitted survival object) and set_def
+#'   (how the subset of data was defined, just to keep it around)
+
+#' @return a tibble of partitioned survival objects, similar to the
+#'   original tibble of survival fits, with all the columns
+#'   except type and fit, and a new column part_surv.
+#' @export
+#'
+part_survs_from_surv_inputs <-  function(surv_inputs, state_names){
+  
+  surv_inputs %>%
+    dplyr::group_by(treatment, set_name, dist, set_def) %>%
+    dplyr::do(part_surv = make_part_surv_from_small_tibble(.,
+                                                           state_names = state_names))
+}
+
 get_state_names.part_surv <- function(x) {
   x$state_names
 }
@@ -307,7 +333,7 @@ construct_part_surv_tib <-
            paste(surv_def_names[!present_names], collapse = ", "))
     }
     if(!all(present_names <- fit_tibble_names %in% names(fit_tibble))){
-      stop("missing required names in 'fit_tibble: ",
+      stop("missing required names in 'fit_tibble': ",
            paste(fit_tibble_names[!present_names], collapse = ", "))
     }
     
