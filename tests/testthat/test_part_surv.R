@@ -52,14 +52,16 @@ stratPS1 <- define_strategy(
   transition = ps1,
   A = sA, B = sB, C = sC
 )
-resPS <- run_model(
+
+suppressMessages(
+  resPS <- run_model(
   Strat1 = stratPS,
   Strat2 = stratPS1,
   cycles = 10,
   cost = cost,
   effect = ut,
   method = "end"
-)
+))
 
 test_that(
   "part surv works", {
@@ -208,37 +210,39 @@ test_that(
   })
 
 test_that(
-  "construct_part_surv_tib works",
-  {
+  "construct_part_surv_tib works", {
     
     surv_def <- read_file(system.file("tabular/surv", 
-                                                "use_fits.csv", 
-                                                package = "heemod"))
+                                      "use_fits.csv", 
+                                      package = "heemod"))
     surv_def$.subset <- "all"
     fake_fit_tib <- read_file(system.file("tabular/surv",
-                                                   "fake_fit_tib.csv", 
-                                                   package = "heemod"))
+                                          "fake_fit_tib.csv", 
+                                          package = "heemod"))
     state_names <- c("ProgressionFree", "ProgressiveDisease", 
                      "Terminal", "Death")
     ## basically just make sure it runs, since we're using fake fits
     zz <- construct_part_surv_tib(surv_def, fake_fit_tib, state_names)
+    
     expect_identical(names(zz), c(".strategy", ".subset", "part_surv"))
     expect_identical(class(zz[[1, 3]]), c("part_surv"))
     surv_def_join <- read_file(system.file("tabular/surv", 
-                                                    "use_fits_with_join.csv", 
-                                                    package = "heemod"))
+                                           "use_fits_with_join.csv", 
+                                           package = "heemod"))
     zz <- construct_part_surv_tib(surv_def_join, fake_fit_tib, state_names)
     surv_def_join <- surv_def_join[, 1:3]
-    expect_error(construct_part_surv_tib(surv_def_join, 
-                                         fake_fit_tib, 
-                                         state_names),
-                 "unless 'until' is also specified", fixed = TRUE)
+    expect_error(capture.output(construct_part_surv_tib(
+      surv_def_join, 
+      fake_fit_tib, 
+      state_names)),
+      "unless 'until' is also specified", fixed = TRUE)
     bad_surv_def <- surv_def_join
     bad_surv_def[[1, "dist"]] <- "fit('bad')"
-    expect_error(construct_part_surv_tib(bad_surv_def, 
-                                                  fake_fit_tib, 
-                                                  state_names),
-                 "fit not found")
+    expect_error(capture.output(construct_part_surv_tib(
+      bad_surv_def, 
+      fake_fit_tib, 
+      state_names)),
+      "fit not found")
     names(surv_def)[1] <- "strategy"
     expect_error(construct_part_surv_tib(surv_def, fake_fit_tib, state_names),
                  "missing required names in 'surv_def':", fixed = TRUE)
