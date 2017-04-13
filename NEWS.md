@@ -1,3 +1,9 @@
+## heemod 0.9.0.9001
+
+### Bugfixes
+
+  * Fixed error with `run_dsa()` in state expansion situations.
+
 ## heemod 0.9.0
 
 `heemod` can now be cited with :
