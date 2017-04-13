@@ -287,6 +287,8 @@ compute_counts.eval_matrix <- function(x, init,
 #'   state value and one row per cycle.
 #'   
 #' @keywords internal
+## slightly harder to read than the original version, but much faster
+## identical results to within a little bit of numerical noise
 compute_values <- function(states, counts) {
   states_names <- get_state_names(states)
   state_values_names <- get_state_value_names(states)

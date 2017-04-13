@@ -166,7 +166,9 @@ test_that(
         os = project(surv_dist1),
         state_names = c("NoDisease", "Progressive", "Death"),
         cycle_length = c(365, 365)
-      )
+      ),
+      "Progression free state (only) must have 'free' in its name",
+      fixed = TRUE
     )
     expect_error(
       define_part_surv(
@@ -174,7 +176,8 @@ test_that(
         os = project(surv_dist1),
         state_names = c("ProgressionFree", "Progressive", "Kaput"),
         cycle_length = c(365, 365)
-      )
+      ),
+      "State name representing death"
     )
     expect_error(
       define_part_surv(
@@ -183,7 +186,9 @@ test_that(
         state_names = c("ProgressionFree", "Progressive",
                         "uh-oh", "Death"),
         cycle_length = c(365, 365)
-      )
+      ),
+      "If there are 4 states, a state must be called 'terminal'",
+      fixed = TRUE
     )
     expect_error(
       define_part_surv(
@@ -196,6 +201,51 @@ test_that(
           "Death"
         ),
         cycle_length = c(365, 365)
-      )
+      ),
+      "Progression free state (only) must have 'free' in its name",
+      fixed = TRUE
     )
   })
+
+test_that(
+  "construct_part_surv_tib works",
+  {
+    
+    surv_def <- read_file(system.file("tabular/surv", 
+                                                "use_fits.csv", 
+                                                package = "heemod"))
+    surv_def$.subset <- "all"
+    fake_fit_tib <- read_file(system.file("tabular/surv",
+                                                   "fake_fit_tib.csv", 
+                                                   package = "heemod"))
+    state_names <- c("ProgressionFree", "ProgressiveDisease", 
+                     "Terminal", "Death")
+    ## basically just make sure it runs, since we're using fake fits
+    zz <- construct_part_surv_tib(surv_def, fake_fit_tib, state_names)
+    expect_identical(names(zz), c(".strategy", ".subset", "part_surv"))
+    expect_identical(class(zz[[1, 3]]), c("part_surv"))
+    surv_def_join <- read_file(system.file("tabular/surv", 
+                                                    "use_fits_with_join.csv", 
+                                                    package = "heemod"))
+    zz <- construct_part_surv_tib(surv_def_join, fake_fit_tib, state_names)
+    surv_def_join <- surv_def_join[, 1:3]
+    expect_error(construct_part_surv_tib(surv_def_join, 
+                                         fake_fit_tib, 
+                                         state_names),
+                 "unless 'until' is also specified", fixed = TRUE)
+    bad_surv_def <- surv_def_join
+    bad_surv_def[[1, "dist"]] <- "fit('bad')"
+    expect_error(construct_part_surv_tib(bad_surv_def, 
+                                                  fake_fit_tib, 
+                                                  state_names),
+                 "fit not found")
+    names(surv_def)[1] <- "strategy"
+    expect_error(construct_part_surv_tib(surv_def, fake_fit_tib, state_names),
+                 "missing required names in 'surv_def':", fixed = TRUE)
+    names(surv_def)[1] <- ".strategy"
+    names(fake_fit_tib)[1] <- ".strategy"
+    expect_error(construct_part_surv_tib(surv_def, fake_fit_tib, state_names),
+                 "missing required names in 'fit_tibble':", fixed = TRUE)
+  }
+)
+

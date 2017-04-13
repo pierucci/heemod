@@ -703,3 +703,12 @@ eval_surv.surv_dist <- function(x, time,
   
   ret
 }
+
+
+eval_surv.lazy <- function(x, ...){
+  eval_surv(lazyeval::lazy_eval(x), ...)
+}
+
+eval_surv.character <- function(x, ...){
+  eval_surv(eval(parse(text = x)), ...)
+}

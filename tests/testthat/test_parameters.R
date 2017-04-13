@@ -139,3 +139,19 @@ test_that(
     )
   }
 )
+  test_that(
+    "we correctly report parameter evaluation errors",
+    {
+      par1 <- define_parameters(
+        a = 2,
+        b = 3,
+        d = A + b,
+        g = a + b
+      )
+      expect_error(eval_parameters(par1),
+                   "Error in parameter: d",
+                   fixed = TRUE)
+      }
+    
+    )
+  
