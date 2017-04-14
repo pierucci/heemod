@@ -8,6 +8,10 @@
 
   * Fixed error with `run_dsa()` in state expansion situations.
 
+### Backend changes
+
+  * Multiple changes to prepare for the `dplyr` update 0.6.0.
+
 ## heemod 0.9.0
 
 `heemod` can now be cited with :

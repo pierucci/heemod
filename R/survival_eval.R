@@ -304,6 +304,7 @@ eval_surv.survfit <- function(x, time, cycle_length = 1,
     }
     # If covariates are not provided, do weighted average for each time.
     agg_df <- surv_df %>%
+      tibble::as_tibble() %>% 
       dplyr::group_by_(~ t) %>%
       dplyr::summarize_(value = ~ sum(value * n) / sum(n))
   } else {
