@@ -1,4 +1,14 @@
-## heemod 0.8.0.9005
+## heemod 0.9.0.9001
+
+### New features
+
+  * NMB is now reportd as relative values.
+
+### Bugfixes
+
+  * Fixed error with `run_dsa()` in state expansion situations.
+
+## heemod 0.9.0
 
 `heemod` can now be cited with :
 

@@ -9,4 +9,3 @@ f <- define_calibration_fn(
   aggreg_fn = mean
 )
 
-f(res2)
