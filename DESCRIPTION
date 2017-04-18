@@ -43,6 +43,7 @@ Suggests:
     Hmisc,
     knitr,
     logitnorm,
+    lpSolve,
     mgcv,
     optimx,
     parallel,

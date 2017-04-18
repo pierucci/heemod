@@ -4,37 +4,21 @@
 \alias{find_least_cost_partition}
 \title{Find lowest-cost way to assemble units of different sizes to a certain total}
 \usage{
-find_least_cost_partition(totals, available_units, max_num_units,
-  max_excess = totals - 1, only_least_cost = TRUE, subset_col = NULL,
-  subset_val = NULL, max_combinations_to_check = 10^5)
+find_least_cost_partition(desired_dose, available_units, subset_col = NULL,
+  subset_val = NULL)
 }
 \arguments{
-\item{totals}{the sum required.}
+\item{desired_dose}{the dose(s) required.}
 
 \item{available_units}{available sizes and costs.}
-
-\item{max_num_units}{largest number of vials to use.}
-
-\item{max_excess}{= 0 by how much we can exceed the requested total.}
-
-\item{only_least_cost}{= TRUE return only the least-cost solution?}
 
 \item{subset_col}{optionally, a column to select on.}
 
 \item{subset_val}{if subset_col is provided, the value to select on in that column.}
-
-\item{max_combinations_to_check}{allows you to override the limit on number
-of combinations, at the risk of taking up lots of memory and computation time.}
 }
 \value{
-a list, with one element for each total.  Each element contains
-a matrix describing combinations that give the desired total
-(or totals in the desired range, if max_excess > 0), along with
-their costs.  The matrix will be sorted by cost.   If only a single
-solution is returned, for example when \code{only_least_cost = TRUE},
-empty units will be trimmed.
-In either case, the final column ("cost") will give the cost,
-and others will give the constituent sizes.
+a data frame, with columns \code{desired_dose}, \code{used_dose},
+\code{waste}, and \code{cost}
 }
 \description{
 Find lowest-cost way to assemble units of different sizes to a certain total
@@ -42,12 +26,7 @@ Find lowest-cost way to assemble units of different sizes to a certain total
 \examples{
 units <- data.frame(size = c(1000, 250, 200, 100, 50),
     cost = c(40, 11.5, 8.5, 5.5, 4.4))
-find_least_cost_partition(450, available_units = units, max_num_units = 6,
-  max_excess = 0, only_least_cost = FALSE)
-find_least_cost_partition(450, available_units = units, max_num_units = 6,
-  max_excess = 0, only_least_cost = TRUE)
+find_least_cost_partition(450, available_units = units)
 temp <- find_least_cost_partition(sample(250:450, 10, replace = TRUE), 
-   available_units = units, max_num_units = 6,
-   max_excess = 0, only_least_cost = TRUE)
-least_cost(temp)
+   available_units = units)
 }
