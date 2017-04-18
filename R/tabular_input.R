@@ -317,7 +317,7 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
     one_way <- setdiff(names(state_info), unique(tm_info$.strategy))
     other_way <- setdiff(unique(tm_info$.strategy), names(state_info))
   }
-  
+
   if (length(pb <- union(one_way, other_way))) {
     stop(sprintf(
       "Mismatching model names between TM file and state file: %s.",
@@ -1172,9 +1172,9 @@ transition_type <- function(tm_info){
   else{
     if(all(sort(names(tm_info)[1:10]) == 
            sort(c("type", "treatment",	"data_directory",
-             "data_file",	"fit_directory",	"fit_name",
-             "fit_file",	"time_col",	"treatment_col",
-             "censor_col"))))
+                  "data_file",	"fit_directory",	"fit_name",
+                  "fit_file",	"time_col",	"treatment_col",
+                  "censor_col"))))
       which_defines <- "part_surv"
   }
   if(is.null(which_defines))
@@ -1250,9 +1250,9 @@ modify_param_defs_for_multinomials <- function(param_defs, psa) {
     end_index <- 
       if (this_pos == nrow(param_defs)) {
         numeric(0)
-    } else {
-      (this_pos + 1):nrow(param_defs)
-    }
+      } else {
+        (this_pos + 1):nrow(param_defs)
+      }
     
     param_defs <- rbind(
       param_defs[start_index,],

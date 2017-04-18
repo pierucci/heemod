@@ -62,6 +62,8 @@ eval_strategy <- function(strategy, parameters, cycles,
   # no expansion if 
   expand <- any(c(td_tm, td_st))
   
+  # because parameters are deleted if expand
+  old_parameters <- parameters
   
   if (expand) {
     
@@ -121,9 +123,24 @@ eval_strategy <- function(strategy, parameters, cycles,
     }
   }
   
-  parameters <- eval_parameters(parameters,
-                                cycles = cycles,
-                                strategy_name = strategy_name)
+  parameters <- eval_parameters(
+    parameters,
+    cycles = cycles,
+    strategy_name = strategy_name)
+  
+  # to retain values in case of expansion
+  if (expand) {
+    complete_parameters <- eval_parameters(
+      structure(
+        c(
+          lazyeval::lazy_dots(state_time = 1),
+          old_parameters),
+        class= class(old_parameters)),
+      cycles = 1,
+      strategy_name = strategy_name)
+  } else {
+    complete_parameters <- parameters[1, ]
+  }
   
   e_init <- unlist(eval_init(x = init, parameters[1, ]))
   e_inflow <- eval_inflow(x = inflow, parameters)
@@ -162,6 +179,7 @@ eval_strategy <- function(strategy, parameters, cycles,
   structure(
     list(
       parameters = parameters,
+      complete_parameters = complete_parameters,
       transition = transition,
       states = states,
       counts = count_table,

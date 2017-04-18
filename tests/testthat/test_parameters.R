@@ -111,8 +111,7 @@ test_that(
 )
 
 test_that(
-  "we catch infinite parameters",
-  {
+  "we catch infinite parameters", {
     par1 <- define_parameters(
       a = 2,
       b = 1 / (markov_cycle - 3)
@@ -140,17 +139,16 @@ test_that(
   }
 )
 test_that(
-  "we correctly report parameter evaluation errors",
-  {
+  "we correctly report parameter evaluation errors", {
     par1 <- define_parameters(
       a = 2,
       b = 3,
       d = A + b,
       g = a + b
     )
-    expect_error(eval_parameters(par1),
-                 "Error in parameter: d",
-                 fixed = TRUE)
+    expect_error(
+      eval_parameters(par1),
+      "Error in parameter: d",
+      fixed = TRUE)
   }
-  
 )
