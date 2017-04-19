@@ -232,6 +232,10 @@ apply_or = function(dist, or, log_or = FALSE) {
 #' @param shift A time shift to be applied.
 #'   
 #' @return A `surv_shift` object.
+#' 
+#' @details A positive shift moves the fit backwards in time.   That is,
+#'   a shift of 4 will cause time 5 to be evaluated as time 1, and so on.
+#'   If `shift == 0`, `dist` is returned unchanged.
 #' @export
 #' 
 #' @examples
@@ -246,14 +250,19 @@ apply_shift = function(dist, shift) {
     length(shift) == 1,
     is.finite(shift)
   )
-  
+  if(shift == 0) return(dist)
+  if(inherits(dist, "surv_shift")){
+      dist$shift <- dist$shift + shift
+      if(dist$shift == 0) return(dist$dist)
+      else return(dist)
+  }  
   structure(
-    list(
-      dist = dist,
-      shift = shift
-    ),
-    class = "surv_shift"
-  )
+      list(
+        dist = dist,
+        shift = shift
+      ),
+      class = "surv_shift"
+    )
 }
 
 

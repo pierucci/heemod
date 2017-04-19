@@ -204,8 +204,23 @@ test_that(
     expect_equal(surv3_medium_prob,surv3_medium_or_prob)
     expect_equal(surv3_poor_prob, surv3_poor_or_prob)
     
-    # Test shift
+    # Test shifts
     expect_equal(surv1_poor_surv[1:6], surv1_poor_shift_surv[5:10])
+    expect_equal(length(surv1_poor_surv), length(surv1_poor_shift_surv))
+    expect_identical(surv1_poor_surv, 
+                     apply_shift(apply_shift(surv1_poor_surv, 5),
+                                 -5)
+    )
+    expect_identical(surv1_poor_surv, 
+                     apply_shift(apply_shift(surv1_poor_surv, -3),
+                                 3)
+    )
+    expect_identical(apply_shift(surv1_poor_surv, 2),
+                     apply_shift(apply_shift(surv1_poor_surv, 5),
+                                 -3)
+    )
+    expect_identical(surv1_poor_shift_surv[1:3], 
+                     rep(as.numeric(NA), 3))
     
   }
 )
