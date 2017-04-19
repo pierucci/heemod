@@ -20,6 +20,7 @@ Shift a survival distribution in time.
 \details{
 A positive shift moves the fit backwards in time.   That is,
 a shift of 4 will cause time 5 to be evaluated as time 1, and so on.
+If \code{shift == 0}, \code{dist} is returned unchanged.
 }
 \examples{
 

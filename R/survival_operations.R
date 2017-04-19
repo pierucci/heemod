@@ -146,11 +146,17 @@ apply_hr <- function(dist, hr, log_hr = FALSE) {
     is.finite(hr),
     log_hr | hr > 0
   )
-  
+  if(log_hr) hr <- exp(hr)
+  if(hr == 1) return(dist)
+  if(inherits(dist, "surv_ph")){
+    dist$hr <- dist$hr * hr
+    if(dist$hr == 1) return(dist$dist)
+    return(dist)
+  }
   structure(
     list(
       dist = dist,
-      hr = ifelse(log_hr, exp(hr), hr)
+      hr = hr
     ),
     class = "surv_ph"
   )
@@ -180,11 +186,18 @@ apply_af <- function(dist, af, log_af = FALSE) {
     is.finite(af),
     log_af | af > 0
   )
+  if(log_af) af <- exp(af)
+  if(af == 1) return(dist)
+  if(inherits(dist, "surv_aft")){
+    dist$af <- dist$af * af
+    if(dist$af == 1) return(dist$dist)
+    return(dist)
+  }
   
   structure(
     list(
       dist = dist,
-      af = ifelse(log_af, exp(af), af)
+      af = af
     ),
     class = "surv_aft"
   )
@@ -214,11 +227,18 @@ apply_or = function(dist, or, log_or = FALSE) {
     is.finite(or),
     log_or | or > 0
   )
-  
+  if(log_or) or <- exp(or)
+  if(or == 1) return(dist)
+  if(inherits(dist, "surv_po")){
+    dist$or <- dist$or * or
+    if(dist$or == 1) return(dist$dist)
+    return(dist)
+  }
+    
   structure(
     list(
       dist = dist,
-      or = ifelse(log_or, exp(or), or)
+      or = or
     ),
     class = "surv_po"
   )

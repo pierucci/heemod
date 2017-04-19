@@ -192,17 +192,57 @@ test_that(
     expect_equal(surv1_medium_prob,surv1_medium_aft_prob)
     expect_equal(surv1_poor_prob, surv1_poor_aft_prob)
     
+    expect_identical(surv1_poor_surv, 
+                     apply_af(apply_af(surv1_poor_surv, 2),
+                              1/2)
+    )
+    expect_identical(surv1_poor_surv, 
+                     apply_af(apply_af(surv1_poor_surv, 1/2),
+                              2)
+    )
+    expect_identical(apply_af(surv1_poor_surv, 2),
+                     apply_af(apply_af(surv1_poor_surv, 4),
+                              1/2)
+    )
+    
     # Test Proportional Hazards
     expect_equal(surv2_medium_surv,surv2_medium_hr_surv)
     expect_equal(surv2_poor_surv, surv2_poor_hr_surv)
     expect_equal(surv2_medium_prob,surv2_medium_hr_prob)
     expect_equal(surv2_poor_prob, surv2_poor_hr_prob)
     
+    expect_identical(surv1_poor_surv, 
+                     apply_hr(apply_hr(surv1_poor_surv, 2),
+                              1/2)
+    )
+    expect_identical(surv1_poor_surv, 
+                     apply_hr(apply_hr(surv1_poor_surv, 1/2),
+                              2)
+    )
+    expect_identical(apply_hr(surv1_poor_surv, 2),
+                     apply_hr(apply_hr(surv1_poor_surv, 4),
+                              1/2)
+    )
+    
     # Test Proportional Odds
     expect_equal(surv3_medium_surv,surv3_medium_or_surv)
     expect_equal(surv3_poor_surv, surv3_poor_or_surv)
     expect_equal(surv3_medium_prob,surv3_medium_or_prob)
     expect_equal(surv3_poor_prob, surv3_poor_or_prob)
+    
+    expect_identical(surv1_poor_surv, 
+                     apply_or(apply_or(surv1_poor_surv, 2),
+                                 1/2)
+    )
+    expect_identical(surv1_poor_surv, 
+                     apply_or(apply_or(surv1_poor_surv, 1/2),
+                                 2)
+    )
+    expect_identical(apply_or(surv1_poor_surv, 2),
+                     apply_or(apply_or(surv1_poor_surv, 4),
+                                 1/2)
+    )
+    
     
     # Test shifts
     expect_equal(surv1_poor_surv[1:6], surv1_poor_shift_surv[5:10])
