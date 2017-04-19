@@ -224,6 +224,40 @@ apply_or = function(dist, or, log_or = FALSE) {
   )
 }
 
+#' Apply a time shift
+#' 
+#' Shift a survival distribution in time.
+#' 
+#' @param dist A survival distribution.
+#' @param shift A time shift to be applied.
+#'   
+#' @return A `surv_shift` object.
+#' @export
+#' 
+#' @examples
+#' 
+#' dist1 <- define_survival(distribution = "gamma", rate = 0.25, shape = 3)
+#' shift_dist <- apply_shift(dist1, 4)
+#' compute_surv(dist1, 1:10)
+#' compute_surv(shift_dist, 1:10)
+apply_shift = function(dist, shift) {
+  
+  stopifnot(
+    length(shift) == 1,
+    is.finite(shift)
+  )
+  
+  structure(
+    list(
+      dist = dist,
+      shift = shift
+    ),
+    class = "surv_shift"
+  )
+}
+
+
+
 #' Add Hazards
 #' 
 #' Get a survival distribution reflecting the independent

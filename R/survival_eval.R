@@ -564,6 +564,42 @@ eval_surv.surv_ph <- function(x, time,
 
 #' @rdname eval_surv
 #' @export
+eval_surv.surv_shift <- function(x, time,
+                              cycle_length = 1,
+                              type = c("prob", "surv"), ...) {
+  
+  type <- match.arg(type)
+  
+  if (type == "prob") {
+    time_ = c(time[1] - 1, time)
+  } else {
+    time_ = time
+  }
+  time_ <- time_ - x$shift
+  ret <- rep(NA, length(time_))
+  keep_me <- time_ >= 0
+  time_ <- time_[keep_me]
+  
+  check_cycle_inputs(time_, cycle_length)
+  
+  
+  ret[keep_me] <- eval_surv(
+    x$dist,
+    time = time_,
+    cycle_length = cycle_length,
+    type = "surv"
+  ) 
+  
+  if (type == "prob") {
+    ret <- calc_prob_from_surv(ret)
+  }
+  
+  ret
+}
+
+
+#' @rdname eval_surv
+#' @export
 eval_surv.surv_aft <- function(x, time,
                                 cycle_length = 1,
                                 type = c("prob", "surv"), ...) {

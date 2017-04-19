@@ -156,15 +156,26 @@ survival_from_data <-
                   survival_specs[this_row, "treatment"]
                 this_data <- 
                  read_file(data_files[this_row]) %>%
-                 dplyr::filter(treatment == this_treatment)
+                  dplyr::filter(treatment == this_treatment)
 
                 ## get set definitions, if there are any
                 ## (if not, will return a data frame with no rows)
                 set_definitions <- 
                   get_set_definitions(file.path(location, 
                                                 survival_specs$data_directory[this_row]))
+                if(!("time_subtract" %in% names(set_definitions)))
+                  set_definitions <- dplyr::mutate(set_definitions, time_subtract = 0)
                 
-               class(this_data) <- c("survdata", class(this_data))
+                set_definitions <- 
+                  set_definitions %>% 
+                    dplyr::mutate(time_subtract = ifelse(is.na(time_subtract), 0, time_subtract))
+                neg_offset <- which(set_definitions$time_subtract < 0)
+                if(length(neg_offset))
+                  stop("bad offset in set_definitions line(s) ",
+                       paste(neg_offset, collapse = ", ")
+                  )
+                
+                class(this_data) <- c("survdata", class(this_data))
                
                these_sets <- 
                  dplyr::filter(set_definitions, 
@@ -172,6 +183,7 @@ survival_from_data <-
                if(nrow(these_sets) == 0) 
                  these_sets <- data.frame(set_name = "all",
                                           condition = "TRUE",
+                                          time_subtract = 0,
                                           stringsAsFactors = FALSE)
                
                surv_fits <- 
@@ -181,7 +193,16 @@ survival_from_data <-
                      filter_(.dots = strsplit(these_sets[set_index, 
                                                          "condition"],
                                               ",")[[1]])
-                   
+                   ## if requested, subtract off the appropriate time
+                   ## (this is for fitting subsets that are defined by
+                   ##    being after a certain time, and we want to
+                   ##    fit as if the cutoff time is the new base time)
+                   to_subtract <- these_sets[set_index, "time_subtract"]
+                   if(length(to_subtract) > 0 && !is.na(to_subtract)){
+                     this_time_col <- survival_specs[this_row, "time_col"]
+                     subset_data[, this_time_col] <- 
+                       subset_data[, this_time_col] - to_subtract
+                   }
                    these_surv_fits <- 
                      f_fit_survival_models(subset_data, #this_data,
                                            dists = dists,
@@ -193,16 +214,16 @@ survival_from_data <-
                    ## attr(these_surv_fits, "set_definition") <- these_sets[[set_index, "condition"]]
                    these_surv_fits$set_name <- these_sets[[set_index, "set_name"]]
                    these_surv_fits$set_def <- these_sets[[set_index, "condition"]]
+                   these_surv_fits$time_subtract <- these_sets[[set_index, "time_subtract"]]
                    these_surv_fits
                  }
                  )
                names(surv_fits) <- these_sets$set_name
-               ##attr(surv_fits, "set_definitions") <- set_definitions
                surv_fits_tib <- do.call("rbind", surv_fits)
                surv_fits_tib$type <- survival_specs[this_row, "type"]
                surv_fits_tib <- 
                  surv_fits_tib[, c("type", "treatment", "set_name", "dist",
-                                   "fit", "set_def"),
+                                   "fit", "set_def", "time_subtract"),
                                drop = FALSE]
                assign(survival_specs[this_row, "fit_name"],
                       surv_fits_tib)

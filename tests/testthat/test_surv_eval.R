@@ -66,8 +66,8 @@ test_that(
   "Applying treatment effects",
   {
     
-    # Testing apply_hr, apply_af, apply_or against flexsurvreg output to see
-    # that it is consitent.
+    # Testing apply_hr, apply_af, apply_or and apply_shift
+    # against flexsurvreg output to see that it is consistent.
     
     surv1_medium_surv = fs1 %>%
       set_covariates(group="Medium") %>%
@@ -87,6 +87,10 @@ test_that(
       apply_af(fs1$coefficients[4], log_af=T) %>%
       compute_surv(time=seq_len(10),cycle_length=200, type="surv")
     
+    surv1_poor_shift_surv = fs1 %>%
+      set_covariates(group = "Poor") %>%
+      apply_shift(shift = 4) %>%
+      compute_surv(time = seq_len(10), cycle_length = 200, type = "surv")
     
     surv1_medium_prob = fs1 %>%
       set_covariates(group="Medium") %>%
@@ -199,6 +203,10 @@ test_that(
     expect_equal(surv3_poor_surv, surv3_poor_or_surv)
     expect_equal(surv3_medium_prob,surv3_medium_or_prob)
     expect_equal(surv3_poor_prob, surv3_poor_or_prob)
+    
+    # Test shift
+    expect_equal(surv1_poor_surv[1:6], surv1_poor_shift_surv[5:10])
+    
   }
 )
 

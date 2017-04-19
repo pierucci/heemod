@@ -8,6 +8,7 @@
 \alias{eval_surv.surv_projection}
 \alias{eval_surv.surv_pooled}
 \alias{eval_surv.surv_ph}
+\alias{eval_surv.surv_shift}
 \alias{eval_surv.surv_aft}
 \alias{eval_surv.surv_po}
 \alias{eval_surv.surv_add_haz}
@@ -32,6 +33,9 @@ eval_surv(x, time, cycle_length = 1, type = c("prob", "surv"), ...)
   "surv"), ...)
 
 \method{eval_surv}{surv_ph}(x, time, cycle_length = 1, type = c("prob",
+  "surv"), ...)
+
+\method{eval_surv}{surv_shift}(x, time, cycle_length = 1, type = c("prob",
   "surv"), ...)
 
 \method{eval_surv}{surv_aft}(x, time, cycle_length = 1, type = c("prob",
