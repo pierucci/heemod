@@ -211,16 +211,16 @@ test_that(
     expect_equal(surv2_medium_prob,surv2_medium_hr_prob)
     expect_equal(surv2_poor_prob, surv2_poor_hr_prob)
     
-    expect_identical(surv1_poor_surv, 
-                     apply_hr(apply_hr(surv1_poor_surv, 2),
+    expect_identical(fs1, 
+                     apply_hr(apply_hr(fs1, 2),
                               1/2)
     )
-    expect_identical(surv1_poor_surv, 
-                     apply_hr(apply_hr(surv1_poor_surv, 1/2),
+    expect_identical(fs1, 
+                     apply_hr(apply_hr(fs1, 1/2),
                               2)
     )
-    expect_identical(apply_hr(surv1_poor_surv, 2),
-                     apply_hr(apply_hr(surv1_poor_surv, 4),
+    expect_identical(apply_hr(fs1, 2),
+                     apply_hr(apply_hr(fs1, 4),
                               1/2)
     )
     
@@ -230,16 +230,16 @@ test_that(
     expect_equal(surv3_medium_prob,surv3_medium_or_prob)
     expect_equal(surv3_poor_prob, surv3_poor_or_prob)
     
-    expect_identical(surv1_poor_surv, 
-                     apply_or(apply_or(surv1_poor_surv, 2),
+    expect_identical(fs1, 
+                     apply_or(apply_or(fs1, 2),
                                  1/2)
     )
-    expect_identical(surv1_poor_surv, 
-                     apply_or(apply_or(surv1_poor_surv, 1/2),
+    expect_identical(fs1, 
+                     apply_or(apply_or(fs1, 1/2),
                                  2)
     )
-    expect_identical(apply_or(surv1_poor_surv, 2),
-                     apply_or(apply_or(surv1_poor_surv, 4),
+    expect_identical(apply_or(fs1, 2),
+                     apply_or(apply_or(fs1, 4),
                                  1/2)
     )
     
@@ -251,16 +251,53 @@ test_that(
                      apply_shift(apply_shift(surv1_poor_surv, 5),
                                  -5)
     )
-    expect_identical(surv1_poor_surv, 
-                     apply_shift(apply_shift(surv1_poor_surv, -3),
+    expect_identical(fs1, 
+                     apply_shift(apply_shift(fs1, -3),
                                  3)
     )
-    expect_identical(apply_shift(surv1_poor_surv, 2),
-                     apply_shift(apply_shift(surv1_poor_surv, 5),
+    expect_identical(apply_shift(fs1, 2),
+                     apply_shift(apply_shift(fs1, 5),
                                  -3)
     )
     expect_identical(surv1_poor_shift_surv[1:3], 
-                     rep(as.numeric(NA), 3))
+                     rep(1, 3))
+    
+    ## Test combinations
+    fsm = fs5 %>% set_covariates(group = "Medium")
+    fsm_changes = fsm %>%
+      apply_shift(5) %>% apply_hr(0.5) %>% apply_shift(-5) %>% apply_hr(2) 
+    
+    fsm_survs <- fsm %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    fsm_changes_survs = fsm_changes %>% 
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    expect_equal(fsm_survs, fsm_changes_survs)
+   
+    fsm_changes = fsm %>% 
+      apply_shift(5) %>% apply_hr(0.5) %>% apply_af(0.5) %>% 
+        apply_af(2) %>% apply_shift(-5) %>% apply_hr(2)    
+    fsm_changes_survs = fsm_changes %>% 
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    expect_equal(fsm_survs, fsm_changes_survs)
+    
+    fsm_changes = fsm %>%
+      apply_shift(5) %>% apply_af(0.5) %>% apply_shift(-5) %>% apply_af(2) 
+    fsm_changes_survs = fsm_changes %>% 
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    expect_equal(fsm_survs, fsm_changes_survs)
+    
+    fsm_changes = fsm %>%
+      apply_shift(5) %>% apply_or(0.5) %>% apply_shift(-5) %>% apply_or(2) 
+    fsm_changes_survs = fsm_changes %>% 
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    expect_equal(fsm_survs, fsm_changes_survs)
+    
+    # ## this one should not be equal
+    # fsm_changes = fsm %>%
+    #   apply_af(0.5) %>% apply_shift(-5) %>% apply_af(2) %>% apply_shift(5)
+    # fsm_changes_survs = fsm_changes %>% 
+    #   compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    # expect_equal(fsm_survs, fsm_changes_survs)
     
   }
 )

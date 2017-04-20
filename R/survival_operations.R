@@ -430,4 +430,25 @@ plot.surv_model <- plot.surv_obj
 plot.surv_po <- plot.surv_obj
 plot.surv_aft <- plot.surv_obj
 plot.surv_pooled <- plot.surv_obj
+plot.surv_shift <- plot.surv_obj
 
+
+#' Summarize surv_shift objects
+#'
+#' @param object a `surv_shift` object 
+#' @param ... other arguments
+#'
+#' @return
+#' @export
+#'
+summary.surv_shift <- 
+  function(object, ...){
+    res <- summary(object$dist, ...)
+    if(inherits(res, "summary.survfit")){
+      res <- data.frame(res[c("time", "surv", "upper", "lower")])
+      names(res) <- c("time", "est", "lcl", "ucl")
+    }
+    if(length(res) == 1) res <- res[[1]]
+    res$time <- res$time + object$shift
+    res
+    }

@@ -576,20 +576,18 @@ eval_surv.surv_shift <- function(x, time,
     time_ = time
   }
   time_ <- time_ - x$shift
-  ret <- rep(NA, length(time_))
+  ret <- rep(1, length(time_))
   keep_me <- time_ >= 0
-  time_ <- time_[keep_me]
-  
-  check_cycle_inputs(time_, cycle_length)
-  
-  
-  ret[keep_me] <- eval_surv(
-    x$dist,
-    time = time_,
-    cycle_length = cycle_length,
-    type = "surv"
-  ) 
-  
+  if(any(keep_me)){
+    time_ <- time_[keep_me]
+    check_cycle_inputs(time_, cycle_length)
+    ret[keep_me] <- eval_surv(
+      x$dist,
+      time = time_,
+      cycle_length = cycle_length,
+      type = "surv"
+    ) 
+  }
   if (type == "prob") {
     ret <- calc_prob_from_surv(ret)
   }
