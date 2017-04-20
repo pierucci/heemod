@@ -1,0 +1,7 @@
+.model,.state,lifeyear,utility,cost,.discount.utility,.discount.cost
+A,ProgressionFree,1,0.85,250,utility.dr,cost.dr
+A,ProgressiveDisease,1,0.65,0,utility.dr,cost.dr
+A,Death,0,0,0,utility.dr,cost.dr
+B,ProgressionFree,1,0.8,200,utility.dr,cost.dr
+B,ProgressiveDisease,1,0.6,0,utility.dr,cost.dr
+B,Death,0,0,0,utility.dr,cost.dr

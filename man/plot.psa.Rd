@@ -8,13 +8,13 @@
   n = 100, log_scale = TRUE, diff = FALSE, threshold, bw = FALSE, ...)
 }
 \arguments{
-\item{x}{Result from \code{\link{run_model}}.}
+\item{x}{Result from \code{\link[=run_model]{run_model()}}.}
 
 \item{type}{Type of plot, see details.}
 
 \item{max_wtp}{Maximal willingness to pay.}
 
-\item{n}{Number of CECA points to estimate (values above 
+\item{n}{Number of CECA points to estimate (values above
 100 may take significant time).}
 
 \item{log_scale}{Show willingness to pay on a log scale?}
@@ -37,8 +37,8 @@ Various plots for Markov models probabilistic analysis.
 }
 \details{
 \code{type = "ac"} plots cost-effectiveness acceptability
-curves, \code{type = "ce"} plots results on the 
-cost-efficiency plane, \code{type = "cov"} to perform 
-covariance analysis on the results, \code{type = "evpi"} 
+curves, \code{type = "ce"} plots results on the
+cost-efficiency plane, \code{type = "cov"} to perform
+covariance analysis on the results, \code{type = "evpi"}
 for expected value of perfect information.
 }

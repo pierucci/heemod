@@ -1,0 +1,19 @@
+bibentry(
+  bibtype = "article",
+  author = c(
+    person("Antoine", "Filipovi\\'c-Pierucci"),
+    person("Kevin", "Zarca"),
+    person("Isabelle", "Durand-Zaleski")
+  ),
+  title = "Markov Models for Health Economic Evaluation: The R Package heemod",
+  journal = "ArXiv e-prints",
+archivePrefix = "arXiv",
+ primaryClass = "stat.AP",
+  year = "2017",
+  eprint = "1702.03252",
+  note = sprintf("R package version %s", meta$Version),
+    month = "feb",
+   adsurl = "http://adsabs.harvard.edu/abs/2017arXiv170203252F",
+  adsnote = "Provided by the SAO/NASA Astrophysics Data System",
+  url = "https://pierucci.org/heemod"
+)

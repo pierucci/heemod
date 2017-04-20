@@ -5,18 +5,18 @@
 #' per row, iteratively evaluate the model over the set of 
 #' new values.
 #' 
-#' New parameters with a missing value (\code{NA}) do not 
+#' New parameters with a missing value (`NA`) do not 
 #' replace existing parameters.
 #' 
-#' @param x Result from \code{\link{run_model}}.
+#' @param x Result from [run_model()].
 #' @param model Name or index of model to recompute.
 #' @param newdata a data.frame whose names match parameters 
-#'   names. \code{model} will be evaluated iteratively, 
+#'   names. `model` will be evaluated iteratively, 
 #'   taking successive values from each row.
 #'   
 #' @return A data.frame containing the values of 
-#'   \code{newdata} and each Markov Model evaluation in 
-#'   \code{res}.
+#'   `newdata` and each Markov Model evaluation in 
+#'   `res`.
 #'   
 #' @example inst/examples/example_eval_strategy_newdata.R
 #'   
@@ -25,7 +25,7 @@ eval_strategy_newdata <- function(x, strategy = 1, newdata) {
   strategy <- check_strategy_index(x = x, i = strategy)
   
   cycles <- get_cycles(x)
-  init <- get_init(x)
+  init <- get_uneval_init(x)
   inflow <- get_inflow(x)
   method <- get_method(x)
   old_parameters <- get_parameters(x)

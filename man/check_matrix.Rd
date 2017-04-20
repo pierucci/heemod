@@ -13,14 +13,14 @@ check_matrix(x)
 \code{NULL}
 }
 \description{
-Check whether a matrix fullfills the conditions to be a 
+Check whether a matrix fullfills the conditions to be a
 transition matrix.
 }
 \details{
-This function is called by \code{\link{eval_transition}}
+This function is called by \code{\link[=eval_transition]{eval_transition()}}
 and should not be used directly.
 
-Checks whether all rows sum to 1 and all probabilities 
+Checks whether all rows sum to 1 and all probabilities
 are between 0 and 1.
 }
 \keyword{internal}

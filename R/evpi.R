@@ -32,15 +32,15 @@ compute_evpi <- function(x, wtp_thresholds) {
 #' Sheffield Accelerated Value of Information software.
 #' 
 #' This function saves 3 files at the path given by
-#' \code{folder}: \code{param.csv}, the parameter values,
-#' \code{cost.csv} and \code{effect.csv} the cost and effect
+#' `folder`: `param.csv`, the parameter values,
+#' `cost.csv` and `effect.csv` the cost and effect
 #' results.
 #' 
 #' The official SAVI website can be found at this URL: 
 #' http://http://savi.shef.ac.uk/SAVI/
 #' 
 #' @param x PSA result.
-#' @param folder A folder where to save the \code{csv} files.
+#' @param folder A folder where to save the `csv` files.
 #'   
 #' @return Nothing. Creates 3 files.
 #' @export

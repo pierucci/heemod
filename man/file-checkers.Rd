@@ -17,7 +17,7 @@ is_xls(x)
 }
 \value{
 Whether the file is (respectively)
- csv, xlsx, or xls.
+csv, xlsx, or xls.
 }
 \description{
 Check File Type

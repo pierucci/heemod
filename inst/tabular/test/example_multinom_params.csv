@@ -1,6 +1,3 @@
 parameter,value,low,high,psa
 p_AA,721,700,750,"binomial(.7, 1000)"
-p_AB,202,200,204,
-p_AC,67,60,74,
-p_AD,10,5,15,
 p_AB + p_AC + p_AD,,,,"multinomial(202, 67, 10)"

@@ -7,8 +7,8 @@
 create_states_from_tabular(state_info, df_env = globalenv())
 }
 \arguments{
-\item{state_info}{Result for one model of 
-\code{\link{parse_multi_spec}}.}
+\item{state_info}{Result for one model of
+\code{\link[=parse_multi_spec]{parse_multi_spec()}}.}
 
 \item{df_env}{An environment containing external data.}
 }
@@ -16,28 +16,28 @@ create_states_from_tabular(state_info, df_env = globalenv())
 A state list.
 }
 \description{
-Transforms tabular input defining states into an 
+Transforms tabular input defining states into an
 \code{heemod} object.
 }
 \details{
-Columns of state_info besides .model and state include 
-costs and utilities we want to keep track of, with 
-appropriate values (these may include parameters). For 
-any cost or utility that should be discounted, an 
-additional column with the name ".discount.<cost>" or 
+Columns of state_info besides .model and state include
+costs and utilities we want to keep track of, with
+appropriate values (these may include parameters). For
+any cost or utility that should be discounted, an
+additional column with the name ".discount.<cost>" or
 ".discount.<effect>", for the appropriate cost or effect,
-can be included. If no discounting is desired for a 
-particular cost or effect, the corresponding column can 
+can be included. If no discounting is desired for a
+particular cost or effect, the corresponding column can
 be omitted.
 
-A discount column can contain only a single value - a 
-cost or benefit must be discounted by the same amount in 
+A discount column can contain only a single value - a
+cost or benefit must be discounted by the same amount in
 each state. Discounts can be numbers or parameters (which
 will then need to be defined like any other).
 
-The input data frame is expected to contain state 
-information for all the models you will use in an 
-analysis. For more information see the vignette: 
+The input data frame is expected to contain state
+information for all the models you will use in an
+analysis. For more information see the vignette:
 \code{vignette("file-input", package = "heemod")}.
 }
 \keyword{internal}

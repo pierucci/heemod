@@ -15,7 +15,7 @@ modify(.OBJECT, ...)
 Same class as \code{x}.
 }
 \description{
-This generic function allows the modification of various 
+This generic function allows the modification of various
 objects such as parameters, transitions matrix or states.
 }
 \details{

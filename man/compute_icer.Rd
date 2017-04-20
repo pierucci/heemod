@@ -7,9 +7,9 @@
 compute_icer(x, strategy_order = order(x$.effect), threshold = 30000)
 }
 \arguments{
-\item{x}{Result of \code{\link{run_model}}.}
+\item{x}{Result of \code{\link[=run_model]{run_model()}}.}
 
-\item{strategy_order}{Order in which the strategies 
+\item{strategy_order}{Order in which the strategies
 should be sorted. Default: by increasing effect.}
 
 \item{threshold}{ICER threshold for net monetary benefit
@@ -23,6 +23,6 @@ Compute ICER for Markov models.
 }
 \details{
 Models are ordered by effectiveness and ICER are computed
-sequencially.
+sequentially.
 }
 \keyword{internal}

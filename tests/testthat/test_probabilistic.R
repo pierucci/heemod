@@ -15,7 +15,7 @@ test_that(
         ),
         define_state(
           cost = cost_init + age,
-          ly = 1
+          ly = 1 * 1 / age
         )
         
       )

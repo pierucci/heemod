@@ -8,7 +8,7 @@ save_outputs(outputs, output_dir, overwrite)
 }
 \arguments{
 \item{outputs}{Result from
-\code{\link{run_model_tabular}}.}
+\code{\link[=run_model_tabular]{run_model_tabular()}}.}
 
 \item{output_dir}{Subdirectory in which to write output.}
 
@@ -16,7 +16,7 @@ save_outputs(outputs, output_dir, overwrite)
 }
 \value{
 \code{NULL}. Used for its side effect of creating
-  files in the output directory.
+files in the output directory.
 }
 \description{
 Save Model Outputs

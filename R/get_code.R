@@ -1,13 +1,13 @@
 #' Display the Code to Generate an Object
 #' 
-#' This function returns the \code{R} code to generate an
-#' \code{heemod} object.
+#' This function returns the `R` code to generate an
+#' `heemod` object.
 #' 
-#' @param x An \code{heemod} object.
+#' @param x An `heemod` object.
 #' @param name character. Optional argument giving the name
 #'   to assign to the object.
 #' @param sub logical. Should states or models be referenced
-#'   by name in \code{define_strategy} and \code{run_model}
+#'   by name in `define_strategy` and `run_model`
 #'   instead of including the entire code?
 #' @param depth Depth of the function call.
 #' @param n_space Number of space used for indentation.
@@ -199,7 +199,9 @@ get_code.run_model <- function(x, name = NULL, sub = FALSE,
       get_code(get_parameters(x), depth = depth + 1),
       ",\n  ",
       "init = ",
-      paste0("c(", paste(get_init(x), collapse = ", "), "),\n  ", collapse = ""),
+      paste0("define_init(", paste(to_text_dots(get_uneval_init(x)), collapse = ", "), "),\n  ", collapse = ""),
+      "inflow = ",
+      paste0("define_inflow(", paste(to_text_dots(get_uneval_inflow(x)), collapse = ", "), "),\n  ", collapse = ""),
       "cycles = ",
       get_cycles(x),
       ",\n  ",
