@@ -4,9 +4,9 @@
 \alias{f_fit_survival_models}
 \title{Fit survival models using different distributions}
 \usage{
-f_fit_survival_models(survdata, dists = c("exp", "weibull", "lnorm", "gamma",
-  "gompertz", "gengamma"), time_col_name, censor_col_name, treatment_col_name,
-  covariate_col_names = NULL, fit_indiv_groups = TRUE)
+f_fit_survival_models(survdata, dists = c("exp", "weibull", "lnorm", "llogis",
+  "gamma", "gompertz", "gengamma"), time_col_name, censor_col_name,
+  treatment_col_name, covariate_col_names = NULL, fit_indiv_groups = TRUE)
 }
 \arguments{
 \item{survdata}{Survival data to be used.}

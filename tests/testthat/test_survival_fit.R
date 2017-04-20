@@ -122,7 +122,8 @@ test_that("fitting works (including with subsets)",
                                                    "PFS.B.fit"))
             expect_identical(names(these_fits[[1]]),
                              c("type", "treatment", "set_name",
-                               "dist", "fit", "set_def"))
+                               "dist", "fit", "set_def",
+                               "time_subtract"))
             expect_identical(these_fits[[1]]$dist,
                              rep(c("exp", "weibull", "km"), 10))
             expect_identical(sapply(these_fits[[1]]$fit, class),
@@ -142,7 +143,7 @@ test_that("fitting works (including with subsets)",
             metrics <- extract_surv_fit_metrics(these_fits[[1]])
             expect_identical(names(metrics),
                              c("type", "treatment", "set_name", "dist", "fit",
-                               "set_def", "AIC", "BIC", "m2LL"))
+                               "set_def", "time_subtract", "AIC", "BIC", "m2LL"))
             expect_equal(nrow(metrics), 20)
             expect_identical(round(metrics[1, c("AIC", "BIC", "m2LL")], 3),
                              tibble::tribble(~AIC, ~BIC, ~m2LL,

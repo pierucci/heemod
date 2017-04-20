@@ -215,6 +215,19 @@ survival_from_data <-
                    these_surv_fits$set_name <- these_sets[[set_index, "set_name"]]
                    these_surv_fits$set_def <- these_sets[[set_index, "condition"]]
                    these_surv_fits$time_subtract <- these_sets[[set_index, "time_subtract"]]
+                   
+                   ## modify the fits to take into account
+                   ##   the time subtraction
+                   new_fits <- 
+                     these_surv_fits %>%
+                        dplyr::rowwise() %>%
+                          dplyr::do(fit = apply_shift(dist = .$fit, 
+                                                      shift = .$time_subtract)) %>%
+                            dplyr::ungroup()
+                          
+                   
+                   these_surv_fits$fit <- new_fits$fit
+  
                    these_surv_fits
                  }
                  )
@@ -362,8 +375,8 @@ dist_from_fits <- function(this_fit){
 #'  
 f_fit_survival_models <- 
   function(survdata,
-           dists = c("exp", "weibull", "lnorm", "gamma", 
-                     "gompertz", "gengamma"),
+           dists = c("exp", "weibull", "lnorm", "llogis",
+                     "gamma", "gompertz", "gengamma"),
            time_col_name, 
            censor_col_name, 
            treatment_col_name,
