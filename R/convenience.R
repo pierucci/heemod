@@ -363,7 +363,7 @@ find_least_cost_partition <-
            available_units,
            subset_col = NULL,
            subset_val = NULL) {
-    if(!require(lpSolve)){
+    if(!requireNamespace("lpSolve")){
       stop("must have package 'lpSolve' for finding least cost dose strategies")
     }
     ## input checking
