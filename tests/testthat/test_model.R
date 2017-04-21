@@ -39,8 +39,8 @@ test_that(
     )
     expect_output(
       str(mod1),
-      "List of 2
- $ transition:List of 4",
+      "List of 4
+ $ transition",
       fixed = TRUE
     )
     expect_output(
