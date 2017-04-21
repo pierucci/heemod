@@ -89,7 +89,7 @@ test_that(
     
     surv1_poor_shift_surv = fs1 %>%
       set_covariates(group = "Poor") %>%
-      apply_shift(shift = 4) %>%
+      apply_shift(shift = 800) %>%
       compute_surv(time = seq_len(10), cycle_length = 200, type = "surv")
     
     surv1_medium_prob = fs1 %>%
@@ -281,24 +281,12 @@ test_that(
     expect_equal(fsm_survs, fsm_changes_survs)
     
     fsm_changes = fsm %>%
-      apply_shift(5) %>% apply_af(0.5) %>% apply_shift(-5) %>% apply_af(2) 
-    fsm_changes_survs = fsm_changes %>% 
-      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
-    expect_equal(fsm_survs, fsm_changes_survs)
-    
-    fsm_changes = fsm %>%
       apply_shift(5) %>% apply_or(0.5) %>% apply_shift(-5) %>% apply_or(2) 
     fsm_changes_survs = fsm_changes %>% 
       compute_surv(time=seq_len(10),cycle_length=200, type="surv")
     expect_equal(fsm_survs, fsm_changes_survs)
     
-    # ## this one should not be equal
-    # fsm_changes = fsm %>%
-    #   apply_af(0.5) %>% apply_shift(-5) %>% apply_af(2) %>% apply_shift(5)
-    # fsm_changes_survs = fsm_changes %>% 
-    #   compute_surv(time=seq_len(10),cycle_length=200, type="surv")
-    # expect_equal(fsm_survs, fsm_changes_survs)
-    
+
   }
 )
 

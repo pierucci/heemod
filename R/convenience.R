@@ -393,7 +393,7 @@ find_least_cost_partition <-
                                nrow = 1, byrow = TRUE)
     output_list <- lapply(desired_dose, function(this_dose) {
       lp_soln <-
-        lp("min",
+        lpSolve::lp("min",
            available_units[, "cost"], 
            constraint_coefs,      ## vial sizes
            ">=",                  ## must get at least the dose
