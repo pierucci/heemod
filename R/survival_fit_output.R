@@ -165,11 +165,6 @@ send_info_to_workbook <-
                    startRow = start_row_2, 
                    startCol = start_col_2, 
                    header = FALSE) 
-    # new_start_row <- 
-    #   new_start_row + 
-    #     length(unlist(fit_info$par.est)) + 
-    #       skip_between
-    
     use_names <- rownames(fit_info$vcov)
     write_vcov <- fit_info$vcov
     if(alignment == "vertical"){
@@ -226,57 +221,9 @@ summary_helper <- function(fit, ...){
   res1
 }
 
-prepare_fit_list_plot_data_from_tibble_old <- 
-  function(fit_tibble){
-    fit_list <- fit_tibble[["fit"]]
-    names(fit_list) <- fit_tibble[["dist"]]
-    prepare_fit_list_plot_data(fit_list) 
-  }
 
-prepare_fit_list_plot_data <- function(fit_list){
-  km_pos <- grep("km", names(fit_list))
-  if(length(km_pos) == 0)
-    stop("no Kaplan-Meier fit included")
-  if(length(km_pos) > 1)
-    stop("too many elements have 'km' (for 'Kaplan-Meier') in the name")
-  km_fit <- fit_list[[km_pos]] 
-  fit_list <- fit_list[-km_pos]
-  fit_names <- names(fit_list)
-  fits_surv <- lapply(fit_list, summary, type = "survival")
-  fits_surv <- lapply(fits_surv, "[[", 1)
-  fits_cumhaz <- lapply(fit_list, summary, type = "cumhaz")
-  fits_cumhaz <- lapply(fits_cumhaz, "[[", 1)
-  name_vec <- rep(fit_names, sapply(fits_surv, nrow))
-  fits_surv <- do.call("rbind", fits_surv)
-  fits_surv$fn <- "survival"
-  fits_surv$fit_name <- name_vec
 
-  fits_cumhaz <- do.call("rbind", fits_cumhaz)
-  fits_cumhaz$fn <- "cumulative hazard"
-  fits_cumhaz$fit_name <- name_vec
-  
-  data_to_plot <- rbind(fits_surv, fits_cumhaz)
-
-  ## now add Kaplan-Meier data
-  km_data <- summary(km_fit, 
-                     times = sort(unique(c(seq(from = 1, 
-                                        to = max(fits_cumhaz$time), 
-                                        by = 1),
-                                  data_to_plot$time))))
-  km_data_surv <- data.frame(time = km_data$time, 
-                             est = km_data$surv)
-  km_data_surv$lower <- km_data_surv$upper <- NA
-  km_data_surv$fn <- "survival"
-  km_data_surv$fit_name <- "km"
-  names(km_data_surv) <- names(data_to_plot)
-
-  km_data_cumhaz <- km_data_surv
-  km_data_cumhaz$fn <- "cumulative hazard"
-  km_data_cumhaz$est <- -log(km_data_cumhaz$est)
-  data_to_plot <- rbind(data_to_plot, km_data_surv, km_data_cumhaz)
-}
-
-plot_fit_list <- function(data_to_plot, 
+plot_fit_data <- function(data_to_plot, 
                           type = c("survival", "cumulative hazard"),
                           logy = FALSE,
                           scale_time = 1,
