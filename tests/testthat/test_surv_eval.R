@@ -286,7 +286,23 @@ test_that(
       compute_surv(time=seq_len(10),cycle_length=200, type="surv")
     expect_equal(fsm_survs, fsm_changes_survs)
     
-
+    ## misaligned shifts
+    surv1_poor_shift_surv_misaligned1 = fs1 %>%
+      set_covariates(group = "Poor") %>%
+      apply_shift(shift = 100) %>%
+      compute_surv(time = seq_len(10), 
+                   cycle_length = 300, type = "surv")
+    
+    surv1_poor_shift_surv_misaligned2 = fs1 %>%
+      set_covariates(group = "Poor") %>%
+      compute_surv(time = seq_len(30), 
+                   cycle_length = 100, type = "surv") %>%
+      .[seq_len(10)*3 - 1]
+    
+    expect_equal(surv1_poor_shift_surv_misaligned1, 
+                 surv1_poor_shift_surv_misaligned2)
+    
+    
   }
 )
 

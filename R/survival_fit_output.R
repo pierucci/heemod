@@ -38,8 +38,8 @@ prepare_fit_info <- function(fit_list){
                       names(res) <-rownames(x$res.t)
                       res
                     })
-  AIC <- sapply(fit_list, get_component, comp = "AIC") #function(x){x$AIC})
-  BIC <- sapply(fit_list, get_component, comp = "BIC") #function(x){x$BIC})
+  AIC <- sapply(fit_list, get_component, comp = "AIC") 
+  BIC <- sapply(fit_list, get_component, comp = "BIC") 
   vcov <- prepare_vcov(fit_list)
   list(par.est = par.est, AIC = AIC, BIC = BIC, vcov = vcov)
 }
