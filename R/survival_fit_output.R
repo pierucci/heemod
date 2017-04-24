@@ -46,21 +46,18 @@ prepare_fit_info <- function(fit_list){
 write_fits_to_excel_from_tibble <- 
   function(fit_tibble, wb, skip_at_start = 3, skip_between = 1,
            alignment = c("horizontal", "vertical")){
-    if(!require("XLConnect"))
-      stop("XLConnect package required to write Excel files")
-    
+    requireNamespace("XLConnect")
+
     ## if necessary, get flexsurvreg fits out of surv_X objects
-    
-    
     if(is.character(wb)) 
-      wb <- loadWorkbook(wb, create = TRUE)
+      wb <- XLConnect::loadWorkbook(wb, create = TRUE)
     alignment <- match.arg(alignment)
     stopifnot(inherits(wb, "workbook"))
     stopifnot(identical(names(fit_tibble),
                 c("type", "treatment", "set_name",
                   "dist", "fit", "set_def", "time_subtract"))
               )
-    createSheet(wb, "OPCPem")
+    XLConnect::createSheet(wb, "OPCPem")
 
     fit_tibble_nest <- 
       dplyr::filter(fit_tibble, dist != "km")
@@ -100,15 +97,15 @@ write_fits_to_excel_from_tibble <-
     plot_data <- prepare_fit_list_plot_data_from_tibble(fit_tibble)
     plot_data_km <- plot_data %>% dplyr::filter(dist == "km")
     
-    createSheet(wb, "km")
-    writeWorksheet(wb, 
+    XLConnect::createSheet(wb, "km")
+    XLConnect::writeWorksheet(wb, 
                    plot_data_km[, c("type", "treatment", "set_name", "dist",
                                          "time", "est", "lcl", "ucl")],
                    sheet= "km", 
                    startRow = skip_at_start,
                    startCol = 1)
           
-    saveWorkbook(wb)
+    XLConnect::saveWorkbook(wb)
     invisible(plot_data)
   }
 
@@ -203,7 +200,7 @@ prepare_fit_list_plot_data_from_tibble <-
 summary_helper <- function(fit, ...){
   stopifnot(inherits(fit, c("flexsurvreg", "survfit", "surv_shift")))
     if(inherits(fit, "surv_shift")){
-      res1 <- heemod:::summary.surv_shift(fit, ...)
+      res1 <- summary.surv_shift(fit, ...)
     }
   else{
     res1 <- summary(fit, ...)
