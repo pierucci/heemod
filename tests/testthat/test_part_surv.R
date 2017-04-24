@@ -20,15 +20,15 @@ surv_dist4 <- define_survival(
 
 suppressMessages(
   ps <- define_part_surv(
-    pfs = project(surv_dist3, surv_dist4, at=365),
-    os = project(surv_dist1, surv_dist2, at=365),
+    pfs = join(surv_dist3, surv_dist4, at=365),
+    os = join(surv_dist1, surv_dist2, at=365),
     cycle_length = c(365, 365)
   )
 )
 suppressMessages(
   ps1 <- define_part_surv(
-    pfs = project(surv_dist3, surv_dist4, at=365) %>% apply_hr(0.8),
-    os = project(surv_dist1, surv_dist2, at=365) %>% apply_hr(0.8),
+    pfs = join(surv_dist3, surv_dist4, at=365) %>% apply_hr(0.8),
+    os = join(surv_dist1, surv_dist2, at=365) %>% apply_hr(0.8),
     cycle_length = c(365, 365)
   )
 )
@@ -82,7 +82,7 @@ test_that(
       ps <- define_part_surv(
         pfs = surv_dist_1,
         os = km_medium %>%
-          project(fitcov_medium, 
+          join(fitcov_medium, 
                   at = 730),
         cycle_length = c(1, 365)  # 1 for pfs, 365 for os
       )})
@@ -100,7 +100,7 @@ test_that(
       ),
       p2 = compute_surv(
         km_medium %>%
-          project(fitcov_medium, 
+          join(fitcov_medium, 
                   at = 730),
         time = model_time, cycle_length = 365  # time is in days in km_medium, in years in model_time
       ))
@@ -154,8 +154,8 @@ test_that(
 
 suppressMessages({
   ps <- define_part_surv(
-    pfs = project(surv_dist3),
-    os = project(surv_dist1),
+    pfs = join(surv_dist3),
+    os = join(surv_dist1),
     state_names = c("ProgressionFree", "Progressive", "Death"),
     cycle_length = c(365, 365)
   )
@@ -164,8 +164,8 @@ test_that(
   "errors with inappropriate state names", {
     expect_error(
       define_part_surv(
-        pfs = project(surv_dist3),
-        os = project(surv_dist1),
+        pfs = join(surv_dist3),
+        os = join(surv_dist1),
         state_names = c("NoDisease", "Progressive", "Death"),
         cycle_length = c(365, 365)
       ),
@@ -174,8 +174,8 @@ test_that(
     )
     expect_error(
       define_part_surv(
-        pfs = project(surv_dist3),
-        os = project(surv_dist1),
+        pfs = join(surv_dist3),
+        os = join(surv_dist1),
         state_names = c("ProgressionFree", "Progressive", "Kaput"),
         cycle_length = c(365, 365)
       ),
@@ -183,8 +183,8 @@ test_that(
     )
     expect_error(
       define_part_surv(
-        pfs = project(surv_dist3),
-        os = project(surv_dist1),
+        pfs = join(surv_dist3),
+        os = join(surv_dist1),
         state_names = c("ProgressionFree", "Progressive",
                         "uh-oh", "Death"),
         cycle_length = c(365, 365)
@@ -194,8 +194,8 @@ test_that(
     )
     expect_error(
       define_part_surv(
-        pfs = project(surv_dist3),
-        os = project(surv_dist1),
+        pfs = join(surv_dist3),
+        os = join(surv_dist1),
         state_names = c(
           "ProgressionFree",
           "Progressivebutfree",
