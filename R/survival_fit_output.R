@@ -15,8 +15,9 @@ prepare_vcov <- function(fit_list){
   
   max.n.pars <- max(sapply(fit_list, function(x){x$npars}))
   
-  vcov_matrices <- lapply(fit_list, vcov)
-  vcov_matrices <- lapply(vcov_matrices, pad_matrix, pad_to = max.n.pars)
+  vcov_matrices <- lapply(fit_list, stats::vcov)
+  vcov_matrices <- lapply(vcov_matrices, pad_matrix, 
+                          pad_to = max.n.pars)
   prefixes <- names(fit_list)
   for(i in 1:length(vcov_matrices))
     rownames(vcov_matrices[[i]]) <- 

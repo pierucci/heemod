@@ -373,7 +373,8 @@ construct_part_surv_tib <-
                                                    "dist" = "dist",
                                                    ".subset" = "set_name")
       )
-    if(any(problem <- is.na(should_be_fits_3$fit))){
+    if(any(problem <- is.null(should_be_fits_3$fit) | 
+           is.na(should_be_fits_3$fit))){
       print(surv_def[problem,])
       stop("fit not found for lines ",
            paste(which(problem), collapse = ", "),
