@@ -1,5 +1,9 @@
 ## heemod 0.9.0.9001
 
+### Breaking changes
+
+  * Survival function renamed: `project()`=>`join()`.
+
 ### New features
 
   * NMB is now reportd as relative values.
