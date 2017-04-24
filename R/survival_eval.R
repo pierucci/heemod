@@ -280,14 +280,6 @@ eval_surv.survfit <- function(x, time,  ...) {
   
   dots <- list(...)
   
-  ## type <- match.arg(type)
-  
-  #time_ <- time
-  ##check_cycle_inputs(time_, cycle_length)
-  
-  ##time_surv <- cycle_length * time_
-  #time_surv <- time_
-  # Extract the product-limit tables for all strata
   pl_table <- extract_strata(x)
   
   # Identify the terms which separate groups (if any)
@@ -305,11 +297,11 @@ eval_surv.survfit <- function(x, time,  ...) {
       maxtime <- max(d$time)
       selector <- (time > maxtime)
       # Use stepfun to look up survival probabilities
-      value <- stats::stepfun(d$time[-1], d$surv)(time) #(time_surv)
-      # Use NA when time_surv > max time_surv
+      value <- stats::stepfun(d$time[-1], d$surv)(time)
+      # Use NA when time > max time
       value[selector] <- as.numeric(NA)
       tibble::data_frame(
-        t = time, #time_surv,
+        t = time, 
         value = value,
         n = d$n[1])
     }
@@ -336,12 +328,6 @@ eval_surv.survfit <- function(x, time,  ...) {
   
   # Get the vector of predictions
   ret <- agg_df$value
-  ret
-  # if (type == "prob") {
-  #   # Calculate per-cycle failure prob
-  #   ret <- calc_prob_from_surv(ret)
-  #}
-  
   return(ret)
 }
 
@@ -351,17 +337,6 @@ eval_surv.flexsurvreg <- function(x, time,  ...) {
   
   dots <- list(...)
   
-  ## type <- match.arg(type)
-  
-    # if (type == "prob") {
-    #   time_ = c(time[1] - 1, time)
-    # } else {
-    #   time_ = time
-    # }
-  
-  ##check_cycle_inputs(time_, cycle_length)
-  
-  ## time_surv <- cycle_length * time_
   time_surv <- time
   # Extract parameter estimates
   coef_obj <- x$coefficients
@@ -424,11 +399,6 @@ eval_surv.flexsurvreg <- function(x, time,  ...) {
   # Just get the results column
   ret <- surv_df$value
   
-  # if (type == "prob") {
-  #   # Calculate per-cycle failure prob
-  #   ret <- calc_prob_from_surv(ret)
-  # }
-  
   return(ret)
 }
 
@@ -438,9 +408,7 @@ eval_surv.surv_model <- function(x, time,  ...) {
   eval_surv(
     x$dist,
     time = time,
-    # cycle_length = cycle_length,
     covar = x$covar,
-    # type = type,
     ...
   )
   
@@ -449,56 +417,32 @@ eval_surv.surv_model <- function(x, time,  ...) {
 #' @rdname eval_surv
 #' @export
 eval_surv.surv_projection <- function(x, time, ...) {
-  
-  # type <- match.arg(type)
-  
-  # if (type == "prob") {
-  #   time_ = c(time[1] - 1, time)
-  # } else {
-  #   time_ = time
-  # }
-  # 
-  # check_cycle_inputs(time_, cycle_length)
-  
-  # time_surv <- cycle_length * time_
-  time_surv <- time_ <- time
-  ret <- numeric(length(time_))
+
+  ret <- numeric(length(time))
   
   surv1 <- eval_surv(
     x$dist1,
-    time = time_ #,
-    # cycle_length = cycle_length,
-    # type = "surv"
+    time = time 
   )
   surv2 <- eval_surv(
     x$dist2,
-    time = time_ #,
-    # cycle_length = cycle_length,
-    # type = "surv"
+    time = time
   )
   
-  ind_s1 <- time_surv < x$at
-  ind_s2 <- time_surv >= x$at
+  ind_s1 <- time < x$at
+  ind_s2 <- time >= x$at
   
   surv1_p_at <- eval_surv(
     x$dist1,
-    time = 1 #,
-    #cycle_length = x$at,
-    #type = "surv"
+    time = x$at 
     )
   surv2_p_at <- eval_surv(
     x$dist2,
-    time = 1 ,
-    #cycle_length = x$at, 
-    #type = "surv",
+    time = x$at,
     .internal = TRUE)
   
   ret[ind_s1] <- surv1[ind_s1]
   ret[ind_s2] <- (surv2 * surv1_p_at / surv2_p_at)[ind_s2]
-  
-  # if(type == "prob") {
-  #   ret <- calc_prob_from_surv(ret)
-  # }
   
   ret
 }
@@ -507,18 +451,8 @@ eval_surv.surv_projection <- function(x, time, ...) {
 #' @export
 eval_surv.surv_pooled <- function(x, time, ...) {
   
-  # type <- match.arg(type)
-  
-  # if (type == "prob") {
-  #   time_ = c(time[1] - 1, time)
-  # } else {
-  #   time_ = time
-  # }
-  # time_ <- time
-  # check_cycle_inputs(time_, cycle_length)
-  
   # Determine dimensions of matrix and initialize
-  n_cycle <- length(time) #time_)
+  n_cycle <- length(time)
   n_dist <- length(x$dists)
   surv_mat <- matrix(nrow = n_cycle, ncol = n_dist)
   
@@ -528,18 +462,13 @@ eval_surv.surv_pooled <- function(x, time, ...) {
     surv_mat[ ,i] <- x$weights[i] / sum(x$weights) *
       eval_surv(
         x$dists[[i]],
-        time = time, #time_,
-        # cycle_length = cycle_length,
+        time = time, 
         type = "surv"
       )
   }
   
   # Calculate weighted average as the row sums
   ret <- rowSums(surv_mat)
-  
-  # if (type == "prob") {
-  #   ret <- calc_prob_from_surv(ret)
-  # }
   
   ret
 }
@@ -548,26 +477,10 @@ eval_surv.surv_pooled <- function(x, time, ...) {
 #' @export
 eval_surv.surv_ph <- function(x, time, ...) {
   
-  # type <- match.arg(type)
-  # 
-  # if (type == "prob") {
-  #   time_ = c(time[1] - 1, time)
-  # } else {
-  #   time_ = time
-  # }
-  # 
-  # check_cycle_inputs(time_, cycle_length)
-  
   ret <- eval_surv(
     x$dist,
-    time = time #time_ #,
-    # cycle_length = cycle_length,
-    # type = "surv"
+    time = time 
   ) ^ x$hr
-  
-  # if (type == "prob") {
-  #   ret <- calc_prob_from_surv(ret)
-  # }
   
   ret
 }
@@ -576,13 +489,6 @@ eval_surv.surv_ph <- function(x, time, ...) {
 #' @export
 eval_surv.surv_shift <- function(x, time, ...) {
   
-  # type <- match.arg(type)
-  # 
-  # if (type == "prob") {
-  #   time_ = c(time[1] - 1, time)
-  # } else {
-  #   time_ = time
-  # }
   time_ <- time
   time_ <- time_ - x$shift
   ret <- rep(1, length(time_))
@@ -592,15 +498,10 @@ eval_surv.surv_shift <- function(x, time, ...) {
     ##check_cycle_inputs(time_, cycle_length)
     ret[keep_me] <- eval_surv(
       x$dist,
-      time = time_ #,
-      # cycle_length = cycle_length,
-      # type = "surv"
+      time = time_ 
     ) 
   }
-  # if (type == "prob") {
-  #   ret <- calc_prob_from_surv(ret)
-  # }
-  
+
   ret
 }
 
@@ -609,26 +510,10 @@ eval_surv.surv_shift <- function(x, time, ...) {
 #' @export
 eval_surv.surv_aft <- function(x, time, ...) {
   
-  # type <- match.arg(type)
-  # 
-  # if (type == "prob") {
-  #   time_ = c(time[1] - 1, time)
-  # } else {
-  #   time_ = time
-  # }
-  # 
-  # check_cycle_inputs(time_, cycle_length)
-  time_ <- time
   ret <- eval_surv(
     x$dist,
-    time = time_/x$af #,
-    # cycle_length = cycle_length/x$af,
-    # type = "surv"
+    time = time/x$af 
   )
-  
-  # if (type == "prob") {
-  #   ret <- calc_prob_from_surv(ret)
-  # }
   
   ret
 }
@@ -638,29 +523,13 @@ eval_surv.surv_aft <- function(x, time, ...) {
 eval_surv.surv_po <- function(x, time, ...) {
   
   dots <- list(...)
-  time_ <- time
-  # type <- match.arg(type)
-  # 
-  # if (type == "prob") {
-  #   time_ = c(time[1] - 1, time)
-  # } else {
-  #   time_ = time
-  # }
-  # 
-  # check_cycle_inputs(time_, cycle_length)
-  
+
   p <- eval_surv(
     x$dist,
-    time = time_ #,
-    # cycle_length = cycle_length,
-    # type = "surv"
+    time = time
   )
   
   ret <- 1 / ((((1 - p) / p) * x$or) + 1)
-  
-  # if (type == "prob") {
-  #   ret <- calc_prob_from_surv(ret)
-  # }
   
   ret
 }
@@ -669,18 +538,8 @@ eval_surv.surv_po <- function(x, time, ...) {
 #' @export
 eval_surv.surv_add_haz <- function(x, time, ...) {
   
-    # type <- match.arg(type)
-    # 
-    # if (type == "prob") {
-    #   time_ = c(time[1] - 1, time)
-    # } else {
-    #   time_ = time
-    # }
-    # 
-    # check_cycle_inputs(time_, cycle_length)
-  time_ <- time
   # Determine dimensions of matrix and initialize
-  n_cycle <- length(time_)
+  n_cycle <- length(time)
   n_dist <- length(x$dists)
   surv_mat <- matrix(nrow = n_cycle, ncol = n_dist)
   
@@ -689,37 +548,20 @@ eval_surv.surv_add_haz <- function(x, time, ...) {
   for (i in seq_len(n_dist)) {
     surv_mat[ ,i] <- eval_surv(
       x$dists[[i]],
-      time = time_ #,
-      # cycle_length = cycle_length,
-      # type = "surv"
+      time = time 
     )
   }
   
   # Apply independent risks
   ret <- apply(surv_mat, 1, function(z) prod(z))
   
-  # if (type == "prob") {
-  #   ret <- calc_prob_from_surv(ret)
-  # }
-  # 
   ret
 }
 
 #' @rdname eval_surv
 #' @export
 eval_surv.surv_dist <- function(x, time, ...) {
-  # type <- match.arg(type)
-  # 
-  # if(type == "prob") {
-  #   time_ <- c(time[1] - 1, time)
-  # }else {
-  #   time_ <- time
-  # }
-  # 
-  # check_cycle_inputs(time_, cycle_length)
-  # 
-  # times_surv <- cycle_length * time_
-  time_ <- times_surv <- time
+
   if (! requireNamespace("flexsurv")) {
     stop("'flexsurv' package required.")
   }
@@ -728,13 +570,9 @@ eval_surv.surv_dist <- function(x, time, ...) {
             envir = asNamespace("flexsurv"))
   
   args <- x[- match("distribution", names(x))]
-  args[["q"]] <- times_surv
+  args[["q"]] <- time
   args[["lower.tail"]] <- FALSE
   ret <- do.call(pf, args)
-  
-  # if (type == "prob") {
-  #   ret <- calc_prob_from_surv(ret)
-  # }
   
   ret
 }

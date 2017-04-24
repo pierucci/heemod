@@ -223,11 +223,12 @@ test_that(
                      "Terminal", "Death")
     ## basically just make sure it runs, since we're using fake fits
     zz <- construct_part_surv_tib(surv_def, fake_fit_tib, state_names)
-    expect_identical(names(zz), c(".strategy", ".subset", "part_surv"))
-    expect_identical(class(zz[[1, 3]]), c("part_surv"))
+    expect_identical(names(zz), c(".strategy", "part_surv"))
+    expect_identical(class(zz[[1, 2]]), c("part_surv"))
     surv_def_join <- read_file(system.file("tabular/surv", 
-                                           "use_fits_with_join.csv", 
+                                           "use_fits_join.csv", 
                                            package = "heemod"))
+    surv_def_join <- dplyr::filter(surv_def_join, .subset == "all")
     zz <- construct_part_surv_tib(surv_def_join, fake_fit_tib, state_names)
     surv_def_join <- surv_def_join[, 1:3]
     expect_error(capture.output(construct_part_surv_tib(

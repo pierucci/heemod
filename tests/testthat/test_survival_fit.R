@@ -127,19 +127,23 @@ test_that("fitting works (including with subsets)",
             expect_identical(these_fits[[1]]$dist,
                              rep(c("exp", "weibull", "km"), 10))
             expect_identical(sapply(these_fits[[1]]$fit, class),
-                             rep(c("flexsurvreg", "flexsurvreg", "survfit"), 10))
+                             c(rep(c("flexsurvreg", "flexsurvreg", "survfit",
+                                   "surv_shift", "surv_shift", "surv_shift"), 
+                                 3),
+                             c("flexsurvreg", "flexsurvreg", "survfit",
+                               "flexsurvreg", "flexsurvreg", "survfit",
+                               "surv_shift", "surv_shift", "surv_shift",
+                               "flexsurvreg", "flexsurvreg", "survfit")))
             combos <- table(these_fits[[1]][, c("treatment", "set_def")])
             ## sorting to make sure things are in right order for tests -
             ##   otherwise sometimes had problems with different locales
             combos <- combos[c("A", "B"),]
-            combos <- combos[,c("time > 100", "time > 150",
-                               "time > 50", "TRUE")]
+            combos <- combos[, c("biomarker > 0.5","time > 50", "TRUE")]
             expect_identical(dimnames(combos),
                              list(treatment = c("A", "B"),
-                                  set_def = c("time > 100", "time > 150",
-                                              "time > 50", "TRUE")))
+                                  set_def = c("biomarker > 0.5","time > 50", "TRUE")))
             expect_identical(as.numeric(combos),
-                             c(0, 6, 6, 0, 6, 0, 6, 6))
+                             c(0, 6, 6, 6, 6, 6))
             metrics <- extract_surv_fit_metrics(these_fits[[1]])
             expect_identical(names(metrics),
                              c("type", "treatment", "set_name", "dist", "fit",
@@ -156,7 +160,8 @@ test_that("fitting works (including with subsets)",
                              tibble::tribble(~AIC, ~BIC, ~m2LL,
                                              494.77, 496.662, 492.77)
                              )
-          })
+          }
+          )
 
 test_that("we handle fitting errors",
           {

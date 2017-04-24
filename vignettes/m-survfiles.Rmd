@@ -38,25 +38,97 @@ information on [survival curve fitting](j-survival.html).
 Here we will deal only with those aspects specific to fitting survival curves
 from data and using them to run economic models.
 
-The source of the survival data, as well as the names and locations of the resulting fits, are specified in a file with the following rows:
 
-name | meaning
--------------------------|------------------------------------------------------------------
-survivalDataDirectory	   | the subdirectory in which survival data are kept
-surv_data_file_suffix	   | the name of the file in survivalDataDirectory in which the survival data for either OS or PFS (depending on the suffix) will be found
-fit_name_suffix	         | the name of the R object in which to save the fits
-fit_file_suffix	         | the file in which to save the fits
+## Specifying the data to fit
 
-In this case, suffix must contain either “pfs” or “os” (not case sensitive), and one set of each must be included. The suffixes determine which rows go together. Here’s an example of such a file, pointing to an example using randomly-generated data and two fake treatments, “A” and “B”:
+The source of the survival data, as well as the names and locations of the resulting fits, 
+are specified in a file with one row for each (treatment, outcome) pair, where the outcome can be
+either progression-free survival (PFS) or overall survival (OS).
+ Here’s an example of such a file, pointing to an example using randomly-generated data
+ and two fake treatments, “A” and “B”:
 
-```{r sim-data}
+```{r surv-info}
 surv_inf_file_name <- "survival_info.csv"
 full_path <- file.path(base_dir, surv_inf_file_name)
 surv_info <- heemod:::read_file(full_path)
 print(surv_info)
 ```
 
-Here the fit names are not simply “OS.fit” and “PFS.fit”, but “OS2.fit” and “PFS2.fit”, a change that merely demonstrates that we can use different names if we choose.
+The `data_directory` and `data_file` columns allow us to specify the location
+of data separately for each row.    The `fit_directory`, `fit_file`, and 
+`fit_name` columns, similarly, allow us specify where the fits should be kept,
+and what the R object containing the fits should be called.   Finally, `time_col`,
+`treatment_col`, and `censor_col` give us the names of the columns in the data
+files that contain the three elements needed to specify the model.  Together,
+these give us a great deal of flexibility.   For example, we may keep our data
+in a set of directories that are, for most analysts, read-only, while still
+allowing them to save their fits (each analyst can even save their own fits,
+though it seems preferable to have them shared).   We can have data for
+different treatments and outcomes in different files or in the same file -
+if they are in the same file, we can specify the columns to be used
+to specify the different outcomes.
+
+## Specifying multiple subsets of data for survival models
+
+Some analyses require fitting survival curves for different subsets of the
+data.  These subsets may be based on demographic or potential biomarker
+variables - anything that could potentially influence survival.  The
+file defining the subsets should be in the fit directory where the fits
+will be stored (which may often be the same place where the raw data is
+stored).  That allows different people to fit different subsets
+if necessary, and also allows for defining subsets if the data directory
+is read-only for the analyst.  Currently the file must be called 
+"set_definitions.X", where "X" can be ".csv", ".xls", or ".xlsx" depending
+on the file format.
+
+Below is an example:
+```{r subset-file}
+subset_def_file_name <- "set_definitions.csv"
+full_path <- file.path(base_dir, "survival_data", subset_def_file_name)
+subset_info <- heemod:::read_file(full_path)
+print(subset_info)
+```
+The file must contain three columns: treatment, set_name, and condition.
+"treatment" must match the treatment column in the survival information
+file, because that is how fits will be associated to the appropriate
+treatments.  The set_name and condition files define the names of the
+subsets, which will be used later in specifying which fits to use in
+a particular analysis, and the condition defining the subset.  The condition
+must be a statement that can be parsed in R, and variables used should
+match the relevant column names in the survival data file.   For example,
+the file presented here uses "time" in rows 3 and 4 because that is the column
+name in our
+example data files.  If the example data used "Time" or "t" or "event_time", 
+the condition statements would need to use those names instead.
+
+One notable case highlighted here is subsets based on time itself - for example,
+we may wish to fit the a survival model only for event times after some chosen time.
+In this case, we will generally want to fit the survival model as if the
+chosen time were time 0.   We can do this by adding the column `time_subract`
+with the appropriate number.   This currently requires the analyst to take
+care that the name of the subset, the condition defining the subset, and
+the time subtracted all match up.  For example, we would not want to
+name a subset `time.gt.50` but then define it using the condition `time > 100`,
+nor would we want to assign a `time_subtract` other than 50 to a subset with
+that name.   In the future, we may automatically create the time condition
+based on `time_subract`, but names will still need to be checked by the
+analyst.   If `time_subtract` is not provided in the file, or is missing
+in any given row, if it assumed to be 0.
+
+If the `set_definition` file is missing, then a single subset, called "all",
+with condition equal to `TRUE` (which takes all points) will be fit 
+for each treatment.   If the `set_definition` file is present, it should
+include the "all" subset, as in the first two rows of the example above.
+
+The example also demonstrates that we need not define the same subsets,
+or even the same number of subsets, for each treatment.  Here, although
+both A and B have values for "biomarker" in the files, we choose to 
+define a subset based on "biomarker" only for treatment B.  
+All the fits for all the defined subsets will be fit at the same time,
+and stored in a data frame (actually a tibble, for those interested
+in the technical details) for future use.
+
+## Fitting survival models
 
 The function `partitioned_survival_from_tabular` fits the survival models 
 to data.
@@ -69,26 +141,33 @@ to specify partitioned survival models also - in this case, the survival informa
 file just discussed.  If desired, the rest of the fields can be
 added later.
 
-The distributions currently used for survival fits are exponential, Weibull, lognormal, gamma, Gompertz, and generalized gamma. If fitting fails for some distribution, `heemod` will note the error and continue, so results will be available for the other distributional assumptions.
+The distributions currently used for survival fits are exponential, Weibull, 
+lognormal, log-logistic, gamma, Gompertz, and generalized gamma. 
+If fitting fails for some distribution, `heemod` will note the error and 
+continue, so results will be available for the other distributional assumptions.
+(Here we set `save_fits = FALSE` because we've already saved the fits in
+the package.)
 
 ```{r make-fits}
 temp1 <- survival_fits_from_tabular(base_dir, spec_file, 
-                                    save_fits = TRUE)[[1]]
+                                    save_fits = FALSE)[[1]]
 ```
 
+`heemod` does not automatically choose a distribution to use in the survival model - the modeler must choose the most appropriate distribution for each set of survival data.
 Fit quality can be examined using the negative log-likelihood, the Aikake
-and Bayes information critera, and various kinds of graphs. 
-(`sapply_matrix` returns a matrix of the results of `sapply` with the same
-dimension and dimension names as the original matrix.)
+and Bayes information critera, and various kinds of graphs. Below we remove the `fit`, `set_def`, and `time_subract` columns so the fit metrics are visible.   Note that fit metric values are not
+generally comparable across different subsets, which are fit on different subsets of data.
+They are more appropriate for comparing across different models fit to the same data.
 
 ```{r}
 names(temp1)
 ```
 
 ```{r}
-extract_surv_fit_metrics(temp1, c("AIC", "BIC"))
+extract_surv_fit_metrics(temp1, c("AIC", "BIC" ,"m2LL"))[, -c(5,6, 7)]
 ```
-`heemod` does not automatically choose a distribution to use in the survival model - the modeler must choose the most appropriate distribution for each set of survival data.
+
+## Specifying which fits to use in a given analysis
 
 When a modeler has decided to run the economic analysis using a particular set of fits, the specification must be included in a file.  The name of the file goes in the
 specification file, in a row with `data` element `use_fits`.
@@ -116,9 +195,11 @@ then the analysis will use an exponential survival model for overall survival fo
 
 We can also use `fit('km')` to get the Kaplan-Meier curve for a given fit.
 
+## Running the analysis using already-fit survival models
+
 The same specification file that was used for `survival_fits_from_tabular` can be used for `run_model_tabular`. `run_model_tabular` uses the information in the specification file to pick up the desired fits from those created earlier. No survival fitting happens when running  run_model_tabular, only selection.  The selection is governed by the `use_fits` element of the reference file.
 
-In this example, we’ve used a different choice. Here is the use_fits element of this file:
+Here is the use_fits element of this file:
 ```{r}
 ref <- heemod:::read_file(file.path(base_dir, spec_file))
 use_fits_file <- file.path(base_dir, ref[ref$data == "use_fits", "file"])
@@ -147,6 +228,26 @@ mixed_use_fits
 ```
 
 ```{r fig.width = 8, fig.height = 5, run_mixed_dist}
+surv_example_mixed <- run_model_tabular(base_dir, spec_file,
+                                  run_psa = FALSE, run_demo = FALSE,
+                                  save = FALSE, overwrite= FALSE)
+plot(surv_example_mixed$model_runs)
+```
+We can also specify more complex models, using all of the modifications to
+survival fits that are described in [the survival vignette](j-survival.html).
+In particular, we can use the Kaplan-Meier curve until a particular time
+and then switch over to a fit, as shown below.
+
+```{r}
+spec_file <- "example_oncSpecs_nomatrix_join.csv"
+ref <- heemod:::read_file(file.path(base_dir, spec_file))
+join_use_fits_file <- file.path(base_dir, ref[ref$data == "use_fits", "file"])
+join_use_fits <- heemod:::read_file(join_use_fits_file)
+join_use_fits
+```
+In this case, we see the less regular changes of the Kaplan-Meier curve until
+time 50, followed by the more regular changes of the fit model.
+```{r fig.width = 8, fig.height = 5, run_joined_dist}
 surv_example_mixed <- run_model_tabular(base_dir, spec_file,
                                   run_psa = FALSE, run_demo = FALSE,
                                   save = FALSE, overwrite= FALSE)

@@ -162,7 +162,7 @@ survival_from_data <-
                 ## (if not, will return a data frame with no rows)
                 set_definitions <- 
                   get_set_definitions(file.path(location, 
-                                                survival_specs$data_directory[this_row]))
+                                                survival_specs$fit_directory[this_row]))
                 if(!("time_subtract" %in% names(set_definitions)))
                   set_definitions <- dplyr::mutate(set_definitions, time_subtract = 0)
                 
@@ -570,6 +570,8 @@ extract_surv_fit_metrics <-
     ## metric <- match.arg(metric)
     fit_tib <- 
       fit_tib %>% dplyr::filter(dist != "km")
+    fit_tib$fit <-
+      lapply(fit_tib$fit, extract_fits)
      extracted <- 
        fit_tib %>%
        dplyr::rowwise() %>%

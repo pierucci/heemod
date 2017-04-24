@@ -373,7 +373,7 @@ construct_part_surv_tib <-
                                                    "dist" = "dist",
                                                    ".subset" = "set_name")
       )
-    if(any(problem <- sapply(should_be_fits_3$fit, is.na))){
+    if(any(problem <- is.na(should_be_fits_3$fit))){
       print(surv_def[problem,])
       stop("fit not found for lines ",
            paste(which(problem), collapse = ", "),
@@ -395,12 +395,12 @@ construct_part_surv_tib <-
     ## and now we can rejoin them and continue
     surv_def_4 <- 
       rbind(should_be_fits_3, direct_dist_def_3) %>% 
-      dplyr::group_by(.strategy, .type, .subset) %>%
+      dplyr::group_by(.strategy, .type) %>%
       dplyr::do(fit = join_fits_across_time(.)) %>%
       dplyr::ungroup()
     surv_def_5 <- 
       surv_def_4 %>%
-      dplyr::group_by(.strategy, .subset) %>%
+      dplyr::group_by(.strategy) %>%
       dplyr::rename(type = .type) %>%
       dplyr::do(part_surv = make_part_surv_from_small_tibble(.,
                                                              state_names = state_names))
@@ -408,6 +408,7 @@ construct_part_surv_tib <-
   }
 
 join_fits_across_time <- function(this_part){
+if(nrow(this_part) == 1) return(this_part$fit[[1]])
   if ("until" %in% names(this_part)) {
     this_part <-
       dplyr::arrange(this_part, until)
@@ -417,16 +418,12 @@ join_fits_across_time <- function(this_part){
     
   }  
   else{
-    if (nrow(this_part) > 1) {
       print(this_part)
       stop(
         "can't have more than one distribution for a single ",
         "strategy and type unless 'until' is also specified"
       )
     }
-    this_part$fit[[1]]
-  }
-  
 }
 
 make_part_surv_from_small_tibble <- function(st, state_names){
