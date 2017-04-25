@@ -92,20 +92,23 @@ utility_by_time_from_death.cycle_counts <-
     if(!all(c("until_lag", "util") %in% names(util_before_death)))
       stop("util_before_death must have columns until_lag and util")
     distinct_num_subjects <- 
-      dplyr::group_by(counts, markov_cycle) %>%
-      dplyr::summarize(., num_subjects = sum(count)) %>%
-      dplyr::summarize(., unique_subjects = dplyr::n_distinct(round(num_subjects, 6)))
+      counts %>% 
+        dplyr::group_by_( ~ markov_cycle) %>%
+          dplyr::summarize_(., num_subjects = ~sum(count)) %>%
+          dplyr::summarize_(., unique_subjects = ~dplyr::n_distinct(round(num_subjects, 6)))
     stopifnot(distinct_num_subjects ==  1)
     if(any(util_before_death[, "until_lag"] <= 0))
       stop("problem with util_before_death: can't specify values for Markov cycles <= 0")
     if(max(util_before_death[, "until_lag"]) < 1)
       stop("problem with util_before_death:  must specify utility for some cycle > 1")
     
-    death_counts <- subset(counts, state_names == death_state)$count
+    death_counts <- 
+      dplyr::filter_(counts, ~state_names == death_state)$count
     alive_counts_by_cycle <- 
-      dplyr::filter(counts, state_names != death_state) %>%
-      dplyr::group_by(., markov_cycle) %>%
-      dplyr::summarize(., alive_counts = sum(count))
+      counts %>% 
+        dplyr::filter_( ~ state_names != death_state) %>%
+          dplyr::group_by_(~ markov_cycle) %>%
+            dplyr::summarize_(alive_counts = ~ sum(count))
     
     alive_counts <- alive_counts_by_cycle$alive_counts
     new_deaths <- c(0, diff(death_counts))
@@ -160,7 +163,7 @@ utility_by_time_from_death.eval_strategy <-
 #' @export
 utility_by_time_from_death.run_model <- 
   function(x, m, ...){
-    temp <- dplyr::filter(get_counts(x), .strategy_names == m)
+    temp <- dplyr::filter_(get_counts(x), ~ .strategy_names == m)
     utility_by_time_from_death.cycle_counts(temp, ...)
   }
 

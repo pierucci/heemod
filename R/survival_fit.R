@@ -156,7 +156,7 @@ survival_from_data <-
                   survival_specs[this_row, "treatment"]
                 this_data <- 
                  read_file(data_files[this_row]) %>%
-                  dplyr::filter(treatment == this_treatment)
+                  dplyr::filter_(~ treatment == this_treatment)
 
                 ## get set definitions, if there are any
                 ## (if not, will return a data frame with no rows)
@@ -164,11 +164,12 @@ survival_from_data <-
                   get_set_definitions(file.path(location, 
                                                 survival_specs$fit_directory[this_row]))
                 if(!("time_subtract" %in% names(set_definitions)))
-                  set_definitions <- dplyr::mutate(set_definitions, time_subtract = 0)
+                  set_definitions <- dplyr::mutate_(set_definitions, time_subtract = 0)
                 
                 set_definitions <- 
                   set_definitions %>% 
-                    dplyr::mutate(time_subtract = ifelse(is.na(time_subtract), 0, time_subtract))
+                    dplyr::mutate_(time_subtract = ~ifelse(is.na(time_subtract), 
+                                                            0, time_subtract))
                 neg_offset <- which(set_definitions$time_subtract < 0)
                 if(length(neg_offset))
                   stop("bad offset in set_definitions line(s) ",
@@ -178,8 +179,8 @@ survival_from_data <-
                 class(this_data) <- c("survdata", class(this_data))
                
                these_sets <- 
-                 dplyr::filter(set_definitions, 
-                               treatment == this_treatment)
+                 dplyr::filter_(set_definitions, 
+                                ~ treatment == this_treatment)
                if(nrow(these_sets) == 0) 
                  these_sets <- data.frame(set_name = "all",
                                           condition = "TRUE",
@@ -221,8 +222,8 @@ survival_from_data <-
                    new_fits <- 
                      these_surv_fits %>%
                         dplyr::rowwise() %>%
-                          dplyr::do(fit = apply_shift(dist = .$fit, 
-                                                      shift = .$time_subtract)) %>%
+                          dplyr::do_(fit = ~apply_shift(dist = .$fit, 
+                                                        shift = .$time_subtract)) %>%
                             dplyr::ungroup()
                           
                    
@@ -307,7 +308,7 @@ check_survival_specs <-
     ## our checks will make sure that we have the right entries,
     ##   and that they are in the right order
     surv_specs <- 
-      surv_specs %>% dplyr::arrange(treatment, desc(type))
+      surv_specs %>% dplyr::arrange_(~ treatment, ~ desc(type))
     
     os_ind <- grep("os", surv_specs$type, ignore.case = TRUE)
     pfs_ind <- grep("pfs", surv_specs$type, ignore.case = TRUE)
@@ -569,12 +570,12 @@ extract_surv_fit_metrics <-
   function(fit_tib, metric = c("AIC", "BIC","m2LL")){
     ## metric <- match.arg(metric)
     fit_tib <- 
-      fit_tib %>% dplyr::filter(dist != "km")
+      fit_tib %>% dplyr::filter_(~ dist != "km")
     fit_tib$fit <-
       lapply(fit_tib$fit, extract_fits)
      extracted <- 
        fit_tib %>%
        dplyr::rowwise() %>%
-       dplyr::do(data.frame(.$fit[metric]))
+       dplyr::do_(~data.frame(.$fit[metric]))
      tibble::as_tibble(cbind.data.frame(fit_tib, extracted))
   }

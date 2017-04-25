@@ -44,6 +44,21 @@ prepare_fit_info <- function(fit_list){
   list(par.est = par.est, AIC = AIC, BIC = BIC, vcov = vcov)
 }
 
+#' Write fit information to an Excel workbook.
+#'
+#' @param fit_tibble a tibble of fits 
+#' @param wb the workbook object, or a character string with its file path
+#' @param skip_at_start how many lines to skip at the top of each page
+#' @param skip_between how many lines to skip between output sections
+#' @param alignment either "horizontal" or "vertical"
+#' @details Called for the side effect of creating Excel output.
+#' 
+#' `alignment = 'vertical'` means sections are written one after
+#'   the other down the page.   If `alignment = 'horizontal'`, then
+#'   some parts will be written next to each other.
+#' @return data suitable for plotting, invisibly.
+#' @export
+#'
 write_fits_to_excel_from_tibble <- 
   function(fit_tibble, wb, skip_at_start = 3, skip_between = 1,
            alignment = c("horizontal", "vertical")){
@@ -61,11 +76,11 @@ write_fits_to_excel_from_tibble <-
     XLConnect::createSheet(wb, "OPCPem")
 
     fit_tibble_nest <- 
-      dplyr::filter(fit_tibble, dist != "km")
+      dplyr::filter_(fit_tibble, ~ dist != "km")
     fit_tibble_nest$fit <- lapply(fit_tibble_nest$fit, extract_fits)
     fit_tibble_nest <- 
       fit_tibble_nest %>%
-        dplyr::group_by(type, treatment, set_name) %>%
+        dplyr::group_by_(~ type, ~ treatment, ~ set_name) %>%
           tidyr::nest()
     
     
@@ -90,13 +105,13 @@ write_fits_to_excel_from_tibble <-
   
     fit_tibble_nest <-
       fit_tibble_nest %>%
-        dplyr::group_by(type, treatment, set_name) %>%
-          dplyr::do(send_info_to_workbook(., wb = wb, 
+        dplyr::group_by_(~ type, ~ treatment, ~ set_name) %>%
+          dplyr::do_(~send_info_to_workbook(., wb = wb, 
                                           skip_between = skip_between,
                                           alignment = alignment))
     
     plot_data <- prepare_fit_list_plot_data_from_tibble(fit_tibble)
-    plot_data_km <- plot_data %>% dplyr::filter(dist == "km")
+    plot_data_km <- plot_data %>% dplyr::filter_(~ dist == "km")
     
     XLConnect::createSheet(wb, "km")
     XLConnect::writeWorksheet(wb, 
@@ -145,7 +160,7 @@ send_info_to_workbook <-
                            AIC = fit_info$AIC,
                            BIC = fit_info$BIC)
   names(stat_output)[1:3] <- ""
-    writeWorksheet(wb, stat_output,
+    XLConnect::writeWorksheet(wb, stat_output,
                  sheet = "OPCPem",
                   startRow = start_row, startCol = 1, header=TRUE)
  #   new_start_row <- start_row + length(dist_names) + skip_between + 1
@@ -158,7 +173,7 @@ send_info_to_workbook <-
       rep(names(fit_info$par.est),
           sapply(fit_info$par.est, length)),
       unlist(fit_info$par.est))
-    writeWorksheet(wb, write_pars,
+    XLConnect::writeWorksheet(wb, write_pars,
                    sheet = "OPCPem",
                    startRow = start_row_2, 
                    startCol = start_col_2, 
@@ -173,7 +188,7 @@ send_info_to_workbook <-
                             write_vcov)
     write_vcov[, 4:5] <- write_vcov[, 5:4]
     }
-  writeWorksheet(wb, write_vcov,
+  XLConnect::writeWorksheet(wb, write_vcov,
                  sheet = "OPCPem",
                  startRow = start_row_3,
                  startCol = start_col_3, header = FALSE)
@@ -181,17 +196,24 @@ send_info_to_workbook <-
 }
 
 
+#' Prepare fit data for plotting
+#'
+#' @param fit_tib a tibble containing fits
+#'
+#' @return a tibble with the necessary data
+#' @export
+#'
 prepare_fit_list_plot_data_from_tibble <-
   function(fit_tib){
     survival_summaries <- 
       fit_tib %>% 
-        dplyr::group_by(type, treatment, set_name, dist) %>%
+        dplyr::group_by_(~ type, ~ treatment, ~ set_name, ~ dist) %>%
           dplyr::do(summary_helper(.$fit[[1]], type = "survival", tidy = TRUE)) %>%
             dplyr::ungroup()
     survival_summaries$fn <- "survival"
     cumhaz_summaries <- 
       fit_tib %>% 
-      dplyr::group_by(type, treatment, set_name, dist) %>%
+      dplyr::group_by_(~ type, ~ treatment, ~ set_name, ~ dist) %>%
       dplyr::do(summary_helper(.$fit[[1]], type = "cumhaz", tidy = TRUE)) %>%
       dplyr::ungroup()
     cumhaz_summaries$fn <- "cumulative hazard"
@@ -221,6 +243,24 @@ summary_helper <- function(fit, ...){
 
 
 
+#' Plot fit data
+#'
+#' @param data_to_plot a data frame from 
+#'   [prepare_fit_list_plot_data_from_tibble()]
+#' @param type `survival` or `cumulative hazard`
+#' @param logy should the `y` axis be on the logarithmic scale?
+#' @param scale_time times are multiplied by this.  So if your
+#'   fit was done on a time scale of days, and you want to plot
+#'   by weeks, set this to 1/7.
+#' @param time_label the `x` axis label
+#' @param max_scaled_time maximum time, after scaling by `scale_time`
+#' @param title for the plot
+#' @param x_axis_gap distance between breaks on the x axis
+#'
+#' @return a `ggplot2` plot object
+#' @export
+#'
+#' @examples
 plot_fit_data <- function(data_to_plot, 
                           type = c("survival", "cumulative hazard"),
                           logy = FALSE,
@@ -233,12 +273,12 @@ plot_fit_data <- function(data_to_plot,
   data_to_plot <- dplyr::filter_(data_to_plot, 
                                  lazyeval::interp(~fn == var, var = type))
   data_to_plot$time <- data_to_plot$time * scale_time
-  data_to_plot <- dplyr::filter(data_to_plot, time <= max_scaled_time)
+  data_to_plot <- dplyr::filter_(data_to_plot, ~ time <= max_scaled_time)
   res <- 
     ggplot2::ggplot(data_to_plot,
                     ggplot2::aes(x = time, y = est, color = dist)) + 
-      ggplot2::geom_line(data = dplyr::filter(data_to_plot, dist != "km")) +
-      ggplot2::geom_step(data = dplyr::filter(data_to_plot, dist == "km"), 
+      ggplot2::geom_line(data = dplyr::filter_(data_to_plot, ~ dist != "km")) +
+      ggplot2::geom_step(data = dplyr::filter_(data_to_plot, ~ dist == "km"), 
                          col = "black", lwd = 1.5) 
   if(logy) res <- res + ggplot2::scale_y_log10()
   if(!is.infinite(max_scaled_time) & !missing(x_axis_gap)){
