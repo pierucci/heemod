@@ -16,16 +16,29 @@
 #' 
 #' dist1 <- define_survival(distribution = "exp", rate = .5)
 #' dist2 <- define_survival(distribution = "gompertz", rate = .5, shape = 1)
-#' proj_dist <- project(dist1, dist2, at=20)
-project <- function(..., at) {
+#' join_dist <- join(dist1, dist2, at=20)
+join <- function(..., at) {
   dots <- list(...)
   
-  project_(dots, at)
+  join_(dots, at)
+}
+#' @export
+#' @rdname join
+project <- function(...) {
+  warning("'project() is deprecated, use 'join()' instead.")
+  join(...)
 }
 
 #' @export
-#' @rdname project
-project_ <- function(dots, at) {
+#' @rdname join
+project_ <- function(...) {
+  warning("'project_() is deprecated, use 'join_()' instead.")
+  join_(...)
+}
+
+#' @export
+#' @rdname join
+join_ <- function(dots, at) {
   
   stopifnot(
     all(at > 0),
@@ -146,11 +159,17 @@ apply_hr <- function(dist, hr, log_hr = FALSE) {
     is.finite(hr),
     log_hr | hr > 0
   )
-  
+  if(log_hr) hr <- exp(hr)
+  if(hr == 1) return(dist)
+  if(inherits(dist, "surv_ph")){
+    dist$hr <- dist$hr * hr
+    if(dist$hr == 1) return(dist$dist)
+    return(dist)
+  }
   structure(
     list(
       dist = dist,
-      hr = ifelse(log_hr, exp(hr), hr)
+      hr = hr
     ),
     class = "surv_ph"
   )
@@ -180,11 +199,18 @@ apply_af <- function(dist, af, log_af = FALSE) {
     is.finite(af),
     log_af | af > 0
   )
+  if(log_af) af <- exp(af)
+  if(af == 1) return(dist)
+  if(inherits(dist, "surv_aft")){
+    dist$af <- dist$af * af
+    if(dist$af == 1) return(dist$dist)
+    return(dist)
+  }
   
   structure(
     list(
       dist = dist,
-      af = ifelse(log_af, exp(af), af)
+      af = af
     ),
     class = "surv_aft"
   )
@@ -214,15 +240,65 @@ apply_or = function(dist, or, log_or = FALSE) {
     is.finite(or),
     log_or | or > 0
   )
-  
+  if(log_or) or <- exp(or)
+  if(or == 1) return(dist)
+  if(inherits(dist, "surv_po")){
+    dist$or <- dist$or * or
+    if(dist$or == 1) return(dist$dist)
+    return(dist)
+  }
+    
   structure(
     list(
       dist = dist,
-      or = ifelse(log_or, exp(or), or)
+      or = or
     ),
     class = "surv_po"
   )
 }
+
+#' Apply a time shift
+#' 
+#' Shift a survival distribution in time.
+#' 
+#' @param dist A survival distribution.
+#' @param shift A time shift to be applied.
+#'   
+#' @return A `surv_shift` object.
+#' 
+#' @details A positive shift moves the fit backwards in time.   That is,
+#'   a shift of 4 will cause time 5 to be evaluated as time 1, and so on.
+#'   If `shift == 0`, `dist` is returned unchanged.
+#' @export
+#' 
+#' @examples
+#' 
+#' dist1 <- define_survival(distribution = "gamma", rate = 0.25, shape = 3)
+#' shift_dist <- apply_shift(dist1, 4)
+#' compute_surv(dist1, 1:10)
+#' compute_surv(shift_dist, 1:10)
+apply_shift = function(dist, shift) {
+  
+  stopifnot(
+    length(shift) == 1,
+    is.finite(shift)
+  )
+  if(shift == 0) return(dist)
+  if(inherits(dist, "surv_shift")){
+      dist$shift <- dist$shift + shift
+      if(dist$shift == 0) return(dist$dist)
+      else return(dist)
+  }  
+  structure(
+      list(
+        dist = dist,
+        shift = shift
+      ),
+      class = "surv_shift"
+    )
+}
+
+
 
 #' Add Hazards
 #' 
@@ -367,4 +443,25 @@ plot.surv_model <- plot.surv_obj
 plot.surv_po <- plot.surv_obj
 plot.surv_aft <- plot.surv_obj
 plot.surv_pooled <- plot.surv_obj
+plot.surv_shift <- plot.surv_obj
 
+
+#' Summarize surv_shift objects
+#'
+#' @param object a `surv_shift` object 
+#' @param ... other arguments
+#'
+#' @return
+#' @export
+#'
+summary.surv_shift <- 
+  function(object, ...){
+    res <- summary(object$dist, ...)
+    if(inherits(res, "summary.survfit")){
+      res <- data.frame(res[c("time", "surv", "upper", "lower")])
+      names(res) <- c("time", "est", "lcl", "ucl")
+    }
+    if(length(res) == 1) res <- res[[1]]
+    res$time <- res$time + object$shift
+    res
+    }

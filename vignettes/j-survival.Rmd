@@ -100,12 +100,12 @@ km_medium_af <- apply_af(km_medium, af = 1.2)
 
 In addition, distributions can be combined using a variety of operations:
 
-  * Use one (or more) survival distributions to project from another: `project()`.
+  * Join survival distributions together: `join()`.
   * Pool two (or more) survival distributions: `pool()`.
   * Combine two (or more) survival distributions as independent risks: `add_hazards()`.
 
 ```{r}
-km_poor_proj <- project(
+km_poor_join <- join(
   km_poor,
   fitcov_poor,
   at = 365
@@ -131,7 +131,7 @@ All these operations can be chained with the `%>%` piping operator.
 fit_cov %>% 
   set_covariates(group = "Good") %>% 
   apply_hr(hr = 2) %>% 
-  project(
+  join(
     fitcov_poor,
     at = 3
   ) %>%
@@ -154,7 +154,7 @@ param <- define_parameters(
     time = model_time # can also be state_time
   ),
   p2 = km_medium %>%
-    project(fitcov_medium, at = 730) %>%
+    join(fitcov_medium, at = 730) %>%
     compute_surv(
       time = model_time,
       cycle_length = 365  # time is in days in km_medium, in years in model_time
@@ -202,7 +202,7 @@ A partitioned survival model can also be computed:
 ps <- define_part_surv(
   pfs = surv_dist_1,
   os  = km_1 %>%
-    project(fit_w, at = 730),
+    join(fit_w, at = 730),
   cycle_length = c(1, 365) # 1 for pfs, 365 for os
 )
 

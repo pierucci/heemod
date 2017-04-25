@@ -1,0 +1,9 @@
+.strategy,.type,dist,.subset,until
+A,pfs,fit('km'),all,50
+A,pfs,fit('exp'),all,
+A,os,fit('km'),all,50
+A,os,fit('exp'),all,
+B,pfs,fit('km'),all,50
+B,pfs,fit('exp'),GT50,
+B,os,fit('km'),all,50
+B,os,fit('exp'),GT50,

@@ -20,15 +20,15 @@ surv_dist4 <- define_survival(
 
 suppressMessages(
   ps <- define_part_surv(
-    pfs = project(surv_dist3, surv_dist4, at=365),
-    os = project(surv_dist1, surv_dist2, at=365),
+    pfs = join(surv_dist3, surv_dist4, at=365),
+    os = join(surv_dist1, surv_dist2, at=365),
     cycle_length = c(365, 365)
   )
 )
 suppressMessages(
   ps1 <- define_part_surv(
-    pfs = project(surv_dist3, surv_dist4, at=365) %>% apply_hr(0.8),
-    os = project(surv_dist1, surv_dist2, at=365) %>% apply_hr(0.8),
+    pfs = join(surv_dist3, surv_dist4, at=365) %>% apply_hr(0.8),
+    os = join(surv_dist1, surv_dist2, at=365) %>% apply_hr(0.8),
     cycle_length = c(365, 365)
   )
 )
@@ -52,14 +52,16 @@ stratPS1 <- define_strategy(
   transition = ps1,
   A = sA, B = sB, C = sC
 )
-resPS <- run_model(
+
+suppressMessages(
+  resPS <- run_model(
   Strat1 = stratPS,
   Strat2 = stratPS1,
   cycles = 10,
   cost = cost,
   effect = ut,
   method = "end"
-)
+))
 
 test_that(
   "part surv works", {
@@ -80,7 +82,7 @@ test_that(
       ps <- define_part_surv(
         pfs = surv_dist_1,
         os = km_medium %>%
-          project(fitcov_medium, 
+          join(fitcov_medium, 
                   at = 730),
         cycle_length = c(1, 365)  # 1 for pfs, 365 for os
       )})
@@ -98,7 +100,7 @@ test_that(
       ),
       p2 = compute_surv(
         km_medium %>%
-          project(fitcov_medium, 
+          join(fitcov_medium, 
                   at = 730),
         time = model_time, cycle_length = 365  # time is in days in km_medium, in years in model_time
       ))
@@ -152,8 +154,8 @@ test_that(
 
 suppressMessages({
   ps <- define_part_surv(
-    pfs = project(surv_dist3),
-    os = project(surv_dist1),
+    pfs = join(surv_dist3),
+    os = join(surv_dist1),
     state_names = c("ProgressionFree", "Progressive", "Death"),
     cycle_length = c(365, 365)
   )
@@ -162,8 +164,8 @@ test_that(
   "errors with inappropriate state names", {
     expect_error(
       define_part_surv(
-        pfs = project(surv_dist3),
-        os = project(surv_dist1),
+        pfs = join(surv_dist3),
+        os = join(surv_dist1),
         state_names = c("NoDisease", "Progressive", "Death"),
         cycle_length = c(365, 365)
       ),
@@ -172,8 +174,8 @@ test_that(
     )
     expect_error(
       define_part_surv(
-        pfs = project(surv_dist3),
-        os = project(surv_dist1),
+        pfs = join(surv_dist3),
+        os = join(surv_dist1),
         state_names = c("ProgressionFree", "Progressive", "Kaput"),
         cycle_length = c(365, 365)
       ),
@@ -181,8 +183,8 @@ test_that(
     )
     expect_error(
       define_part_surv(
-        pfs = project(surv_dist3),
-        os = project(surv_dist1),
+        pfs = join(surv_dist3),
+        os = join(surv_dist1),
         state_names = c("ProgressionFree", "Progressive",
                         "uh-oh", "Death"),
         cycle_length = c(365, 365)
@@ -192,8 +194,8 @@ test_that(
     )
     expect_error(
       define_part_surv(
-        pfs = project(surv_dist3),
-        os = project(surv_dist1),
+        pfs = join(surv_dist3),
+        os = join(surv_dist1),
         state_names = c(
           "ProgressionFree",
           "Progressivebutfree",
@@ -208,37 +210,39 @@ test_that(
   })
 
 test_that(
-  "construct_part_surv_tib works",
-  {
+  "construct_part_surv_tib works", {
     
     surv_def <- read_file(system.file("tabular/surv", 
-                                                "use_fits.csv", 
-                                                package = "heemod"))
+                                      "use_fits.csv", 
+                                      package = "heemod"))
     surv_def$.subset <- "all"
     fake_fit_tib <- read_file(system.file("tabular/surv",
-                                                   "fake_fit_tib.csv", 
-                                                   package = "heemod"))
+                                          "fake_fit_tib.csv", 
+                                          package = "heemod"))
     state_names <- c("ProgressionFree", "ProgressiveDisease", 
                      "Terminal", "Death")
     ## basically just make sure it runs, since we're using fake fits
     zz <- construct_part_surv_tib(surv_def, fake_fit_tib, state_names)
-    expect_identical(names(zz), c(".strategy", ".subset", "part_surv"))
-    expect_identical(class(zz[[1, 3]]), c("part_surv"))
+    expect_identical(names(zz), c(".strategy", "part_surv"))
+    expect_identical(class(zz[[1, 2]]), c("part_surv"))
     surv_def_join <- read_file(system.file("tabular/surv", 
-                                                    "use_fits_with_join.csv", 
-                                                    package = "heemod"))
+                                           "use_fits_join.csv", 
+                                           package = "heemod"))
+    surv_def_join <- dplyr::filter(surv_def_join, .subset == "all")
     zz <- construct_part_surv_tib(surv_def_join, fake_fit_tib, state_names)
     surv_def_join <- surv_def_join[, 1:3]
-    expect_error(construct_part_surv_tib(surv_def_join, 
-                                         fake_fit_tib, 
-                                         state_names),
-                 "unless 'until' is also specified", fixed = TRUE)
+    expect_error(capture.output(construct_part_surv_tib(
+      surv_def_join, 
+      fake_fit_tib, 
+      state_names)),
+      "unless 'until' is also specified", fixed = TRUE)
     bad_surv_def <- surv_def_join
     bad_surv_def[[1, "dist"]] <- "fit('bad')"
-    expect_error(construct_part_surv_tib(bad_surv_def, 
-                                                  fake_fit_tib, 
-                                                  state_names),
-                 "fit not found")
+    expect_error(capture.output(construct_part_surv_tib(
+      bad_surv_def, 
+      fake_fit_tib, 
+      state_names)),
+      "fit not found")
     names(surv_def)[1] <- "strategy"
     expect_error(construct_part_surv_tib(surv_def, fake_fit_tib, state_names),
                  "missing required names in 'surv_def':", fixed = TRUE)
@@ -248,4 +252,3 @@ test_that(
                  "missing required names in 'fit_tibble':", fixed = TRUE)
   }
 )
-

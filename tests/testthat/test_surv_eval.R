@@ -66,8 +66,8 @@ test_that(
   "Applying treatment effects",
   {
     
-    # Testing apply_hr, apply_af, apply_or against flexsurvreg output to see
-    # that it is consitent.
+    # Testing apply_hr, apply_af, apply_or and apply_shift
+    # against flexsurvreg output to see that it is consistent.
     
     surv1_medium_surv = fs1 %>%
       set_covariates(group="Medium") %>%
@@ -87,6 +87,10 @@ test_that(
       apply_af(fs1$coefficients[4], log_af=T) %>%
       compute_surv(time=seq_len(10),cycle_length=200, type="surv")
     
+    surv1_poor_shift_surv = fs1 %>%
+      set_covariates(group = "Poor") %>%
+      apply_shift(shift = 800) %>%
+      compute_surv(time = seq_len(10), cycle_length = 200, type = "surv")
     
     surv1_medium_prob = fs1 %>%
       set_covariates(group="Medium") %>%
@@ -188,17 +192,117 @@ test_that(
     expect_equal(surv1_medium_prob,surv1_medium_aft_prob)
     expect_equal(surv1_poor_prob, surv1_poor_aft_prob)
     
+    expect_identical(surv1_poor_surv, 
+                     apply_af(apply_af(surv1_poor_surv, 2),
+                              1/2)
+    )
+    expect_identical(surv1_poor_surv, 
+                     apply_af(apply_af(surv1_poor_surv, 1/2),
+                              2)
+    )
+    expect_identical(apply_af(surv1_poor_surv, 2),
+                     apply_af(apply_af(surv1_poor_surv, 4),
+                              1/2)
+    )
+    
     # Test Proportional Hazards
     expect_equal(surv2_medium_surv,surv2_medium_hr_surv)
     expect_equal(surv2_poor_surv, surv2_poor_hr_surv)
     expect_equal(surv2_medium_prob,surv2_medium_hr_prob)
     expect_equal(surv2_poor_prob, surv2_poor_hr_prob)
     
+    expect_identical(fs1, 
+                     apply_hr(apply_hr(fs1, 2),
+                              1/2)
+    )
+    expect_identical(fs1, 
+                     apply_hr(apply_hr(fs1, 1/2),
+                              2)
+    )
+    expect_identical(apply_hr(fs1, 2),
+                     apply_hr(apply_hr(fs1, 4),
+                              1/2)
+    )
+    
     # Test Proportional Odds
     expect_equal(surv3_medium_surv,surv3_medium_or_surv)
     expect_equal(surv3_poor_surv, surv3_poor_or_surv)
     expect_equal(surv3_medium_prob,surv3_medium_or_prob)
     expect_equal(surv3_poor_prob, surv3_poor_or_prob)
+    
+    expect_identical(fs1, 
+                     apply_or(apply_or(fs1, 2),
+                                 1/2)
+    )
+    expect_identical(fs1, 
+                     apply_or(apply_or(fs1, 1/2),
+                                 2)
+    )
+    expect_identical(apply_or(fs1, 2),
+                     apply_or(apply_or(fs1, 4),
+                                 1/2)
+    )
+    
+    
+    # Test shifts
+    expect_equal(surv1_poor_surv[1:6], surv1_poor_shift_surv[5:10])
+    expect_equal(length(surv1_poor_surv), length(surv1_poor_shift_surv))
+    expect_identical(surv1_poor_surv, 
+                     apply_shift(apply_shift(surv1_poor_surv, 5),
+                                 -5)
+    )
+    expect_identical(fs1, 
+                     apply_shift(apply_shift(fs1, -3),
+                                 3)
+    )
+    expect_identical(apply_shift(fs1, 2),
+                     apply_shift(apply_shift(fs1, 5),
+                                 -3)
+    )
+    expect_identical(surv1_poor_shift_surv[1:3], 
+                     rep(1, 3))
+    
+    ## Test combinations
+    fsm = fs5 %>% set_covariates(group = "Medium")
+    fsm_changes = fsm %>%
+      apply_shift(5) %>% apply_hr(0.5) %>% apply_shift(-5) %>% apply_hr(2) 
+    
+    fsm_survs <- fsm %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    fsm_changes_survs = fsm_changes %>% 
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    expect_equal(fsm_survs, fsm_changes_survs)
+   
+    fsm_changes = fsm %>% 
+      apply_shift(5) %>% apply_hr(0.5) %>% apply_af(0.5) %>% 
+        apply_af(2) %>% apply_shift(-5) %>% apply_hr(2)    
+    fsm_changes_survs = fsm_changes %>% 
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    expect_equal(fsm_survs, fsm_changes_survs)
+    
+    fsm_changes = fsm %>%
+      apply_shift(5) %>% apply_or(0.5) %>% apply_shift(-5) %>% apply_or(2) 
+    fsm_changes_survs = fsm_changes %>% 
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    expect_equal(fsm_survs, fsm_changes_survs)
+    
+    ## misaligned shifts
+    surv1_poor_shift_surv_misaligned1 = fs1 %>%
+      set_covariates(group = "Poor") %>%
+      apply_shift(shift = 100) %>%
+      compute_surv(time = seq_len(10), 
+                   cycle_length = 300, type = "surv")
+    
+    surv1_poor_shift_surv_misaligned2 = fs1 %>%
+      set_covariates(group = "Poor") %>%
+      compute_surv(time = seq_len(30), 
+                   cycle_length = 100, type = "surv") %>%
+      .[seq_len(10)*3 - 1]
+    
+    expect_equal(surv1_poor_shift_surv_misaligned1, 
+                 surv1_poor_shift_surv_misaligned2)
+    
+    
   }
 )
 
@@ -333,7 +437,7 @@ test_that(
       compute_surv(time=seq_len(10), cycle_length=200)
     exp_surv2 = fs4 %>%
       set_covariates(group="Poor") %>%
-      project(fs4 %>% set_covariates(group="Poor"), at = 543.343) %>%
+      join(fs4 %>% set_covariates(group="Poor"), at = 543.343) %>%
       compute_surv(time=seq_len(10), cycle_length=200)
     
     expect_equal(exp_surv, exp_surv2)
@@ -357,7 +461,7 @@ test_that(
       set_covariates(group="Poor") %>%
       pool(fs4 %>% set_covariates(group="Poor"), weights = c(0.5, 0.5)) %>%
       apply_hr(1) %>%
-      project(fs4 %>% set_covariates(group="Poor"), at = 89.1) %>%
+      join(fs4 %>% set_covariates(group="Poor"), at = 89.1) %>%
       apply_af(1) %>%
       apply_or(1) %>%
       compute_surv(time=seq_len(10), cycle_length=200)
@@ -372,7 +476,7 @@ test_that(
       set_covariates(group="Poor") %>%
       pool(fs4 %>% set_covariates(group="Poor"), weights = c(0.5, 0.5)) %>%
       apply_hr(1) %>%
-      project(fs4 %>% set_covariates(group="Poor"), at = 89.1) %>%
+      join(fs4 %>% set_covariates(group="Poor"), at = 89.1) %>%
       apply_af(1) %>%
       apply_or(1) %>%
       compute_surv(time=seq(from=10,to=20,by=1), cycle_length=100)
@@ -387,7 +491,7 @@ test_that(
       set_covariates(group="Poor") %>%
       pool(fs4 %>% set_covariates(group="Poor"), weights = c(0.5, 0.5)) %>%
       apply_hr(1) %>%
-      project(fs4 %>% set_covariates(group="Poor"), at = 89.1) %>%
+      join(fs4 %>% set_covariates(group="Poor"), at = 89.1) %>%
       apply_af(1) %>%
       apply_or(1) %>%
       compute_surv(time=25, cycle_length=365.25/7)

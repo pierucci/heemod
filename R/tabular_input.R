@@ -317,7 +317,7 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
     one_way <- setdiff(names(state_info), unique(tm_info$.strategy))
     other_way <- setdiff(unique(tm_info$.strategy), names(state_info))
   }
-  
+
   if (length(pb <- union(one_way, other_way))) {
     stop(sprintf(
       "Mismatching model names between TM file and state file: %s.",
@@ -327,7 +327,7 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   
   if(trans_type == "part_surv")
     tm_info <- 
-      dplyr::filter(tm_info, .strategy %in% names(state_info))
+      dplyr::filter_(tm_info, ~ .strategy %in% names(state_info))
   else
     tm_info <- tm_info[names(state_info)]
 
@@ -336,8 +336,9 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
     seq_along(state_info),
     function(i) {
       if(inherits(tm_info, "tbl_df"))
-        this_tm <- dplyr::filter(tm_info,
-                          .strategy == names(state_info)[i])$part_surv[[1]]
+        this_tm <- dplyr::filter_(
+          tm_info,
+          ~ .strategy == names(state_info)[i])$part_surv[[1]]
       else
         this_tm <- tm_info[[i]]
       create_model_from_tabular(state_info[[i]], 
@@ -1172,9 +1173,9 @@ transition_type <- function(tm_info){
   else{
     if(all(sort(names(tm_info)[1:10]) == 
            sort(c("type", "treatment",	"data_directory",
-             "data_file",	"fit_directory",	"fit_name",
-             "fit_file",	"time_col",	"treatment_col",
-             "censor_col"))))
+                  "data_file",	"fit_directory",	"fit_name",
+                  "fit_file",	"time_col",	"treatment_col",
+                  "censor_col"))))
       which_defines <- "part_surv"
   }
   if(is.null(which_defines))
@@ -1250,9 +1251,9 @@ modify_param_defs_for_multinomials <- function(param_defs, psa) {
     end_index <- 
       if (this_pos == nrow(param_defs)) {
         numeric(0)
-    } else {
-      (this_pos + 1):nrow(param_defs)
-    }
+      } else {
+        (this_pos + 1):nrow(param_defs)
+      }
     
     param_defs <- rbind(
       param_defs[start_index,],
@@ -1262,3 +1263,5 @@ modify_param_defs_for_multinomials <- function(param_defs, psa) {
   
   param_defs
 }
+
+

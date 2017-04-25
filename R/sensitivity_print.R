@@ -148,8 +148,10 @@ plot.dsa <- function(x, type = c("simple", "difference"),
     tab$.par_names <- stats::reorder(
       tab$.par_names,
       (tab %>% dplyr::group_by_(~ .par_names) %>% 
-         dplyr::mutate_(d = substitute(diff(range(xxx)),
-                                       list(xxx = as.name(var_plot)))))$d
+         dplyr::mutate_(.dots = lazyeval::as.lazy_dots(list(
+           d = substitute(
+             diff(range(xxx)),
+             list(xxx = as.name(var_plot)))))))$d
     )
   }
   
