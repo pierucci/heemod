@@ -3,6 +3,7 @@
 ### Breaking changes
 
   * Survival function renamed: `project()`=>`join()`.
+  * Removed functions to transform `heemod` object to code.
 
 ### New features
 
