@@ -110,7 +110,7 @@ write_fits_to_excel_from_tibble <-
                                           skip_between = skip_between,
                                           alignment = alignment))
     
-    plot_data <- prepare_fit_list_plot_data_from_tibble(fit_tibble)
+    plot_data <- prepare_plot_data_from_fit_tibble(fit_tibble)
     plot_data_km <- plot_data %>% dplyr::filter_(~ dist == "km")
     
     XLConnect::createSheet(wb, "km")
@@ -203,7 +203,7 @@ send_info_to_workbook <-
 #' @return a tibble with the necessary data
 #' @export
 #'
-prepare_fit_list_plot_data_from_tibble <-
+prepare_plot_data_from_fit_tibble <-
   function(fit_tib){
     survival_summaries <- 
       fit_tib %>% 
@@ -246,7 +246,7 @@ summary_helper <- function(fit, ...){
 #' Plot fit data
 #'
 #' @param data_to_plot a data frame from 
-#'   [prepare_fit_list_plot_data_from_tibble()]
+#'   [prepare_plot_data_from_fit_tibble()]
 #' @param type `survival` or `cumulative hazard`
 #' @param logy should the `y` axis be on the logarithmic scale?
 #' @param scale_time times are multiplied by this.  So if your

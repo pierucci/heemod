@@ -10,7 +10,7 @@ plot_fit_data(data_to_plot, type = c("survival", "cumulative hazard"),
 }
 \arguments{
 \item{data_to_plot}{a data frame from
-\code{\link[=prepare_fit_list_plot_data_from_tibble]{prepare_fit_list_plot_data_from_tibble()}}}
+\code{\link[=prepare_plot_data_from_fit_tibble]{prepare_plot_data_from_fit_tibble()}}}
 
 \item{type}{\code{survival} or \code{cumulative hazard}}
 
