@@ -3,7 +3,7 @@
 ### Breaking changes
 
   * Survival function renamed: `project()`=>`join()`.
-  * Removed functions to transform `heemod` object to code.
+  * Removed `get_code()`.
 
 ### New features
 
@@ -22,7 +22,7 @@
 `heemod` can now be cited with :
 
 Filipović-Pierucci A, Zarca K and Durand-Zaleski I (2017).
-“Markov Models for Health Economic Evaluation: The R
+“Markov Models for Health Economic Evaluations: The R
 Package heemod.” _ArXiv e-prints_. R package version
 0.8.0, 1702.03252, <URL: https://pierucci.org/heemod>.
 
