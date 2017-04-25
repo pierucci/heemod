@@ -16,16 +16,29 @@
 #' 
 #' dist1 <- define_survival(distribution = "exp", rate = .5)
 #' dist2 <- define_survival(distribution = "gompertz", rate = .5, shape = 1)
-#' proj_dist <- project(dist1, dist2, at=20)
-project <- function(..., at) {
+#' join_dist <- join(dist1, dist2, at=20)
+join <- function(..., at) {
   dots <- list(...)
   
-  project_(dots, at)
+  join_(dots, at)
+}
+#' @export
+#' @rdname join
+project <- function(...) {
+  warning("'project() is deprecated, use 'join()' instead.")
+  join(...)
 }
 
 #' @export
-#' @rdname project
-project_ <- function(dots, at) {
+#' @rdname join
+project_ <- function(...) {
+  warning("'project_() is deprecated, use 'join_()' instead.")
+  join_(...)
+}
+
+#' @export
+#' @rdname join
+join_ <- function(dots, at) {
   
   stopifnot(
     all(at > 0),

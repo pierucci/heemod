@@ -69,7 +69,7 @@ summary.run_model <- function(object, threshold = NULL, ...) {
       cycles = get_cycles(object),
       init = get_uneval_init(object),
       method = get_method(object),
-      frontier = get_frontier(get_model_results(object))
+      frontier = get_frontier(object)
     ),
     class = "summary_run_model"
   )

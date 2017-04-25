@@ -437,7 +437,7 @@ test_that(
       compute_surv(time=seq_len(10), cycle_length=200)
     exp_surv2 = fs4 %>%
       set_covariates(group="Poor") %>%
-      project(fs4 %>% set_covariates(group="Poor"), at = 543.343) %>%
+      join(fs4 %>% set_covariates(group="Poor"), at = 543.343) %>%
       compute_surv(time=seq_len(10), cycle_length=200)
     
     expect_equal(exp_surv, exp_surv2)
@@ -461,7 +461,7 @@ test_that(
       set_covariates(group="Poor") %>%
       pool(fs4 %>% set_covariates(group="Poor"), weights = c(0.5, 0.5)) %>%
       apply_hr(1) %>%
-      project(fs4 %>% set_covariates(group="Poor"), at = 89.1) %>%
+      join(fs4 %>% set_covariates(group="Poor"), at = 89.1) %>%
       apply_af(1) %>%
       apply_or(1) %>%
       compute_surv(time=seq_len(10), cycle_length=200)
@@ -476,7 +476,7 @@ test_that(
       set_covariates(group="Poor") %>%
       pool(fs4 %>% set_covariates(group="Poor"), weights = c(0.5, 0.5)) %>%
       apply_hr(1) %>%
-      project(fs4 %>% set_covariates(group="Poor"), at = 89.1) %>%
+      join(fs4 %>% set_covariates(group="Poor"), at = 89.1) %>%
       apply_af(1) %>%
       apply_or(1) %>%
       compute_surv(time=seq(from=10,to=20,by=1), cycle_length=100)
@@ -491,7 +491,7 @@ test_that(
       set_covariates(group="Poor") %>%
       pool(fs4 %>% set_covariates(group="Poor"), weights = c(0.5, 0.5)) %>%
       apply_hr(1) %>%
-      project(fs4 %>% set_covariates(group="Poor"), at = 89.1) %>%
+      join(fs4 %>% set_covariates(group="Poor"), at = 89.1) %>%
       apply_af(1) %>%
       apply_or(1) %>%
       compute_surv(time=25, cycle_length=365.25/7)

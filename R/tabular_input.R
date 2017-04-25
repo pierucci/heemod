@@ -327,7 +327,7 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   
   if(trans_type == "part_surv")
     tm_info <- 
-      dplyr::filter(tm_info, .strategy %in% names(state_info))
+      dplyr::filter_(tm_info, ~ .strategy %in% names(state_info))
   else
     tm_info <- tm_info[names(state_info)]
 
@@ -336,8 +336,9 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
     seq_along(state_info),
     function(i) {
       if(inherits(tm_info, "tbl_df"))
-        this_tm <- dplyr::filter(tm_info,
-                          .strategy == names(state_info)[i])$part_surv[[1]]
+        this_tm <- dplyr::filter_(
+          tm_info,
+          ~ .strategy == names(state_info)[i])$part_surv[[1]]
       else
         this_tm <- tm_info[[i]]
       create_model_from_tabular(state_info[[i]], 
@@ -1262,3 +1263,5 @@ modify_param_defs_for_multinomials <- function(param_defs, psa) {
   
   param_defs
 }
+
+

@@ -148,12 +148,14 @@ define_part_surv_ <- function(pfs, os, state_names,
 #'   except type and fit, and a new column part_surv.
 #' @export
 #'
-part_survs_from_surv_inputs <-  function(surv_inputs, state_names){
+part_survs_from_surv_inputs <- function(surv_inputs, state_names) {
   
   surv_inputs %>%
-    dplyr::group_by(treatment, set_name, dist, set_def) %>%
-    dplyr::do(part_surv = make_part_surv_from_small_tibble(.,
-                                                           state_names = state_names))
+    dplyr::group_by_(
+      ~ treatment, ~ set_name, ~ dist, ~ set_def) %>%
+    dplyr::do_(
+      part_surv = ~ make_part_surv_from_small_tibble(
+        ., state_names = state_names))
 }
 
 get_state_names.part_surv <- function(x) {
@@ -348,30 +350,31 @@ construct_part_surv_tib <-
     }
     surv_def <- tibble::as_tibble(surv_def)
     fit_tibble <-
-      dplyr::mutate(fit_tibble, type = toupper(type)) 
+      dplyr::mutate_(fit_tibble, type = ~ toupper(type)) 
     
     ## we handle directly defined distributions
     ##   (those defined with define_survival())
     ##   separately from fits
-    with_direct_dist <- 
-      dplyr::filter(surv_def, grepl("^define_survival", dist))
-    should_be_fits <- 
-      dplyr::filter(surv_def, !grepl("^define_survival", dist))
+    with_direct_dist <- dplyr::filter_(
+      surv_def, ~ grepl("^define_survival", dist))
+    should_be_fits <- dplyr::filter_(
+      surv_def, ~ !grepl("^define_survival", dist))
     
     ## reduce fit expressions to distribution names
-    should_be_fits_2 <- 
-      should_be_fits %>% 
-      dplyr::mutate(dist = gsub("fit\\((.*)\\)", "\\1", dist)) %>%
-      dplyr::mutate(dist = gsub("'", "", dist)) %>%
-      dplyr::mutate(dist = gsub('"', '', dist)) %>%
-      dplyr::mutate(.type = toupper(.type))
+    should_be_fits_2 <- should_be_fits %>% 
+      dplyr::mutate_(
+        dist = ~ gsub("fit\\((.*)\\)", "\\1", dist) %>% 
+          gsub("'", "", .) %>% 
+          gsub('"', '', .),
+        .type = ~ toupper(.type))
     ## and join in the fits and subset definitions
-    should_be_fits_3 <- 
-      should_be_fits_2 %>% dplyr::left_join(., fit_tibble,
-                                            by = c(".strategy" = "treatment",
-                                                   ".type" = "type",
-                                                   "dist" = "dist",
-                                                   ".subset" = "set_name")
+    should_be_fits_3 <- should_be_fits_2 %>%
+      dplyr::left_join(
+        fit_tibble,
+        by = c(".strategy" = "treatment",
+               ".type" = "type",
+               "dist" = "dist",
+               ".subset" = "set_name")
       )
     if(any(problem <- is.null(should_be_fits_3$fit) | 
            is.na(should_be_fits_3$fit))){
@@ -394,17 +397,18 @@ construct_part_surv_tib <-
     direct_dist_def_3$fit <- direct_dist_def_3$dist
     
     ## and now we can rejoin them and continue
-    surv_def_4 <- 
-      rbind(should_be_fits_3, direct_dist_def_3) %>% 
-      dplyr::group_by(.strategy, .type) %>%
-      dplyr::do(fit = join_fits_across_time(.)) %>%
+    surv_def_4 <-
+      rbind(should_be_fits_3, direct_dist_def_3) %>%
+      dplyr::group_by_( ~ .strategy, ~ .type) %>%
+      dplyr::do_(fit = ~ join_fits_across_time(.)) %>%
       dplyr::ungroup()
-    surv_def_5 <- 
+    surv_def_5 <-
       surv_def_4 %>%
-      dplyr::group_by(.strategy) %>%
-      dplyr::rename(type = .type) %>%
-      dplyr::do(part_surv = make_part_surv_from_small_tibble(.,
-                                                             state_names = state_names))
+      dplyr::group_by_( ~ .strategy) %>%
+      dplyr::rename_(type = ~ .type) %>%
+      dplyr::do_(part_surv = ~ make_part_surv_from_small_tibble(
+        .,
+        state_names = state_names))
     surv_def_5
   }
 
@@ -412,9 +416,9 @@ join_fits_across_time <- function(this_part){
 if(nrow(this_part) == 1) return(this_part$fit[[1]])
   if ("until" %in% names(this_part)) {
     this_part <-
-      dplyr::arrange(this_part, until)
+      dplyr::arrange_(this_part, ~ until)
     
-    project_(dots = this_part$fit, 
+    join_(dots = this_part$fit, 
              at= this_part$until[!is.na(this_part$until)])
     
   }  

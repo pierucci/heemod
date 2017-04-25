@@ -54,7 +54,7 @@ update.run_model <- function(object, newdata, ...) {
   
   if (has_weights) {
     weights <- newdata$.weights
-    newdata <- dplyr::select_(newdata, ~ (- .weights))
+    newdata <- dplyr::select_(newdata, ~ - .weights)
     
   } else {
     message("No weights specified in update, using equal weights.")
@@ -289,8 +289,8 @@ summary.updated_model <- function(object, ...) {
   
   mat_res <- dplyr::select_(
     tab_res,
-    ~ (- Model),
-    ~ (- Value)
+    ~ - Model,
+    ~ - Value
   ) %>% 
     as.matrix()
   
