@@ -205,7 +205,8 @@ run_model_ <- function(uneval_strategy_list,
       root_strategy = root_strategy,
       central_strategy = central_strategy,
       noncomparable_strategy = noncomparable_strategy,
-      state_time_limit = state_time_limit
+      state_time_limit = state_time_limit,
+      frontier = if (! is.null(root_strategy)) get_frontier(res)
     ),
     class = c("run_model", class(res))
   )
@@ -246,8 +247,7 @@ get_root_strategy.default <- function(x, ...) {
     return(invisible(NULL))
   }
   (x %>% 
-      dplyr::arrange_(.dots = list(~ .cost, ~ desc(.effect))) %>% 
-      dplyr::slice(1))$.strategy_names
+      dplyr::arrange_(~ .cost, ~ desc(.effect)))$.strategy_names[1]
 }
 
 get_root_strategy.run_model <- function(x, ...) {
