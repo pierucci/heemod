@@ -13,7 +13,7 @@ f_fit_survival_models(survdata, dists = c("exp", "weibull", "lnorm", "llogis",
 
 \item{dists}{Distributional forms to be considered in fitting using
 \code{flexsurvreg}.  By default, includes exponential, Weibull,
-lognormal, gamma, gompertz, and generalized gamma.  Kaplan-Meier
+lognormal, log-logistic, gamma, gompertz, and generalized gamma.  Kaplan-Meier
 curves will also be stored automatically, with distribution
 name "km".}
 

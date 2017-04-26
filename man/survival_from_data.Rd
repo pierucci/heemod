@@ -38,8 +38,10 @@ get probabilities.}
 Title Get survival analysis curves from data
 }
 \details{
-By default, the function fits with six different distribution fucntions:
-exponential,  Weibull,  lognormal, Gompertz, gamma, and generalized gamma.
+By default, the function fits with seven
+different distribution fucntions:
+exponential,  Weibull,  lognormal, log-logistic,
+Gompertz, gamma, and generalized gamma.
 
 survival_specs contains information about how to create the fits:
 the directory (or directories) in which

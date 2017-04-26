@@ -46,8 +46,8 @@ survival_fits_from_ref_struc <- function(ref, df_env = new.env(),
   ## does some error checking
 
   survival_specs <- read_file(file.path(surv_ref_full_file))
-  dists = c("exp", "weibull", "lnorm", "gamma", 
-            "gompertz", "gengamma")
+  dists = c("exp", "weibull", "lnorm", "llogis", 
+            "gamma", "gompertz", "gengamma")
   survival_from_data(location,
                      survival_specs,
                      use_envir = df_env,
@@ -101,8 +101,10 @@ partitioned_survival_from_ref_struc <- function(ref, df_env,
 #'    an environment containing the models so they can be referenced to 
 #'    get probabilities.}
 #'    }
-#' @details By default, the function fits with six different distribution fucntions:
-#' exponential,  Weibull,  lognormal, Gompertz, gamma, and generalized gamma.
+#' @details By default, the function fits with seven 
+#'   different distribution fucntions:
+#'   exponential,  Weibull,  lognormal, log-logistic, 
+#'   Gompertz, gamma, and generalized gamma.
 #' 
 #' survival_specs contains information about how to create the fits:
 #'   the directory (or directories) in which
@@ -350,7 +352,7 @@ dist_from_fits <- function(this_fit){
 #' @param survdata Survival data to be used.
 #' @param dists Distributional forms to be considered in fitting using
 #'     `flexsurvreg`.  By default, includes exponential, Weibull, 
-#'     lognormal, gamma, gompertz, and generalized gamma.  Kaplan-Meier
+#'     lognormal, log-logistic, gamma, gompertz, and generalized gamma.  Kaplan-Meier
 #'     curves will also be stored automatically, with distribution
 #'     name "km".
 #' @param treatment_col_name Name of the column in survdata that holds the
