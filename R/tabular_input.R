@@ -304,15 +304,9 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   
   
   if(trans_type == "part_surv"){
-    fit_tib <- 
-      survival_fits_from_ref_struc(ref, df_env,
-                                          save_fits = FALSE,
-                                          just_load = TRUE)[[1]]
-
-    assign("fit_tib", fit_tib, df_env)
     use_fits_file <- ref[ref$data == "use_fits", "full_file"]
     use_fits <- read_file(use_fits_file)
-    tm_info <- construct_part_surv_tib(use_fits, fit_tib, env = df_env,
+    tm_info <- construct_part_surv_tib(use_fits, ref, env = df_env,
                                     state_names = state_names)
     one_way <- setdiff(names(state_info), unique(tm_info$.strategy))
     other_way <- setdiff(unique(tm_info$.strategy), names(state_info))

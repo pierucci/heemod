@@ -43,8 +43,6 @@ survival_fits_from_ref_struc <- function(ref, df_env = new.env(),
                    "",
                    surv_ref_full_file)
   
-  ## does some error checking
-
   survival_specs <- read_file(file.path(surv_ref_full_file))
   dists = c("exp", "weibull", "lnorm", "llogis", 
             "gamma", "gompertz", "gengamma")
@@ -130,26 +128,17 @@ survival_from_data <-
     
     survival_specs <- check_survival_specs(survival_specs)
     
-    fit_files <- file.path(location,
-                           survival_specs$fit_directory,
-                           survival_specs$fit_file)
     if(just_load){
-      for(index in seq(along = fit_files)){
-        this_fit_file <- fit_files[index]
-        this_fit_name <- survival_specs$fit_name[index]
-        load(paste(this_fit_file, ".RData", sep = ""))
-        if(!is.null(use_envir))
-          assign(this_fit_name, 
-                 value = get(this_fit_name),
-                 envir = use_envir)
-      }
-      surv_models <- mget(survival_specs$fit_name)
-    }
+      return(load_surv_models(location, survival_specs, use_envir))
+   }
     else{
       data_files <- file.path(location,
                               survival_specs$data_directory,
                               survival_specs$data_file)
-
+      fit_files <- file.path(location,
+                             survival_specs$fit_directory,
+                             survival_specs$fit_file)
+      
       
      surv_models <- 
        lapply(seq(1:nrow(survival_specs)),
@@ -254,15 +243,40 @@ survival_from_data <-
     }
 
     names(surv_models) <- survival_specs$fit_name
-    if(!is.null(use_envir)){
-      for(i in seq(along = surv_models)){
-        assign(survival_specs$fit_name[i], 
-             value = surv_models[[i]],
-             envir = use_envir)
-      }
-    }
     list(do.call("rbind", surv_models), env = use_envir)
   }
+
+
+#' Load a set of survival fits
+#'
+#' @param location base directory
+#' @param survival_specs information about fits
+#' @param use_envir an environment
+#'
+#' @return A list with two elements:  \itemize{
+#'    \item{`best_models`, 
+#'    a list with the fits for each data file passed in; and} 
+#'    \item{`envir`, 
+#'    an environment containing the models so they can be referenced to 
+#'    get probabilities.}
+#'    }
+#' @export
+#'
+load_surv_models <- function(location, survival_specs, use_envir){
+  fit_files <- file.path(location,
+                         survival_specs$fit_directory,
+                         survival_specs$fit_file)
+  for(index in seq(along = fit_files)){
+    this_fit_file <- fit_files[index]
+    this_fit_name <- survival_specs$fit_name[index]
+    load(paste(this_fit_file, ".RData", sep = ""))
+  }
+  surv_models <- mget(survival_specs$fit_name)
+  names(surv_models) <- survival_specs$fit_name
+  list(do.call("rbind", mget(survival_specs$fit_name)),
+       env = use_envir)
+}
+
 
 get_set_definitions <- function(data_dir){
   set_definitions <- data.frame(treatment = character(0), type = character(0))

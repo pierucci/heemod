@@ -304,8 +304,7 @@ guess_part_surv_state_names <- function(state_names) {
 #' construct a survival object from tabular specification
 #'
 #' @param surv_def a data frame with the specification.  See details.
-#' @param fit_tibble the name of the tibble from which to take fits.
-#'   Typically produced by [survival_fits_from_tabular()].
+#' @param ref data frame with information about the fits.
 #' @param env an environment
 #' @param state_names names of the model states
 #' @details  This function is meant to be used only from within
@@ -326,86 +325,65 @@ guess_part_surv_state_names <- function(state_names) {
 #' @examples
 
 construct_part_surv_tib <-
-  function(surv_def, fit_tibble,
+  function(surv_def, ref,
            state_names,
            env = new.env()) {
-    
     surv_def_names <- c(".strategy", ".type", "dist")
-    fit_tibble_names <- c("treatment", "type", "dist", "set_name", "fit")
-    if(!all(present_names <- surv_def_names %in% names(surv_def))){
+    if (!all(present_names <- surv_def_names %in% names(surv_def))) {
       stop("missing required names in 'surv_def': ",
            paste(surv_def_names[!present_names], collapse = ", "))
     }
-    if(!all(present_names <- fit_tibble_names %in% names(fit_tibble))){
-      stop("missing required names in 'fit_tibble': ",
-           paste(fit_tibble_names[!present_names], collapse = ", "))
-    }
-    
-    if(!(".subset" %in% names(surv_def))){
+    #
+    if (!(".subset" %in% names(surv_def))) {
       surv_def$.subset <- "all"
       message("no '.subset' column; defaulting to subset 'all'")
     }
     surv_def <- tibble::as_tibble(surv_def)
-    fit_tibble <-
-      dplyr::mutate_(fit_tibble, type = ~ toupper(type)) 
     
     ## we handle directly defined distributions
     ##   (those defined with define_survival())
     ##   separately from fits
-    with_direct_dist <- dplyr::filter_(
-      surv_def, ~ grepl("^define_survival", dist))
-    should_be_fits <- dplyr::filter_(
-      surv_def, ~ !grepl("^define_survival", dist))
+    with_direct_dist <- dplyr::filter_(surv_def, ~ grepl("^define_survival", dist))
+    should_be_fits <- dplyr::filter_(surv_def, ~ !grepl("^define_survival", dist))
     
-    ## reduce fit expressions to distribution names
-    should_be_fits_2 <- should_be_fits %>% 
-      dplyr::mutate_(
-        dist = ~ gsub("fit\\((.*)\\)", "\\1", dist) %>% 
-          gsub("'", "", .) %>% 
-          gsub('"', '', .),
-        .type = ~ toupper(.type))
-    ## and join in the fits and subset definitions
-    should_be_fits_3 <- should_be_fits_2 %>%
-      dplyr::left_join(
-        fit_tibble,
-        by = c(".strategy" = "treatment",
-               ".type" = "type",
-               "dist" = "dist",
-               ".subset" = "set_name")
-      )
-    if(any(problem <- is.null(should_be_fits_3$fit) | 
-           is.na(should_be_fits_3$fit))){
-      print(surv_def[problem,])
-      stop("fit not found for lines ",
-           paste(which(problem), collapse = ", "),
-           "(shown above)")
-    }
-    ## for directly defined distributions, join to make the
-    ##   extra columns, then move the defined distributions 
-    ##   over to the fits column
-    direct_dist_def_3 <- 
-      with_direct_dist %>%
-      dplyr::left_join(., fit_tibble,
-                       by = c(".strategy" = "treatment",
-                              ".type" = "type",
-                              "dist" = "dist",
-                              ".subset" = "set_name")
-      )
+    should_be_fits_3 <- should_be_fits
+    if (nrow(should_be_fits) > 0) {
+      surv_ref_full_file <- ref[ref$data == "tm", "full_file"]
+      surv_ref_file <- ref[ref$data == "tm", "file"]
+      ## slightly roundabout way of getting the base location back
+      location <- gsub(paste0(surv_ref_file, "$"),
+                       "",
+                       surv_ref_full_file)
+      
+      survival_specs <-
+        read_file(ref[ref$data == "tm", "full_file"])
+      ## as compared to previous version, now we are
+      ##  going directly to loading the files
+      fit_tibble <-
+        load_surv_models(location,
+                         check_survival_specs(survival_specs),
+                         env)[[1]]
+      should_be_fits_3 <- join_fits_to_def(should_be_fits,
+                                           fit_tibble)
+  }
+    direct_dist_def_3 <- with_direct_dist
     direct_dist_def_3$fit <- direct_dist_def_3$dist
+    direct_dist_def_3$set_def <- rep(NA, nrow(direct_dist_def_3))
+    if(!("time_subtract" %in% names(direct_dist_def_3)))
+      direct_dist_def_3$time_subtract <- rep(NA, nrow(direct_dist_def_3))
     
     ## and now we can rejoin them and continue
     surv_def_4 <-
       rbind(should_be_fits_3, direct_dist_def_3) %>%
-      dplyr::group_by_( ~ .strategy, ~ .type) %>%
+      dplyr::group_by_(~ .strategy, ~ .type) %>%
       dplyr::do_(fit = ~ join_fits_across_time(.)) %>%
       dplyr::ungroup()
     surv_def_5 <-
       surv_def_4 %>%
-      dplyr::group_by_( ~ .strategy) %>%
+      dplyr::group_by_(~ .strategy) %>%
       dplyr::rename_(type = ~ .type) %>%
-      dplyr::do_(part_surv = ~ make_part_surv_from_small_tibble(
-        .,
-        state_names = state_names))
+      dplyr::do_(part_surv = ~ make_part_surv_from_small_tibble(.,
+                                                                state_names = state_names))
     surv_def_5
   }
 
@@ -439,3 +417,48 @@ make_part_surv_from_small_tibble <- function(st, state_names){
                    state_names = state_names)
 }
 
+
+join_fits_to_def <- function(surv_def, fit_tibble) {
+  surv_def_names <- c(".strategy", ".type", "dist")
+  if (!all(present_names <- surv_def_names %in% names(surv_def))) {
+    stop("missing required names in 'surv_def': ",
+         paste(surv_def_names[!present_names], collapse = ", "))
+  }
+  
+  fit_tibble_names <- c("treatment", "type", "dist", "set_name", "fit")
+  if(!all(present_names <- fit_tibble_names %in% names(fit_tibble))){
+    stop("missing required names in 'fit_tibble': ",
+         paste(fit_tibble_names[!present_names], collapse = ", "))
+  }
+  
+    fit_tibble <-
+    dplyr::mutate_(fit_tibble, type = ~ toupper(type))
+  
+  ## reduce fit expressions to distribution names
+  should_be_fits_2 <- surv_def %>%
+    dplyr::mutate_(
+      dist = ~ gsub("fit\\((.*)\\)", "\\1", dist) %>%
+        gsub("'", "", .) %>%
+        gsub('"', '', .),
+      .type = ~ toupper(.type)
+    )
+  ## and join in the fits and subset definitions
+  should_be_fits_3 <- should_be_fits_2 %>%
+    dplyr::left_join(
+      fit_tibble,
+      by = c(
+        ".strategy" = "treatment",
+        ".type" = "type",
+        "dist" = "dist",
+        ".subset" = "set_name"
+      )
+    )
+  if (any(problem <- is.null(should_be_fits_3$fit) |
+          is.na(should_be_fits_3$fit))) {
+    print(surv_def[problem, ])
+    stop("fit not found for lines ",
+         paste(which(problem), collapse = ", "),
+         "(shown above)")
+  }
+  should_be_fits_3
+}

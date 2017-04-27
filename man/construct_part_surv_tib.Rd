@@ -4,13 +4,12 @@
 \alias{construct_part_surv_tib}
 \title{construct a survival object from tabular specification}
 \usage{
-construct_part_surv_tib(surv_def, fit_tibble, state_names, env = new.env())
+construct_part_surv_tib(surv_def, ref, state_names, env = new.env())
 }
 \arguments{
 \item{surv_def}{a data frame with the specification.  See details.}
 
-\item{fit_tibble}{the name of the tibble from which to take fits.
-Typically produced by \code{\link[=survival_fits_from_tabular]{survival_fits_from_tabular()}}.}
+\item{ref}{data frame with information about the fits.}
 
 \item{state_names}{names of the model states}
 
