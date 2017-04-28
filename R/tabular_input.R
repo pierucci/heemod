@@ -1259,3 +1259,99 @@ modify_param_defs_for_multinomials <- function(param_defs, psa) {
 }
 
 
+## make sure that survival fit specifications are 
+##   properly formatted and have reasonable data
+check_survival_specs <- 
+  function(surv_specs){
+    
+    if(!is.data.frame(surv_specs) || nrow(surv_specs) == 0)
+      stop("surv_specs must be a data frame with at least one row")
+    
+    surv_spec_col_names <- c("type", "treatment", "data_directory", "data_file",
+                             "fit_directory", "fit_name", "fit_file",
+                             "time_col", "treatment_col", "censor_col")
+    if(! identical(names(surv_specs), surv_spec_col_names)){
+      extra_names <- setdiff(names(surv_specs), surv_spec_col_names)
+      missing_names <- setdiff(surv_spec_col_names, names(surv_specs))
+      names_message <- paste("surv_ref must have column names:\n",
+                             paste(surv_spec_col_names, collapse = ", "), 
+                             sep = "")
+      if(length(extra_names) > 0)
+        names_message <- paste(names_message, "\n", "extra names: ",
+                               paste(extra_names, collapse = ", "),
+                               sep = "")
+      if(length(missing_names) > 0)
+        names_message <- paste(names_message, "\n", "missing names: ",
+                               paste(missing_names, collapse = ", "),
+                               sep = "")
+      stop(names_message)
+    }
+    
+    if(any(is.na(surv_specs) | surv_specs == ""))
+      stop("all elements of surv_specs must be filled in")
+    
+    ## sort survival specs by treatment, then PFS and OS
+    ## our checks will make sure that we have the right entries,
+    ##   and that they are in the right order
+    surv_specs <- 
+      surv_specs %>% dplyr::arrange_(~ treatment, ~ desc(type))
+    
+    os_ind <- grep("os", surv_specs$type, ignore.case = TRUE)
+    pfs_ind <- grep("pfs", surv_specs$type, ignore.case = TRUE)
+    all_even_os <- identical(as.numeric(os_ind), 
+                             seq(from = 2, 
+                                 to = nrow(surv_specs),
+                                 by = 2))
+    all_odd_pfs <- identical(as.numeric(pfs_ind), 
+                             seq(from = 1, 
+                                 to = nrow(surv_specs),
+                                 by = 2))
+    same_treatments <- 
+      identical(surv_specs$treatment[os_ind],
+                surv_specs$treatment[pfs_ind])
+    if(!all_even_os | !all_odd_pfs | !same_treatments)
+      stop("each treatment must have exactly one PFS and one OS entry")
+    
+    if(any(dups <- duplicated(surv_specs[, c("type", "treatment")]))){
+      print(surv_specs[dups,])
+      stop("survival fit specification can only have one row for fitting ",
+           "OS or PFS for a given treatment\n")
+    }
+    if(any(dups <- duplicated(surv_specs[, c("fit_directory", "fit_file", 
+                                             "time_col", "censor_col")]))){
+      print(surv_specs[dups,])
+      stop("can only specify a given data file in a given directory with ",
+           "the same time column and censoring column for one fit")
+    }
+    surv_specs
+  }
+
+#' Load a set of survival fits
+#'
+#' @param location base directory
+#' @param survival_specs information about fits
+#' @param use_envir an environment
+#'
+#' @return A list with two elements:  \itemize{
+#'    \item{`best_models`, 
+#'    a list with the fits for each data file passed in; and} 
+#'    \item{`envir`, 
+#'    an environment containing the models so they can be referenced to 
+#'    get probabilities.}
+#'    }
+#' @export
+#'
+load_surv_models <- function(location, survival_specs, use_envir){
+  fit_files <- file.path(location,
+                         survival_specs$fit_directory,
+                         survival_specs$fit_file)
+  for(index in seq(along = fit_files)){
+    this_fit_file <- fit_files[index]
+    this_fit_name <- survival_specs$fit_name[index]
+    load(paste(this_fit_file, ".RData", sep = ""))
+  }
+  surv_models <- mget(survival_specs$fit_name)
+  names(surv_models) <- survival_specs$fit_name
+  list(do.call("rbind", mget(survival_specs$fit_name)),
+       env = use_envir)
+}
