@@ -116,12 +116,6 @@ test_that("fitting works (including with subsets)",
                                  save_fits = FALSE,
                                  use_envir = new.env())
             expect_identical(names(these_fits), c("", "env"))
-            ## commenting out this test as no longer need to store
-            ##   those fits in the environment
-            # expect_identical(ls(these_fits$env), c("OS.A.fit",
-            #                                        "OS.B.fit",
-            #                                        "PFS.A.fit",
-            #                                        "PFS.B.fit"))
             expect_identical(names(these_fits[[1]]),
                              c("type", "treatment", "set_name",
                                "dist", "fit", "set_def",

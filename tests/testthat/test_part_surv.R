@@ -244,6 +244,52 @@ test_that(
     
       })
 
+test_that("we catch bad names in construct_part_surv_tib",
+          {
+            surv_def <- read_file(system.file("tabular/surv", 
+                                              "use_fits.csv", 
+                                              package = "heemod"))
+            surv_def$.subset <- "all"
+            state_names <- c("ProgressionFree", "ProgressiveDisease", 
+                             "Terminal", "Death")
+
+            names(surv_def)[1] <- "strategy"
+            expect_error(construct_part_surv_tib(surv_def, NULL, state_names),
+                         "missing required names in 'surv_def':", fixed = TRUE)
+            names(surv_def)[1] <- ".strategy"
+            names(surv_def)[2] <- "type"
+            expect_error(construct_part_surv_tib(surv_def, NULL, state_names),
+                         "missing required names in 'surv_def':", fixed = TRUE)
+            names(surv_def)[2] <- ".type"
+            names(surv_def)[3] <- "DIST"
+            expect_error(construct_part_surv_tib(surv_def, NULL, state_names),
+                         "missing required names in 'surv_def':", fixed = TRUE)
+            names(surv_def)[3] <- "dist"
+          }
+)
+
+test_that("we can run construct_part_surv_tib",
+          {
+            use_fits <- read_file(system.file("tabular/surv",
+                                  "example_use_fits_explicit_dists.csv",
+                                  package = "heemod"))
+            ref <- read_file(system.file("tabular/surv",
+                                         "example_oncSpecs_explicit_dists.csv",
+                                         package = "heemod"))
+            explicit_dist_part_surv <- 
+              construct_part_surv_tib(use_fits, ref,             
+                                    state_names <- c("ProgressionFree", 
+                                                     "ProgressiveDisease", 
+                                                      "Terminal", "Death")
+            )
+            for_A <- dplyr::filter(explicit_dist_part_surv, .strategy == "A")
+            for_B <- dplyr::filter(explicit_dist_part_surv, .strategy == "B")
+            expect_equal(round(compute_surv(for_A[[1, "part_surv"]]$pfs, 1), 4), 0.0332)
+            expect_equal(round(compute_surv(for_A[[1, "part_surv"]]$os, 1), 4), 0.0150)
+            expect_equal(round(compute_surv(for_B[[1, "part_surv"]]$pfs, 1), 4), 0.0472)
+            expect_equal(round(compute_surv(for_B[[1, "part_surv"]]$os, 1), 4), 0.0213)
+          })
+
 test_that("join_fits_across_time works", 
           {
     surv_def_join <- read_file(system.file("tabular/surv", 
