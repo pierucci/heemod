@@ -220,7 +220,7 @@ plot(surv_example$model_runs)
 We can also mix explicit survival distribution definitions with fits,
 as shown below.
 ```{r}
-spec_file <- "example_oncSpecs_nomatrix_mixed.csv"
+spec_file <- "example_oncSpecs_mixed.csv"
 ref <- heemod:::read_file(file.path(base_dir, spec_file))
 mixed_use_fits_file <- file.path(base_dir, ref[ref$data == "use_fits", "file"])
 mixed_use_fits <- heemod:::read_file(mixed_use_fits_file)
