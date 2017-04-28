@@ -288,7 +288,30 @@ test_that("we can run construct_part_surv_tib",
             expect_equal(round(compute_surv(for_A[[1, "part_surv"]]$os, 1), 4), 0.0150)
             expect_equal(round(compute_surv(for_B[[1, "part_surv"]]$pfs, 1), 4), 0.0472)
             expect_equal(round(compute_surv(for_B[[1, "part_surv"]]$os, 1), 4), 0.0213)
-          })
+
+            use_fits <- read_file(system.file("tabular/surv",
+                                              "use_fits_mixed.csv",
+                                              package = "heemod"))
+            ref <- read_file(system.file("tabular/surv",
+                                         "example_oncSpecs_mixed.csv",
+                                         package = "heemod"))
+            ref$full_file <- file.path(system.file("tabular/surv", package = "heemod"),
+                                                   ref$file)
+            mixed_dist_part_surv <- 
+              construct_part_surv_tib(use_fits, ref,             
+                                      state_names <- c("ProgressionFree", 
+                                                       "ProgressiveDisease", 
+                                                       "Terminal", "Death")
+              )
+            expect_identical(class(mixed_dist_part_surv[[1, "part_surv"]]$os),
+                             "lazy")
+            expect_identical(lazyeval::lazy_eval(mixed_dist_part_surv[[1, "part_surv"]]$pfs),
+                             'define_survival(distribution = "exp", rate = 1/100)')
+            expect_identical(class(lazyeval::lazy_eval(mixed_dist_part_surv[[1, "part_surv"]]$os)),
+                             "flexsurvreg")
+            prob <- compute_surv(lazyeval::lazy_eval(mixed_dist_part_surv[[1, "part_surv"]]$os), 1)
+            expect_equal(round(prob, 5), 0.00213)
+                      })
 
 test_that("join_fits_across_time works", 
           {
