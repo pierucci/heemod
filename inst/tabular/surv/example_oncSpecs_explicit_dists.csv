@@ -4,3 +4,4 @@ parameters,example_oncParams_explicit_dists.csv
 tm,survival_info_explicit_dists.csv
 output,output-nomatrix
 options,example_oncOptions.csv
+use_fits,use_fits_explicit_dists.csv
