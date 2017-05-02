@@ -233,6 +233,35 @@ check_init.default <- function(x, ref) {
   define_init_(lazyeval::as.lazy_dots(lapply(x, function(x) x)))
 }
 
+check_init.uneval_init_cost <- function(x, ref){
+  parameter_name <- lazyeval::expr_text(x)
+  
+  get_uneval_strategy_list_number <- function(x){
+    length(x)
+  }
+  
+  get_uneval_strategy_list_names <- function(x){
+    names(x)
+  }
+  
+  if (! length(x) == get_uneval_strategy_list_number(ref)) {
+    stop(sprintf(
+      "Length of %s (%i) differs from number of strategies (%i).",
+      parameter_name,
+      length(x),
+      get_uneval_strategy_list_number(ref)
+    ))
+  }
+
+  if (is.null(names(x)) || nchar(names(x)) == 0) {
+    names(x) <- get_uneval_strategy_list_names(ref)
+  } else if (! all(names(x) == get_uneval_strategy_list_names(ref))) {
+    stop(sprintf("%s names are not all strategies names.", parameter_name))
+  }
+  
+  x
+}
+
 check_inflow <- function(x, ...) {
   res <- check_init(x, ...)
   structure(res, class = c("uneval_inflow", class(res)))

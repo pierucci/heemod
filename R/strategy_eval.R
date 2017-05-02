@@ -16,7 +16,7 @@
 #' @param init numeric vector, same length as number of 
 #'   model states. Number of individuals in each model state
 #'   at the beginning.
-#' @param init_cost 
+#' @param init_cost list init cost by strategy
 #' @param method Counting method.
 #' @param expand_limit A named vector of state expansion 
 #'   limits.
@@ -127,6 +127,7 @@ eval_strategy <- function(strategy, parameters, cycles,
   
   e_init <- unlist(eval_init(x = init, parameters[1, ]))
   e_inflow <- eval_inflow(x = inflow, parameters)
+  e_init_cost <- eval_init_cost(x = init_cost, parameters[1, ])
   
   if (any(is.na(e_init)) || any(is.na(e_inflow))) {
     stop("Missing values not allowed in 'init' or 'inflow'.")
@@ -149,11 +150,6 @@ eval_strategy <- function(strategy, parameters, cycles,
     correct_counts(method = method)
   
   values <- compute_values(states, count_table)
-  
-  # computing the init cost by state 
-  e_init_cost <- eval_init_cost(
-     init_cost, 
-     tibble::tibble(strategy = strategy_name))
 
   if (expand) {
     for (st in to_expand) {

@@ -33,8 +33,8 @@
 #'   cost-effectiveness plane.
 #' @param effect Names or expression to compute effect on
 #'   the cost-effectiveness plane.
-#' @param init_cost Initial costs by state and strategy, before 
-#'   the simulation of the cohort
+#' @param init_cost Initial costs by strategy, before 
+#'   the simulation start
 #' @param method Counting method.
 #' @param uneval_strategy_list List of models, only used by
 #'   [run_model_()] to avoid using `...`.
@@ -58,7 +58,7 @@ run_model <- function(...,
                       cycles = 1,
                       method = "life-table",
                       cost = NULL, effect = NULL,
-                      init_cost = rep(0L, get_state_number(get_states(list(...)[[1]]))),
+                      init_cost = rep(0L, length(list(...))),
                       state_time_limit = NULL,
                       central_strategy = NULL,
                       inflow = rep(0L, get_state_number(get_states(list(...)[[1]])))) {
@@ -66,7 +66,7 @@ run_model <- function(...,
   uneval_strategy_list <- list(...)
   
   init <- check_init(init, uneval_strategy_list[[1]])
-  init_cost <- check_init(init_cost, uneval_strategy_list[[1]])
+  init_cost <- check_init(init_cost, uneval_strategy_list)
   inflow <- check_inflow(inflow, uneval_strategy_list[[1]])
   
   run_model_(
@@ -172,7 +172,7 @@ run_model_ <- function(uneval_strategy_list,
       method = method,
       expand_limit = state_time_limit[[n]],
       inflow = inflow,
-      init_cost = init_cost,
+      init_cost = init_cost[n],
       strategy_name = n
     )
     
@@ -514,3 +514,4 @@ get_uneval_strategy_list <- function(x) {
 get_state_time_limit <- function(x) {
   x$state_time_limit
 }
+
