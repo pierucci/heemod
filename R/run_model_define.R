@@ -465,7 +465,7 @@ get_method.run_model <- function(x) {
 }
 
 get_state_names.run_model <- function(x, ...) {
-  get_state_names(x$uneval_strategy_list[[1]])
+  get_state_names(get_states(x$uneval_strategy_list[[1]]))
 }
 
 get_expand_limit <- function(x, strategy) {
