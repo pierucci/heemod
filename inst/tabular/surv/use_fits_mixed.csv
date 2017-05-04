@@ -1,0 +1,5 @@
+.strategy,.type,dist
+A,pfs,"define_survival(distribution = ""exp"", rate = 1/100)"
+A,os,fit('exp')
+B,pfs,fit('exp')
+B,os,fit('exp')

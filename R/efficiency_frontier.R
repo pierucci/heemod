@@ -7,6 +7,10 @@
 #'   
 #' @keywords internal
 get_frontier <- function(x) {
+  UseMethod("get_frontier")
+}
+
+get_frontier.default <- function(x) {
   # recursive function
   # if  all strat have same effect
   #     or root strat is more effective
@@ -26,8 +30,7 @@ get_frontier <- function(x) {
   if (stop_frontier(x)) {
     sort(
       (x %>% 
-         dplyr::arrange_(~ .cost) %>% 
-         dplyr::filter_(~ .cost == .cost[1]))$.strategy_names)
+         dplyr::filter_(~ .cost == min(.cost)))$.strategy_names)
   } else {
     bm <- get_root_strategy(x)
     ebm <- x$.effect[x$.strategy_names == bm]
@@ -41,7 +44,7 @@ get_frontier <- function(x) {
       dplyr::mutate_(
         .icer = ~ .cost / .effect
       ) %>% 
-      dplyr::arrange_(.dots = list(~.icer, ~ .effect))
+      dplyr::arrange_(~.icer, ~ .effect)
     
     enext <- dplyr::slice(x, 1)$.effect # relies on NaN last sorting
     
@@ -54,6 +57,10 @@ get_frontier <- function(x) {
     c(sort((dplyr::filter_(x, ~ is.na(.icer)))$.strategy_names),
       get_frontier(x_res))
   }
+}
+
+get_frontier.run_model <- function(x) {
+  x$frontier
 }
 
 stop_frontier <- function(x) {
