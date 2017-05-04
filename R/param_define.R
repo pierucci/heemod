@@ -145,6 +145,19 @@ define_inflow_ <- function(.dots) {
             class = c("uneval_inflow", class(.dots)))
 }
 
+#' Define Initial Cost by state and strategie
+#' 
+#' 
+define_init_cost <- function(...){
+  .dots <- lazyeval::lazy_dots(...)
+  define_init_cost_(.dots)
+}
+
+define_init_cost_ <- function(.dots){
+  structure(.dots,
+            class = c("uneval_init_cost", class(.dots)))
+}
+
 #' Define Initial Counts
 #' 
 #' @param ... Name-value pairs of expressions defining
@@ -162,7 +175,6 @@ define_init <- function(...) {
 #' @export
 #' @rdname define_init
 define_init_ <- function(.dots) {
-  
   structure(.dots,
             class = c("uneval_init", class(.dots)))
 }
@@ -173,25 +185,27 @@ check_init <- function(x, ref) {
 
 check_init.lazy_dots <- function(x, ref) {
   sn <- get_state_names(ref)
+  parameter_name <- lazyeval::expr_text(x)
   
   if (is.null(names(x)) || all(names(x) == "")) {
     names(x) <- sn
   }
   
   if (! all(sn == names(x))) {
-    stop("Some 'init' of 'inflow' names are not state names.")
+    stop(sprintf("Some %s names are not state names.", parameter_name))
   }
   
   if (! length(x) == get_state_number(ref)) {
     stop(sprintf(
-      "Length of 'init' or 'inflow' (%i) differs from number of states (%i).",
+      "Length of %s (%i) differs from number of states (%i).",
+      parameter_name,
       length(x),
       get_state_number(ref)
     ))
   }
   
   if (! all(sort(names(x)) == sort(get_state_names(ref)))) {
-    stop("Names of 'init' or 'inflow' differ from state names.")
+    stop(sprintf("Names of %s differ from state names.", parameter_name))
   }
   
   x
@@ -199,9 +213,12 @@ check_init.lazy_dots <- function(x, ref) {
 
 check_init.default <- function(x, ref) {
   
+  parameter_name <- lazyeval::expr_text(x)
+  
   if (! length(x) == get_state_number(ref)) {
     stop(sprintf(
-      "Length of 'init' or 'inflow' (%i) differs from number of states (%i).",
+      "Length of %s (%i) differs from number of states (%i).",
+      parameter_name, 
       length(x),
       get_state_number(ref)
     ))
@@ -210,14 +227,42 @@ check_init.default <- function(x, ref) {
   if (is.null(names(x))) {
     names(x) <- get_state_names(ref)
   } else if (! all(names(x) == get_state_names(ref))) {
-    stop("'init' or 'inflow' names are not all state names.")
+    stop(sprintf("%s names are not all state names.", parameter_name))
   }
   
   define_init_(lazyeval::as.lazy_dots(lapply(x, function(x) x)))
 }
 
+check_init.uneval_init_cost <- function(x, ref){
+  parameter_name <- lazyeval::expr_text(x)
+  
+  get_uneval_strategy_list_number <- function(x){
+    length(x)
+  }
+  
+  get_uneval_strategy_list_names <- function(x){
+    names(x)
+  }
+  
+  if (! length(x) == get_uneval_strategy_list_number(ref)) {
+    stop(sprintf(
+      "Length of %s (%i) differs from number of strategies (%i).",
+      parameter_name,
+      length(x),
+      get_uneval_strategy_list_number(ref)
+    ))
+  }
+
+  if (is.null(names(x)) || nchar(names(x)) == 0) {
+    names(x) <- get_uneval_strategy_list_names(ref)
+  } else if (! all(names(x) == get_uneval_strategy_list_names(ref))) {
+    stop(sprintf("%s names are not all strategies names.", parameter_name))
+  }
+  
+  x
+}
+
 check_inflow <- function(x, ...) {
   res <- check_init(x, ...)
-  structure(res,
-            class = c("uneval_inflow", class(res)))
+  structure(res, class = c("uneval_inflow", class(res)))
 }

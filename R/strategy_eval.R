@@ -16,6 +16,7 @@
 #' @param init numeric vector, same length as number of 
 #'   model states. Number of individuals in each model state
 #'   at the beginning.
+#' @param init_cost list init cost by strategy
 #' @param method Counting method.
 #' @param expand_limit A named vector of state expansion 
 #'   limits.
@@ -32,7 +33,7 @@
 #' @keywords internal
 eval_strategy <- function(strategy, parameters, cycles, 
                           init, method, expand_limit,
-                          inflow, strategy_name) {
+                          inflow, init_cost, strategy_name) {
   
   stopifnot(
     cycles > 0,
@@ -53,7 +54,6 @@ eval_strategy <- function(strategy, parameters, cycles,
     uneval_states,
     more = as_expr_list(i_parameters)
   )
-  
   
   td_tm <- has_state_time(i_uneval_transition)
   
@@ -144,6 +144,7 @@ eval_strategy <- function(strategy, parameters, cycles,
   
   e_init <- unlist(eval_init(x = init, parameters[1, ]))
   e_inflow <- eval_inflow(x = inflow, parameters)
+  e_init_cost <- eval_init_cost(x = init_cost, parameters[1, ])
   
   if (any(is.na(e_init)) || any(is.na(e_inflow))) {
     stop("Missing values not allowed in 'init' or 'inflow'.")
@@ -166,7 +167,7 @@ eval_strategy <- function(strategy, parameters, cycles,
     correct_counts(method = method)
   
   values <- compute_values(states, count_table)
-  
+
   if (expand) {
     for (st in to_expand) {
       exp_cols <- sprintf(".%s_%i", st, seq_len(expand_limit[st] + 1))
@@ -188,7 +189,8 @@ eval_strategy <- function(strategy, parameters, cycles,
       e_inflow = e_inflow,
       n_indiv = sum(e_init, unlist(e_inflow)),
       cycles = cycles,
-      expand_limit = expand_limit
+      expand_limit = expand_limit,
+      e_init_cost = e_init_cost
     ),
     class = c("eval_strategy")
   )
