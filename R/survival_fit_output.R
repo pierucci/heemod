@@ -256,6 +256,7 @@ summary_helper <- function(fit, ...){
 #' @param max_scaled_time maximum time, after scaling by `scale_time`
 #' @param title for the plot
 #' @param x_axis_gap distance between breaks on the x axis
+#' @param legend_loc location for legend - "top", "bottom", "left", or "right"
 #'
 #' @return a `ggplot2` plot object
 #' @export

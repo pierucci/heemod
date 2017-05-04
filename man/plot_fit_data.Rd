@@ -6,7 +6,7 @@
 \usage{
 plot_fit_data(data_to_plot, type = c("survival", "cumulative hazard"),
   logy = FALSE, scale_time = 1, time_label = "time",
-  max_scaled_time = Inf, title = NULL, x_axis_gap)
+  max_scaled_time = Inf, title = NULL, x_axis_gap, legend_loc = "right")
 }
 \arguments{
 \item{data_to_plot}{a data frame from
@@ -27,6 +27,8 @@ by weeks, set this to 1/7.}
 \item{title}{for the plot}
 
 \item{x_axis_gap}{distance between breaks on the x axis}
+
+\item{legend_loc}{location for legend - "top", "bottom", "left", or "right"}
 }
 \value{
 a \code{ggplot2} plot object
