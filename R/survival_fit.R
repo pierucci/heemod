@@ -156,7 +156,6 @@ survival_from_data <-
                                                 survival_specs$fit_directory[this_row]))
                 if(!("time_subtract" %in% names(set_definitions)))
                   set_definitions <- dplyr::mutate_(set_definitions, time_subtract = 0)
-                
                 set_definitions <- 
                   set_definitions %>% 
                     dplyr::mutate_(time_subtract = ~ifelse(is.na(time_subtract), 
@@ -177,7 +176,6 @@ survival_from_data <-
                                           condition = "TRUE",
                                           time_subtract = 0,
                                           stringsAsFactors = FALSE)
-               
                surv_fits <- 
                  lapply(1:nrow(these_sets), function(set_index){
                    subset_data <-
@@ -247,14 +245,30 @@ survival_from_data <-
   }
 
 
-get_set_definitions <- function(data_dir){
+get_set_definitions <- function(data_dir, file_name = "set_definitions"){
   set_definitions <- data.frame(treatment = character(0), type = character(0))
   set_definition_file_name <- 
-    list.files(data_dir, pattern = "set_definitions", full.names = TRUE)
+    list.files(data_dir, pattern = file_name, full.names = TRUE)
   if(length(set_definition_file_name) > 1)
     stop("can only have one file with the name 'set_definition'")
   if(length(set_definition_file_name) == 1)
     set_definitions <- read_file(set_definition_file_name)
+  missing_names <- setdiff(c("treatment", "set_name", "condition"),
+                        names(set_definitions))
+  extra_names <- setdiff(names(set_definitions),
+                         c("treatment", "set_name", 
+                           "condition", "subtract_time"))
+  extra_names <- extra_names[!grep("^.comment", extra_names)]
+  if(length(missing_names) > 0)
+    stop("set_definitions file missing column(s): ",
+         paste(missing_names, collapse = ", ")
+         )
+  if(length(extra_names) > 0)
+    stop("unrecognized column name(s): ",
+         paste(extra_names, collapse = ", ")
+         )
+  ## just in case we have only logicals
+  set_definitions$condition <- as.character(set_definitions$condition)
   set_definitions
 }
 

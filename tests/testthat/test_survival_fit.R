@@ -63,9 +63,36 @@ expect_error(
   "nrow(survdata)", fixed = TRUE
 )
 
-
-
 })
+
+test_that("reading set definitions works",
+          {
+            example_1 <- 
+              get_set_definitions(system.file("tabular/surv", package = "heemod"),
+                                  "set_definitions_1.csv")
+            expect_identical(example_1,
+                             data.frame(treatment = rep(c("fake_treatment", "not_real"),2),
+                                        set_name = rep(c("all", "time.gt.100"), each = 2),
+                                        condition = rep(c("TRUE", "time > 100"), each = 2),
+                                        subtract_time = rep(as.integer(c(NA, 100)), each = 2),
+                                        stringsAsFactors = FALSE
+                                        )
+                             )
+            example_2 <-
+              get_set_definitions(system.file("tabular/surv", package = "heemod"),
+                                  "set_definitions_2.csv")
+            expect_identical(example_2,
+                             data.frame(treatment = "fake_treatment",
+                                        set_name = "all", 
+                                        condition = "TRUE",
+                                        stringsAsFactors = FALSE))
+            expect_error(get_set_definitions(system.file("tabular/surv", package = "heemod"),
+                                             "set_definitions_error_1.csv"),
+                         "set_definitions file missing column(s): treatment, set_name",
+                         fixed = TRUE)
+          }
+          )
+
 
 test_that("getting survival inputs works",
           {
