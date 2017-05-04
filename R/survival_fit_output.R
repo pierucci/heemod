@@ -116,7 +116,7 @@ write_fits_to_excel_from_tibble <-
     XLConnect::createSheet(wb, "km")
     XLConnect::writeWorksheet(wb, 
                    plot_data_km[, c("type", "treatment", "set_name", "dist",
-                                         "time", "est", "lcl", "ucl")],
+                                         "time", "est", "lcl", "ucl", "fn")],
                    sheet= "km", 
                    startRow = skip_at_start,
                    startCol = 1)
@@ -234,7 +234,7 @@ summary_helper <- function(fit, ...){
     res1 <- summary(fit, t = all_times, ...)
   }
   if(inherits(res1, "summary.survfit")){
-    res1 <- data.frame(res1[c("time", "surv", "upper", "lower")])
+    res1 <- data.frame(res1[c("time", "surv", "lower", "upper")])
     names(res1) <- c("time", "est", "lcl", "ucl")
     res1
   }
@@ -268,8 +268,10 @@ plot_fit_data <- function(data_to_plot,
                           time_label = "time",
                           max_scaled_time = Inf,
                           title = NULL,
-                          x_axis_gap){
+                          x_axis_gap,
+                          legend_loc = "right"){
   type <- match.arg(type)
+  stopifnot(legend_loc %in% c("right", "left", "bottom", "top"))
   data_to_plot <- dplyr::filter_(data_to_plot, 
                                  lazyeval::interp(~fn == var, var = type))
   data_to_plot$time <- data_to_plot$time * scale_time
@@ -286,6 +288,7 @@ plot_fit_data <- function(data_to_plot,
     res <- res + ggplot2::scale_x_continuous(breaks = breaks)
   }
   res <- res + ggplot2::labs(y = type, x = time_label, title = title)
+  res <- res + ggplot2::theme(legend.position = legend_loc)
   res
 }
 
