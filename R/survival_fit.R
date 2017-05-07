@@ -145,9 +145,12 @@ survival_from_data <-
              function(this_row){
                 this_treatment <- 
                   survival_specs[this_row, "treatment"]
+                treatment_col_name = survival_specs[this_row, "treatment_col"]
+                filter_str <- 
+                  paste(treatment_col_name, " == '", this_treatment, "'", sep = "")
                 this_data <- 
                  read_file(data_files[this_row]) %>%
-                  dplyr::filter_(~ treatment == this_treatment)
+                  dplyr::filter_(filter_str)
 
                 ## get set definitions, if there are any
                 ## (if not, will return a data frame with no rows)
