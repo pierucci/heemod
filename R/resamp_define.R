@@ -31,32 +31,41 @@ define_psa <- function(...,
                        correlation) {
   .dots <- list(...)
   
+  lapply(
+    .dots,
+    function(x) {
+      if (! inherits(x, "formula")) {
+        stop("Parameter distributions must be formulas.")
+      }
+      if (is_one_sided(x)) {
+        stop("Parameter names must be on the left hand of the formula.")
+      }
+    }
+  )
+  
   list_input <- lapply(
     .dots,
     function(x) {
-      terms <- attr(stats::terms(x), "variables")
-      if(length(terms) < 3){
-        stop("Incorrect PSA distribution definition for parameter: ",
-             as.character(terms[2]))
-      }
-      eval(terms[[3]], envir = asNamespace("heemod"))
+      eval(rhs(x), envir = asNamespace("heemod"))
     })
   
   list_qdist <- unlist(
     list_input,
     recursive = FALSE
   )
+  
   names(list_qdist) <- unlist(
     lapply(
       .dots,
-      function(x) all.vars(x)
+      function(x) all.vars(lhs(x))
     )
   )
-  
+  browser()
   list_multi <- lapply(
-    .dots[unlist(lapply(list_input,
-                        function(x) "multinom_param" %in% class(x)))],
-    function(x) define_multinom(force(all.vars(x)))
+    .dots[unlist(lapply(
+      list_input,
+      inherits, "multinom_param"))],
+    function(x) define_multinom(all.vars(lhs(x)))
   )
   
   if (missing(correlation)){
@@ -107,7 +116,9 @@ define_psa_ <- function(list_qdist, list_multi, correlation) {
 #' @return An object of class `multinomial`.
 #'   
 define_multinom <- function(x) {
-  char_var <- x
+  force(x)
+  
+  
   
   # ugly piece of shit code
   expr_denom <- parse(text = paste(char_var, collapse = "+"))

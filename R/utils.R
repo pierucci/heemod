@@ -398,6 +398,7 @@ to_dots.list <- function(x) {
   )
 }
 
+# transforms factors to characters in a df
 clean_factors <- function(x) {
   for (n in names(x)) {
     if (inherits(x[[n]], "factor")) {
@@ -405,4 +406,26 @@ clean_factors <- function(x) {
     }
   }
   x
+}
+
+# formula operations
+
+is_one_sided <- function(x) {
+  length(x) == 2
+}
+
+lhs <- function(x) {
+  if (is_one_sided(x)) {
+    stop("Cannont extract left hand side of a one-sided formula.")
+  } else {
+    x[[2]]
+  }
+}
+
+rhs <- function(x) {
+  if (is_one_sided(x)) {
+    x[[2]]
+  } else {
+    x[[3]]
+  }
 }
