@@ -178,8 +178,8 @@ check_init.lazy_dots <- function(x, ref) {
     names(x) <- sn
   }
   
-  if (! all(sn == names(x))) {
-    stop("Some 'init' of 'inflow' names are not state names.")
+  if (! all(sn %in% names(x))) {
+    stop("Some 'init' or 'inflow' names are not state names.")
   }
   
   if (! length(x) == get_state_number(ref)) {
