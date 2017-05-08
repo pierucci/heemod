@@ -449,17 +449,23 @@ plot.surv_shift <- plot.surv_obj
 #' Summarize surv_shift objects
 #'
 #' @param object a `surv_shift` object 
+#' @param summary_type "standard" or "plot" - "standard"
+#'   for the usual summary of a `survfit` object,
+#'   "plot" for a fuller version
 #' @param ... other arguments
-#'
+#' 
 #' @return
 #' @export
 #'
 summary.surv_shift <- 
-  function(object, ...){
+  function(object, summary_type = c("plot", "standard"), ...){
+    summary_type <- match.arg(summary_type)
     res <- summary(object$dist, ...)
     if(inherits(res, "summary.survfit")){
-      res <- data.frame(res[c("time", "surv", "upper", "lower")])
-      names(res) <- c("time", "est", "lcl", "ucl")
+      if(summary_type == "plot"){
+        res <- data.frame(res[c("time", "surv", "upper", "lower")])
+        names(res) <- c("time", "est", "lcl", "ucl")
+      }
     }
     if(length(res) == 1) res <- res[[1]]
     res$time <- res$time + object$shift

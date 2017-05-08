@@ -109,15 +109,33 @@ write_fits_to_excel_from_tibble <-
           dplyr::do_(~send_info_to_workbook(., wb = wb, 
                                           skip_between = skip_between,
                                           alignment = alignment))
+    use_pieces <- c("time", "n.risk", "n.event", "surv", "std.err",
+                    "lower", "upper")
+    base_km_summaries <- 
+      fit_tibble %>% 
+      dplyr::filter_(~ dist == "km") %>%
+      dplyr::group_by_(~ type, ~ treatment, ~ set_name) %>%
+      dplyr::do(data.frame(summary(object = .$fit[[1]], 
+                                   summary_type = "standard")[use_pieces])) %>%
+      dplyr::ungroup()
+    
     
     plot_data <- prepare_plot_data_from_fit_tibble(fit_tibble)
-    plot_data_km <- plot_data %>% dplyr::filter_(~ dist == "km")
-    
+    plot_data_km <- plot_data %>% 
+      dplyr::filter_(~ dist == "km", ~fn == "survival")
+  
     XLConnect::createSheet(wb, "km")
+    XLConnect::writeWorksheet(wb,
+                              base_km_summaries,
+                              sheet = "km",
+                              startRow = skip_at_start,
+                              startCol = 1)
+    
+    XLConnect::createSheet(wb, "km_plot")
     XLConnect::writeWorksheet(wb, 
                    plot_data_km[, c("type", "treatment", "set_name", "dist",
                                          "time", "est", "lcl", "ucl", "fn")],
-                   sheet= "km", 
+                   sheet= "km_plot", 
                    startRow = skip_at_start,
                    startCol = 1)
           
@@ -220,13 +238,13 @@ prepare_plot_data_from_fit_tibble <-
     rbind(survival_summaries, cumhaz_summaries)
   }
 
-summary_helper <- function(fit, ...){
+summary_helper <- function(fit, type, ...){
   stopifnot(inherits(fit, c("flexsurvreg", "survfit", "surv_shift")))
     if(inherits(fit, "surv_shift")){
-      res1 <- summary.surv_shift(fit, ...)
+      res1 <- summary.surv_shift(fit, type = type, ...)
     }
   else{
-    res1 <- summary(fit, ...)
+    res1 <- summary(fit, type = type, ...)
     all_times <- sort(unique(c(res1[["time"]],
                                seq(from = 1, 
                                    to = max(res1[["time"]]),
