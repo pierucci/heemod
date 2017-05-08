@@ -142,10 +142,12 @@ survival_from_data <-
         grepl("^[A-Z]:", survival_specs$data_directory) |
         substr(survival_specs$data_directory, 1, 2) == "\\" |
         substr(survival_specs$data_directory, 1, 1) == .Platform$file.sep
-      use_location <- ifelse(is_absolute, "", location)
-      data_files <- file.path(use_location,
+      data_files <- file.path(location,
                               survival_specs$data_directory,
                               survival_specs$data_file)
+      data_files[is_absolute] <- 
+        file.path(survival_specs$data_directory,
+                  survival_specs$data_file)[is_absolute]
       fit_files <- file.path(location,
                              survival_specs$fit_directory,
                              survival_specs$fit_file)

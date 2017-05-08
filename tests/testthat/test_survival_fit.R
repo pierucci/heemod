@@ -142,6 +142,7 @@ test_that("fitting works (including with subsets)",
                                  dists = c("exp", "weibull"),
                                  save_fits = FALSE,
                                  use_envir = new.env())
+            
             expect_identical(names(these_fits), c("", "env"))
             expect_identical(names(these_fits[[1]]),
                              c("type", "treatment", "set_name",
@@ -177,6 +178,27 @@ test_that("fitting works (including with subsets)",
                                              494.77, 496.662, 492.77)
             
                              )
+            ## now test with absolute path
+            abs_path_surv_info <- ok_surv_info
+            abs_path_surv_info$data_directory <-
+              file.path(location, ok_surv_info$data_directory)
+            abs_path_fits <- 
+              heemod:::survival_from_data(location = location,
+                                          survival_specs = abs_path_surv_info,
+                                          dists = c("exp", "weibull"),
+                                          save_fits = FALSE,
+                                          use_envir = new.env())
+            metrics <- extract_surv_fit_metrics(abs_path_fits[[1]])
+            expect_identical(names(metrics),
+                             c("type", "treatment", "set_name", "dist", "fit",
+                               "set_def", "time_subtract", "AIC", "BIC", "m2LL"))
+            expect_equal(nrow(metrics), 20)
+            expect_identical(round(metrics[1, c("AIC", "BIC", "m2LL")], 3),
+                             tibble::tribble(~AIC, ~BIC, ~m2LL,
+                                             494.77, 496.662, 492.77)
+                             
+            )
+            
             ## make sure it works calling with just one row
             metrics <- extract_surv_fit_metrics(these_fits[[1]][1,])
             expect_identical(round(metrics[, c("AIC", "BIC", "m2LL")], 3),
