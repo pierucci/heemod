@@ -115,7 +115,9 @@ partitioned_survival_from_ref_struc <- function(ref, df_env,
 #'   the data in data_files (using the `flexsurvreg` package), and if fit_files
 #'   is also not NULL, the survival models will be saved in fit_files.
 #'   
-
+#' If `data_directory` begins with "\\", with the platform file separator
+#' (`.Platform$file.sep`) or with a letter and a colon (to accomodate Windows),
+#' it's considered absolute and not appended to `location`.
 
 survival_from_data <- 
   function(location,
@@ -132,7 +134,16 @@ survival_from_data <-
       return(load_surv_models(location, survival_specs, use_envir))
    }
     else{
-      data_files <- file.path(location,
+      ## going to check whether we have an absolute directory
+      ##   for data directory, or relative.  We assume absolute
+      ##   if it begins either with a letter and a colon
+      ##   or with two slashes.
+      is_absolute <- 
+        grepl("^[A-Z]:", survival_specs$data_directory) |
+        substr(survival_specs$data_directory, 1, 2) == "\\" |
+        substr(survival_specs$data_directory, 1, 1) == .Platform$file.sep
+      use_location <- ifelse(is_absolute, "", location)
+      data_files <- file.path(use_location,
                               survival_specs$data_directory,
                               survival_specs$data_file)
       fit_files <- file.path(location,

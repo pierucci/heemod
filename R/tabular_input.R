@@ -1263,10 +1263,11 @@ modify_param_defs_for_multinomials <- function(param_defs, psa) {
 ##   properly formatted and have reasonable data
 check_survival_specs <- 
   function(surv_specs){
-    
+    ## if there are troubles with absolute file paths, 
+    ##   might want to add an "absolute" column to surv_specs
+    ##   to be explicit (if, possibly, a little redundant)
     if(!is.data.frame(surv_specs) || nrow(surv_specs) == 0)
       stop("surv_specs must be a data frame with at least one row")
-    
     surv_spec_col_names <- c("type", "treatment", "data_directory", "data_file",
                              "fit_directory", "fit_name", "fit_file",
                              "time_col", "treatment_col", "censor_col")

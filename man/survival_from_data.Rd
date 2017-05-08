@@ -53,4 +53,8 @@ should have the names of files in which survival models are kept.
 If data_files is not NULL, then survival models will be fit from
 the data in data_files (using the \code{flexsurvreg} package), and if fit_files
 is also not NULL, the survival models will be saved in fit_files.
+
+If \code{data_directory} begins with "\", with the platform file separator
+(\code{.Platform$file.sep}) or with a letter and a colon (to accomodate Windows),
+it's considered absolute and not appended to \code{location}.
 }
