@@ -1,5 +1,5 @@
-type,treatment,data_directory,data_file,fit_directory,fit_name,fit_file,time_col,treatment_col,censor_col,time_divide,event_code,censor_code
-PFS,A,survival_data,surv_data_PFS_eventcode.csv,survival_data,PFS.A.fit,PFS.A.surv.fits,time,treatment,status,1,event,censored
-PFS,B,survival_data,surv_data_PFS_eventcode.csv,survival_data,PFS.B.fit,PFS.B.surv.fits,time,treatment,status,1,event,censored
-OS,A,survival_data,surv_data_OS_eventcode.csv,survival_data,OS.A.fit,OS.A.surv.fits,time,treatment,status,1,event,censored
-OS,B,survival_data,surv_data_OS_eventcode.csv,survival_data,OS.B.fit,OS.B.surv.fits,time,treatment,status,1,event,censored
+type,treatment,data_directory,data_file,fit_directory,fit_name,fit_file,time_col,treatment_col,censor_col,event_code,censor_code
+PFS,A,survival_data,surv_data_PFS_eventcode.csv,survival_data,PFS.A.fit,PFS.A.surv.fits,time,treatment,status,event,censored
+PFS,B,survival_data,surv_data_PFS_eventcode.csv,survival_data,PFS.B.fit,PFS.B.surv.fits,time,treatment,status,event,censored
+OS,A,survival_data,surv_data_OS_eventcode.csv,survival_data,OS.A.fit,OS.A.surv.fits,time,treatment,status,event,censored
+OS,B,survival_data,surv_data_OS_eventcode.csv,survival_data,OS.B.fit,OS.B.surv.fits,time,treatment,status,event,censored

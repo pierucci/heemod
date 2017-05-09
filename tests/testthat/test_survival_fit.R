@@ -100,11 +100,11 @@ test_that("getting survival inputs works",
              read_file(system.file("tabular/surv/survival_info.csv", 
                                    package = "heemod"))
              check_survival_specs(ok_surv_info)
-           for(i in 1:(ncol(ok_surv_info) - 3)){
+           for(i in 1:(ncol(ok_surv_info) - 2)){
              expect_error(check_survival_specs(ok_surv_info[, -i]),
                           "missing names")
            }
-            for(i in ncol(ok_surv_info) - 2:0){
+            for(i in ncol(ok_surv_info) - 1:0){
               expect_warning(check_survival_specs(ok_surv_info[, -i]),
                            "not defined in surv_specs")
             }
@@ -203,7 +203,7 @@ test_that("fitting works (including with subsets)",
                              
             )
             
-            ## make sure it works calling with just one row
+            ## make sure metrics works calling with just one row
             metrics <- extract_surv_fit_metrics(these_fits[[1]][1,])
             expect_identical(round(metrics[, c("AIC", "BIC", "m2LL")], 3),
                              tibble::tribble(~AIC, ~BIC, ~m2LL,
@@ -236,6 +236,7 @@ test_that("fitting works (including with subsets)",
             expect_identical(lapply(these_fits[[1]]$fit, compute_surv, time = c(45:55)),
                              lapply(eventcode_fits[[1]]$fit, compute_surv, time = c(45:55))
                              )
+            
           }
           )
 
