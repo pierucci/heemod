@@ -99,11 +99,15 @@ test_that("getting survival inputs works",
            ok_surv_info <- 
              read_file(system.file("tabular/surv/survival_info.csv", 
                                    package = "heemod"))
-           check_survival_specs(ok_surv_info)
-           for(i in 1:ncol(ok_surv_info)){
+             check_survival_specs(ok_surv_info)
+           for(i in 1:(ncol(ok_surv_info) - 3)){
              expect_error(check_survival_specs(ok_surv_info[, -i]),
                           "missing names")
-             }
+           }
+            for(i in ncol(ok_surv_info) - 2:0){
+              expect_warning(check_survival_specs(ok_surv_info[, -i]),
+                           "not defined in surv_specs")
+            }
            surv_info_extra <- ok_surv_info
            surv_info_extra$extra_col <- 5
            expect_error(check_survival_specs(surv_info_extra),
@@ -136,13 +140,13 @@ test_that("fitting works (including with subsets)",
             ok_surv_info <- 
               heemod:::read_file(system.file("tabular/surv/survival_info.csv", 
                                     package = "heemod"))
-            these_fits <- 
+            
+              these_fits <- 
               heemod:::survival_from_data(location = location,
                                  survival_specs = ok_surv_info,
                                  dists = c("exp", "weibull"),
                                  save_fits = FALSE,
                                  use_envir = new.env())
-            
             expect_identical(names(these_fits), c("", "env"))
             expect_identical(names(these_fits[[1]]),
                              c("type", "treatment", "set_name",
@@ -182,7 +186,7 @@ test_that("fitting works (including with subsets)",
             abs_path_surv_info <- ok_surv_info
             abs_path_surv_info$data_directory <-
               file.path(location, ok_surv_info$data_directory)
-            abs_path_fits <- 
+              abs_path_fits <- 
               heemod:::survival_from_data(location = location,
                                           survival_specs = abs_path_surv_info,
                                           dists = c("exp", "weibull"),
@@ -204,6 +208,33 @@ test_that("fitting works (including with subsets)",
             expect_identical(round(metrics[, c("AIC", "BIC", "m2LL")], 3),
                              tibble::tribble(~AIC, ~BIC, ~m2LL,
                                              494.77, 496.662, 492.77)
+                             )
+            ## make sure we get an error if we specify incorrect event codes
+            eventcode_surv_info_error <-
+              heemod:::read_file(system.file("tabular/surv/survival_info_eventcode_error.csv", 
+                                             package = "heemod"))
+            expect_error(
+              heemod:::survival_from_data(location = location,
+                                          survival_specs = eventcode_surv_info_error,
+                                          dists = c("exp", "weibull"),
+                                          save_fits = FALSE,
+                                          use_envir = new.env()),
+              "non-matching values in status; all values should be either event or censor"
+            )
+            
+            ## make sure we run correctly if we specify correct event codes
+            eventcode_surv_info<-
+              heemod:::read_file(system.file("tabular/surv/survival_info_eventcode.csv", 
+                                             package = "heemod"))
+            eventcode_fits <-
+              heemod:::survival_from_data(location = location,
+                                          survival_specs = eventcode_surv_info,
+                                          dists = c("exp", "weibull"),
+                                          save_fits = FALSE,
+                                          use_envir = new.env())
+            ## this should have same results as earlier fits
+            expect_identical(lapply(these_fits[[1]]$fit, compute_surv, time = c(45:55)),
+                             lapply(eventcode_fits[[1]]$fit, compute_surv, time = c(45:55))
                              )
           }
           )

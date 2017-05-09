@@ -1268,10 +1268,25 @@ check_survival_specs <-
     ##   to be explicit (if, possibly, a little redundant)
     if(!is.data.frame(surv_specs) || nrow(surv_specs) == 0)
       stop("surv_specs must be a data frame with at least one row")
+    if(!("time_divide" %in% names(surv_specs))){
+      warning("time_divide not defined in surv_specs; setting to 1 for all rows")
+      surv_specs$time_divide <- 1
+    }
+    if(!("event_code" %in% names(surv_specs))){
+      warning("event_code not defined in surv_specs; setting to 1 for all rows")
+      surv_specs$event_code <- 1
+    }
+    if(!("censor_code" %in% names(surv_specs))){
+      warning("censor_code not defined in surv_specs; setting to 0 for all rows")
+      surv_specs$censor_code <- 0
+    }
+      
     surv_spec_col_names <- c("type", "treatment", "data_directory", "data_file",
                              "fit_directory", "fit_name", "fit_file",
-                             "time_col", "treatment_col", "censor_col")
-    if(! identical(names(surv_specs), surv_spec_col_names)){
+                             "time_col", "treatment_col", "censor_col",
+                             "time_divide", "event_code", "censor_code"
+                             )
+    if(! identical(sort(names(surv_specs)), sort(surv_spec_col_names))){
       extra_names <- setdiff(names(surv_specs), surv_spec_col_names)
       missing_names <- setdiff(surv_spec_col_names, names(surv_specs))
       names_message <- paste("surv_ref must have column names:\n",

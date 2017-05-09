@@ -158,13 +158,28 @@ survival_from_data <-
              function(this_row){
                 this_treatment <- 
                   survival_specs[this_row, "treatment"]
-                treatment_col_name = survival_specs[this_row, "treatment_col"]
+                treatment_col_name <- survival_specs[this_row, "treatment_col"]
+                this_time_col <- survival_specs[this_row, "time_col"]
+                this_time_divide <- survival_specs[this_row, "time_divide"]
                 filter_str <- 
                   paste(treatment_col_name, " == '", this_treatment, "'", sep = "")
                 this_data <- 
                  read_file(data_files[this_row]) %>%
                   dplyr::filter_(filter_str)
-
+                ## adjust time scale
+                this_data[, this_time_col] <- this_data[, this_time_col] / this_time_divide
+                ## set up the event values: 1 for event, 0 for censored
+                this_censor_col <- survival_specs[this_row, "censor_col"]
+                this_data[, this_censor_col] <-
+                  match(this_data[, this_censor_col],
+                        c(survival_specs[this_row, "censor_code"],
+                          survival_specs[this_row, "event_code"])) - 1
+                if(any(is.na(this_data[, this_censor_col])))
+                  stop("non-matching values in ", this_censor_col,
+                       "; all values should be either ",
+                       survival_specs[this_row, "event_code"],
+                       " or ",
+                       survival_specs[this_row, "censor_code"])
                 ## get set definitions, if there are any
                 ## (if not, will return a data frame with no rows)
                 set_definitions <- 
