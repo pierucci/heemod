@@ -79,10 +79,10 @@ r_binomial <- function(prob, size) {
 #' @rdname distributions
 multinomial <- function(...) {
   list_param <- list(...)
-  total = sum(unlist(list_param))
+  total <- sum(unlist(list_param))
   structure(
     lapply(list_param, function(x) r_multinomial(x, total)),
-    class = c("list", "multinom_param")
+    class = "multinom_param"
   )
 }
 multinom <- function(...) {

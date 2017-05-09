@@ -178,6 +178,11 @@ test_that(
       "Incorrect PSA distribution definition"
     )
     expect_error(
+      define_psa(
+        ~ normal(60, 10)
+      )
+    )
+    expect_error(
       define_correlation(age_init, cost_init, .4, .5)
     )
     expect_error(
@@ -187,4 +192,20 @@ test_that(
       define_correlation(age_init, cost_init, .4, age_init, cost_init, .5)
     )
   }
+)
+define_psa(
+  x ~ normal(1, 2),
+  b + c ~ multinomial(20, 30),
+  c + e + f ~ multinomial(12, 34, 56)
+)
+define_psa(
+  x ~ normal(1, 2),
+  c + c ~ multinomial(20, 30),
+  d + e + f ~ multinomial(12, 34, 56)
+)
+
+define_psa(
+  x ~ normal(1, 2),
+  b + c ~ multinomial(20, 30, 34),
+  d + e + f ~ multinomial(12, 34)
 )

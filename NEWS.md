@@ -1,5 +1,9 @@
 ## heemod 0.9.1.9001
 
+### Bugfixes
+
+  * Better error-checking in multinomial parameters definition.
+
 ### Backend changes
 
   * The development branch is now called `master`, the release branch is called `cran`.
@@ -25,7 +29,7 @@
 
 ## heemod 0.9.0
 
-`heemod` can now be cited with :
+`heemod` can now be cited with:
 
 Filipović-Pierucci A, Zarca K and Durand-Zaleski I (2017).
 “Markov Models for Health Economic Evaluations: The R
