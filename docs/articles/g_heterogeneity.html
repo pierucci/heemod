@@ -81,16 +81,16 @@
 <pre><code>## # A tibble: 100 × 2
 ##      age   sex
 ##    &lt;dbl&gt; &lt;int&gt;
-##  1    84     1
-##  2    55     0
-##  3    60     1
-##  4    74     1
-##  5    75     1
-##  6    58     0
-##  7    68     0
-##  8    52     0
-##  9    61     1
-## 10    59     0
+##  1    66     0
+##  2    55     1
+##  3    63     1
+##  4    61     1
+##  5    72     0
+##  6    66     0
+##  7    51     0
+##  8    76     1
+##  9    70     0
+## 10    68     1
 ## # ... with 90 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
 <span class="kw">ggplot</span>(tab_indiv, <span class="kw">aes</span>(<span class="dt">x =</span> age)) +
@@ -118,28 +118,28 @@
 ## 
 ## * Values distribution:
 ## 
-##                                  Min.      1st Qu.      Median        Mean
-## standard - Cost          485.85297365  605.0062810 621.9893893 681.1972580
-## standard - Effect          9.32287610   24.8754832  27.7806580  25.7637697
-## standard - Cost Diff.               -            -           -           -
-## standard - Effect Diff.             -            -           -           -
-## standard - Icer                     -            -           -           -
-## np1 - Cost               603.34263272  635.5509751 640.1676766 657.2852824
-## np1 - Effect               9.38064927   25.1436592  27.9754765  26.0142866
-## np1 - Cost Diff.        -160.47985885 -110.7286273  18.1782873 -23.9119756
-## np1 - Effect Diff.         0.04405769    0.1948185   0.2168686   0.2505169
-## np1 - Icer              -352.23489020 -316.4394659  82.0897023  48.7806814
+##                                  Min.     1st Qu.      Median        Mean
+## standard - Cost          485.85297365  613.836464 666.1179694 699.7809112
+## standard - Effect         11.78433667   25.569643  27.3769142  26.2309984
+## standard - Cost Diff.               -           -           -           -
+## standard - Effect Diff.             -           -           -           -
+## standard - Icer                     -           -           -           -
+## np1 - Cost               603.34263272  637.950820 652.9595311 662.5152077
+## np1 - Effect              11.82839436   25.829934  27.7656911  26.4990281
+## np1 - Cost Diff.        -170.74542340 -110.728627 -13.3008325 -37.2657035
+## np1 - Effect Diff.         0.04405769    0.208543   0.2214442   0.2680297
+## np1 - Icer              -356.90833447 -316.439466 -65.3928452 -19.7008477
 ##                             3rd Qu.         Max.
-## standard - Cost         802.3426777  871.8854128
-## standard - Effect        29.0749005   31.3071020
+## standard - Cost         802.3426777  886.2488085
+## standard - Effect        29.0749005   31.5986556
 ## standard - Cost Diff.             -            -
 ## standard - Effect Diff.           -            -
 ## standard - Icer                   -            -
-## np1 - Cost              691.6140504  711.4055539
-## np1 - Effect             29.5008365   31.5405654
-## np1 - Cost Diff.         30.5446941  117.4896591
-## np1 - Effect Diff.        0.3499204    0.4556047
-## np1 - Icer              156.7853582 2666.7229585
+## np1 - Cost              691.6140504  715.5033851
+## np1 - Effect             29.5008365   31.9083414
+## np1 - Cost Diff.         24.1143568  117.4896591
+## np1 - Effect Diff.        0.3499204    0.4784013
+## np1 - Icer              115.6325465 2666.7229585
 ## 
 ## * Combined result:
 ## 
@@ -158,8 +158,8 @@
 ## Values:
 ## 
 ##           utility     cost
-## standard 25763.77 681197.3
-## np1      26014.29 657285.3
+## standard 26231.00 699780.9
+## np1      26499.03 662515.2
 ## 
 ## Efficiency frontier:
 ## 
@@ -168,7 +168,7 @@
 ## Differences:
 ## 
 ##     Cost Diff. Effect Diff.      ICER     Ref.
-## np1  -23.91198    0.2505169 -95.45057 standard</code></pre>
+## np1   -37.2657    0.2680297 -139.0357 standard</code></pre>
 <p>The variation of cost or effect can then be plotted.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(res_h, <span class="dt">result =</span> <span class="st">"effect"</span>, <span class="dt">binwidth =</span> <span class="dv">5</span>)</code></pre></div>
 <p><img src="g_heterogeneity_files/figure-html/unnamed-chunk-7-1.png" width="576" style="display: block; margin: auto;"></p>
@@ -195,16 +195,16 @@
 <pre><code>## # A tibble: 100 × 3
 ##      age   sex  .weights
 ##    &lt;dbl&gt; &lt;int&gt;     &lt;dbl&gt;
-##  1    62     0 0.6435215
-##  2    53     0 0.1964005
-##  3    62     0 0.3390838
-##  4    55     1 0.2248957
-##  5    83     0 0.7603354
-##  6    63     1 0.8445155
-##  7    64     1 0.5003306
-##  8    59     0 0.1866288
-##  9    67     1 0.1080727
-## 10    55     0 0.6304182
+##  1    67     0 0.8864782
+##  2    61     1 0.2726151
+##  3    50     1 0.6034314
+##  4    55     0 0.9499640
+##  5    47     1 0.1445273
+##  6    51     0 0.8078382
+##  7    57     0 0.3782388
+##  8    73     0 0.1203792
+##  9    70     1 0.4814005
+## 10    69     1 0.9701366
 ## # ... with 90 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res_w &lt;-<span class="st"> </span><span class="kw">update</span>(res_mod, <span class="dt">newdata =</span> tab_indiv_w)</code></pre></div>
 <pre><code>## Updating strategy 'standard'...</code></pre>
@@ -215,34 +215,34 @@
 ## * Weigths distribution:
 ## 
 ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-## 0.005813 0.215561 0.476570 0.495896 0.785581 0.981229 
+## 0.007801 0.255174 0.462005 0.505948 0.742027 0.996870 
 ## 
-## Total weight: 49.58956
+## Total weight: 50.59481
 ## 
 ## * Values distribution:
 ## 
-##                                  Min.     1st Qu.      Median        Mean
-## standard - Cost          485.85297365  613.836464 627.8444603 693.3373240
-## standard - Effect          7.47256790   23.202253  27.7806580  25.9698148
-## standard - Cost Diff.               -           -           -           -
-## standard - Effect Diff.             -           -           -           -
-## standard - Icer                     -           -           -           -
-## np1 - Cost               603.34263272  637.950820 641.9677188 660.7384121
-## np1 - Effect               7.49009703   23.489433  27.9754765  26.2332976
-## np1 - Cost Diff.        -164.88137326 -110.728627  14.5509685 -32.5989118
-## np1 - Effect Diff.         0.02468212    0.208543   0.2237991   0.2634827
-## np1 - Icer              -354.32431375 -316.439466  63.4214929 166.8112209
+##                                 Min.     1st Qu.      Median        Mean
+## standard - Cost          565.3706618  613.836464 626.9720129 694.1525440
+## standard - Effect         18.7882873   25.604769  29.0459530  27.2996162
+## standard - Cost Diff.              -           -           -           -
+## standard - Effect Diff.            -           -           -           -
+## standard - Icer                    -           -           -           -
+## np1 - Cost               624.7960167  637.950820 641.5229814 660.8669635
+## np1 - Effect              19.0005803   25.919563  29.2544960  27.5692054
+## np1 - Cost Diff.        -160.4798588 -110.728627  14.5509685 -33.2855806
+## np1 - Effect Diff.         0.1367789    0.208543   0.2214442   0.2695892
+## np1 - Icer              -352.2348902 -316.439466  63.4214929 -38.2514223
 ##                             3rd Qu.         Max.
-## standard - Cost         802.3426777  886.2488085
-## standard - Effect        29.4679999   31.4299400
+## standard - Cost         802.3426777  878.0059303
+## standard - Effect        30.2219909   31.7692206
 ## standard - Cost Diff.             -            -
 ## standard - Effect Diff.           -            -
 ## standard - Icer                   -            -
-## np1 - Cost              691.6140504  715.5033851
-## np1 - Effect             29.9026402   31.9083414
-## np1 - Cost Diff.         24.1143568  143.6441681
-## np1 - Effect Diff.        0.3499204    0.4784013
-## np1 - Icer              115.6325465 8194.5991768
+## np1 - Cost              691.6140504  713.1515269
+## np1 - Effect             30.4434351   32.0078346
+## np1 - Cost Diff.         24.1143568  109.5198503
+## np1 - Effect Diff.        0.3499204    0.4653001
+## np1 - Icer              115.6325465 5050.2974606
 ## 
 ## * Combined result:
 ## 
@@ -261,8 +261,8 @@
 ## Values:
 ## 
 ##           utility     cost
-## standard 25969.81 693337.3
-## np1      26233.30 660738.4
+## standard 27299.62 694152.5
+## np1      27569.21 660867.0
 ## 
 ## Efficiency frontier:
 ## 
@@ -271,7 +271,7 @@
 ## Differences:
 ## 
 ##     Cost Diff. Effect Diff.      ICER     Ref.
-## np1  -32.59891    0.2634827 -123.7231 standard</code></pre>
+## np1  -33.28558    0.2695892 -123.4678 standard</code></pre>
 </div>
 <div id="parallel-computing" class="section level2">
 <h2 class="hasAnchor">

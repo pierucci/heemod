@@ -29,3 +29,4 @@ assumptions), fit (for the fitted survival object) and
 set_def (how the subset of data was defined, just to
 keep it around)
 }
+\keyword{internal}

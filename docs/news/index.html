@@ -84,6 +84,24 @@
     </div>
 
     <div class="contents">
+    <div id="heemod-0-9-1-9001" class="section level2">
+<h2 class="hasAnchor">
+<a href="#heemod-0-9-1-9001" class="anchor"></a>heemod 0.9.1.9001</h2>
+<div id="bugfixes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#bugfixes" class="anchor"></a>Bugfixes</h3>
+<ul>
+<li>Better error-checking in multinomial parameters definition.</li>
+</ul>
+</div>
+<div id="backend-changes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#backend-changes" class="anchor"></a>Backend changes</h3>
+<ul>
+<li>The development branch is now called <code>master</code>, the release branch is called <code>cran</code>.</li>
+</ul>
+</div>
+</div>
     <div id="heemod-0-9-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#heemod-0-9-1" class="anchor"></a>heemod 0.9.1</h2>
@@ -102,16 +120,16 @@
 <li>NMB is now reportd as relative values.</li>
 </ul>
 </div>
-<div id="bugfixes" class="section level3">
+<div id="bugfixes-1" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bugfixes" class="anchor"></a>Bugfixes</h3>
+<a href="#bugfixes-1" class="anchor"></a>Bugfixes</h3>
 <ul>
 <li>Fixed error with <code><a href="../reference/run_dsa.html">run_dsa()</a></code> in state expansion situations.</li>
 </ul>
 </div>
-<div id="backend-changes" class="section level3">
+<div id="backend-changes-1" class="section level3">
 <h3 class="hasAnchor">
-<a href="#backend-changes" class="anchor"></a>Backend changes</h3>
+<a href="#backend-changes-1" class="anchor"></a>Backend changes</h3>
 <ul>
 <li>Multiple changes to prepare for the <code>dplyr</code> update 0.6.0.</li>
 </ul>
@@ -150,17 +168,17 @@
 <li>Additional DSA plotting options.</li>
 </ul>
 </div>
-<div id="bugfixes-1" class="section level3">
+<div id="bugfixes-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bugfixes-1" class="anchor"></a>Bugfixes</h3>
+<a href="#bugfixes-2" class="anchor"></a>Bugfixes</h3>
 <ul>
 <li>
 <code>heemod::discount()</code> now produces restults similar to <code><a href="../reference/discount.html">discount()</a></code>.</li>
 </ul>
 </div>
-<div id="backend-changes-1" class="section level3">
+<div id="backend-changes-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#backend-changes-1" class="anchor"></a>Backend changes</h3>
+<a href="#backend-changes-2" class="anchor"></a>Backend changes</h3>
 <ul>
 <li>Renamed memoised functions.</li>
 <li>NSE aliases (<code>*_</code>) to survival operation functions.</li>
@@ -220,17 +238,17 @@
 <li>New parameters can be added with <code><a href="../reference/modify.html">modify()</a></code>.</li>
 </ul>
 </div>
-<div id="backend-changes-2" class="section level3">
+<div id="backend-changes-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#backend-changes-2" class="anchor"></a>Backend changes</h3>
+<a href="#backend-changes-3" class="anchor"></a>Backend changes</h3>
 <ul>
 <li>Cleaner handling of clusters.</li>
 <li>Package <code>diagram</code>, <code>Hmisc</code> and <code>logitnorm</code> moved from <code>Imports</code> to <code>Suggests</code>.</li>
 </ul>
 </div>
-<div id="bugfixes-2" class="section level3">
+<div id="bugfixes-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bugfixes-2" class="anchor"></a>Bugfixes</h3>
+<a href="#bugfixes-3" class="anchor"></a>Bugfixes</h3>
 <ul>
 <li>Fixed sevral bugs that would return incorrect efficiency frontiers in some situations, or would return duplicated strategy names in some edge cases (thanks to <a href="https://github.com/daniels4321">Vince Daniels</a>).</li>
 <li>Fixed a failure of tabular input when a column could be read as all numeric.</li>
@@ -253,9 +271,9 @@
     <div id="heemod-0-7-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#heemod-0-7-1" class="anchor"></a>heemod 0.7.1</h2>
-<div id="bugfixes-3" class="section level3">
+<div id="bugfixes-4" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bugfixes-3" class="anchor"></a>Bugfixes</h3>
+<a href="#bugfixes-4" class="anchor"></a>Bugfixes</h3>
 <ul>
 <li>Fixed an error resulting in incorrect covariance analysis results when relations between values and parameters were negative.</li>
 </ul>
@@ -282,9 +300,9 @@
 <li>Remove variables that are not sensitive in DSA with <code>remove_ns</code>.</li>
 </ul>
 </div>
-<div id="backend-changes-3" class="section level3">
+<div id="backend-changes-4" class="section level3">
 <h3 class="hasAnchor">
-<a href="#backend-changes-3" class="anchor"></a>Backend changes</h3>
+<a href="#backend-changes-4" class="anchor"></a>Backend changes</h3>
 <ul>
 <li>Important object structure change (from attributes to lists).</li>
 <li>More systematic use of getter functions.</li>
@@ -316,9 +334,9 @@
 <li>Compute average values from PSA.</li>
 </ul>
 </div>
-<div id="bugfixes-4" class="section level3">
+<div id="bugfixes-5" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bugfixes-4" class="anchor"></a>Bugfixes</h3>
+<a href="#bugfixes-5" class="anchor"></a>Bugfixes</h3>
 <ul>
 <li>Acceptability curve returns probabilities at 0.</li>
 <li>Correctly identify efficiency frontier.</li>
@@ -336,9 +354,9 @@
     <div id="heemod-0-5-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#heemod-0-5-1" class="anchor"></a>heemod 0.5.1</h2>
-<div id="bugfixes-5" class="section level3">
+<div id="bugfixes-6" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bugfixes-5" class="anchor"></a>Bugfixes</h3>
+<a href="#bugfixes-6" class="anchor"></a>Bugfixes</h3>
 <ul>
 <li>Added <code>formatR</code> to suggest list.</li>
 </ul>
@@ -390,9 +408,9 @@
 <li>Additional output: csv files for many of the tabular results.</li>
 </ul>
 </div>
-<div id="bugfixes-6" class="section level3">
+<div id="bugfixes-7" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bugfixes-6" class="anchor"></a>Bugfixes</h3>
+<a href="#bugfixes-7" class="anchor"></a>Bugfixes</h3>
 <ul>
 <li>Edges where P=0 are not plotted anymore for transition matrices.</li>
 <li>There used to be a potential error when you wanted to save output but there had been no psa.</li>
@@ -435,9 +453,9 @@
 <em>really</em> fixed problem when the argument to <code><a href="../reference/discount.html">discount()</a></code> was not defined as a parameter.</li>
 </ul>
 </div>
-<div id="backend-changes-4" class="section level3">
+<div id="backend-changes-5" class="section level3">
 <h3 class="hasAnchor">
-<a href="#backend-changes-4" class="anchor"></a>Backend changes</h3>
+<a href="#backend-changes-5" class="anchor"></a>Backend changes</h3>
 <ul>
 <li>
 <code>eval_model_newdata()</code>, the function behind resampling and sensitivity analysis now returns list-variables.</li>
@@ -486,9 +504,9 @@
     <div id="heemod-0-3-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#heemod-0-3-1" class="anchor"></a>heemod 0.3.1</h2>
-<div id="backend-changes-5" class="section level3">
+<div id="backend-changes-6" class="section level3">
 <h3 class="hasAnchor">
-<a href="#backend-changes-5" class="anchor"></a>Backend changes</h3>
+<a href="#backend-changes-6" class="anchor"></a>Backend changes</h3>
 <ul>
 <li>A single set of parameters is now used for a set of models.</li>
 </ul>
@@ -565,6 +583,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#heemod-0-9-1-9001">0.9.1.9001</a></li>
         <li><a href="#heemod-0-9-1">0.9.1</a></li>
         <li><a href="#heemod-0-9-0">0.9.0</a></li>
         <li><a href="#heemod-0-8-0">0.8.0</a></li>

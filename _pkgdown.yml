@@ -16,6 +16,7 @@ reference:
   - title: Run the model
     contents:
     - run_model
+    - define_init
     - define_inflow
     - summary.run_model
     - plot.run_model
@@ -48,6 +49,7 @@ reference:
     - pool
     - project
     - set_covariates
+    - plot.surv_obj
   - title: Calibration
     contents:
     - calibrate_model

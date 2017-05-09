@@ -242,14 +242,14 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 ## Values:
 ## 
 ##      cost_health cost_drugs cost_total life_year
-## comb   100335897   78902716   94425845 18080.366
-## mono    50766525   20342306   50307566  8929.897
+## comb   104293870   81463564   96452433 18667.178
+## mono    51977914   20651947   50999236  9065.824
 ## 
 ## Net monetary benefit difference:
 ## 
 ##       1000     5000     6000    10000
-## 1 34967.81    0.000     0.00     0.00
-## 2     0.00 1634.064 10784.53 47386.41
+## 1 35851.84    0.000     0.00     0.00
+## 2     0.00 2553.573 12154.93 50560.34
 ## 
 ## Efficiency frontier:
 ## 
@@ -257,8 +257,8 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 ## 
 ## Differences:
 ## 
-##      Cost Diff. Effect Diff.     ICER Ref.
-## comb   44118.28     9.150469 4821.423 mono</code></pre>
+##      Cost Diff. Effect Diff.    ICER Ref.
+## comb    45453.2     9.601354 4734.04 mono</code></pre>
 </div>
 <div id="result-interpretation" class="section level2">
 <h2 class="hasAnchor">
@@ -275,11 +275,19 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 <p>A covariance analysis can be performed on strategy results:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(pm, <span class="dt">type =</span> <span class="st">"cov"</span>)</code></pre></div>
 <pre><code>## Loading required namespace: mgcv</code></pre>
+<pre><code>## Warning in compute_prop_var(mgcv::gam(formula = form_cost, data = .)):
+## Parameter excluded because of perfect collinearity: p_AD_mono.</code></pre>
 <p><img src="e_probabilistic_files/figure-html/unnamed-chunk-11-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>Or on the difference between strategies:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(pm, <span class="dt">type =</span> <span class="st">"cov"</span>, <span class="dt">diff =</span> <span class="ot">TRUE</span>, <span class="dt">threshold =</span> <span class="dv">5000</span>)</code></pre></div>
+<pre><code>## Warning in compute_prop_var(mgcv::gam(formula = form_cost, data = .)):
+## Parameter excluded because of perfect collinearity: p_AD_mono.</code></pre>
+<pre><code>## Warning in compute_prop_var(mgcv::gam(formula = form_effect, data = .)):
+## Parameter excluded because of perfect collinearity: p_AD_mono.</code></pre>
+<pre><code>## Warning in compute_prop_var(mgcv::gam(formula = form_nmb, data = .)):
+## Parameter excluded because of perfect collinearity: p_AD_mono.</code></pre>
 <pre><code>## Warning in compute_prop_var(mgcv::gam(formula = form_nmb, data = .)): Only
-## 99% of variance explained, results may be inaccurate.</code></pre>
+## 98% of variance explained, results may be inaccurate.</code></pre>
 <p><img src="e_probabilistic_files/figure-html/unnamed-chunk-12-1.png" width="384" style="display: block; margin: auto;"></p>
 <p>As usual plots can be modified with the standard <code>ggplot2</code> syntax.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
