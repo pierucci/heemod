@@ -204,7 +204,7 @@ wtd_summary <- function(x, weights = NULL) {
 #' 
 #' These function return an error if a conversion fails.
 #' 
-#' @name safe-conversion
+#' @name safe_conversion
 #' @param x A character vector.
 #' @param f A conversion function.
 #'   
@@ -226,12 +226,12 @@ safe_convert <- function(x, f) {
   res
 }
 
-#' @rdname safe-conversion
+#' @rdname safe_conversion
 as_numeric_safe <- function(x) {
   safe_convert(x, as.numeric)
 }
 
-#' @rdname safe-conversion
+#' @rdname safe_conversion
 as_integer_safe <- function(x) {
   res_int <- safe_convert(x, as.integer)
   res_num <- safe_convert(x, as.numeric)

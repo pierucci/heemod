@@ -1,4 +1,10 @@
-## heemod 0.9.0.9001
+## heemod 0.9.1.9001
+
+### Backend changes
+
+  * The development branch is now called `master`, the release branch is called `cran`.
+
+## heemod 0.9.1
 
 ### Breaking changes
 
