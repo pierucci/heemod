@@ -20,7 +20,7 @@
 #' `"count"` can produce from the combined model plots
 #' similar to those of [run_model()].
 #' 
-#' @name update-model
+#' @name update_model
 #' @param object The result of [run_model()].
 #' @param newdata A `data.frame` of new parameter sets,
 #'   one column per parameter and one row per parameter set.
@@ -54,7 +54,7 @@ update.run_model <- function(object, newdata, ...) {
   
   if (has_weights) {
     weights <- newdata$.weights
-    newdata <- dplyr::select_(newdata, ~ (- .weights))
+    newdata <- dplyr::select_(newdata, ~ - .weights)
     
   } else {
     message("No weights specified in update, using equal weights.")
@@ -127,7 +127,7 @@ print.updated_model <- function(x, ...) {
 }
 
 #' @export
-#' @rdname update-model
+#' @rdname update_model
 plot.updated_model <- function(x, type = c("simple", "difference",
                                            "counts", "ce", "values"),
                                result = c("cost", "effect", "icer"),
@@ -289,8 +289,8 @@ summary.updated_model <- function(object, ...) {
   
   mat_res <- dplyr::select_(
     tab_res,
-    ~ (- Model),
-    ~ (- Value)
+    ~ - Model,
+    ~ - Value
   ) %>% 
     as.matrix()
   

@@ -69,7 +69,7 @@ summary.run_model <- function(object, threshold = NULL, ...) {
       cycles = get_cycles(object),
       init = get_uneval_init(object),
       method = get_method(object),
-      frontier = get_frontier(get_model_results(object))
+      frontier = get_frontier(object)
     ),
     class = "summary_run_model"
   )
@@ -225,14 +225,15 @@ print_results <- function(res_values, res_comp, res_nmb) {
   print(res_values)
   
   if (! is.null(res_nmb)) {
-    cat("\nNet monetary benefit:\n\n")
+    cat("\nNet monetary benefit difference:\n\n")
     rownames(res_nmb) <- res_nmb$.strategy_names
     res_nmb <- res_nmb %>% 
       dplyr::select_(
         ~ - .strategy_names,
         ~ - .cost,
         ~ - .effect
-      )
+      ) %>% 
+      dplyr::mutate_all(function(x) x - min(x))
     print(res_nmb)
   }
   

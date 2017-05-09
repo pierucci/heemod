@@ -29,12 +29,12 @@ eval_parameters <- function(x, cycles = 1,
     dplyr::mutate_(
       start_tibble,
       .dots = x
-    )
+    ), silent = TRUE
   )
   
-  if((use_fn <- options()$heemod.inf_parameter) != "ignore") {
+  if ((use_fn <- options()$heemod.inf_parameter) != "ignore") {
     
-    if(any(these_are_inf <- sapply(res, is.infinite))) {
+    if (any(these_are_inf <- sapply(res, is.infinite))) {
       inf_param_nums <- unique(which(these_are_inf, arr.ind = TRUE)[,2])
       inf_param_names <- names(res)[inf_param_nums]
       
@@ -68,9 +68,10 @@ eval_parameters <- function(x, cycles = 1,
       })
     param_num <- min(which(which_errors))
     param_name <- get_parameter_names(x)[param_num]
+    text_error <- long_res[[param_num]]
     
     stop(sprintf(
-      "Error in parameter: %s.", param_name),
+      "Error in parameter: %s: %s", param_name, text_error),
       call. = FALSE)
   }
   

@@ -12,7 +12,7 @@
 #' `options("heemod.memotime")` (default: 1 hour) to 
 #' increase resampling performance.
 #' 
-#' @name who-mortality
+#' @name who_mortality
 #' @param age age as a continuous variable.
 #' @param sex sex as `"FMLE"`-`"MLE"`, `0`-`1` (male = 0,
 #'   female = 1) or `1`-`2` (male = 1, female = 2).
@@ -41,7 +41,7 @@ get_who_mr_memo <- function(age, sex = NULL, region = NULL, country = NULL,
     message("Assuming 'region' is GLOBAL.")
     region <- "GLOBAL"
     
-  } else if (!is.null(country)) {
+  } else if (! is.null(country)) {
     if (! is.null(region)) {
       message("'country' provided, ignoring 'region' argument.")
     }
@@ -93,7 +93,7 @@ get_who_mr_memo <- function(age, sex = NULL, region = NULL, country = NULL,
   })
 }
 
-#' @rdname who-mortality
+#' @rdname who_mortality
 #' @export
 get_who_mr <- memoise::memoise(
   get_who_mr_memo,
@@ -101,6 +101,11 @@ get_who_mr <- memoise::memoise(
 )
 
 get_gho_mr <- function(sex, region, country, year) {
+  
+  if (! requireNamespace("rgho")) {
+    stop("'rgho' package required to fetch data from WHO servers.")
+  }
+  
   mr_data <- rgho::get_gho_data(
     dimension = "GHO",
     code = "LIFE_0000000029",

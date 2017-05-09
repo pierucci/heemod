@@ -91,12 +91,12 @@ Only `cost_drug` differs between the monotherapy and the combined therapy treatm
 
 ```{r}
 state_A <- define_state(
-    cost_health = 2756,
-    cost_drugs = dispatch_strategy(
+    cost_health = discount(2756, .06),
+    cost_drugs = discount(dispatch_strategy(
       mono = cost_zido,
       comb = cost_zido + cost_lami
-    ),
-    cost_total = discount(cost_health + cost_drugs, .06),
+    ), .06),
+    cost_total = cost_health + cost_drugs,
     life_year = 1
   )
 state_A
@@ -106,27 +106,27 @@ The other states for the monotherapy treatment group can be specified in the sam
 
 ```{r}
 state_B <- define_state(
-    cost_health = 3052,
-    cost_drugs = dispatch_strategy(
+    cost_health = discount(3052, .06),
+    cost_drugs = discount(dispatch_strategy(
       mono = cost_zido,
       comb = cost_zido + cost_lami
-    ),
-    cost_total = discount(cost_health + cost_drugs, .06),
+    ), .06),
+    cost_total = cost_health + cost_drugs,
     life_year = 1
   )
 state_C <- define_state(
-    cost_health = 9007,
-    cost_drugs = dispatch_strategy(
+    cost_health = discount(9007, .06),
+    cost_drugs = discount(dispatch_strategy(
       mono = cost_zido,
       comb = cost_zido + cost_lami
-    ),
-    cost_total = discount(cost_health + cost_drugs, .06),
+    ), .06),
+    cost_total = cost_health + cost_drugs,
     life_year = 1
   )
 state_D <- define_state(
     cost_health = 0,
     cost_drugs = 0,
-    cost_total = discount(cost_health + cost_drugs, .06),
+    cost_total = 0,
     life_year = 0
   )
 ```

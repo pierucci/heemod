@@ -304,6 +304,7 @@ eval_surv.survfit <- function(x, time, cycle_length = 1,
     }
     # If covariates are not provided, do weighted average for each time.
     agg_df <- surv_df %>%
+      tibble::as_tibble() %>% 
       dplyr::group_by_(~ t) %>%
       dplyr::summarize_(value = ~ sum(value * n) / sum(n))
   } else {
@@ -702,4 +703,13 @@ eval_surv.surv_dist <- function(x, time,
   }
   
   ret
+}
+
+
+eval_surv.lazy <- function(x, ...){
+  eval_surv(lazyeval::lazy_eval(x), ...)
+}
+
+eval_surv.character <- function(x, ...){
+  eval_surv(eval(parse(text = x)), ...)
 }
