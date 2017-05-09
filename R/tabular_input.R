@@ -373,8 +373,7 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
 #' 
 #' The input data frame is expected to contain state 
 #' information for all the models you will use in an 
-#' analysis. For more information see the vignette: 
-#' `vignette("file-input", package = "heemod")`.
+#' analysis.
 #' 
 #' @param state_info Result for one model of 
 #'   [parse_multi_spec()].
@@ -1028,19 +1027,19 @@ filter_blanks <- function(x) {
 #' @param x A file name.
 #' @return Whether the file is (respectively)
 #'  csv, xlsx, or xls.
-#' @rdname file-checkers
+#' @rdname file_checkers
 #'   
 #' @keywords internal
 is_csv <- function(x) {
   tolower(tools::file_ext(x)) == "csv"
 }
 
-#' @rdname file-checkers
+#' @rdname file_checkers
 is_xlsx <- function(x) {
   tolower(tools::file_ext(x)) == "xlsx"
 }
 
-#' @rdname file-checkers
+#' @rdname file_checkers
 is_xls <- function(x) {
   tolower(tools::file_ext(x)) == "xls"
 }
