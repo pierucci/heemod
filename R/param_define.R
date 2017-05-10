@@ -141,27 +141,15 @@ define_inflow <- function(...) {
 #' @rdname define_inflow
 define_inflow_ <- function(.dots) {
   
-  structure(.dots,
-            class = c("uneval_inflow", class(.dots)))
-}
-
-#' Define Initial Cost by state and strategie
-#' 
-#' 
-define_init_cost <- function(...){
-  .dots <- lazyeval::lazy_dots(...)
-  define_init_cost_(.dots)
-}
-
-define_init_cost_ <- function(.dots){
-  structure(.dots,
-            class = c("uneval_init_cost", class(.dots)))
+  structure(
+    .dots,
+    class = c("uneval_inflow", class(.dots)))
 }
 
 #' Define Initial Counts
 #' 
 #' @param ... Name-value pairs of expressions defining
-#'   initial counts
+#'   initial counts.
 #' @param .dots Used to work around non-standard evaluation.
 #'   
 #' @return An object similar to the return value of
@@ -175,12 +163,33 @@ define_init <- function(...) {
 #' @export
 #' @rdname define_init
 define_init_ <- function(.dots) {
-  structure(.dots,
-            class = c("uneval_init", class(.dots)))
+  structure(
+    .dots,
+    class = c("uneval_init", class(.dots)))
 }
 
 check_init <- function(x, ref) {
   UseMethod("check_init")
+}
+
+#' Define Initial Values by State and Strategy
+#' 
+#' @param ... Name-value pairs of expressions defining
+#'   initial values.
+#' @param .dots Used to work around non-standard evaluation.
+#'   
+#' @return An object similar to the return value of
+#'   [define_parameters()].
+#' @export
+define_initial_values <- function(...){
+  .dots <- lazyeval::lazy_dots(...)
+  define_initial_values_(.dots)
+}
+
+define_initial_values_ <- function(.dots){
+  structure(
+    .dots,
+    class = c("uneval_init_cost", class(.dots)))
 }
 
 check_init.lazy_dots <- function(x, ref) {

@@ -5,7 +5,7 @@
 \title{Evaluate Strategy}
 \usage{
 eval_strategy(strategy, parameters, cycles, init, method, expand_limit, inflow,
-  strategy_name)
+  init_cost, strategy_name)
 }
 \arguments{
 \item{strategy}{An \code{uneval_strategy} object.}
@@ -27,6 +27,8 @@ limits.}
 
 \item{inflow}{Numeric vector, similar to \code{init}. Number
 of new individuals in each state per cycle.}
+
+\item{init_cost}{list init cost by strategy}
 
 \item{strategy_name}{Name of the strategy.}
 }
