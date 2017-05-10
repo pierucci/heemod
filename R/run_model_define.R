@@ -33,6 +33,8 @@
 #'   cost-effectiveness plane.
 #' @param effect Names or expression to compute effect on
 #'   the cost-effectiveness plane.
+#' @param init_cost Initial costs by strategy, before 
+#'   the simulation start
 #' @param method Counting method.
 #' @param uneval_strategy_list List of models, only used by
 #'   [run_model_()] to avoid using `...`.
@@ -56,6 +58,7 @@ run_model <- function(...,
                       cycles = 1,
                       method = "life-table",
                       cost = NULL, effect = NULL,
+                      init_cost = rep(0L, length(list(...))),
                       state_time_limit = NULL,
                       central_strategy = NULL,
                       inflow = rep(0L, get_state_number(get_states(list(...)[[1]])))) {
@@ -63,6 +66,7 @@ run_model <- function(...,
   uneval_strategy_list <- list(...)
   
   init <- check_init(init, uneval_strategy_list[[1]])
+  init_cost <- check_init(init_cost, uneval_strategy_list)
   inflow <- check_inflow(inflow, uneval_strategy_list[[1]])
   
   run_model_(
@@ -75,7 +79,8 @@ run_model <- function(...,
     effect = lazyeval::lazy_(substitute(effect), env = parent.frame()),
     state_time_limit = state_time_limit,
     central_strategy = central_strategy,
-    inflow = inflow
+    inflow = inflow,
+    init_cost = init_cost
   )
 }
 
@@ -89,7 +94,9 @@ run_model_ <- function(uneval_strategy_list,
                        cost, effect,
                        state_time_limit,
                        central_strategy,
-                       inflow) {
+                       inflow,
+                       init_cost) {
+  
   if (length(uneval_strategy_list) == 0) {
     stop("At least 1 strategy is needed.")
   }
@@ -165,8 +172,10 @@ run_model_ <- function(uneval_strategy_list,
       method = method,
       expand_limit = state_time_limit[[n]],
       inflow = inflow,
+      init_cost = init_cost[n],
       strategy_name = n
     )
+    
   }
   
   list_res <- lapply(eval_strategy_list, get_total_state_values)
@@ -226,7 +235,7 @@ get_state_value_names.run_model <- function(x) {
 
 get_total_state_values <- function(x) {
   # faster than as.data.frame or dplyr::as_data_frame
-  res <- as.list(colSums((x$values)[- 1]))
+  res <- as.list(colSums(rbind((x$values)[- 1], c(sum(x$e_init_cost), 0))))
   class(res) <- "data.frame"
   attr(res, "row.names") <- c(NA, -1)
   res$.n_indiv <- get_n_indiv(x)
@@ -416,6 +425,14 @@ get_uneval_inflow.default <- function(x) {
   x$inflow
 }
 
+get_uneval_init_cost <- function(x){
+  UseMethod("get_uneval_init_cost")
+}
+
+get_uneval_init_cost.default <- function(x){
+  x$init_cost
+}
+
 get_ce <- function(x) {
   x$ce
 }
@@ -448,7 +465,7 @@ get_method.run_model <- function(x) {
 }
 
 get_state_names.run_model <- function(x, ...) {
-  get_state_names(x$uneval_strategy_list[[1]])
+  get_state_names(get_states(x$uneval_strategy_list[[1]]))
 }
 
 get_expand_limit <- function(x, strategy) {
@@ -497,3 +514,4 @@ get_uneval_strategy_list <- function(x) {
 get_state_time_limit <- function(x) {
   x$state_time_limit
 }
+
