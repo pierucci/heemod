@@ -126,7 +126,7 @@ survival_from_data <-
            dists = dists,
            save_fits = TRUE,
            just_load = FALSE,
-           set_definitions = NULL){
+           set_definitions = "set_definitions.csv"){
     
     survival_specs <- check_survival_specs(survival_specs)
     
@@ -181,7 +181,8 @@ survival_from_data <-
                 ## (if not, will return a data frame with no rows)
                 set_definitions <- 
                   get_set_definitions(file.path(location, 
-                                                survival_specs$fit_directory[this_row]))
+                                                survival_specs$fit_directory[this_row]),
+                                      file_name = set_definitions)
                 if(!("time_subtract" %in% names(set_definitions)))
                   set_definitions <- dplyr::mutate_(set_definitions, time_subtract = 0)
                 set_definitions <- 
@@ -196,9 +197,17 @@ survival_from_data <-
                 
                 class(this_data) <- c("survdata", class(this_data))
                
-               these_sets <- 
+                ## get the set definitions associated with this treatment
+                these_sets <- 
                  dplyr::filter_(set_definitions, 
                                 ~ treatment == this_treatment)
+                ## if relevant, restrict to the set definitions associated
+                ##   with this type (pfs or os)
+                if("type" %in% names(these_sets)){
+                  these_sets <- 
+                   dplyr::filter_(these_sets,
+                                  ~ type == survival_specs[this_row, "type"])
+                }
                if(nrow(these_sets) == 0) 
                  these_sets <- data.frame(set_name = "all",
                                           condition = "TRUE",
@@ -274,11 +283,13 @@ survival_from_data <-
 
 
 get_set_definitions <- function(data_dir, file_name = "set_definitions"){
-  set_definitions <- data.frame(treatment = character(0), type = character(0))
+  set_definitions <- data.frame(treatment = character(0), 
+                                set_name = character(0),
+                                condition = character(0))
   set_definition_file_name <- 
     list.files(data_dir, pattern = file_name, full.names = TRUE)
   if(length(set_definition_file_name) > 1)
-    stop("can only have one file with the name 'set_definition'")
+    stop("multiple files matching set_definition file name")
   if(length(set_definition_file_name) == 1)
     set_definitions <- read_file(set_definition_file_name)
   missing_names <- setdiff(c("treatment", "set_name", "condition"),
@@ -297,6 +308,8 @@ get_set_definitions <- function(data_dir, file_name = "set_definitions"){
          )
   ## just in case we have only logicals
   set_definitions$condition <- as.character(set_definitions$condition)
+  if("type" %in% names(set_definitions))
+    set_definitions$type <- toupper(set_definitions$type)
   set_definitions
 }
 

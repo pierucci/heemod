@@ -236,7 +236,28 @@ test_that("fitting works (including with subsets)",
             expect_identical(lapply(these_fits[[1]]$fit, compute_surv, time = c(45:55)),
                              lapply(eventcode_fits[[1]]$fit, compute_surv, time = c(45:55))
                              )
-            
+            ## check that if we designate subsets by type, the ones
+            ##    we leave out don't show up (no GT50 for OS)
+            subset_fits_by_type <- 
+              heemod:::survival_from_data(location = location,
+                                          survival_specs = ok_surv_info,
+                                          dists = c("exp", "weibull"),
+                                          save_fits = FALSE,
+                                          use_envir = new.env(),
+                                          set_definitions = "set_def_pfs_os.csv")
+            expect_identical(unique(subset_fits_by_type[[1]][, 1:3]),
+                             tibble::tribble(
+                               ~type, ~treatment, ~set_name,
+                               "PFS", "A", "all",
+                               "PFS", "A", "GT50",
+                               "OS", "A", "all",
+                               "PFS", "B", "all",
+                               "PFS", "B", "GT50",
+                               "PFS", "B", "B5",
+                               "OS", "B", "all",
+                               "OS", "B", "B5"
+                             )
+            )
           }
           )
 
