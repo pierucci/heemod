@@ -1,8 +1,9 @@
-## heemod 0.9.1.9001
+## heemod 0.9.1.9002
 
 ### Bugfixes
 
   * Better error-checking in multinomial parameters definition.
+  * Handle cases when parameters depend on `state_time` but thoses parameters are not used by a strategy.
 
 ### Backend changes
 
