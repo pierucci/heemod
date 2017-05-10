@@ -429,3 +429,17 @@ rhs <- function(x) {
     x[[3]]
   }
 }
+
+make_call <- function(x, collapse) {
+  if (length(x) > 1) {
+    as.call(
+      list(
+        as.name(collapse),
+        as.name(x[1]),
+        make_call(x[-1], collapse = collapse)
+      )
+    )
+  } else {
+    as.name(x)
+  }
+}

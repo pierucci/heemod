@@ -79,9 +79,9 @@ r_binomial <- function(prob, size) {
 #' @rdname distributions
 multinomial <- function(...) {
   list_param <- list(...)
-  total <- sum(unlist(list_param))
+  
   structure(
-    lapply(list_param, function(x) r_multinomial(x, total)),
+    lapply(list_param, function(x) r_multinomial(x)),
     class = "multinom_param"
   )
 }
@@ -89,8 +89,8 @@ multinom <- function(...) {
   warning("'multinom()' is deprecated, use 'multinomial()' instead.")
   multinomial(...)
 }
-r_multinomial <- function(n, total) {
-  function(x) stats::qbeta(x, n, total - n)
+r_multinomial <- function(n) {
+  function(x) stats::qgamma(x, shape = n, scale = 1)
 }
 
 #' @rdname distributions

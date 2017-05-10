@@ -53,6 +53,11 @@ define_psa <- function(...,
     list_input,
     recursive = FALSE
   )
+  lapply(list_qdist, function(x) {
+    if (! inherits(x, "function")) {
+      stop("Distributions must be defined as functions.")
+    }
+  })
   
   n_par <- unlist(lapply(list_input, length))
   
