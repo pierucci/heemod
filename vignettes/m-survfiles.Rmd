@@ -57,7 +57,7 @@ print(surv_info)
 The `data_directory` and `data_file` columns allow us to specify the location
 of data separately for each row.    The `fit_directory`, `fit_file`, and 
 `fit_name` columns, similarly, allow us specify where the fits should be kept,
-and what the R object containing the fits should be called.   Finally, `time_col`,
+and what the R object containing the fits should be called. `time_col`,
 `treatment_col`, and `censor_col` give us the names of the columns in the data
 files that contain the three elements needed to specify the model.  Together,
 these give us a great deal of flexibility.   For example, we may keep our data
@@ -66,7 +66,10 @@ allowing them to save their fits (each analyst can even save their own fits,
 though it seems preferable to have them shared).   We can have data for
 different treatments and outcomes in different files or in the same file -
 if they are in the same file, we can specify the columns to be used
-to specify the different outcomes.
+to specify the different outcomes.  Finally, because different data sets
+may specify events and censoring in different ways, the columns `event_code`
+and `censor_code` allow us to specify those.   If those columns are omitted,
+`event_code` will be set to 1 and `censor_code` to 0.
 
 ## Specifying multiple subsets of data for survival models
 
@@ -115,10 +118,27 @@ based on `time_subract`, but names will still need to be checked by the
 analyst.   If `time_subtract` is not provided in the file, or is missing
 in any given row, if it assumed to be 0.
 
+It is also possible to define subsets not just by treatment, but separately for
+each survival curve type,
+PFS or OS.  In the case below, the subset based on time (GT50) 
+has been defined only for PFS, and omitted for OS.   If the `type` column is
+included, then subsets desired for both PFS and OS must be specified twice.
+If the `type` column is omitted, as in the example above, then each subset will
+be fit for both PFS and OS.
+```{r subset-file-pfs-os}
+subset_def_file_name <- "set_def_pfs_os.csv"
+full_path <- file.path(base_dir, "survival_data", subset_def_file_name)
+subset_info <- heemod:::read_file(full_path)
+print(subset_info)
+```
+
+
 If the `set_definition` file is missing, then a single subset, called "all",
 with condition equal to `TRUE` (which takes all points) will be fit 
 for each treatment.   If the `set_definition` file is present, it should
-include the "all" subset, as in the first two rows of the example above.
+include the "all" subset, as in the first two rows of the example above 
+(unless, of course, you don't want to fit a survival curve based on all the
+data).
 
 The example also demonstrates that we need not define the same subsets,
 or even the same number of subsets, for each treatment.  Here, although
