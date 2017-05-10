@@ -370,7 +370,6 @@ plot.surv_obj <- function(x, times, type = c("surv", "prob"),
                         col = "join_col")
   
   this_plot
-  
 }
 
 plot.surv_projection <- plot.surv_obj

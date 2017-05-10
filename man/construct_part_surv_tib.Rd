@@ -2,7 +2,7 @@
 % Please edit documentation in R/tabular_input.R
 \name{construct_part_surv_tib}
 \alias{construct_part_surv_tib}
-\title{construct a survival object from tabular specification}
+\title{Construct a survival object from tabular specification}
 \usage{
 construct_part_surv_tib(surv_def, fit_tibble, state_names, env = new.env())
 }
@@ -23,15 +23,41 @@ elements are survival objects of various kinds, with the
 commonality that they can be used in \code{\link[=compute_surv]{compute_surv()}}.
 }
 \description{
-construct a survival object from tabular specification
+Construct a survival object from tabular specification
 }
 \details{
 This function is meant to be used only from within
 tabular_input.R.   It won't work well otherwise, in that
 the environment is unlikely to have what you need.
-
-columns of surv_def:  .strategy, .type, .subset, dist, until
-where dist can be either the name of a distribution
-along with parameters, or a reference to a fit
-for example:  fit('exp') or exp(rate = 0.5)
 }
+\keyword{.strategy,}
+\keyword{.subset,}
+\keyword{.type,}
+\keyword{0.5)}
+\keyword{=}
+\keyword{a}
+\keyword{along}
+\keyword{be}
+\keyword{can}
+\keyword{columns}
+\keyword{dist}
+\keyword{dist,}
+\keyword{distribution}
+\keyword{either}
+\keyword{example:}
+\keyword{exp(rate}
+\keyword{fit}
+\keyword{fit('exp')}
+\keyword{for}
+\keyword{internal}
+\keyword{name}
+\keyword{of}
+\keyword{or}
+\keyword{parameters,}
+\keyword{reference}
+\keyword{surv_def:}
+\keyword{the}
+\keyword{to}
+\keyword{until}
+\keyword{where}
+\keyword{with}

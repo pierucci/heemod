@@ -191,8 +191,8 @@ check_init.lazy_dots <- function(x, ref) {
     names(x) <- sn
   }
   
-  if (! all(sn == names(x))) {
-    stop(sprintf("Some %s names are not state names.", parameter_name))
+  if (! all(sn %in% names(x))) {
+    stop("Some 'init' or 'inflow' names are not state names.")
   }
   
   if (! length(x) == get_state_number(ref)) {
@@ -202,10 +202,6 @@ check_init.lazy_dots <- function(x, ref) {
       length(x),
       get_state_number(ref)
     ))
-  }
-  
-  if (! all(sort(names(x)) == sort(get_state_names(ref)))) {
-    stop(sprintf("Names of %s differ from state names.", parameter_name))
   }
   
   x

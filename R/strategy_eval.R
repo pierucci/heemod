@@ -45,37 +45,30 @@ eval_strategy <- function(strategy, parameters, cycles,
   
   i_parameters <- interp_heemod(parameters)
   
-  i_uneval_transition <- interp_heemod(
+  uneval_transition <- interp_heemod(
     uneval_transition,
     more = as_expr_list(i_parameters)
   )
   
-  i_uneval_states <- interp_heemod(
+  uneval_states <- interp_heemod(
     uneval_states,
     more = as_expr_list(i_parameters)
   )
   
-  td_tm <- has_state_time(i_uneval_transition)
-  
-  td_st <- has_state_time(i_uneval_states)
-  
-  # no expansion if 
+  td_tm <- has_state_time(uneval_transition)
+  td_st <- has_state_time(uneval_states)
   expand <- any(c(td_tm, td_st))
   
-  # because parameters are deleted if expand
+  # because parameters are deleted
+  # parameters not needed anymore because of interp
   old_parameters <- parameters
+  parameters <- define_parameters()
   
   if (expand) {
     
     if (inherits(uneval_transition, "part_surv")) {
       stop("Cannot use 'state_time' with partitionned survival.")
     }
-    
-    uneval_transition <- i_uneval_transition
-    uneval_states <- i_uneval_states
-    
-    # parameters not needed anymore because of interp
-    parameters <- define_parameters()
     
     # from cells to cols
     td_tm <- td_tm %>% 
@@ -128,19 +121,14 @@ eval_strategy <- function(strategy, parameters, cycles,
     cycles = cycles,
     strategy_name = strategy_name)
   
-  # to retain values in case of expansion
-  if (expand) {
-    complete_parameters <- eval_parameters(
-      structure(
-        c(
-          lazyeval::lazy_dots(state_time = 1),
-          old_parameters),
-        class= class(old_parameters)),
-      cycles = 1,
-      strategy_name = strategy_name)
-  } else {
-    complete_parameters <- parameters[1, ]
-  }
+  complete_parameters <- eval_parameters(
+    structure(
+      c(
+        lazyeval::lazy_dots(state_time = 1),
+        old_parameters),
+      class= class(old_parameters)),
+    cycles = 1,
+    strategy_name = strategy_name)
   
   e_init <- unlist(eval_init(x = init, parameters[1, ]))
   e_inflow <- eval_inflow(x = inflow, parameters)
