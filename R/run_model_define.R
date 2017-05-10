@@ -183,8 +183,12 @@ run_model_ <- function(uneval_strategy_list,
   for (n in strategy_names) {
     list_res[[n]]$.strategy_names <- n
   }
+
+  .c_init_cost <- auto_name(as.lazy_dots(cost))
+  .c_init_cost[[1]] <- as.lazy(paste(cost$expr, ".init_cost", sep="+"))
   
   res <- Reduce(dplyr::bind_rows, list_res) %>% 
+    dplyr::mutate_(.dots = .c_init_cost) %>%
     dplyr::mutate_(.dots = ce)
   
   root_strategy <- get_root_strategy(res)
@@ -192,7 +196,6 @@ run_model_ <- function(uneval_strategy_list,
   
   if (is.null(central_strategy)) {
     central_strategy <- get_central_strategy(res)
-    
   } else {
     stopifnot(
       length(central_strategy) == 1,
@@ -235,10 +238,11 @@ get_state_value_names.run_model <- function(x) {
 
 get_total_state_values <- function(x) {
   # faster than as.data.frame or dplyr::as_data_frame
-  res <- as.list(colSums(rbind((x$values)[- 1], c(sum(x$e_init_cost), 0))))
+  res <- as.list(colSums(rbind((x$values)[- 1])))
   class(res) <- "data.frame"
   attr(res, "row.names") <- c(NA, -1)
   res$.n_indiv <- get_n_indiv(x)
+  res$.init_cost <- as.numeric(x$e_init_cost)
   res
 }
 
