@@ -233,7 +233,7 @@ test_that(
     expect_error(capture.output(join_fits_to_def(
       bad_surv_def, 
       fake_fit_tib)),
-      "fit not found")
+      "disallowed distribution names in use_fits")
     names(surv_def)[1] <- "strategy"
     expect_error(join_fits_to_def(surv_def, fake_fit_tib),
                  "missing required names in 'surv_def':", fixed = TRUE)

@@ -6,7 +6,7 @@
 \usage{
 survival_from_data(location, survival_specs, use_envir = df_env,
   dists = dists, save_fits = TRUE, just_load = FALSE,
-  set_definitions = NULL)
+  set_definitions = "set_definitions.csv")
 }
 \arguments{
 \item{location}{base directory for the analysis.}

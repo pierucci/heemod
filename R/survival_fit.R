@@ -1,3 +1,6 @@
+allowed_fit_distributions <- c("exp", "weibull", "lnorm", "llogis", 
+  "gamma", "gompertz", "gengamma")
+
 #' Create a partitioned survival model object from tabular input
 #'
 #' @param base_dir directory where the reference file is located
@@ -44,12 +47,12 @@ survival_fits_from_ref_struc <- function(ref, df_env = new.env(),
                    surv_ref_full_file)
   
   survival_specs <- read_file(file.path(surv_ref_full_file))
-  dists = c("exp", "weibull", "lnorm", "llogis", 
-            "gamma", "gompertz", "gengamma")
+  ##dists = c("exp", "weibull", "lnorm", "llogis", 
+  ##          "gamma", "gompertz", "gengamma")
   survival_from_data(location,
                      survival_specs,
                      use_envir = df_env,
-                     dists = dists,
+                     dists = allowed_fit_distributions, 
                      save_fits = save_fits,
                      just_load = just_load)
   
@@ -350,8 +353,7 @@ dist_from_fits <- function(this_fit){
 #'  
 f_fit_survival_models <- 
   function(survdata,
-           dists = c("exp", "weibull", "lnorm", "llogis",
-                     "gamma", "gompertz", "gengamma"),
+           dists = allowed_fit_distributions, 
            time_col_name, 
            censor_col_name, 
            treatment_col_name,
