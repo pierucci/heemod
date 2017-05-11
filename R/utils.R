@@ -205,7 +205,7 @@ wtd_summary <- function(x, weights = NULL) {
 #' 
 #' These function return an error if a conversion fails.
 #' 
-#' @name safe-conversion
+#' @name safe_conversion
 #' @param x A character vector.
 #' @param f A conversion function.
 #'   
@@ -227,12 +227,12 @@ safe_convert <- function(x, f) {
   res
 }
 
-#' @rdname safe-conversion
+#' @rdname safe_conversion
 as_numeric_safe <- function(x) {
   safe_convert(x, as.numeric)
 }
 
-#' @rdname safe-conversion
+#' @rdname safe_conversion
 as_integer_safe <- function(x) {
   res_int <- safe_convert(x, as.integer)
   res_num <- safe_convert(x, as.numeric)
@@ -399,6 +399,7 @@ to_dots.list <- function(x) {
   )
 }
 
+# transforms factors to characters in a df
 clean_factors <- function(x) {
   for (n in names(x)) {
     if (inherits(x[[n]], "factor")) {
@@ -406,4 +407,40 @@ clean_factors <- function(x) {
     }
   }
   x
+}
+
+# formula operations
+
+is_one_sided <- function(x) {
+  length(x) == 2
+}
+
+lhs <- function(x) {
+  if (is_one_sided(x)) {
+    stop("Cannont extract left hand side of a one-sided formula.")
+  } else {
+    x[[2]]
+  }
+}
+
+rhs <- function(x) {
+  if (is_one_sided(x)) {
+    x[[2]]
+  } else {
+    x[[3]]
+  }
+}
+
+make_call <- function(x, collapse) {
+  if (length(x) > 1) {
+    as.call(
+      list(
+        as.name(collapse),
+        as.name(x[1]),
+        make_call(x[-1], collapse = collapse)
+      )
+    )
+  } else {
+    as.name(x)
+  }
 }

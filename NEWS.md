@@ -1,9 +1,20 @@
-## heemod 0.9.0.9001
+## heemod 0.9.1.9002
+
+### Bugfixes
+
+  * Better error-checking in multinomial parameters definition.
+  * Handle cases when parameters depend on `state_time` but thoses parameters are not used by a strategy.
+
+### Backend changes
+
+  * The development branch is now called `master`, the release branch is called `cran`.
+
+## heemod 0.9.1
 
 ### Breaking changes
 
   * Survival function renamed: `project()`=>`join()`.
-  * Removed functions to transform `heemod` object to code.
+  * Removed `get_code()`.
 
 ### New features
 
@@ -19,10 +30,10 @@
 
 ## heemod 0.9.0
 
-`heemod` can now be cited with :
+`heemod` can now be cited with:
 
 Filipović-Pierucci A, Zarca K and Durand-Zaleski I (2017).
-“Markov Models for Health Economic Evaluation: The R
+“Markov Models for Health Economic Evaluations: The R
 Package heemod.” _ArXiv e-prints_. R package version
 0.8.0, 1702.03252, <URL: https://pierucci.org/heemod>.
 

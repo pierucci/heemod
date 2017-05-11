@@ -11,8 +11,8 @@
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -87,7 +89,7 @@ time dependent by using the <code>markov_cycle</code>
 parameter.</p>
     
 
-    <pre><span class='fu'>define_parameters</span>(<span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>define_parameters</span>(<span class='no'>...</span>)
 
 <span class='fu'>define_parameters_</span>(<span class='no'>.dots</span>)
 
@@ -95,16 +97,23 @@ parameter.</p>
 <span class='fu'><a href='modify.html'>modify</a></span>(<span class='no'>.OBJECT</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>...</dt>
-      <dd>Name-value pairs of expressions definig
-parameters.</dd>
-      <dt>.dots</dt>
-      <dd>Used to work around non-standard evaluation.</dd>
-      <dt>.OBJECT</dt>
-      <dd>An object of class
-<code>uneval_parameters</code>.</dd>
-    </dl>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>...</th>
+      <td><p>Name-value pairs of expressions defining
+parameters.</p></td>
+    </tr>
+    <tr>
+      <th>.dots</th>
+      <td><p>Used to work around non-standard evaluation.</p></td>
+    </tr>
+    <tr>
+      <th>.OBJECT</th>
+      <td><p>An object of class
+<code>uneval_parameters</code>.</p></td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
@@ -113,21 +122,21 @@ parameters.</dd>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Parameters are defined sequencially, parameters defined
+    <p>Parameters are defined sequentially, parameters defined
 earlier can be called in later expressions.</p>
-    <p>Vector length should not be explicitly set, but should
+<p>Vector length should not be explicitly set, but should
 instead be stated relatively to <code>markov_cycle</code>
 (whose length depends on the number of simulation
 cycles). Alternatively, <code>dplyr</code> functions such as
-<code>n()</code> or <code>row_numbers()</code> can be used.</p>
-    <p>This function relies heavily on the <code>dplyr</code> package.
+<code><a href='http://www.rdocumentation.org/packages/dplyr/topics/n'>dplyr::n()</a></code> or <code><a href='http://www.rdocumentation.org/packages/dplyr/topics/ranking'>dplyr::row_number()</a></code> can be used.</p>
+<p>This function relies heavily on the <code>dplyr</code> package.
 Parameter definitions should thus mimic the use of
-functions such as <code>mutate</code>.</p>
-    <p>Variable names are searched first in the parameter
+functions such as <code><a href='http://www.rdocumentation.org/packages/dplyr/topics/mutate'>dplyr::mutate()</a></code>.</p>
+<p>Variable names are searched first in the parameter
 definition (only parameters defined earlier are visible)
 then in the environment where <code>define_parameters</code>
 was called.</p>
-    <p>For the <code>modify</code> function, existing parameters are
+<p>For the <code>modify</code> function, existing parameters are
 modified, but no new parameter can be added. Parameter
 order matters since only parameters defined earlier can
 be referenced in later expressions.</p>

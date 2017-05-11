@@ -31,33 +31,65 @@ define_psa <- function(...,
                        correlation) {
   .dots <- list(...)
   
+  lapply(
+    .dots,
+    function(x) {
+      if (! inherits(x, "formula")) {
+        stop("Parameter distributions must be written as formulas.")
+      }
+      if (is_one_sided(x)) {
+        stop("Parameter names must be on the left hand of the formula.")
+      }
+    }
+  )
+  
   list_input <- lapply(
     .dots,
     function(x) {
-      terms <- attr(stats::terms(x), "variables")
-      if(length(terms) < 3){
-        stop("Incorrect PSA distribution definition for parameter: ",
-             as.character(terms[2]))
-      }
-      eval(terms[[3]], envir = asNamespace("heemod"))
+      eval(rhs(x), envir = asNamespace("heemod"))
     })
   
   list_qdist <- unlist(
     list_input,
     recursive = FALSE
   )
+  lapply(list_qdist, function(x) {
+    if (! inherits(x, "function")) {
+      stop("Distributions must be defined as functions.")
+    }
+  })
+  
+  n_par <- unlist(lapply(list_input, length))
+  
   names(list_qdist) <- unlist(
     lapply(
       .dots,
-      function(x) all.vars(x)
+      function(x) all.vars(lhs(x))
     )
   )
   
+  is_multinom <- unlist(lapply(
+    list_input,
+    inherits, "multinom_param"))
+  
   list_multi <- lapply(
-    .dots[unlist(lapply(list_input,
-                        function(x) "multinom_param" %in% class(x)))],
-    function(x) define_multinom(force(all.vars(x)))
+    .dots[is_multinom],
+    function(x) all.vars(lhs(x), unique = FALSE)
   )
+  
+  if (any(pb <- duplicated(unlist(list_multi)))) {
+    stop(sprintf(
+      "Some multinomial parameters are duplicated: %s.",
+      paste(unique(unlist(list_multi)[pb]), collapse = ", ")
+    ))
+  }
+  
+  if (any(pb <- n_par[is_multinom] != unlist(lapply(list_multi, length)))) {
+    stop(sprintf(
+      "Number of multinomial distribution paramter does not correspond to number of variable: %s.",
+      paste(unlist(lapply(list_multi[pb], paste, collapse = " ")), collapse = ", ")
+    ))
+  }
   
   if (missing(correlation)){
     correlation <- diag(length(list_qdist))
@@ -96,39 +128,6 @@ define_psa_ <- function(list_qdist, list_multi, correlation) {
       multinom = list_multi
     ),
     class = "resamp_definition"
-  )
-}
-
-#' Define That Parameters Belong to the Same Multinomial 
-#' Distribution
-#' 
-#' @param x A vector of parameter names.
-#'   
-#' @return An object of class `multinomial`.
-#'   
-define_multinom <- function(x) {
-  char_var <- x
-  
-  # ugly piece of shit code
-  expr_denom <- parse(text = paste(char_var, collapse = "+"))
-  
-  res <- function(x) {
-    
-    # ugly ugly baaaaad
-    # creates copies everywhere
-    # replace this with a nice mutate_() or something...
-    
-    denom <- eval(expr_denom, x)
-    
-    for (var in char_var) {
-      x[[var]] <- x[[var]] / denom
-    }
-    x
-  }
-  
-  structure(
-    res,
-    class = c("function", "multinom")
   )
 }
 
