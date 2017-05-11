@@ -5,7 +5,7 @@ print.state <- function(x, ...) {
     length(x), plur(length(x))))
   
   nv <- names(x)
-  ex <- unlist(lapply(x, function(y) deparse(y$expr)))
+  ex <- lapply(x, function(y) paste(deparse(y$expr), collapse = "\n"))
   
   cat(paste(nv, ex, sep = " = "), sep = "\n") 
 }
