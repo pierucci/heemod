@@ -66,7 +66,7 @@ run_model <- function(...,
   uneval_strategy_list <- list(...)
   
   init <- check_init(init, uneval_strategy_list[[1]])
-  init_cost <- check_init(init_cost, uneval_strategy_list)
+  init_cost <- check_init_cost(init_cost, uneval_strategy_list)
   inflow <- check_inflow(inflow, uneval_strategy_list[[1]])
   
   run_model_(
@@ -136,12 +136,14 @@ run_model_ <- function(uneval_strategy_list,
     message("No named model -> generating names.")
     strategy_names <- as.character(utils::as.roman(seq_along(uneval_strategy_list)))
     names(uneval_strategy_list) <- strategy_names
+    names(init_cost) <- strategy_names
   }
   
   if (any(strategy_names == "")) {
     warning("Not all models are named -> generating names.")
     strategy_names <- as.character(utils::as.roman(seq_along(uneval_strategy_list)))
     names(uneval_strategy_list) <- strategy_names
+    names(init_cost) <- strategy_names
   }
   
   if (! list_all_same(lapply(uneval_strategy_list,
@@ -184,8 +186,8 @@ run_model_ <- function(uneval_strategy_list,
     list_res[[n]]$.strategy_names <- n
   }
 
-  .c_init_cost <- auto_name(as.lazy_dots(cost))
-  .c_init_cost[[1]] <- as.lazy(paste(cost$expr, ".init_cost", sep="+"))
+  .c_init_cost <- lazyeval::auto_name(as.lazy_dots(cost))
+  .c_init_cost[[1]] <- lazyeval::as.lazy(paste(cost$expr, ".init_cost", sep="+"))
   
   res <- Reduce(dplyr::bind_rows, list_res) %>% 
     dplyr::mutate_(.dots = .c_init_cost) %>%
@@ -211,6 +213,7 @@ run_model_ <- function(uneval_strategy_list,
       parameters = parameters,
       init = init,
       inflow = inflow,
+      init_cost = init_cost,
       cycles = cycles,
       method = method,
       ce = ce,
@@ -242,7 +245,9 @@ get_total_state_values <- function(x) {
   class(res) <- "data.frame"
   attr(res, "row.names") <- c(NA, -1)
   res$.n_indiv <- get_n_indiv(x)
-  res$.init_cost <- as.numeric(x$e_init_cost)
+  # If x is a class uneval_strategy, so there exist only a value in the list 
+  # but if x is a class run_model, so e_init_cost has several values
+  res$.init_cost <- as.numeric(x$e_init_cost[1]) 
   res
 }
 

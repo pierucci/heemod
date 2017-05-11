@@ -238,7 +238,7 @@ check_init.default <- function(x, ref) {
   define_init_(lazyeval::as.lazy_dots(lapply(x, function(x) x)))
 }
 
-check_init.uneval_init_cost <- function(x, ref){
+check_init_cost <- function(x, ref){
   parameter_name <- lazyeval::expr_text(x)
   
   get_uneval_strategy_list_number <- function(x){
@@ -264,7 +264,7 @@ check_init.uneval_init_cost <- function(x, ref){
     stop(sprintf("%s names are not all strategies names.", parameter_name))
   }
   
-  x
+  define_initial_values_(lazyeval::as.lazy_dots(lapply(x, function(x) x)))
 }
 
 check_inflow <- function(x, ...) {

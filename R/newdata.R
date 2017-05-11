@@ -28,6 +28,7 @@ eval_strategy_newdata <- function(x, strategy = 1, newdata) {
   init <- get_uneval_init(x)
   inflow <- get_inflow(x)
   method <- get_method(x)
+  init_cost <- get_uneval_init_cost(x)
   old_parameters <- get_parameters(x)
   uneval_strategy <- x$uneval_strategy_list[[strategy]]
   expand_limit <- get_expand_limit(x, strategy)
@@ -63,7 +64,8 @@ eval_strategy_newdata <- function(x, strategy = 1, newdata) {
               inflow = inflow,
               method = method,
               strategy_name = strategy,
-              expand_limit = expand_limit
+              expand_limit = expand_limit,
+              init_cost =  init_cost 
             )
           ) %>% 
           dplyr::ungroup() %>% 
@@ -89,7 +91,8 @@ eval_strategy_newdata <- function(x, strategy = 1, newdata) {
             method = method,
             inflow = inflow,
             strategy_name = strategy,
-            expand_limit = expand_limit
+            expand_limit = expand_limit,
+            init_cost = init_cost
           )
         ) %>% 
         dplyr::ungroup() %>% 
@@ -103,7 +106,7 @@ eval_strategy_newdata <- function(x, strategy = 1, newdata) {
 
 eval_newdata <- function(new_parameters, strategy, old_parameters,
                          cycles, init, method, inflow,
-                         strategy_name, expand_limit) {
+                         strategy_name, expand_limit, init_cost) {
   
   new_parameters <- Filter(
     function(x) all(! is.na(x)),
@@ -124,6 +127,7 @@ eval_newdata <- function(new_parameters, strategy, old_parameters,
     init = init,
     method = method,
     inflow = inflow,
+    init_cost = init_cost,
     strategy_name = strategy_name,
     expand_limit = expand_limit
   )
