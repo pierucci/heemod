@@ -27,14 +27,14 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
 #' discount(rep(10, 5), .02, first = FALSE)
 #' 
 #' @keywords internal
-discount <- function(x, r, first = FALSE, yearly = FALSE) {
+discount <- function(x, r, first = FALSE, by_period = NULL) {
   if (length(r) > 1) r <- r[1]
   stopifnot(
     r >= 0,
     r <= 1
   )
   t <- (seq_along(x) - (1 - isTRUE(first)))
-  if(yearly) t <- trunc(t/12)
+  if(!is.null(by_period)) t <- trunc(t/by_period)
   x / (1 + r) ^ t
 }
 
