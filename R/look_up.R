@@ -114,7 +114,11 @@ look_up <- function(data, ..., bin = FALSE, value = "value") {
   }
   
   if (any(is.na(res))) {
-    warning("Some values were not found, returning missing data.")
+    warning("Some values were not found, returning missing data:\n",
+            "arguments to look_up: ",
+            paste(names(list_specs), "=", unlist(list_specs), collapse = ", "),
+                  ", value = ", value
+    )
   }
   
   res
