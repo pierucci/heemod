@@ -49,6 +49,7 @@ Suggests:
     readxl,
     rgho,
     rmarkdown,
+    stringr,
     survival,
     testthat,
     triangle

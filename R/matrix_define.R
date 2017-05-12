@@ -2,18 +2,20 @@
 #' 
 #' Define a matrix of transition probabilities. Probability 
 #' can depend on parameters defined with 
-#' [define_parameters()], and can thus be 
-#' time-dependent.
-#' 
-#' Parameters names are searched first in a parameter object
-#' defined with [define_parameters()] and linked 
-#' with the matrix through [define_strategy()]; 
-#' then in the environment where the matrix was defined.
+#' [define_parameters()], and can thus be time-dependent.
 #' 
 #' Matric cells are listed by row.
 #' 
-#' The complementary probability of all other row probabilities
-#' can be conveniently referred to as `C`.
+#' Parameters names are searched first in a parameter object
+#' defined with [define_parameters()] and linked with the
+#' matrix through [define_strategy()]; then in the
+#' environment where the matrix was defined.
+#' 
+#' The complementary probability of all other row
+#' probabilities can be conveniently referred to as `C`.
+#' 
+#' The matrix code can be re-indented for readability with
+#' [reindent_transition()].
 #' 
 #' Only matrix size is checked during this step (the matrix 
 #' must be square). Other conditions (such as row sums being
@@ -21,29 +23,25 @@
 #' 
 #' For the `modify` function, existing matrix cells are 
 #' replaced with the new expression. Cells are referenced by
-#' name. Cell naming follows the `cell_x_y` convention,
-#' with `x` being the row number and `y` the 
-#' column number.
+#' name. Cell naming follows the `cell_x_y` convention, with
+#' `x` being the row number and `y` the column number.
 #' 
 #' @param ... Name-value pairs of expressions definig matrix
 #'   cells. Can refer to parameters defined with 
-#'   [define_parameters()]. For `plot`, 
-#'   additional arguments passed to
-#'   [diagram::plotmat()].
+#'   [define_parameters()]. For `plot`, additional arguments
+#'   passed to [diagram::plotmat()].
 #' @param state_names character vector, optional. State 
 #'   names.
 #' @param .OBJECT An object of class `uneval_matrix`.
 #' @param x An `uneval_matrix` to plot.
-#' @param relsize Argument passed to
-#'   [diagram::plotmat()].
+#' @param relsize Argument passed to [diagram::plotmat()].
 #' @param shadow.size Argument passed to 
 #'   [diagram::plotmat()].
-#' @param latex Argument passed to
-#'   [diagram::plotmat()].
+#' @param latex Argument passed to [diagram::plotmat()].
 #' @param .dots Used to work around non-standard evaluation.
 #'   
-#' @return An object of class `uneval_matrix` (actually
-#'   a named list of `lazy` expressions).
+#' @return An object of class `uneval_matrix` (actually a
+#'   named list of `lazy` expressions).
 #' @export
 #' 
 #' @example inst/examples/example_define_transition.R
