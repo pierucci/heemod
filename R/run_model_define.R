@@ -62,8 +62,8 @@ run_model <- function(...,
   
   uneval_strategy_list <- list(...)
   
-  init <- check_init(init, uneval_strategy_list[[1]])
-  inflow <- check_inflow(inflow, uneval_strategy_list[[1]])
+  init <- check_init(init, get_state_names(uneval_strategy_list[[1]]))
+  inflow <- check_inflow(inflow, get_state_names(uneval_strategy_list[[1]]))
   
   run_model_(
     uneval_strategy_list = uneval_strategy_list,

@@ -1,5 +1,9 @@
 ## heemod 0.9.1.9002
 
+### New features
+
+  * Starting values with `define_starting_values()`.
+
 ### Bugfixes
 
   * Better error-checking in multinomial parameters definition.

@@ -771,7 +771,11 @@ create_model_from_tabular <- function(state_info,
     TM <- tm_info
   }
   
-  define_strategy_(transition = TM, states = states)
+  define_strategy_(
+    transition = TM, states = states,
+    starting_values = check_starting_values(
+      define_starting_values(),
+      get_state_value_names(states)))
 }
 
 #' Load Data From a Folder Into an Environment

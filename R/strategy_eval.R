@@ -132,9 +132,14 @@ eval_strategy <- function(strategy, parameters, cycles,
   
   e_init <- unlist(eval_init(x = init, parameters[1, ]))
   e_inflow <- eval_inflow(x = inflow, parameters)
+  e_starting_values <- unlist(
+    eval_starting_values(
+      x = strategy$starting_values,
+      parameters[1, ]))
+  n_indiv <- sum(e_init, unlist(e_inflow))
   
-  if (any(is.na(e_init)) || any(is.na(e_inflow))) {
-    stop("Missing values not allowed in 'init' or 'inflow'.")
+  if (any(is.na(e_init)) || any(is.na(e_inflow)) || any(is.na(e_starting_values))) {
+    stop("Missing values not allowed in 'init', 'inflow' or 'starting values'.")
   }
   
   if (! any(e_init > 0)) {
@@ -154,6 +159,8 @@ eval_strategy <- function(strategy, parameters, cycles,
     correct_counts(method = method)
   
   values <- compute_values(states, count_table)
+  values[1, names(e_starting_values)] <- values[1, names(e_starting_values)] +
+    e_starting_values * n_indiv
   
   if (expand) {
     for (st in to_expand) {
@@ -174,7 +181,7 @@ eval_strategy <- function(strategy, parameters, cycles,
       values = values,
       e_init = e_init,
       e_inflow = e_inflow,
-      n_indiv = sum(e_init, unlist(e_inflow)),
+      n_indiv = n_indiv,
       cycles = cycles,
       expand_limit = expand_limit
     ),
