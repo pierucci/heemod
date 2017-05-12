@@ -14,6 +14,7 @@
   * Better error-checking in multinomial parameters definition.
   * Handle cases when parameters depend on `state_time` but thoses parameters are not used by a strategy.
   * Empty calls to `modify()` are supported.
+  * Fix error in survival vignette.
 
 ### Backend changes
 
