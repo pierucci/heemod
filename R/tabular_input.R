@@ -821,6 +821,28 @@ create_df_from_tabular <- function(df_dir, df_envir) {
   ## do the assignments
   for(i in seq(along = all_files)){
     this_val <- read_file(all_files[i])
+      
+    ## check for accidential commas in numbers
+    comma_cols <- 
+      which(sapply(sapply(this_val, function(x){grep(",", x)}),
+                   any)
+      )
+
+    for(this_comma_col in comma_cols){
+      try_numeric <- try(as.numeric(gsub(",", "", this_val[, this_comma_col])), 
+                         silent = TRUE)
+      if(!inherits(try_numeric, "try-error")){
+        this_val[, this_comma_col] <- try_numeric
+        message(paste("converting column",
+                      names(this_val)[this_comma_col],
+                      "from file",
+                      basename(all_files[i]),
+                      "to numeric despite it having commas"
+                      )
+                )
+    }
+    }
+
     assign(obj_names[i], this_val, envir = df_envir)
   }
   df_envir
