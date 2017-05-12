@@ -7,6 +7,7 @@
 ### New features
 
   * Starting values with `define_starting_values()`.
+  * Check for comma as a deciaml separator in tabular data.
 
 ### Bugfixes
 
