@@ -813,7 +813,7 @@ create_df_from_tabular <- function(df_dir, df_envir) {
   for(i in seq(along = all_files)){
     this_val <- read_file(all_files[i])
     
-    ## check for accidential commas in numbers
+    ## check for accidental commas in numbers
     comma_cols <- 
       which(sapply(sapply(this_val, function(x){grep(",", x)}),
                    any)
