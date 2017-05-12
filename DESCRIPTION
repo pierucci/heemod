@@ -1,6 +1,6 @@
 Package: heemod
 Title: Models for Health Economic Evaluation
-Version: 0.9.1
+Version: 0.9.1.9003
 Authors@R: c(
     person("Antoine", "Filipovic-Pierucci", email = "pierucci@gmail.com", role = c("aut", "cre")),
     person("Kevin", "Zarca", email = "kevin.zarca@urc-eco.fr", role = "aut"),
