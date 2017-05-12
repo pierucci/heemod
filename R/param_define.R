@@ -117,10 +117,12 @@ modify.uneval_parameters <- function(.OBJECT, ...) {
 }
 
 modify_.uneval_parameters <- function(.OBJECT, .dots) {
-  
-  check_names(names(.dots))
-  
-  utils::modifyList(.OBJECT, .dots)
+  if (length(.dots)) {
+    check_names(names(.dots))
+    utils::modifyList(.OBJECT, .dots)
+  } else {
+    .OBJECT
+  }
 }
 
 #' Define Inflow for a BIA
