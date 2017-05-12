@@ -1,5 +1,9 @@
 ## heemod 0.9.1.9002
 
+### Breaking changes
+
+  * Survival function renamed: `pool()`=>`mix()`.
+
 ### New features
 
   * Starting values with `define_starting_values()`.

@@ -345,7 +345,7 @@ test_that(
       compute_surv(time=seq_len(10), cycle_length=200)
     exp_surv4 = fs4 %>%
       set_covariates(group="Poor") %>%
-      pool(fs4 %>% set_covariates(group="Poor"), weights = c(0.5, 0.5)) %>%
+      mix(fs4 %>% set_covariates(group="Poor"), weights = c(0.5, 0.5)) %>%
       compute_surv(time=seq_len(10), cycle_length=200)
     
     # Projecting + Pooling w/ self, applying null
@@ -355,7 +355,7 @@ test_that(
       compute_surv(time=seq_len(10), cycle_length=200)
     exp_surv6 = fs4 %>%
       set_covariates(group="Poor") %>%
-      pool(fs4 %>% set_covariates(group="Poor"), weights = c(0.5, 0.5)) %>%
+      mix(fs4 %>% set_covariates(group="Poor"), weights = c(0.5, 0.5)) %>%
       apply_hr(1) %>%
       join(fs4 %>% set_covariates(group="Poor"), at = 89.1) %>%
       apply_af(1) %>%
@@ -370,7 +370,7 @@ test_that(
       compute_surv(time=seq(from=10,to=20,by=1), cycle_length=100)
     exp_surv8 = fs4 %>%
       set_covariates(group="Poor") %>%
-      pool(fs4 %>% set_covariates(group="Poor"), weights = c(0.5, 0.5)) %>%
+      mix(fs4 %>% set_covariates(group="Poor"), weights = c(0.5, 0.5)) %>%
       apply_hr(1) %>%
       join(fs4 %>% set_covariates(group="Poor"), at = 89.1) %>%
       apply_af(1) %>%
@@ -385,7 +385,7 @@ test_that(
       compute_surv(time=25, cycle_length=365.25/7)
     exp_surv10 = fs4 %>%
       set_covariates(group="Poor") %>%
-      pool(fs4 %>% set_covariates(group="Poor"), weights = c(0.5, 0.5)) %>%
+      mix(fs4 %>% set_covariates(group="Poor"), weights = c(0.5, 0.5)) %>%
       apply_hr(1) %>%
       join(fs4 %>% set_covariates(group="Poor"), at = 89.1) %>%
       apply_af(1) %>%
@@ -424,7 +424,7 @@ test_that(
     fs1_weighted1_surv = fs3 %>%
       compute_surv(time=seq_len(10), cycle_length=200, type="surv")
     
-    fs1_weighted2_surv = pool(
+    fs1_weighted2_surv = mix(
       fs3 %>% set_covariates(group="Good"),
       fs3 %>% set_covariates(group="Medium"),
       fs3 %>% set_covariates(group="Poor"),
@@ -435,7 +435,7 @@ test_that(
     fs2_weighted1_prob = fs3 %>%
       compute_surv(time=seq_len(10), cycle_length=200, type="prob")
     
-    fs2_weighted2_prob = pool(
+    fs2_weighted2_prob = mix(
       fs3 %>% set_covariates(group="Good"),
       fs3 %>% set_covariates(group="Medium"),
       fs3 %>% set_covariates(group="Poor"),

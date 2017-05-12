@@ -1,10 +1,10 @@
-#' Project Beyond a Survival Distribution with Another
+#' Join Beyond a Survival Distribution with Another
 #' 
-#' Project survival from a survival distribution using one
+#' Join survival from a survival distribution using one
 #' or more survival distributions using the specified cut points.
 #' 
 #' @param ... Survival distributions to be used in the
-#'   projection.
+#'   junction.
 #' @param dots Used to work around non-standard evaluation.
 #' @param at A vector of times corresponding to the cut
 #'   point(s) to be used.
@@ -22,6 +22,7 @@ join <- function(..., at) {
   
   join_(dots, at)
 }
+
 #' @export
 #' @rdname join
 project <- function(...) {
@@ -89,15 +90,15 @@ project_fn <- function(dist1, dist2_list) {
   )
 }
 
-#' Pool Two or More Survival Distributions
+#' Mix Two or More Survival Distributions
 #' 
-#' Pool a set of survival distributions using the specified
+#' Mix a set of survival distributions using the specified
 #' weights.
 #' 
 #' @param ... Survival distributions to be used in the
-#'   projection.
+#'   mixing.
 #' @param dots Used to work around non-standard evaluation.
-#' @param weights A vector of weights used in pooling.
+#' @param weights A vector of weights used in mixing.
 #'   
 #' @return A `surv_pooled` object.
 #' @export
@@ -106,18 +107,17 @@ project_fn <- function(dist1, dist2_list) {
 #' 
 #' dist1 <- define_survival(distribution = "exp", rate = .5)
 #' dist2 <- define_survival(distribution = "gompertz", rate = .5, shape = 1)
-#' pooled_dist <- pool(dist1, dist2, weights = c(0.25, 0.75))
+#' pooled_dist <- mix(dist1, dist2, weights = c(0.25, 0.75))
 #' 
-pool <- function(..., weights = 1) {
+mix <- function(..., weights = 1) {
   
   dots <- list(...)
-  
-  pool_(dots, weights)
+  mix_(dots, weights)
 }
 
 #' @export
-#' @rdname pool
-pool_ <- function(dots, weights = 1) {
+#' @rdname mix
+mix_ <- function(dots, weights = 1) {
   
   stopifnot(
     all(weights > 0),
@@ -132,6 +132,20 @@ pool_ <- function(dots, weights = 1) {
     ),
     class = "surv_pooled"
   )
+}
+
+#' @export
+#' @rdname mix
+pool <- function(...) {
+  warning("'project() is deprecated, use 'join()' instead.")
+  mix(...)
+}
+
+#' @export
+#' @rdname mix
+pool_ <- function(...) {
+  warning("'project_() is deprecated, use 'join_()' instead.")
+  mix_(...)
 }
 
 #' Apply a Hazard Ratio

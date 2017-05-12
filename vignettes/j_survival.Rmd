@@ -101,7 +101,7 @@ km_medium_af <- apply_af(km_medium, af = 1.2)
 In addition, distributions can be combined using a variety of operations:
 
   * Join survival distributions together: `join()`.
-  * Pool two (or more) survival distributions: `pool()`.
+  * Mix two (or more) survival distributions: `mix()`.
   * Combine two (or more) survival distributions as independent risks: `add_hazards()`.
 
 ```{r}
@@ -110,7 +110,7 @@ km_poor_join <- join(
   fitcov_poor,
   at = 365
 )
-models_all <- pool(
+models_all <- mix(
   fitcov_good, fitcov_medium, fitcov_poor,
   weights = c(0.25, 0.25, 0.5)
 )
@@ -135,7 +135,7 @@ fit_cov %>%
     fitcov_poor,
     at = 3
   ) %>%
-  pool(
+  mix(
     fitcov_medium,
     weights = c(0.25, 0.75)
   ) %>%

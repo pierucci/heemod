@@ -46,8 +46,8 @@ reference:
     - apply_hr
     - apply_or
     - add_hazards
-    - pool
-    - project
+    - mix
+    - join
     - set_covariates
     - plot.surv_obj
   - title: Calibration
