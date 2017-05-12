@@ -10,6 +10,7 @@ reference:
     - define_transition
     - define_part_surv
     - define_strategy
+    - define_starting_values
   - title: Parameters
     contents:
     - define_parameters
@@ -27,7 +28,6 @@ reference:
     - run_dsa
     - define_psa
     - distributions
-    - define_multinom
     - define_correlation
     - run_psa
     - export_savi

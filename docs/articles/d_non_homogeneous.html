@@ -59,7 +59,7 @@
     <div class="page-header toc-ignore">
       <h1>Time-varying Markov Models (Non-Homogeneous)</h1>
             
-            <h4 class="date">2017-05-09</h4>
+            <h4 class="date">2017-05-12</h4>
           </div>
 
     
@@ -241,11 +241,12 @@ mat_np1</code></pre></div>
 <a href="#state-strategy-definition" class="anchor"></a>State &amp; strategy definition</h2>
 <p>Utilities and costs are then associated to states. In this model costs are discounted at a rate of 6% and utilities at a rate of 1.5%.</p>
 <p>Now that parameters, transition matrix and states are defined we can define the strategies for the control group and the NP1 treatment.</p>
+<p>We use <code><a href="../reference/define_starting_values.html">define_starting_values()</a></code> to take into account the cost of surgery.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">strat_standard &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_strategy.html">define_strategy</a></span>(
   <span class="dt">transition =</span> mat_standard,
   <span class="dt">PrimaryTHR =</span> <span class="kw"><a href="../reference/define_state.html">define_state</a></span>(
     <span class="dt">utility =</span> <span class="dv">0</span>,
-    <span class="dt">cost =</span> <span class="dv">394</span>
+    <span class="dt">cost =</span> <span class="dv">0</span>
   ),
   <span class="dt">SuccessP =</span> <span class="kw"><a href="../reference/define_state.html">define_state</a></span>(
     <span class="dt">utility =</span> <span class="kw"><a href="../reference/discount.html">discount</a></span>(u_SuccessP, .<span class="dv">015</span>),
@@ -262,6 +263,9 @@ mat_np1</code></pre></div>
   <span class="dt">Death =</span> <span class="kw"><a href="../reference/define_state.html">define_state</a></span>(
     <span class="dt">utility =</span> <span class="dv">0</span>,
     <span class="dt">cost =</span> <span class="dv">0</span>
+  ),
+  <span class="dt">starting_values =</span> <span class="kw"><a href="../reference/define_starting_values.html">define_starting_values</a></span>(
+    <span class="dt">cost =</span> <span class="dv">394</span>
   )
 )
 strat_standard</code></pre></div>
@@ -273,7 +277,7 @@ strat_standard</code></pre></div>
   <span class="dt">transition =</span> mat_np1,
   <span class="dt">PrimaryTHR =</span> <span class="kw"><a href="../reference/define_state.html">define_state</a></span>(
     <span class="dt">utility =</span> <span class="dv">0</span>,
-    <span class="dt">cost =</span> <span class="dv">579</span>
+    <span class="dt">cost =</span> <span class="dv">0</span>
   ),
   <span class="dt">SuccessP =</span> <span class="kw"><a href="../reference/define_state.html">define_state</a></span>(
     <span class="dt">utility =</span> <span class="kw"><a href="../reference/discount.html">discount</a></span>(u_SuccessP, .<span class="dv">015</span>),
@@ -290,6 +294,9 @@ strat_standard</code></pre></div>
   <span class="dt">Death =</span> <span class="kw"><a href="../reference/define_state.html">define_state</a></span>(
     <span class="dt">utility =</span> <span class="dv">0</span>,
     <span class="dt">cost =</span> <span class="dv">0</span>
+  ),
+  <span class="dt">starting_values =</span> <span class="kw"><a href="../reference/define_starting_values.html">define_starting_values</a></span>(
+    <span class="dt">cost =</span> <span class="dv">579</span>
   )
 )
 strat_np1</code></pre></div>
@@ -302,16 +309,16 @@ strat_np1</code></pre></div>
 <h2 class="hasAnchor">
 <a href="#model-analysis" class="anchor"></a>Model analysis</h2>
 <p>Both strategies can now be run for 60 years. By default models are computed for 1000 person starting in <code>PrimaryTHR</code>.</p>
-<p>To approach results from the original study we assume transitions occur at the end of each cycles. This is necessary because THR cost defined in state <code>PrimaryTHR</code> need to be accounted for all 1000 individuals, if we used another counting method the number of persons in <code>PrimaryTHR</code> would be reduced, or even null, negating surgery costs.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res_mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_model.html">run_model</a></span>(
   <span class="dt">standard =</span> strat_standard,
   <span class="dt">np1      =</span> strat_np1,
   <span class="dt">parameters =</span> param,
   <span class="dt">cycles =</span> <span class="dv">60</span>,
   <span class="dt">cost =</span> cost,
-  <span class="dt">effect =</span> utility,
-  <span class="dt">method =</span> <span class="st">"end"</span>
+  <span class="dt">effect =</span> utility
 )</code></pre></div>
+<pre><code>## Fetching mortality data from package cached data.</code></pre>
+<pre><code>## Using cached data from year 2015.</code></pre>
 <pre><code>## Fetching mortality data from package cached data.</code></pre>
 <pre><code>## Using cached data from year 2015.</code></pre>
 <p>A comparison of both strategies can be done with <code>summary()</code>. The incremental cost and effect are displayed in columns <code>Cost</code> and <code>Effect</code>.</p>
@@ -326,13 +333,13 @@ strat_np1</code></pre></div>
 ## SuccessR = 0L
 ## Death = 0L
 ## 
-## Counting method: 'end'.
+## Counting method: 'life-table'.
 ## 
 ## Values:
 ## 
 ##           utility     cost
-## standard 16118.73 525457.1
-## np1      16170.51 613783.6
+## standard 16239.62 529400.8
+## np1      16291.79 614827.1
 ## 
 ## Efficiency frontier:
 ## 
@@ -341,8 +348,8 @@ strat_np1</code></pre></div>
 ## Differences:
 ## 
 ##     Cost Diff. Effect Diff.     ICER     Ref.
-## np1   88.32658   0.05177584 1705.942 standard</code></pre>
-<p>The new treatment costs £1706 more per QALY gained.</p>
+## np1   85.42637   0.05216416 1637.645 standard</code></pre>
+<p>The new treatment costs £1638 more per QALY gained.</p>
 <p>It should be noted that this result differs from the original study. This difference is explained by higher population-level all-causes mortality rates in the original study than in the WHO database (used here). See vignette <code>vignette("i-reproduction", "heemod")</code> for an exact reproduction of the analysis.</p>
 <p>We can plot the counts per state:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(res_mod, <span class="dt">type =</span> <span class="st">"counts"</span>, <span class="dt">panel =</span> <span class="st">"by_state"</span>, <span class="dt">free_y =</span> <span class="ot">TRUE</span>) +
