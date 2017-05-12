@@ -65,6 +65,7 @@ reference:
     - probability
     - rescale_discount_rate
     - who_mortality
+    - reindent_transition
   - title: Other features
     contents:
     - cluster
