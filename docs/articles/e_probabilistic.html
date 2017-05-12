@@ -242,14 +242,14 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 ## Values:
 ## 
 ##      cost_health cost_drugs cost_total life_year
-## comb   102496570   80239927   95283465 18386.784
-## mono    51705856   20554935   50583166  9023.238
+## comb   103011533   80119092   95550696 18359.095
+## mono    52537213   20792473   51323157  9127.512
 ## 
 ## Net monetary benefit difference:
 ## 
 ##       1000     5000     6000    10000
-## 1 35336.75    0.000     0.00     0.00
-## 2     0.00 2117.435 11480.98 48935.17
+## 1 34995.96    0.000     0.00     0.00
+## 2     0.00 1930.376 11161.96 48088.29
 ## 
 ## Efficiency frontier:
 ## 
@@ -258,7 +258,7 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 ## Differences:
 ## 
 ##      Cost Diff. Effect Diff.     ICER Ref.
-## comb    44700.3     9.363547 4773.864 mono</code></pre>
+## comb   44227.54     9.231583 4790.894 mono</code></pre>
 </div>
 <div id="result-interpretation" class="section level2">
 <h2 class="hasAnchor">
@@ -278,6 +278,10 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 <p><img src="e_probabilistic_files/figure-html/unnamed-chunk-11-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>Or on the difference between strategies:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(pm, <span class="dt">type =</span> <span class="st">"cov"</span>, <span class="dt">diff =</span> <span class="ot">TRUE</span>, <span class="dt">threshold =</span> <span class="dv">5000</span>)</code></pre></div>
+<pre><code>## Warning in compute_prop_var(mgcv::gam(formula = form_nmb, data = .)):
+## Parameter excluded because of perfect collinearity: p_AD_mono.</code></pre>
+<pre><code>## Warning in compute_prop_var(mgcv::gam(formula = form_nmb, data = .)): Only
+## 97% of variance explained, results may be inaccurate.</code></pre>
 <p><img src="e_probabilistic_files/figure-html/unnamed-chunk-12-1.png" width="384" style="display: block; margin: auto;"></p>
 <p>As usual plots can be modified with the standard <code>ggplot2</code> syntax.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)

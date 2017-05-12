@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Join Beyond a Survival Distribution with Another — join • heemod</title>
+<title>Mix Two or More Survival Distributions — mix • heemod</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -79,21 +79,21 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Join Beyond a Survival Distribution with Another</h1>
+    <h1>Mix Two or More Survival Distributions</h1>
     </div>
 
     
-    <p>Join survival from a survival distribution using one
-or more survival distributions using the specified cut points.</p>
+    <p>Mix a set of survival distributions using the specified
+weights.</p>
     
 
-    <pre class="usage"><span class='fu'>join</span>(<span class='no'>...</span>, <span class='no'>at</span>)
+    <pre class="usage"><span class='fu'>mix</span>(<span class='no'>...</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='fl'>1</span>)
 
-<span class='fu'>project</span>(<span class='no'>...</span>)
+<span class='fu'>mix_</span>(<span class='no'>dots</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='fl'>1</span>)
 
-<span class='fu'>project_</span>(<span class='no'>...</span>)
+<span class='fu'>pool</span>(<span class='no'>...</span>)
 
-<span class='fu'>join_</span>(<span class='no'>dots</span>, <span class='no'>at</span>)</pre>
+<span class='fu'>pool_</span>(<span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -101,12 +101,11 @@ or more survival distributions using the specified cut points.</p>
     <tr>
       <th>...</th>
       <td><p>Survival distributions to be used in the
-junction.</p></td>
+mixing.</p></td>
     </tr>
     <tr>
-      <th>at</th>
-      <td><p>A vector of times corresponding to the cut
-point(s) to be used.</p></td>
+      <th>weights</th>
+      <td><p>A vector of weights used in mixing.</p></td>
     </tr>
     <tr>
       <th>dots</th>
@@ -116,14 +115,14 @@ point(s) to be used.</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code>surv_projection</code> object.</p>
+    <p>A <code>surv_pooled</code> object.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='no'>dist1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='define_survival.html'>define_survival</a></span>(<span class='kw'>distribution</span> <span class='kw'>=</span> <span class='st'>"exp"</span>, <span class='kw'>rate</span> <span class='kw'>=</span> <span class='fl'>.5</span>)
 <span class='no'>dist2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='define_survival.html'>define_survival</a></span>(<span class='kw'>distribution</span> <span class='kw'>=</span> <span class='st'>"gompertz"</span>, <span class='kw'>rate</span> <span class='kw'>=</span> <span class='fl'>.5</span>, <span class='kw'>shape</span> <span class='kw'>=</span> <span class='fl'>1</span>)
-<span class='no'>join_dist</span> <span class='kw'>&lt;-</span> <span class='fu'>join</span>(<span class='no'>dist1</span>, <span class='no'>dist2</span>, <span class='kw'>at</span><span class='kw'>=</span><span class='fl'>20</span>)</div></pre>
+<span class='no'>pooled_dist</span> <span class='kw'>&lt;-</span> <span class='fu'>mix</span>(<span class='no'>dist1</span>, <span class='no'>dist2</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>0.25</span>, <span class='fl'>0.75</span>))</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

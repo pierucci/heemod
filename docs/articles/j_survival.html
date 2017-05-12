@@ -139,7 +139,7 @@ km_medium_af &lt;-<span class="st"> </span><span class="kw"><a href="../referenc
 <p>In addition, distributions can be combined using a variety of operations:</p>
 <ul>
 <li>Join survival distributions together: <code><a href="../reference/join.html">join()</a></code>.</li>
-<li>Pool two (or more) survival distributions: <code><a href="../reference/pool.html">pool()</a></code>.</li>
+<li>Mix two (or more) survival distributions: <code><a href="../reference/mix.html">mix()</a></code>.</li>
 <li>Combine two (or more) survival distributions as independent risks: <code><a href="../reference/add_hazards.html">add_hazards()</a></code>.</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">km_poor_join &lt;-<span class="st"> </span><span class="kw"><a href="../reference/join.html">join</a></span>(
@@ -147,7 +147,7 @@ km_medium_af &lt;-<span class="st"> </span><span class="kw"><a href="../referenc
   fitcov_poor,
   <span class="dt">at =</span> <span class="dv">365</span>
 )
-models_all &lt;-<span class="st"> </span><span class="kw"><a href="../reference/pool.html">pool</a></span>(
+models_all &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mix.html">mix</a></span>(
   fitcov_good, fitcov_medium, fitcov_poor,
   <span class="dt">weights =</span> <span class="kw">c</span>(<span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>)
 )
@@ -165,7 +165,7 @@ combined_risks &lt;-<span class="st"> </span><span class="kw"><a href="../refere
     fitcov_poor,
     <span class="dt">at =</span> <span class="dv">3</span>
   ) %&gt;%
-<span class="st">  </span><span class="kw"><a href="../reference/pool.html">pool</a></span>(
+<span class="st">  </span><span class="kw"><a href="../reference/mix.html">mix</a></span>(
     fitcov_medium,
     <span class="dt">weights =</span> <span class="kw">c</span>(<span class="fl">0.25</span>, <span class="fl">0.75</span>)
   ) %&gt;%

@@ -87,11 +87,19 @@
     <div id="heemod-0-9-1-9002" class="section level2">
 <h2 class="hasAnchor">
 <a href="#heemod-0-9-1-9002" class="anchor"></a>heemod 0.9.1.9002</h2>
+<div id="breaking-changes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#breaking-changes" class="anchor"></a>Breaking changes</h3>
+<ul>
+<li>Survival function renamed: <code><a href="../reference/mix.html">pool()</a></code>=&gt;<code><a href="../reference/mix.html">mix()</a></code>.</li>
+</ul>
+</div>
 <div id="new-features" class="section level3">
 <h3 class="hasAnchor">
 <a href="#new-features" class="anchor"></a>New features</h3>
 <ul>
 <li>Starting values with <code><a href="../reference/define_starting_values.html">define_starting_values()</a></code>.</li>
+<li>Check for comma as a deciaml separator in tabular data.</li>
 </ul>
 </div>
 <div id="bugfixes" class="section level3">
@@ -100,6 +108,7 @@
 <ul>
 <li>Better error-checking in multinomial parameters definition.</li>
 <li>Handle cases when parameters depend on <code>state_time</code> but thoses parameters are not used by a strategy.</li>
+<li>Empty calls to <code><a href="../reference/modify.html">modify()</a></code> are supported.</li>
 </ul>
 </div>
 <div id="backend-changes" class="section level3">
@@ -113,9 +122,9 @@
     <div id="heemod-0-9-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#heemod-0-9-1" class="anchor"></a>heemod 0.9.1</h2>
-<div id="breaking-changes" class="section level3">
+<div id="breaking-changes-1" class="section level3">
 <h3 class="hasAnchor">
-<a href="#breaking-changes" class="anchor"></a>Breaking changes</h3>
+<a href="#breaking-changes-1" class="anchor"></a>Breaking changes</h3>
 <ul>
 <li>Survival function renamed: <code><a href="../reference/join.html">project()</a></code>=&gt;<code><a href="../reference/join.html">join()</a></code>.</li>
 <li>Removed <code>get_code()</code>.</li>
@@ -155,9 +164,9 @@
 <li>
 <code>inflow</code> can be time-varying.</li>
 </ul>
-<div id="breaking-changes-1" class="section level3">
+<div id="breaking-changes-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#breaking-changes-1" class="anchor"></a>Breaking changes</h3>
+<a href="#breaking-changes-2" class="anchor"></a>Breaking changes</h3>
 <ul>
 <li>
 <code>get_probs_from_surv()</code>=&gt;<code><a href="../reference/compute_surv.html">compute_surv()</a></code>.</li>
@@ -196,9 +205,9 @@
     <div id="heemod-0-8-0" class="section level2">
 <h2 class="hasAnchor">
 <a href="#heemod-0-8-0" class="anchor"></a>heemod 0.8.0</h2>
-<div id="breaking-changes-2" class="section level3">
+<div id="breaking-changes-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#breaking-changes-2" class="anchor"></a>Breaking changes</h3>
+<a href="#breaking-changes-3" class="anchor"></a>Breaking changes</h3>
 <ul>
 <li>
 <code>strategy</code> becomes a reserved parameter name.</li>
@@ -290,9 +299,9 @@
     <div id="heemod-0-7-0" class="section level2">
 <h2 class="hasAnchor">
 <a href="#heemod-0-7-0" class="anchor"></a>heemod 0.7.0</h2>
-<div id="breaking-changes-3" class="section level3">
+<div id="breaking-changes-4" class="section level3">
 <h3 class="hasAnchor">
-<a href="#breaking-changes-3" class="anchor"></a>Breaking changes</h3>
+<a href="#breaking-changes-4" class="anchor"></a>Breaking changes</h3>
 <ul>
 <li>Some plotting arguments changed (e.g. <code>type</code>=&gt;<code>results</code>).</li>
 </ul>
@@ -326,9 +335,9 @@
     <div id="heemod-0-6-0" class="section level2">
 <h2 class="hasAnchor">
 <a href="#heemod-0-6-0" class="anchor"></a>heemod 0.6.0</h2>
-<div id="breaking-changes-4" class="section level3">
+<div id="breaking-changes-5" class="section level3">
 <h3 class="hasAnchor">
-<a href="#breaking-changes-4" class="anchor"></a>Breaking changes</h3>
+<a href="#breaking-changes-5" class="anchor"></a>Breaking changes</h3>
 <ul>
 <li>Base model cannot be specified anymore: it is always the least costly model.</li>
 <li>Renamed arguement <code>transition_matrix</code> =&gt; <code>transition</code> in <code><a href="../reference/define_strategy.html">define_strategy()</a></code>.</li>
@@ -373,9 +382,9 @@
     <div id="heemod-0-5-0" class="section level2">
 <h2 class="hasAnchor">
 <a href="#heemod-0-5-0" class="anchor"></a>heemod 0.5.0</h2>
-<div id="breaking-changes-5" class="section level3">
+<div id="breaking-changes-6" class="section level3">
 <h3 class="hasAnchor">
-<a href="#breaking-changes-5" class="anchor"></a>Breaking changes</h3>
+<a href="#breaking-changes-6" class="anchor"></a>Breaking changes</h3>
 <ul>
 <li>Some functions were renamed for clarification:
 <ul>
