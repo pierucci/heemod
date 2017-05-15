@@ -27,14 +27,15 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
 #' discount(rep(10, 5), .02, first = FALSE)
 #' 
 #' @keywords internal
-discount <- function(x, r, first = FALSE) {
+discount <- function(x, r, first = FALSE, by_period = NULL) {
   if (length(r) > 1) r <- r[1]
   stopifnot(
     r >= 0,
     r <= 1
   )
-  
-  x / (1 + r) ^ (seq_along(x) - (1 - isTRUE(first)))
+  t <- (seq_along(x) - (1 - isTRUE(first)))
+  if(!is.null(by_period)) t <- trunc(t/by_period)
+  x / (1 + r) ^ t
 }
 
 #' Check if All the Elements of a List Are the Same

@@ -239,8 +239,8 @@ eval_surv <- function(x, time, cycle_length = 1,
 #'   to predict.
 #' @param cycle_length The value of a Markov cycle in 
 #'   absolute time units.
-#' @param type either `prob`, for transition probabilities,
-#'   or `surv`, for survival
+#' @param type Either `prob`, for transition probabilities,
+#'   or `surv`, for survival.
 #' @param ... arguments passed to methods.
 #'   
 #' @return Returns either the survival probalities or

@@ -83,12 +83,11 @@ eval_parameters <- function(x, cycles = 1,
 
 eval_init <- function(x, parameters) {
   to_keep <- names(x)
-  dplyr::mutate_(.data = parameters, .dots = x)[to_keep]
+  if (length(to_keep)) {
+    dplyr::mutate_(.data = parameters, .dots = x)[to_keep]
+  } else {
+    tibble::tibble()
+  }
 }
 
-eval_init_cost <- function(x, parameters){
-  to_keep <- names(x)
-  dplyr::mutate_(.data=parameters, .dots = x)[to_keep]
-}
-
-eval_inflow <- eval_init
+eval_starting_values <- eval_inflow <- eval_init

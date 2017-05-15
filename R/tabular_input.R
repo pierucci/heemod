@@ -771,7 +771,11 @@ create_model_from_tabular <- function(state_info,
     TM <- tm_info
   }
   
-  define_strategy_(transition = TM, states = states)
+  define_strategy_(
+    transition = TM, states = states,
+    starting_values = check_starting_values(
+      define_starting_values(),
+      get_state_value_names(states)))
 }
 
 #' Load Data From a Folder Into an Environment
@@ -817,6 +821,28 @@ create_df_from_tabular <- function(df_dir, df_envir) {
   ## do the assignments
   for(i in seq(along = all_files)){
     this_val <- read_file(all_files[i])
+      
+    ## check for accidential commas in numbers
+    comma_cols <- 
+      which(sapply(sapply(this_val, function(x){grep(",", x)}),
+                   any)
+      )
+
+    for(this_comma_col in comma_cols){
+      try_numeric <- try(as.numeric(gsub(",", "", this_val[, this_comma_col])), 
+                         silent = TRUE)
+      if(!inherits(try_numeric, "try-error")){
+        this_val[, this_comma_col] <- try_numeric
+        message(paste("converting column",
+                      names(this_val)[this_comma_col],
+                      "from file",
+                      basename(all_files[i]),
+                      "to numeric despite it having commas"
+                      )
+                )
+    }
+    }
+
     assign(obj_names[i], this_val, envir = df_envir)
   }
   df_envir
@@ -1370,8 +1396,8 @@ join_fits_across_time <- function(this_part) {
   if ("until" %in% names(this_part)) {
     this_part <- dplyr::arrange_(this_part, ~ until)
     
-    join_(dots = this_part$fit, 
-             at= this_part$until[!is.na(this_part$until)])
+    join_(.dots = this_part$fit, 
+          at= this_part$until[!is.na(this_part$until)])
     
   } else {
     if (nrow(this_part) > 1) {
