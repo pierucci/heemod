@@ -104,17 +104,15 @@ test_that(
     
     expect_equal(
       res2,
-      structure(
-        list(
-          rate1 = c(0.101959623961425, 0.137000448427529),
-          rate2 = c(0.492102780837178, 0.517550777974819),
-          rate3 = c(0.405937595201397, 0.345448773597652),
-          a = c(0.25010006361869, 0.319608420079022),
-          b = c(0.74989993638131, 0.680391579920978)
-        ),
-        .Names = c("rate1", "rate2", "rate3", "a", "b"),
+      structure(list(
+        rate1 = c(0.0988103464248714, 0.136581011164098),
+        rate2 = c(0.494447779167122, 0.533418525880708),
+        rate3 = c(0.406741874408007, 0.330000462955194),
+        a = c(0.217007557277859, 0.311016070577393),
+        b = c(0.782992442722141, 0.688983929422607)),
+        class = "data.frame",
         row.names = c(NA, -2L),
-        class = "data.frame")
+        .Names = c("rate1", "rate2", "rate3", "a", "b"))
     )
     
     expect_identical(ndt1, ndt3)
@@ -174,8 +172,12 @@ test_that(
       define_psa(
         x ~ normal(60, 10),
         y ~ 0
-      ),
-      "Incorrect PSA distribution definition"
+      )
+    )
+    expect_error(
+      define_psa(
+        ~ normal(60, 10)
+      )
     )
     expect_error(
       define_correlation(age_init, cost_init, .4, .5)
@@ -185,6 +187,20 @@ test_that(
     )
     expect_error(
       define_correlation(age_init, cost_init, .4, age_init, cost_init, .5)
+    )
+    expect_error(
+      define_psa(
+        x ~ normal(1, 2),
+        b + c ~ multinomial(20, 30),
+        c + e + f ~ multinomial(12, 34, 56)
+      )
+    )
+    expect_error(
+      define_psa(
+        x ~ normal(1, 2),
+        c + c ~ multinomial(20, 30),
+        d + e + f ~ multinomial(12, 34, 56)
+      )
     )
   }
 )

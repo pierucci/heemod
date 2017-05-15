@@ -171,20 +171,20 @@ counts).</p>
   <span class='kw'>strategy_name</span> <span class='kw'>=</span> <span class='st'>"A"</span>,
   <span class='kw'>expand_limit</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='kw'>A</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>B</span> <span class='kw'>=</span> <span class='fl'>5</span>)
 )</div><div class='output co'>#&gt; $parameters
-#&gt; # A tibble: 5 × 4
-#&gt;   model_time markov_cycle strategy     a
-#&gt; *      &lt;int&gt;        &lt;int&gt;    &lt;chr&gt; &lt;dbl&gt;
-#&gt; 1          1            1        A     3
-#&gt; 2          2            2        A     4
-#&gt; 3          3            3        A     5
-#&gt; 4          4            4        A     6
-#&gt; 5          5            5        A     7
+#&gt; # A tibble: 5 × 3
+#&gt;   model_time markov_cycle strategy
+#&gt; *      &lt;int&gt;        &lt;int&gt;    &lt;chr&gt;
+#&gt; 1          1            1        A
+#&gt; 2          2            2        A
+#&gt; 3          3            3        A
+#&gt; 4          4            4        A
+#&gt; 5          5            5        A
 #&gt; 
 #&gt; $complete_parameters
-#&gt; # A tibble: 1 × 4
-#&gt;   model_time markov_cycle strategy     a
-#&gt;        &lt;int&gt;        &lt;int&gt;    &lt;chr&gt; &lt;dbl&gt;
-#&gt; 1          1            1        A     3
+#&gt; # A tibble: 1 × 5
+#&gt;   model_time markov_cycle strategy state_time     a
+#&gt; *      &lt;int&gt;        &lt;int&gt;    &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt;
+#&gt; 1          1            1        A          1     3
 #&gt; 
 #&gt; $transition
 #&gt; An evaluated transition matrix, 2 states, 5 markov cycles.
@@ -285,7 +285,7 @@ counts).</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Antoine Filipovic-Pierucci, Kevin Zarca.</p>
+  <p>Developed by Antoine Filipovic-Pierucci.</p>
 </div>
 
 <div class="pkgdown">

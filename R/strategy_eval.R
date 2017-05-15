@@ -65,6 +65,8 @@ eval_strategy <- function(strategy, parameters, cycles,
     correct_counts(method = method)
   
   values <- compute_values(states, count_table)
+  values[1, names(e_starting_values)] <- values[1, names(e_starting_values)] +
+    e_starting_values * n_indiv
   
   if (actually_expanded_something) {
     for (st in expanded$expanded_states) {
@@ -84,7 +86,7 @@ eval_strategy <- function(strategy, parameters, cycles,
       values = values,
       e_init = init,
       e_inflow = inflow,
-      n_indiv = sum(init, unlist(inflow)),
+      n_indiv = n_indiv,
       cycles = cycles,
       expand_limit = expand_limit
     ),

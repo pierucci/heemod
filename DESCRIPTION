@@ -1,13 +1,14 @@
 Package: heemod
 Title: Models for Health Economic Evaluation
-Version: 0.9.1
+Version: 0.9.1.9004
 Authors@R: c(
     person("Antoine", "Filipovic-Pierucci", email = "pierucci@gmail.com", role = c("aut", "cre")),
-    person("Kevin", "Zarca", email = "kevin.zarca@urc-eco.fr", role = "aut"),
+    person("Kevin", "Zarca", role = "ctb"),
     person("Matthew", "Wiener", role = "ctb"),
     person("Zdenek", "Kabat", role = "ctb"),
     person("Vojtech", "Filipec", role = "ctb"),
-	  person("Jordan", "Amdahl", role=c("ctb"))
+	  person("Jordan", "Amdahl", role=c("ctb")),
+	  person("Yonatan", "Carranza Alarcon", role=c("ctb"))
     )
 Description: Health Economic Evaluation Modelling:
     decision trees and cohort simulations. Provides a simple
@@ -48,6 +49,7 @@ Suggests:
     readxl,
     rgho,
     rmarkdown,
+    stringr,
     survival,
     testthat,
     triangle

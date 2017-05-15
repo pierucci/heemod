@@ -1,3 +1,29 @@
+## heemod 0.9.1.9004
+
+### Breaking changes
+
+  * Survival function renamed: `pool()`=>`mix()`.
+
+### New features
+
+  * Starting values with `define_starting_values()`.
+  * Check for comma as a deciaml separator in tabular data.
+  * Auto-reindent transition matrices with `reindent_transition()`.
+
+### Bugfixes
+
+  * Better error-checking in multinomial parameters definition.
+  * Handle cases when parameters depend on `state_time` but thoses parameters are not used by a strategy.
+  * Empty calls to `modify()` are supported.
+  * Fix error in survival vignette.
+
+### Backend changes
+
+  * The development branch is now called `master`, the release branch is called `cran`.
+  * Survival operation are wrapped in a common class.
+  * Expansion code moved to own function.
+  * Faster computation of expanded states.
+
 ## heemod 0.9.1
 
 ### Breaking changes
@@ -19,7 +45,7 @@
 
 ## heemod 0.9.0
 
-`heemod` can now be cited with :
+`heemod` can now be cited with:
 
 Filipović-Pierucci A, Zarca K and Durand-Zaleski I (2017).
 “Markov Models for Health Economic Evaluations: The R
