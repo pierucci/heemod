@@ -5,7 +5,7 @@
 #' 
 #' @param ... Survival distributions to be used in the
 #'   junction.
-#' @param dots Used to work around non-standard evaluation.
+#' @param .dots Used to work around non-standard evaluation.
 #' @param at A vector of times corresponding to the cut
 #'   point(s) to be used.
 #'   
@@ -39,25 +39,25 @@ project_ <- function(...) {
 
 #' @export
 #' @rdname join
-join_ <- function(dots, at) {
+join_ <- function(.dots, at) {
   
   stopifnot(
     all(at > 0),
     all(is.finite(at)),
-    !is.unsorted(at, strictly=T),
-    length(at) == length(dots) - 1
+    ! is.unsorted(at, strictly = TRUE),
+    length(at) == length(.dots) - 1
   )
   
   # Restructure so that first distribution is "alone"
   # and subsequent distributions are put in a list along
   # with their cut point.
   dist_list <- list()
-  for (i in seq_along(dots)) {
-    if (i==1) {
-      dist_list[[i]] <- dots[[i]]
+  for (i in seq_along(.dots)) {
+    if (i == 1) {
+      dist_list[[i]] <- .dots[[i]]
     } else {
       dist_list[[i]] <- list(
-        dist = dots[[i]],
+        dist = .dots[[i]],
         at = at[i-1]
       )
     }
@@ -86,7 +86,7 @@ project_fn <- function(dist1, dist2_list) {
       dist2 = dist2_list$dist,
       at = dist2_list$at
     ),
-    class = "surv_projection"
+    class = c("surv_object", "surv_projection")
   )
 }
 
@@ -130,21 +130,21 @@ mix_ <- function(dots, weights = 1) {
       dists = dots,
       weights = weights
     ),
-    class = "surv_pooled"
+    class = c("surv_object", "surv_pooled")
   )
 }
 
 #' @export
 #' @rdname mix
 pool <- function(...) {
-  warning("'project() is deprecated, use 'join()' instead.")
+  warning("'pool() is deprecated, use 'mix()' instead.")
   mix(...)
 }
 
 #' @export
 #' @rdname mix
 pool_ <- function(...) {
-  warning("'project_() is deprecated, use 'join_()' instead.")
+  warning("'pool_() is deprecated, use 'mix_()' instead.")
   mix_(...)
 }
 
@@ -179,7 +179,7 @@ apply_hr <- function(dist, hr, log_hr = FALSE) {
       dist = dist,
       hr = ifelse(log_hr, exp(hr), hr)
     ),
-    class = "surv_ph"
+    class = c("surv_object", "surv_ph")
   )
 }
 
@@ -213,7 +213,7 @@ apply_af <- function(dist, af, log_af = FALSE) {
       dist = dist,
       af = ifelse(log_af, exp(af), af)
     ),
-    class = "surv_aft"
+    class = c("surv_object", "surv_aft")
   )
 }
 
@@ -247,7 +247,7 @@ apply_or = function(dist, or, log_or = FALSE) {
       dist = dist,
       or = ifelse(log_or, exp(or), or)
     ),
-    class = "surv_po"
+    class = c("surv_object", "surv_po")
   )
 }
 
@@ -284,7 +284,7 @@ add_hazards_ <- function(dots) {
     list(
       dists = dots
     ),
-    class = "surv_add_haz"
+    class = c("surv_object", "surv_add_haz")
   )
 }
 
@@ -339,58 +339,41 @@ set_covariates_ <- function(dist, covariates, data = NULL) {
       dist = dist,
       covar = data
     ),
-    class = "surv_model"
+    class = c("surv_object", "surv_model")
   )
 }
 
 #' Plot general survival models
-#'
-#' @param x a survival object of class `surv_aft`, `surv_add_haz`,
-#'   `surv_ph`, `surv_po`, `surv_model`, `surv_pooled`, or `surv_projection`.
-#' @param times Times at which to evaluate and plot the survival object.
-#' @param type either `surv` (the default) or `prob`, depending on whether
-#'   you want to plot survival from the start or conditional probabilities.
-#' @param join_col,join_pch,join_size graphical parameters for points
-#'   marking points at which different survival functions are joined.
-#' @param ... additional arguments to pass to `ggplot2` functions.
+#' 
+#' @param x A survival object of class `surv_object`.
+#' @param time Times for which to predict.
+#' @param type Either `prob`, for transition probabilities,
+#'   or `surv`, for survival.
+#' @param join_col,join_pch,join_size graphical parameters
+#'   for points marking points at which different survival
+#'   functions are joined.
+#' @param ... Additional arguments to pass to [compute_surv()].
 #'   
-#' @details The function currently only highlights join points that are at
-#'   the top level; that is, for objects with class `surv_projection`.
+#' @details The function currently only highlights join
+#'   points that are at the top level; that is, for objects
+#'   with class `surv_projection`.
 #'   
-#'   To avoid plotting the join points, set join_size to a negative number.  
-#'
-#' @return a [ggplot2::ggplot()] object.
+#'   To avoid plotting the join points, set join_size to a
+#'   negative number.
+#'   
+#' @return A [ggplot2::ggplot()] object.
 #' @export
-#'
-plot.surv_obj <- function(x, times, type = c("surv", "prob"), 
-                          join_col = "red", join_pch = 20,
-                          join_size = 3, ...){
+#' 
+plot.surv_object <- function(x, time, type = c("surv", "prob"), ...) {
   type <- match.arg(type)
-  y_ax_label <- c(surv = "survival", prob = "probability")[type]
-  res1 <- data.frame(times = times,
-                     res = compute_surv(x, times, ..., type = type))
+  y_ax_label <- c(surv = "Survival", prob = "Probability")[type]
+  tab_res <- data.frame(
+    time = time,
+    y = compute_surv(x, time = time, type = type, ...))
   
-  this_plot <- 
-    ggplot2::ggplot(res1, ggplot2::aes_string(x = "times", y = "res")) + 
+  ggplot2::ggplot(
+    tab_res, ggplot2::aes_string(x = "time", y = "y")) + 
     ggplot2::geom_line() + 
-    ggplot2::scale_x_continuous(name = "time") + 
+    ggplot2::scale_x_continuous(name = "Time") + 
     ggplot2::scale_y_continuous(name = y_ax_label)
-  
-  if("at" %in% names(x))
-    this_plot <- this_plot +
-    ggplot2::geom_point(data = dplyr::filter_(res1, ~ times == x$at),
-                        ggplot2::aes_string(x = "times", y = "res"),
-                        pch = "join_pch", size = "join_size", 
-                        col = "join_col")
-  
-  this_plot
 }
-
-plot.surv_projection <- plot.surv_obj
-plot.surv_ph <- plot.surv_obj
-plot.surv_add_haz <- plot.surv_obj
-plot.surv_model <- plot.surv_obj
-plot.surv_po <- plot.surv_obj
-plot.surv_aft <- plot.surv_obj
-plot.surv_pooled <- plot.surv_obj
-

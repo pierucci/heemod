@@ -20,6 +20,7 @@
 ### Backend changes
 
   * The development branch is now called `master`, the release branch is called `cran`.
+  * Survival operation are wrapped in a common class.
 
 ## heemod 0.9.1
 

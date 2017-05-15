@@ -13,7 +13,7 @@ project(...)
 
 project_(...)
 
-join_(dots, at)
+join_(.dots, at)
 }
 \arguments{
 \item{...}{Survival distributions to be used in the
@@ -22,7 +22,7 @@ junction.}
 \item{at}{A vector of times corresponding to the cut
 point(s) to be used.}
 
-\item{dots}{Used to work around non-standard evaluation.}
+\item{.dots}{Used to work around non-standard evaluation.}
 }
 \value{
 A \code{surv_projection} object.

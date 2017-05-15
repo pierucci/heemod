@@ -1396,8 +1396,8 @@ join_fits_across_time <- function(this_part) {
   if ("until" %in% names(this_part)) {
     this_part <- dplyr::arrange_(this_part, ~ until)
     
-    join_(dots = this_part$fit, 
-             at= this_part$until[!is.na(this_part$until)])
+    join_(.dots = this_part$fit, 
+          at= this_part$until[!is.na(this_part$until)])
     
   } else {
     if (nrow(this_part) > 1) {
