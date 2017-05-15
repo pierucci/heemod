@@ -542,6 +542,7 @@ compute_vals_for_adv_ev_ <- function(ae_table){
     dplyr::summarize_at(., .cols = other_names,
                         .funs = funs(as.numeric(prob %*% .))) %>%
     dplyr::ungroup()
+  res
 }
 compute_vals_for_adv_ev <- memoise(compute_vals_for_adv_ev_)
 
