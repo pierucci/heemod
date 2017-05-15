@@ -85,8 +85,7 @@
     
     <p>Define a matrix of transition probabilities. Probability
 can depend on parameters defined with
-<code><a href='define_parameters.html'>define_parameters()</a></code>, and can thus be
-time-dependent.</p>
+<code><a href='define_parameters.html'>define_parameters()</a></code>, and can thus be time-dependent.</p>
     
 
     <pre class="usage"><span class='fu'>define_transition</span>(<span class='no'>...</span>, <span class='no'>state_names</span>)
@@ -107,9 +106,8 @@ time-dependent.</p>
       <th>...</th>
       <td><p>Name-value pairs of expressions definig matrix
 cells. Can refer to parameters defined with
-<code><a href='define_parameters.html'>define_parameters()</a></code>. For <code>plot</code>,
-additional arguments passed to
-<code><a href='http://www.rdocumentation.org/packages/diagram/topics/plotmat'>diagram::plotmat()</a></code>.</p></td>
+<code><a href='define_parameters.html'>define_parameters()</a></code>. For <code>plot</code>, additional arguments
+passed to <code><a href='http://www.rdocumentation.org/packages/diagram/topics/plotmat'>diagram::plotmat()</a></code>.</p></td>
     </tr>
     <tr>
       <th>state_names</th>
@@ -130,8 +128,7 @@ names.</p></td>
     </tr>
     <tr>
       <th>relsize</th>
-      <td><p>Argument passed to
-<code><a href='http://www.rdocumentation.org/packages/diagram/topics/plotmat'>diagram::plotmat()</a></code>.</p></td>
+      <td><p>Argument passed to <code><a href='http://www.rdocumentation.org/packages/diagram/topics/plotmat'>diagram::plotmat()</a></code>.</p></td>
     </tr>
     <tr>
       <th>shadow.size</th>
@@ -140,33 +137,33 @@ names.</p></td>
     </tr>
     <tr>
       <th>latex</th>
-      <td><p>Argument passed to
-<code><a href='http://www.rdocumentation.org/packages/diagram/topics/plotmat'>diagram::plotmat()</a></code>.</p></td>
+      <td><p>Argument passed to <code><a href='http://www.rdocumentation.org/packages/diagram/topics/plotmat'>diagram::plotmat()</a></code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code>uneval_matrix</code> (actually
-a named list of <code>lazy</code> expressions).</p>
+    <p>An object of class <code>uneval_matrix</code> (actually a
+named list of <code>lazy</code> expressions).</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Parameters names are searched first in a parameter object
-defined with <code><a href='define_parameters.html'>define_parameters()</a></code> and linked
-with the matrix through <code><a href='define_strategy.html'>define_strategy()</a></code>;
-then in the environment where the matrix was defined.</p>
-<p>Matric cells are listed by row.</p>
-<p>The complementary probability of all other row probabilities
-can be conveniently referred to as <code>C</code>.</p>
+    <p>Matric cells are listed by row.</p>
+<p>Parameters names are searched first in a parameter object
+defined with <code><a href='define_parameters.html'>define_parameters()</a></code> and linked with the
+matrix through <code><a href='define_strategy.html'>define_strategy()</a></code>; then in the
+environment where the matrix was defined.</p>
+<p>The complementary probability of all other row
+probabilities can be conveniently referred to as <code>C</code>.</p>
+<p>The matrix code can be re-indented for readability with
+<code><a href='reindent_transition.html'>reindent_transition()</a></code>.</p>
 <p>Only matrix size is checked during this step (the matrix
 must be square). Other conditions (such as row sums being
 equal to 1) are tested later, during model evaluation.</p>
 <p>For the <code>modify</code> function, existing matrix cells are
 replaced with the new expression. Cells are referenced by
-name. Cell naming follows the <code>cell_x_y</code> convention,
-with <code>x</code> being the row number and <code>y</code> the
-column number.</p>
+name. Cell naming follows the <code>cell_x_y</code> convention, with
+<code>x</code> being the row number and <code>y</code> the column number.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -188,14 +185,18 @@ column number.</p>
 <span class='co'># rr must be present in a parameter object</span>
 <span class='co'># that must later be linked with define_strategy</span>
 
-<span class='fu'>define_transition</span>(
+<span class='no'>mat_2</span> <span class='kw'>&lt;-</span> <span class='fu'>define_transition</span>(
   <span class='fl'>.5</span> - <span class='no'>rr</span>, <span class='no'>rr</span>,
   <span class='fl'>.4</span>, <span class='fl'>.6</span>
-)</div><div class='output co'>#&gt; <span class='message'>No named state -&gt; generating names.</span></div><div class='output co'>#&gt; A transition matrix, 2 states.
+)</div><div class='output co'>#&gt; <span class='message'>No named state -&gt; generating names.</span></div><div class='input'><span class='no'>mat_2</span></div><div class='output co'>#&gt; A transition matrix, 2 states.
 #&gt; 
 #&gt;   A        B  
 #&gt; A 0.5 - rr rr 
 #&gt; B 0.4      0.6</div><div class='input'>
+<span class='fu'><a href='reindent_transition.html'>reindent_transition</a></span>(<span class='no'>mat_2</span>)</div><div class='output co'>#&gt; state_names = c(
+#&gt; "A"     , "B")
+#&gt; 0.5 - rr, rr ,
+#&gt; 0.4     , 0.6</div><div class='input'>
 <span class='co'># can also use C</span>
 
 <span class='fu'>define_transition</span>(
@@ -250,7 +251,7 @@ column number.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Antoine Filipovic-Pierucci, Kevin Zarca.</p>
+  <p>Developed by Antoine Filipovic-Pierucci.</p>
 </div>
 
 <div class="pkgdown">

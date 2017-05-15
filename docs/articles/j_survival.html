@@ -59,12 +59,15 @@
     <div class="page-header toc-ignore">
       <h1>Survival models</h1>
             
-            <h4 class="date">2017-05-09</h4>
+            <h4 class="date">2017-05-12</h4>
           </div>
 
     
     
 <div class="contents">
+<div id="distributions" class="section level2">
+<h2 class="hasAnchor">
+<a href="#distributions" class="anchor"></a>Distributions</h2>
 <p>The <code>heemod</code> package provides a number of ways to estimate transition probabilities from survival distributions. Survival distributions can come from at least three different sources:</p>
 <ul>
 <li>User-definded parametric distributions.</li>
@@ -128,6 +131,10 @@ km_cov &lt;-<span class="st"> </span><span class="kw">survfit</span>(
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">km_good   &lt;-<span class="st"> </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(km_cov, <span class="dt">group =</span> <span class="st">"Good"</span>)
 km_medium &lt;-<span class="st"> </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(km_cov, <span class="dt">group =</span> <span class="st">"Medium"</span>)
 km_poor   &lt;-<span class="st"> </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(km_cov, <span class="dt">group =</span> <span class="st">"Poor"</span>)</code></pre></div>
+</div>
+<div id="operations" class="section level2">
+<h2 class="hasAnchor">
+<a href="#operations" class="anchor"></a>Operations</h2>
 <p>Once defined, treatment effects of various types can be applied to any survival distribution:</p>
 <ul>
 <li>Hazard ratio: <code><a href="../reference/apply_hr.html">apply_hr()</a></code>.</li>
@@ -139,7 +146,7 @@ km_medium_af &lt;-<span class="st"> </span><span class="kw"><a href="../referenc
 <p>In addition, distributions can be combined using a variety of operations:</p>
 <ul>
 <li>Join survival distributions together: <code><a href="../reference/join.html">join()</a></code>.</li>
-<li>Pool two (or more) survival distributions: <code><a href="../reference/pool.html">pool()</a></code>.</li>
+<li>Mix two (or more) survival distributions: <code><a href="../reference/mix.html">mix()</a></code>.</li>
 <li>Combine two (or more) survival distributions as independent risks: <code><a href="../reference/add_hazards.html">add_hazards()</a></code>.</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">km_poor_join &lt;-<span class="st"> </span><span class="kw"><a href="../reference/join.html">join</a></span>(
@@ -147,7 +154,7 @@ km_medium_af &lt;-<span class="st"> </span><span class="kw"><a href="../referenc
   fitcov_poor,
   <span class="dt">at =</span> <span class="dv">365</span>
 )
-models_all &lt;-<span class="st"> </span><span class="kw"><a href="../reference/pool.html">pool</a></span>(
+models_all &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mix.html">mix</a></span>(
   fitcov_good, fitcov_medium, fitcov_poor,
   <span class="dt">weights =</span> <span class="kw">c</span>(<span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>)
 )
@@ -165,7 +172,7 @@ combined_risks &lt;-<span class="st"> </span><span class="kw"><a href="../refere
     fitcov_poor,
     <span class="dt">at =</span> <span class="dv">3</span>
   ) %&gt;%
-<span class="st">  </span><span class="kw"><a href="../reference/pool.html">pool</a></span>(
+<span class="st">  </span><span class="kw"><a href="../reference/mix.html">mix</a></span>(
     fitcov_medium,
     <span class="dt">weights =</span> <span class="kw">c</span>(<span class="fl">0.25</span>, <span class="fl">0.75</span>)
   ) %&gt;%
@@ -174,14 +181,21 @@ combined_risks &lt;-<span class="st"> </span><span class="kw"><a href="../refere
   ) %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="../reference/compute_surv.html">compute_surv</a></span>(<span class="dt">time =</span> <span class="dv">1</span>:<span class="dv">5</span>)</code></pre></div>
 <pre><code>## [1] 0.0004011356 0.0004736851 0.0005069766 0.0005490092 0.0005692261</code></pre>
+</div>
+<div id="applications" class="section level2">
+<h2 class="hasAnchor">
+<a href="#applications" class="anchor"></a>Applications</h2>
+<div id="transition-matrix" class="section level3">
+<h3 class="hasAnchor">
+<a href="#transition-matrix" class="anchor"></a>Transition matrix</h3>
 <p>For the example we define a simple model with only 1 strategy.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">param &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_parameters.html">define_parameters</a></span>(
   <span class="dt">p1 =</span> <span class="kw"><a href="../reference/compute_surv.html">compute_surv</a></span>(
     surv_dist_1,
     <span class="dt">time =</span> model_time <span class="co"># can also be state_time</span>
   ),
-  <span class="dt">p2 =</span> km_medium %&gt;%
-<span class="st">    </span><span class="kw"><a href="../reference/join.html">join</a></span>(fitcov_medium, <span class="dt">at =</span> <span class="dv">730</span>) %&gt;%
+  <span class="dt">p2 =</span> km_1 %&gt;%
+<span class="st">    </span><span class="kw"><a href="../reference/join.html">join</a></span>(fit_w, <span class="dt">at =</span> <span class="dv">730</span>) %&gt;%
 <span class="st">    </span><span class="kw"><a href="../reference/compute_surv.html">compute_surv</a></span>(
       <span class="dt">time =</span> model_time,
       <span class="dt">cycle_length =</span> <span class="dv">365</span>  <span class="co"># time is in days in km_medium, in years in model_time</span>
@@ -189,9 +203,9 @@ combined_risks &lt;-<span class="st"> </span><span class="kw"><a href="../refere
 )
 
 tm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_transition.html">define_transition</a></span>(
-  C, p1, <span class="dv">0</span>,
-  <span class="dv">0</span>, C,  p2,
-  <span class="dv">0</span>, <span class="dv">0</span>,  C
+  C, p1 -<span class="st"> </span>p2, p2,
+  <span class="dv">0</span>, C,       p2,
+  <span class="dv">0</span>, <span class="dv">0</span>,       C
 )</code></pre></div>
 <pre><code>## No named state -&gt; generating names.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(tm)</code></pre></div>
@@ -215,11 +229,16 @@ stratTM &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 resTM &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_model.html">run_model</a></span>(
   <span class="dt">parameters =</span> param,
   stratTM,
-  <span class="dt">cycles =</span> <span class="dv">10</span>
+  <span class="dt">cycles =</span> <span class="dv">15</span>,
+  <span class="dt">cost =</span> cost, <span class="dt">effect =</span> ut
 )</code></pre></div>
 <pre><code>## No named model -&gt; generating names.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(resTM)</code></pre></div>
 <p><img src="j_survival_files/figure-html/unnamed-chunk-10-1.png" width="576"></p>
+</div>
+<div id="partitioned-survival-model" class="section level3">
+<h3 class="hasAnchor">
+<a href="#partitioned-survival-model" class="anchor"></a>Partitioned survival model</h3>
 <p>A partitioned survival model can also be computed:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ps &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_part_surv.html">define_part_surv</a></span>(
   <span class="dt">pfs =</span> surv_dist_1,
@@ -235,22 +254,33 @@ resTM &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_m
 
 resPS &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_model.html">run_model</a></span>(
   stratPS,
-  <span class="dt">cycles =</span> <span class="dv">10</span>
+  <span class="dt">cycles =</span> <span class="dv">15</span>,
+  <span class="dt">cost =</span> cost, <span class="dt">effect =</span> ut
 )</code></pre></div>
 <pre><code>## No named model -&gt; generating names.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(resPS)</code></pre></div>
 <p><img src="j_survival_files/figure-html/unnamed-chunk-11-1.png" width="576"></p>
 </div>
+</div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+        <div id="tocnav">
+      <h2>Contents</h2>
+      <ul class="nav nav-pills nav-stacked">
+<li><a href="#distributions">Distributions</a></li>
+      <li><a href="#operations">Operations</a></li>
+      <li><a href="#applications">Applications</a></li>
+      </ul>
+</div>
       </div>
 
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Antoine Filipovic-Pierucci, Kevin Zarca.</p>
+  <p>Developed by Antoine Filipovic-Pierucci.</p>
 </div>
 
 <div class="pkgdown">

@@ -161,12 +161,14 @@ Utilities and costs are then associated to states. In this model costs are disco
 
 Now that parameters, transition matrix and states are defined we can define the strategies for the control group and the NP1 treatment.
 
+We use `define_starting_values()` to take into account the cost of surgery.
+
 ```{r}
 strat_standard <- define_strategy(
   transition = mat_standard,
   PrimaryTHR = define_state(
     utility = 0,
-    cost = 394
+    cost = 0
   ),
   SuccessP = define_state(
     utility = discount(u_SuccessP, .015),
@@ -183,6 +185,9 @@ strat_standard <- define_strategy(
   Death = define_state(
     utility = 0,
     cost = 0
+  ),
+  starting_values = define_starting_values(
+    cost = 394
   )
 )
 strat_standard
@@ -191,7 +196,7 @@ strat_np1 <- define_strategy(
   transition = mat_np1,
   PrimaryTHR = define_state(
     utility = 0,
-    cost = 579
+    cost = 0
   ),
   SuccessP = define_state(
     utility = discount(u_SuccessP, .015),
@@ -208,6 +213,9 @@ strat_np1 <- define_strategy(
   Death = define_state(
     utility = 0,
     cost = 0
+  ),
+  starting_values = define_starting_values(
+    cost = 579
   )
 )
 strat_np1
@@ -217,8 +225,6 @@ strat_np1
 
 Both strategies can now be run for 60 years. By default models are computed for 1000 person starting in `PrimaryTHR`.
 
-To approach results from the original study we assume transitions occur at the end of each cycles. This is necessary because THR cost defined in state `PrimaryTHR` need to be accounted for all 1000 individuals, if we used another counting method the number of persons in `PrimaryTHR` would be reduced, or even null, negating surgery costs.
-
 ```{r}
 res_mod <- run_model(
   standard = strat_standard,
@@ -226,8 +232,7 @@ res_mod <- run_model(
   parameters = param,
   cycles = 60,
   cost = cost,
-  effect = utility,
-  method = "end"
+  effect = utility
 )
 ```
 

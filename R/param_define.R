@@ -117,10 +117,12 @@ modify.uneval_parameters <- function(.OBJECT, ...) {
 }
 
 modify_.uneval_parameters <- function(.OBJECT, .dots) {
-  
-  check_names(names(.dots))
-  
-  utils::modifyList(.OBJECT, .dots)
+  if (length(.dots)) {
+    check_names(names(.dots))
+    utils::modifyList(.OBJECT, .dots)
+  } else {
+    .OBJECT
+  }
 }
 
 #' Define Inflow for a BIA
@@ -140,7 +142,6 @@ define_inflow <- function(...) {
 #' @export
 #' @rdname define_inflow
 define_inflow_ <- function(.dots) {
-  
   structure(
     .dots,
     class = c("uneval_inflow", class(.dots)))
@@ -168,106 +169,93 @@ define_init_ <- function(.dots) {
     class = c("uneval_init", class(.dots)))
 }
 
+#' Define Starting State Values
+#'
+#' @param ... Name-value pairs of expressions defining
+#'   starting values.
+#' @param .dots Used to work around non-standard evaluation.
+#'
+#' @return An object similar to the return value of
+#'   [define_parameters()].
+#' @export
+define_starting_values <- function(...) {
+  .dots <- lazyeval::lazy_dots(...)
+  define_starting_values_(.dots)
+}
+
+#' @export
+#' @rdname define_starting_values
+define_starting_values_ <- function(.dots) {
+  structure(
+    .dots,
+    class = c("uneval_starting_values", class(.dots)))
+}
+
+to_check <- "'define_init()', 'define_inflow()' or 'define_starting_values()'"
+
 check_init <- function(x, ref) {
   UseMethod("check_init")
 }
 
-#' Define Initial Values by State and Strategy
-#' 
-#' @param ... Name-value pairs of expressions defining
-#'   initial values.
-#' @param .dots Used to work around non-standard evaluation.
-#'   
-#' @return An object similar to the return value of
-#'   [define_parameters()].
-#' @export
-define_initial_values <- function(...){
-  .dots <- lazyeval::lazy_dots(...)
-  define_initial_values_(.dots)
-}
-
-define_initial_values_ <- function(.dots){
-  structure(
-    .dots,
-    class = c("uneval_init_cost", class(.dots)))
-}
-
 check_init.lazy_dots <- function(x, ref) {
-  sn <- get_state_names(ref)
-  parameter_name <- lazyeval::expr_text(x)
+  original_class <- class(x)
   
-  if (is.null(names(x)) || all(names(x) == "")) {
-    names(x) <- sn
+  if (length(x)) {
+    if (is.null(names(x)) || all(names(x) == "")) {
+      stop(to_check, " values must be named.")
+    }
+    
+    if (! all(names(x) %in% ref)) {
+      stop("Some ", to_check, " names are incorrect.")
+    }
+    
+    if (any(duplicated(names(x)))) {
+      stop("Duplicated names in ", to_check, ".")
+    }
   }
   
-  if (! all(sn == names(x))) {
-    stop(sprintf("Some %s names are not state names.", parameter_name))
-  }
+  res <- stats::setNames(
+    object = lazyeval::as.lazy_dots(
+      lapply(ref, function(x) 0),
+      env = globalenv()),
+    nm = ref)
   
-  if (! length(x) == get_state_number(ref)) {
-    stop(sprintf(
-      "Length of %s (%i) differs from number of states (%i).",
-      parameter_name,
-      length(x),
-      get_state_number(ref)
-    ))
-  }
+  res <- utils::modifyList(
+    res, x
+  )
   
-  x
+  structure(res, class = original_class)
 }
 
 check_init.default <- function(x, ref) {
   
-  parameter_name <- lazyeval::expr_text(x)
-  
-  if (! length(x) == get_state_number(ref)) {
-    stop(sprintf(
-      "Length of %s (%i) differs from number of states (%i).",
-      parameter_name, 
-      length(x),
-      get_state_number(ref)
-    ))
+  if (! length(x) == length(ref)) {
+    stop("Incorrect length in ", to_check, ".")
   }
   
   if (is.null(names(x))) {
-    names(x) <- get_state_names(ref)
-  } else if (! all(names(x) == get_state_names(ref))) {
-    stop(sprintf("%s names are not all state names.", parameter_name))
+    names(x) <- ref
   }
   
-  define_init_(lazyeval::as.lazy_dots(lapply(x, function(x) x)))
-}
-
-check_init_cost <- function(x, ref){
-  parameter_name <- lazyeval::expr_text(x)
-  
-  get_uneval_strategy_list_number <- function(x){
-    length(x)
+  if (! all(sort(names(x)) == sort(ref))) {
+    stop("Some ", to_check, " names are incorrect.")
   }
   
-  get_uneval_strategy_list_names <- function(x){
-    names(x)
-  }
-  
-  if (! length(x) == get_uneval_strategy_list_number(ref)) {
-    stop(sprintf(
-      "Length of %s (%i) differs from number of strategies (%i).",
-      parameter_name,
-      length(x),
-      get_uneval_strategy_list_number(ref)
-    ))
-  }
-
-  if (is.null(names(x)) || nchar(names(x)) == 0) {
-    names(x) <- get_uneval_strategy_list_names(ref)
-  } else if (! all(names(x) == get_uneval_strategy_list_names(ref))) {
-    stop(sprintf("%s names are not all strategies names.", parameter_name))
-  }
-  
-  define_initial_values_(lazyeval::as.lazy_dots(lapply(x, function(x) x)))
+  define_init_(lazyeval::as.lazy_dots(
+    lapply(x[ref], function(x) x),
+    env = globalenv()))
 }
 
 check_inflow <- function(x, ...) {
   res <- check_init(x, ...)
-  structure(res, class = c("uneval_inflow", class(res)))
+  structure(
+    res,
+    class = c("uneval_inflow", class(res)))
+}
+
+check_starting_values <- function(x, ...) {
+  res <- check_init(x, ...)
+  structure(
+    res,
+    class = c("starting_values", class(res)))
 }

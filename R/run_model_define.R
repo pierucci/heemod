@@ -33,8 +33,6 @@
 #'   cost-effectiveness plane.
 #' @param effect Names or expression to compute effect on
 #'   the cost-effectiveness plane.
-#' @param init_cost Initial costs by strategy, before 
-#'   the simulation start
 #' @param method Counting method.
 #' @param uneval_strategy_list List of models, only used by
 #'   [run_model_()] to avoid using `...`.
@@ -58,16 +56,14 @@ run_model <- function(...,
                       cycles = 1,
                       method = "life-table",
                       cost = NULL, effect = NULL,
-                      init_cost = rep(0L, length(list(...))),
                       state_time_limit = NULL,
                       central_strategy = NULL,
                       inflow = rep(0L, get_state_number(get_states(list(...)[[1]])))) {
   
   uneval_strategy_list <- list(...)
   
-  init <- check_init(init, uneval_strategy_list[[1]])
-  init_cost <- check_init_cost(init_cost, uneval_strategy_list)
-  inflow <- check_inflow(inflow, uneval_strategy_list[[1]])
+  init <- check_init(init, get_state_names(uneval_strategy_list[[1]]))
+  inflow <- check_inflow(inflow, get_state_names(uneval_strategy_list[[1]]))
   
   run_model_(
     uneval_strategy_list = uneval_strategy_list,
@@ -79,8 +75,7 @@ run_model <- function(...,
     effect = lazyeval::lazy_(substitute(effect), env = parent.frame()),
     state_time_limit = state_time_limit,
     central_strategy = central_strategy,
-    inflow = inflow,
-    init_cost = init_cost
+    inflow = inflow
   )
 }
 
@@ -94,9 +89,7 @@ run_model_ <- function(uneval_strategy_list,
                        cost, effect,
                        state_time_limit,
                        central_strategy,
-                       inflow,
-                       init_cost) {
-  
+                       inflow) {
   if (length(uneval_strategy_list) == 0) {
     stop("At least 1 strategy is needed.")
   }
@@ -136,14 +129,12 @@ run_model_ <- function(uneval_strategy_list,
     message("No named model -> generating names.")
     strategy_names <- as.character(utils::as.roman(seq_along(uneval_strategy_list)))
     names(uneval_strategy_list) <- strategy_names
-    names(init_cost) <- strategy_names
   }
   
   if (any(strategy_names == "")) {
     warning("Not all models are named -> generating names.")
     strategy_names <- as.character(utils::as.roman(seq_along(uneval_strategy_list)))
     names(uneval_strategy_list) <- strategy_names
-    names(init_cost) <- strategy_names
   }
   
   if (! list_all_same(lapply(uneval_strategy_list,
@@ -174,10 +165,8 @@ run_model_ <- function(uneval_strategy_list,
       method = method,
       expand_limit = state_time_limit[[n]],
       inflow = inflow,
-      init_cost = init_cost[n],
       strategy_name = n
     )
-    
   }
   
   list_res <- lapply(eval_strategy_list, get_total_state_values)
@@ -185,12 +174,8 @@ run_model_ <- function(uneval_strategy_list,
   for (n in strategy_names) {
     list_res[[n]]$.strategy_names <- n
   }
-
-  .c_init_cost <- lazyeval::auto_name(as.lazy_dots(cost))
-  .c_init_cost[[1]] <- lazyeval::as.lazy(paste(cost$expr, ".init_cost", sep="+"))
   
   res <- Reduce(dplyr::bind_rows, list_res) %>% 
-    dplyr::mutate_(.dots = .c_init_cost) %>%
     dplyr::mutate_(.dots = ce)
   
   root_strategy <- get_root_strategy(res)
@@ -198,6 +183,7 @@ run_model_ <- function(uneval_strategy_list,
   
   if (is.null(central_strategy)) {
     central_strategy <- get_central_strategy(res)
+    
   } else {
     stopifnot(
       length(central_strategy) == 1,
@@ -213,7 +199,6 @@ run_model_ <- function(uneval_strategy_list,
       parameters = parameters,
       init = init,
       inflow = inflow,
-      init_cost = init_cost,
       cycles = cycles,
       method = method,
       ce = ce,
@@ -241,13 +226,10 @@ get_state_value_names.run_model <- function(x) {
 
 get_total_state_values <- function(x) {
   # faster than as.data.frame or dplyr::as_data_frame
-  res <- as.list(colSums(rbind((x$values)[- 1])))
+  res <- as.list(colSums((x$values)[- 1]))
   class(res) <- "data.frame"
   attr(res, "row.names") <- c(NA, -1)
   res$.n_indiv <- get_n_indiv(x)
-  # If x is a class uneval_strategy, so there exist only a value in the list 
-  # but if x is a class run_model, so e_init_cost has several values
-  res$.init_cost <- as.numeric(x$e_init_cost[1]) 
   res
 }
 
@@ -434,14 +416,6 @@ get_uneval_inflow.default <- function(x) {
   x$inflow
 }
 
-get_uneval_init_cost <- function(x){
-  UseMethod("get_uneval_init_cost")
-}
-
-get_uneval_init_cost.default <- function(x){
-  x$init_cost
-}
-
 get_ce <- function(x) {
   x$ce
 }
@@ -523,4 +497,3 @@ get_uneval_strategy_list <- function(x) {
 get_state_time_limit <- function(x) {
   x$state_time_limit
 }
-

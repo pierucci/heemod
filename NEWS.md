@@ -1,13 +1,26 @@
-## heemod 0.9.1.9002
+## heemod 0.9.1.9003
+
+### Breaking changes
+
+  * Survival function renamed: `pool()`=>`mix()`.
+
+### New features
+
+  * Starting values with `define_starting_values()`.
+  * Check for comma as a deciaml separator in tabular data.
+  * Auto-reindent transition matrices with `reindent_transition()`.
 
 ### Bugfixes
 
   * Better error-checking in multinomial parameters definition.
   * Handle cases when parameters depend on `state_time` but thoses parameters are not used by a strategy.
+  * Empty calls to `modify()` are supported.
+  * Fix error in survival vignette.
 
 ### Backend changes
 
   * The development branch is now called `master`, the release branch is called `cran`.
+  * Survival operation are wrapped in a common class.
 
 ## heemod 0.9.1
 

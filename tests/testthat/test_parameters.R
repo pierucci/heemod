@@ -61,6 +61,11 @@ b = a + 543',
       "0 unevaluated parameter.",
       fixed = TRUE
     )
+    
+    expect_identical(
+      to_text_dots(par1),
+      to_text_dots(modify(par1))
+    )
   }
 )
 
