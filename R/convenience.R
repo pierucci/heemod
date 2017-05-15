@@ -502,3 +502,78 @@ cost_iv_compound_administration <-
             )
   cost_iv_administration(iv_time, cost_first_unit, cost_addl_units)
   }
+
+
+compute_vals_for_adv_ev_ <- function(ae_table){
+  required_names <- c("treatment", "ae", "prob")
+  if(!all(required_names %in% names(ae_table)))
+    stop("adverse events table must have columns ",
+         paste(required_names, collapse = ", ")
+    )
+  if(any(missing_prob <- is.na(ae_table$prob))){
+    ae_table$prob[is.na(ae_table$prob)] <- 0
+    warning("some AE probabilities are missing in the table; ",
+            "setting to 0")
+  }
+  ## if there are missing values for some treatments, fill them in;
+  ##   if some are actually undefined, make them 0
+  other_names <- setdiff(names(ae_table), required_names)
+  values <- ae_table[, c("ae", other_names)]
+  values <- values[complete.cases(values), ]
+  if(any(is.na(ae_table[, -match(required_names, names(ae_table))]))){
+    ae_table <- dplyr::left_join(ae_table[, required_names], 
+                                 values, 
+                                 by = "ae")
+  }
+  ## now check whether any AEs have multiple values defined
+  values <- values[!duplicated(values),]
+  mult_def <- table(values$ae) > 1
+  if(any(mult_def))
+    stop("multiple values defined for ",
+         paste(names(mult_def[mult_def]), collapse = ", ")
+    )
+  if(any(na_spots <- is.na(ae_table[, other_names]))){
+     ae_table[na_spots, other_names] <- 0
+     warning("NA values defined for AEs; converting to 0")
+   }
+  
+  res <- ae_table[, c("treatment", "prob", other_names)] %>% 
+    dplyr::group_by(treatment) %>%
+    dplyr::summarize_at(., .cols = other_names,
+                        .funs = funs(as.numeric(prob %*% .))) %>%
+    dplyr::ungroup()
+}
+compute_vals_for_adv_ev <- memoise(compute_vals_for_adv_ev_)
+
+#' Title
+#'
+#' @param ae_table a table with columns `treatment`, 
+#'   `ae` (the names of different adverse events), `prob`
+#'   (the probability of the given adverse event occurring under the
+#'   given treatment),
+#'   and others naming values that can be represented, for example
+#'   cost or disutility.
+#' @param treatment the treatment for which the value is desired
+#' @param value the specific value desired
+#'
+#' @return the requested value for the requested treatment
+#' 
+#' @details The underlying function is memoised for efficiency.
+#' 
+#' @export
+#'
+#' @examples 
+#' AEs <- data.frame(treatment = c("A", "A", "B", "B"),
+#'                   ae = c("ae1", "ae2", "ae1", "ae2"),
+#'                   prob = c(0.1, 0.1, 0.2, 0),
+#'                   cost = c(100, 200, 100, 200))
+#' ae_val(AEs, "A", "cost")
+#' ae_val(AEs, "B", "cost")
+#' 
+ae_val <- function(ae_table, treatment, value){
+  this_table <- compute_vals_for_adv_ev(ae_table)
+  filter_str <- paste("treatment == '", treatment, "'", sep = "")
+  res<- this_table %>% dplyr::filter_(filter_str) %>%
+    dplyr::select_(value)
+  as.numeric(res)
+}
