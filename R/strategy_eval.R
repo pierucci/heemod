@@ -49,6 +49,8 @@ eval_strategy <- function(strategy, parameters, cycles,
   uneval_transition <- expanded$uneval_transition
   init <- expanded$init
   inflow <- expanded$inflow
+  starting_values <- expanded$starting_values
+  n_indiv <- expanded$n_indiv
   parameters <- expanded$parameters
   actually_expanded_something <- expanded$actually_expanded_something
   
@@ -65,8 +67,8 @@ eval_strategy <- function(strategy, parameters, cycles,
     correct_counts(method = method)
   
   values <- compute_values(states, count_table)
-  values[1, names(e_starting_values)] <- values[1, names(e_starting_values)] +
-    e_starting_values * n_indiv
+  values[1, names(starting_values)] <- values[1, names(starting_values)] +
+    starting_values * n_indiv
   
   if (actually_expanded_something) {
     for (st in expanded$expanded_states) {
@@ -240,14 +242,14 @@ compute_values <- function(states, counts) {
   res
 }
 
-
-#' Title
-#'
+#' Expand States and Transition
+#' 
 #' @inherit eval_strategy
-#'
-#' @return expanded states, transitions, input and inflow
-#'   (if they require expansion; otherwise return inputs unchanged)
-#'
+#'   
+#' @return Expanded states, transitions, input and inflow 
+#'   (if they require expansion; otherwise return inputs
+#'   unchanged).
+#'   
 expand_if_necessary <- function(strategy, parameters, 
                                 cycles, init, method,
                                 expand_limit, inflow,
@@ -256,13 +258,13 @@ expand_if_necessary <- function(strategy, parameters,
   uneval_states <- get_states(strategy)
   to_expand <- NULL
   
-  i_parameters <- interp_heemod(parameters)
+  i_parameters <- interpolate(parameters)
   
-  i_uneval_transition <- interp_heemod(uneval_transition,
-                                       more = as_expr_list(i_parameters))
+  i_uneval_transition <- interpolate(uneval_transition,
+                                     more = as_expr_list(i_parameters))
   
-  i_uneval_states <- interp_heemod(uneval_states,
-                                   more = as_expr_list(i_parameters))
+  i_uneval_states <- interpolate(uneval_states,
+                                 more = as_expr_list(i_parameters))
   
   
   td_tm <- has_state_time(i_uneval_transition)
@@ -345,9 +347,14 @@ expand_if_necessary <- function(strategy, parameters,
   
   e_init <- unlist(eval_init(x = init, parameters[1,]))
   e_inflow <- eval_inflow(x = inflow, parameters)
+  e_starting_values <- unlist(
+    eval_starting_values(
+      x = strategy$starting_values,
+      parameters[1, ]))
+  n_indiv <- sum(e_init, unlist(e_inflow))
   
-  if (any(is.na(e_init)) || any(is.na(e_inflow))) {
-    stop("Missing values not allowed in 'init' or 'inflow'.")
+  if (any(is.na(e_init)) || any(is.na(e_inflow)) || any(is.na(e_starting_values))) {
+    stop("Missing values not allowed in 'init', 'inflow' or 'starting values'.")
   }
   
   if (!any(e_init > 0)) {
@@ -355,17 +362,20 @@ expand_if_necessary <- function(strategy, parameters,
   }
   
   exp_cols <- list()
-  for (st in to_expand)
+  for (st in to_expand) {
     exp_cols[[st]] <- sprintf(".%s_%i", st, seq_len(expand_limit[st] + 1))
-    
+  }
   
-  list(uneval_transition = uneval_transition,
-       uneval_states = uneval_states,
-       init = e_init,
-       inflow = e_inflow,
-       parameters = parameters,
-       complete_parameters = complete_parameters,
-       actually_expanded_something = expand,
-       expanded_states = to_expand,
-       expansion_cols = exp_cols)
+  list(
+    uneval_transition = uneval_transition,
+    uneval_states = uneval_states,
+    init = e_init,
+    inflow = e_inflow,
+    starting_values = e_starting_values,
+    n_indiv = n_indiv,
+    parameters = parameters,
+    complete_parameters = complete_parameters,
+    actually_expanded_something = expand,
+    expanded_states = to_expand,
+    expansion_cols = exp_cols)
 }

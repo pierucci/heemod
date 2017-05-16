@@ -2,7 +2,7 @@
 % Please edit documentation in R/strategy_eval.R
 \name{expand_if_necessary}
 \alias{expand_if_necessary}
-\title{Title}
+\title{Expand States and Transition}
 \usage{
 expand_if_necessary(strategy, parameters, cycles, init, method, expand_limit,
   inflow, strategy_name)
@@ -31,11 +31,12 @@ of new individuals in each state per cycle.}
 \item{strategy_name}{Name of the strategy.}
 }
 \value{
-expanded states, transitions, input and inflow
-(if they require expansion; otherwise return inputs unchanged)
+Expanded states, transitions, input and inflow
+(if they require expansion; otherwise return inputs
+unchanged).
 }
 \description{
-Title
+Expand States and Transition
 }
 \details{
 \code{init} need not be integer. E.g. \code{c(A = 1, B = 0.5, C = 0.1, ...)}.
