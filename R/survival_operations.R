@@ -349,9 +349,6 @@ set_covariates_ <- function(dist, covariates, data = NULL) {
 #' @param time Times for which to predict.
 #' @param type Either `prob`, for transition probabilities,
 #'   or `surv`, for survival.
-#' @param join_col,join_pch,join_size graphical parameters
-#'   for points marking points at which different survival
-#'   functions are joined.
 #' @param ... Additional arguments to pass to [compute_surv()].
 #'   
 #' @details The function currently only highlights join

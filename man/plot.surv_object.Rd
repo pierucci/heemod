@@ -15,10 +15,6 @@
 or \code{surv}, for survival.}
 
 \item{...}{Additional arguments to pass to \code{\link[=compute_surv]{compute_surv()}}.}
-
-\item{join_col, join_pch, join_size}{graphical parameters
-for points marking points at which different survival
-functions are joined.}
 }
 \value{
 A \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} object.
