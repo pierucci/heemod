@@ -42,7 +42,43 @@ expect_equal(ae_val(AEs, "A", "cost"), 30)
 expect_equal(ae_val(AEs, "B", "cost"), 20)
 expect_equal(ae_val(AEs, "A", "disutility"), 0.01)
 expect_equal(ae_val(AEs, "B", "disutility"), 0)
-
+expect_error(ae_val(AEs, "C", "cost"),
+             "no AE information returned")
+expect_error(ae_val(AEs, "A", "novalue"),
+             "no column")
   }
 )
 
+test_that("is_dosing_period works",
+  {
+    expect_identical(is_dosing_period(N = 1:13, first = 4, 
+                                      then_every = 3, cap = 40),
+                     c(TRUE, TRUE, TRUE, TRUE, FALSE, FALSE,
+                       TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE)
+    )
+    expect_identical(is_dosing_period(N = 37:46, first = 4, 
+                                      then_every = 3, cap = 40),
+                     c(TRUE, FALSE, FALSE, TRUE, FALSE, 
+                       FALSE, FALSE, FALSE, FALSE, FALSE)
+    )
+    expect_identical(is_dosing_period(N = 1:8, first = 4, 
+                                      pattern = 0, cap = 40),
+                     rep(c(TRUE, FALSE), each = 4)
+    )
+    expect_error(is_dosing_period(N = 1:8, first = 4, 
+                                  then_every = -1, cap = 40),
+                 "then_every cannot be negative"
+    )
+    ## demonstrating argument precedence rules
+    expect_identical(is_dosing_period(N = 1:10, init = c(1,0,1), 
+                                      first = 3, then_every = 5),
+                     c(TRUE, FALSE, TRUE, FALSE, FALSE, 
+                       FALSE, FALSE, TRUE, FALSE, FALSE)
+    )
+    expect_identical(is_dosing_period(N = 1:10, init = numeric(0), 
+                     pattern = c(1, 1, 0, 1, 0), then_every = 2),
+                     c(TRUE, TRUE, FALSE, TRUE, FALSE, 
+                       TRUE, TRUE, FALSE, TRUE, FALSE)
+    )
+    }
+)

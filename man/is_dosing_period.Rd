@@ -36,16 +36,13 @@ if \code{init} is defined, then \code{first} is ignored.  Similarly,
 \code{pattern} takes precedence over \code{then_every}.
 }
 \examples{
-{
   is_dosing_period(N = 1:13, first = 4, then_every = 3, cap = 40)
   is_dosing_period(N = 37:46, first = 4, then_every = 3, cap = 40)
   is_dosing_period(N = 1:100, init = c(1,0,1,0,1,0,1,1), pattern = c(1, 0, 1, 1, 0), cap = 120)
   ## stop after initial period
   is_dosing_period(N = 1:8, first = 4, pattern = 0, cap = 40)
-  is_dosing_period(N = 1:8, first = 4, then_every = -1, cap = 40)
   ## demonstrating argument precedence rules
   is_dosing_period(N = 1:10, init = c(1,0,1), first = 3, then_every = 5)
   is_dosing_period(N = 1:10, init = numeric(0), pattern = c(1, 1, 0, 1, 0), then_every = 2)
-}
 
 }

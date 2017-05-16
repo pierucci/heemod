@@ -317,7 +317,6 @@ find_scaled_doses <- function(doses, dosing_units, scaling, scaling_units) {
 #'   is_dosing_period(N = 1:100, init = c(1,0,1,0,1,0,1,1), pattern = c(1, 0, 1, 1, 0), cap = 120)
 #'   ## stop after initial period
 #'   is_dosing_period(N = 1:8, first = 4, pattern = 0, cap = 40)
-#'   is_dosing_period(N = 1:8, first = 4, then_every = -1, cap = 40)
 #'   ## demonstrating argument precedence rules
 #'   is_dosing_period(N = 1:10, init = c(1,0,1), first = 3, then_every = 5)
 #'   is_dosing_period(N = 1:10, init = numeric(0), pattern = c(1, 1, 0, 1, 0), then_every = 2)
@@ -330,7 +329,7 @@ is_dosing_period <- function(N, init, pattern, first, then_every, cap = Inf){
   }
   if(missing(pattern)){
     if(missing(then_every)) stop("must specify either pattern or then_every")
-    if(then_every < 0) pattern <- 0
+    if(then_every < 0) stop("then_every cannot be negative")
     else pattern <- c(rep(0, then_every - 1), 1)
   }
   if(!all(c(init, pattern) %in% c(0,1, TRUE, FALSE)))
@@ -412,24 +411,6 @@ find_least_cost_partition <-
     names(output_list) <- c("desired_dose", "used_dose", "waste", "cost")
     output_list
   }
-    
-
-
-#' Get the least cost for the requested doses
-#'
-#' @param x a set of combinations from \code{\link{find_least_cost_partition}}.
-#'
-#' @return a data frame with columns \code{total} and \code{cost}.
-#' @export
-#'
-#' @examples
-#' ## see the examples for find_least_cost_partition.
-least_cost <- function(x) {
-  data.frame(total = as.numeric(names(x)),
-             cost = sapply(x, function(x) {
-               x[1, "cost"]
-             }))
-}
 
 
 #' Cost of administration for an intravenous treatment
@@ -572,9 +553,18 @@ compute_vals_for_adv_ev <- memoise(compute_vals_for_adv_ev_)
 #' ae_val(AEs, "B", "cost")
 #' 
 ae_val <- function(ae_table, treatment, value){
+  if(!(value %in% names(ae_table)))
+    stop("no column '", value, "' in ae_table")
   this_table <- compute_vals_for_adv_ev(ae_table)
   filter_str <- paste("treatment == '", treatment, "'", sep = "")
   res<- this_table %>% dplyr::filter_(filter_str) %>%
     dplyr::select_(value)
-  as.numeric(res)
+  res <- as.numeric(res[[1]])
+  if(length(res) == 0) 
+    stop("no AE information returned for treatment ",
+         treatment, 
+         " and value ",
+         value,
+         ".")
+  res
 }
