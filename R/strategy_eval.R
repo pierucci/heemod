@@ -41,10 +41,16 @@ eval_strategy <- function(strategy, parameters, cycles,
   
   ## expand states if necessary, and retrieve values.   
   ##  If no expansion, then it returns the same values
-  expanded <- expand_if_necessary(strategy, parameters, 
-                                  cycles, init, method,
-                                  expand_limit, inflow,
-                                  strategy_name)
+  expanded <- expand_if_necessary(
+    strategy      = strategy,
+    parameters    = parameters, 
+    cycles        = cycles,
+    init          = init,
+    method        = method,
+    expand_limit  = expand_limit,
+    inflow        = inflow,
+    strategy_name = strategy_name)
+  
   uneval_states <- expanded$uneval_states
   uneval_transition <- expanded$uneval_transition
   init <- expanded$init
@@ -73,8 +79,7 @@ eval_strategy <- function(strategy, parameters, cycles,
   if (actually_expanded_something) {
     for (st in expanded$expanded_states) {
       count_table[[st]] <- rowSums(count_table[expanded$expansion_cols[[st]]])
-      count_table <- 
-        count_table[-which(names(count_table) %in% expanded$expansion_cols[[st]])]
+      count_table <- count_table[- which(names(count_table) %in% expanded$expansion_cols[[st]])]
     }
   }
   
@@ -147,9 +152,7 @@ compute_counts <- function(x, ...) {
 }
 
 #' @export
-compute_counts.eval_matrix <- function(x, init,
-                                       inflow,
-                                       ...) {
+compute_counts.eval_matrix <- function(x, init, inflow, ...) {
   
   if (! length(init) == get_matrix_order(x)) {
     stop(sprintf(
