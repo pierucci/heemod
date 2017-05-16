@@ -49,7 +49,7 @@ reference:
     - mix
     - join
     - set_covariates
-    - plot.surv_obj
+    - plot.surv_object
   - title: Calibration
     contents:
     - calibrate_model

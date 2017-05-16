@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Define a Restricted Cubic Spline Survival Distribution — define_spline_survival • heemod</title>
+<title>Plot general survival models — plot.surv_object • heemod</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -79,77 +79,51 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Define a Restricted Cubic Spline Survival Distribution</h1>
+    <h1>Plot general survival models</h1>
     </div>
 
     
-    <p>Define a restricted cubic spline parametric survival
-distribution.</p>
+    <p>Plot general survival models</p>
     
 
-    <pre class="usage"><span class='fu'>define_spline_survival</span>(<span class='kw'>scale</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"hazard"</span>, <span class='st'>"odds"</span>, <span class='st'>"normal"</span>), <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='co'># S3 method for surv_object</span>
+<span class='fu'>plot</span>(<span class='no'>x</span>, <span class='no'>time</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"surv"</span>, <span class='st'>"prob"</span>), <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>scale</th>
-      <td><p>"hazard", "odds", or "normal", as described
-in flexsurvspline. With the default of no knots in
-addition to the boundaries, these models reduce to the
-Weibull, log-logistic and log-normal respectively. The
-scale must be common to all times.</p></td>
+      <th>x</th>
+      <td><p>A survival object of class <code>surv_object</code>.</p></td>
+    </tr>
+    <tr>
+      <th>time</th>
+      <td><p>Times for which to predict.</p></td>
+    </tr>
+    <tr>
+      <th>type</th>
+      <td><p>Either <code>prob</code>, for transition probabilities,
+or <code>surv</code>, for survival.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Additional distribution parameters (see
-respective distribution help pages).</p></td>
+      <td><p>Additional arguments to pass to <code><a href='compute_surv.html'>compute_surv()</a></code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code>surv_dist</code> object.</p>
+    <p>A <code><a href='http://www.rdocumentation.org/packages/ggplot2/topics/ggplot'>ggplot2::ggplot()</a></code> object.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The function currently only highlights join
+points that are at the top level; that is, for objects
+with class <code>surv_projection</code>.</p>
+<p>To avoid plotting the join points, set join_size to a
+negative number.</p>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='fu'>define_spline_survival</span>(
-  <span class='kw'>scale</span> <span class='kw'>=</span> <span class='st'>"hazard"</span>,
-  <span class='kw'>gamma</span> <span class='kw'>=</span> <span class='fu'>c</span>(-<span class='fl'>18.3122</span>, <span class='fl'>2.7511</span>, <span class='fl'>0.2292</span>),
-  <span class='kw'>knots</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>4.276666</span>, <span class='fl'>6.470800</span>, <span class='fl'>7.806289</span>)
-)</div><div class='output co'>#&gt; $distribution
-#&gt; [1] "survspline"
-#&gt; 
-#&gt; $scale
-#&gt; [1] "hazard"
-#&gt; 
-#&gt; $gamma
-#&gt; [1] -18.3122   2.7511   0.2292
-#&gt; 
-#&gt; $knots
-#&gt; [1] 4.276666 6.470800 7.806289
-#&gt; 
-#&gt; attr(,"class")
-#&gt; [1] "surv_object" "surv_dist"  </div><div class='input'><span class='fu'>define_spline_survival</span>(
-  <span class='kw'>scale</span> <span class='kw'>=</span> <span class='st'>"odds"</span>,
-  <span class='kw'>gamma</span> <span class='kw'>=</span> <span class='fu'>c</span>(-<span class='fl'>18.5809</span>, <span class='fl'>2.7973</span>, <span class='fl'>0.2035</span>),
-  <span class='kw'>knots</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>4.276666</span>, <span class='fl'>6.470800</span>, <span class='fl'>7.806289</span>)
-)</div><div class='output co'>#&gt; $distribution
-#&gt; [1] "survspline"
-#&gt; 
-#&gt; $scale
-#&gt; [1] "odds"
-#&gt; 
-#&gt; $gamma
-#&gt; [1] -18.5809   2.7973   0.2035
-#&gt; 
-#&gt; $knots
-#&gt; [1] 4.276666 6.470800 7.806289
-#&gt; 
-#&gt; attr(,"class")
-#&gt; [1] "surv_object" "surv_dist"  </div><div class='input'>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -157,9 +131,9 @@ respective distribution help pages).</p></td>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+
+      <li><a href="#details">Details</a></li>
+          </ul>
 
   </div>
 </div>
