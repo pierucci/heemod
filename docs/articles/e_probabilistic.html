@@ -59,7 +59,7 @@
     <div class="page-header toc-ignore">
       <h1>Probabilistic Uncertainty Analysis</h1>
             
-            <h4 class="date">2017-05-12</h4>
+            <h4 class="date">2017-05-16</h4>
           </div>
 
     
@@ -242,14 +242,14 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 ## Values:
 ## 
 ##      cost_health cost_drugs cost_total life_year
-## comb   101976330   80259738   95391170 18391.324
-## mono    50875096   20352525   50349493  8934.383
+## comb    98158176   77495405   93632967 17757.884
+## mono    50358740   20238994   49965440  8884.545
 ## 
 ## Net monetary benefit difference:
 ## 
-##       1000     5000     6000    10000
-## 1 35584.74    0.000     0.00     0.00
-## 2     0.00 2243.027 11699.97 49527.73
+##       1000    5000     6000    10000
+## 1 34794.19   0.000    0.000     0.00
+## 2     0.00 699.166 9572.504 45065.86
 ## 
 ## Efficiency frontier:
 ## 
@@ -258,7 +258,7 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 ## Differences:
 ## 
 ##      Cost Diff. Effect Diff.     ICER Ref.
-## comb   45041.68     9.456941 4762.817 mono</code></pre>
+## comb   43667.53     8.873339 4921.206 mono</code></pre>
 </div>
 <div id="result-interpretation" class="section level2">
 <h2 class="hasAnchor">
@@ -279,7 +279,7 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 <p>Or on the difference between strategies:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(pm, <span class="dt">type =</span> <span class="st">"cov"</span>, <span class="dt">diff =</span> <span class="ot">TRUE</span>, <span class="dt">threshold =</span> <span class="dv">5000</span>)</code></pre></div>
 <pre><code>## Warning in compute_prop_var(mgcv::gam(formula = form_nmb, data = .)): Only
-## 99% of variance explained, results may be inaccurate.</code></pre>
+## 98% of variance explained, results may be inaccurate.</code></pre>
 <p><img src="e_probabilistic_files/figure-html/unnamed-chunk-12-1.png" width="384" style="display: block; margin: auto;"></p>
 <p>As usual plots can be modified with the standard <code>ggplot2</code> syntax.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)

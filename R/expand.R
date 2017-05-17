@@ -138,7 +138,7 @@ expand_state.uneval_init <- function(x, state_name, cycles) {
 
 #' Convert Lazy Dots to Expression List
 #' 
-#' This function is used by [interp_heemod()].
+#' This function is used by [interpolate()].
 #'
 #' @param .dots A lazy dots object.
 #'
@@ -167,13 +167,13 @@ as_expr_list <- function(.dots) {
 #'   
 #' @return An interpolated lazy dots object.
 #' @keywords internal
-interp_heemod <- function(x, ...) {
-  UseMethod("interp_heemod")
+interpolate <- function(x, ...) {
+  UseMethod("interpolate")
 }
 
 #' @export
-#' @rdname interp_heemod
-interp_heemod.default <- function(x, more = NULL, ...) {
+#' @rdname interpolate
+interpolate.default <- function(x, more = NULL, ...) {
   
   res <- NULL
   
@@ -202,30 +202,30 @@ interp_heemod.default <- function(x, more = NULL, ...) {
 
 
 #' @export
-#' @rdname interp_heemod
-interp_heemod.uneval_matrix <- function(x, ...) {
-  res <- interp_heemod.default(x, ...)
+#' @rdname interpolate
+interpolate.uneval_matrix <- function(x, ...) {
+  res <- interpolate.default(x, ...)
   define_transition_(res, get_state_names(x))
 }
 
 #' @export
-#' @rdname interp_heemod
-interp_heemod.state <- function(x, ...) {
-  res <- interp_heemod.default(x, ...)
+#' @rdname interpolate
+interpolate.state <- function(x, ...) {
+  res <- interpolate.default(x, ...)
   define_state_(res)
 }
 
 #' @export
-#' @rdname interp_heemod
-interp_heemod.part_surv <- function(x, ...) {
+#' @rdname interpolate
+interpolate.part_surv <- function(x, ...) {
   x
 }
 
 #' @export
-#' @rdname interp_heemod
-interp_heemod.uneval_state_list <- function(x, ...) {
+#' @rdname interpolate
+interpolate.uneval_state_list <- function(x, ...) {
   for (i in seq_along(x)) {
-    x[[i]] <- interp_heemod(x[[i]], ...)
+    x[[i]] <- interpolate(x[[i]], ...)
   }
   x
 }

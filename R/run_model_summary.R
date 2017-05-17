@@ -221,8 +221,7 @@ print_results <- function(res_values, res_comp, res_nmb) {
   rownames(res_values) <- res_values$.strategy_names
   res_values <- dplyr::select_(res_values,
                                ~ - .strategy_names,
-                               ~ - .n_indiv,
-                               ~ - .init_cost)
+                               ~ - .n_indiv)
   print(res_values)
   
   if (! is.null(res_nmb)) {
@@ -232,8 +231,7 @@ print_results <- function(res_values, res_comp, res_nmb) {
       dplyr::select_(
         ~ - .strategy_names,
         ~ - .cost,
-        ~ - .effect,
-        ~ - .init_cost
+        ~ - .effect
       ) %>% 
       dplyr::mutate_all(function(x) x - min(x))
     print(res_nmb)

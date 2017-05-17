@@ -1,4 +1,4 @@
-## heemod 0.9.1.9003
+## heemod 0.9.1.9004
 
 ### Breaking changes
 
@@ -21,6 +21,8 @@
 
   * The development branch is now called `master`, the release branch is called `cran`.
   * Survival operation are wrapped in a common class.
+  * Expansion code moved to own function.
+  * Faster computation of expanded states.
 
 ## heemod 0.9.1
 
