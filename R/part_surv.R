@@ -215,7 +215,7 @@ compute_counts.eval_part_surv <- function(x, init,
     all(init[-1] == 0)
   )
   
-  res <- data.frame(
+  res <- tibble::tibble(
     progression_free = x$pfs_surv,
     progression      = x$os_surv - x$pfs_surv, 
     death            = 1 - x$os_surv

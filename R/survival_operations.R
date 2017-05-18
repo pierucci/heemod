@@ -89,9 +89,9 @@ project_fn <- function(dist1, dist2_list) {
   )
 }
 
-#' Pool Two or More Survival Distributions
+#' Mix Two or More Survival Distributions
 #' 
-#' Pool a set of survival distributions using the specified
+#' Mix a set of survival distributions using the specified
 #' weights.
 #' 
 #' @param ... Survival distributions to be used in the
@@ -106,18 +106,18 @@ project_fn <- function(dist1, dist2_list) {
 #' 
 #' dist1 <- define_survival(distribution = "exp", rate = .5)
 #' dist2 <- define_survival(distribution = "gompertz", rate = .5, shape = 1)
-#' pooled_dist <- pool(dist1, dist2, weights = c(0.25, 0.75))
+#' pooled_dist <- mix(dist1, dist2, weights = c(0.25, 0.75))
 #' 
-pool <- function(..., weights = 1) {
+mix <- function(..., weights = 1) {
   
   dots <- list(...)
   
-  pool_(dots, weights)
+  mix_(dots, weights)
 }
 
 #' @export
-#' @rdname pool
-pool_ <- function(dots, weights = 1) {
+#' @rdname mix
+mix_ <- function(dots, weights = 1) {
   
   stopifnot(
     all(weights > 0),
@@ -132,6 +132,20 @@ pool_ <- function(dots, weights = 1) {
     ),
     class = "surv_pooled"
   )
+}
+
+#' @export
+#' @rdname mix
+pool <- function(...) {
+  warning("'pool() is deprecated, use 'mix()' instead.")
+  mix(...)
+}
+
+#' @export
+#' @rdname mix
+pool_ <- function(...) {
+  warning("'pool_() is deprecated, use 'mix_()' instead.")
+  mix_(...)
 }
 
 #' Apply a Hazard Ratio

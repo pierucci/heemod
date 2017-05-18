@@ -120,6 +120,6 @@ look_up <- function(data, ..., bin = FALSE, value = "value") {
                   ", value = ", value
     )
   }
-  
+   
   res
 }
