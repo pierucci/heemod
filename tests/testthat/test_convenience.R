@@ -82,3 +82,40 @@ test_that("is_dosing_period works",
     )
     }
 )
+
+test_that("utility by time before death",
+    {
+      ProgFree <- round(1000 * exp(-0.2 * 0:24))
+      Progressive <- round((1000 - ProgFree) * exp(-0.1 * 0:24))
+      Death <- 1000 - ProgFree - Progressive
+      state_names <- rep(c("ProgFree", "Progressive", "Death"), each = 25)
+      
+      counts <- data.frame(.strategy = rep("s1", 25),
+                           markov_cycle = 0:24,
+                           state_names = state_names,
+                           count = c(ProgFree, Progressive, Death)
+      )
+      class(counts) <- c("cycle_counts", class(counts))
+      
+      ## if utility is 1 in the cycle before death and 0 otherwise,
+      ##   then utility should be equal to the number of people
+      ##   about to die
+      aa1 <- data.frame(until_lag = 1, util = 1)
+      res1 <- utility_by_time_from_death(counts, util_before_death = aa1, 
+                                 util_long_before_death = 0)
+      expect_identical(res1[-length(res1)], 
+                       diff(dplyr::filter(counts, 
+                                          state_names == "Death")$count)
+                       )
+      ## gets delayed by 1 if utility is 1 only two cycles before death
+      aa2 <- data.frame(until_lag = 1:2, util = 0:1)
+      res2 <- utility_by_time_from_death(counts, util_before_death = aa2, 
+                                         util_long_before_death = 0)
+      expect_identical(res2[-(length(res2) - 1 + 0:1 )],
+                       diff(dplyr::filter(counts, 
+                                          state_names == "Death")$count)[-1]
+      )
+      
+      
+    }
+    )
