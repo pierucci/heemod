@@ -57,7 +57,7 @@ define_survival <- function(distribution = c("exp", "weibull",
       distribution = distribution,
       ...
     ),
-    class = "surv_dist"
+    class = c("surv_object", "surv_dist")
   )
 }
 
@@ -122,6 +122,6 @@ define_spline_survival <- function(scale = c("hazard", "odds",
       scale = scale,
       ...
     ),
-    class = "surv_dist"
+    class = c("surv_object", "surv_dist")
   )
 }

@@ -11,8 +11,8 @@
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -83,11 +85,10 @@
     
     <p>Define a matrix of transition probabilities. Probability
 can depend on parameters defined with
-<code><a href='define_parameters.html'>define_parameters()</a></code>, and can thus be
-time-dependent.</p>
+<code><a href='define_parameters.html'>define_parameters()</a></code>, and can thus be time-dependent.</p>
     
 
-    <pre><span class='fu'>define_transition</span>(<span class='no'>...</span>, <span class='no'>state_names</span>)
+    <pre class="usage"><span class='fu'>define_transition</span>(<span class='no'>...</span>, <span class='no'>state_names</span>)
 
 <span class='fu'>define_transition_</span>(<span class='no'>.dots</span>, <span class='no'>state_names</span>)
 
@@ -99,55 +100,70 @@ time-dependent.</p>
   <span class='kw'>latex</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>...</dt>
-      <dd>Name-value pairs of expressions definig matrix
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>...</th>
+      <td><p>Name-value pairs of expressions definig matrix
 cells. Can refer to parameters defined with
-<code><a href='define_parameters.html'>define_parameters()</a></code>. For <code>plot</code>,
-additional arguments passed to
-<code><a href='http://www.rdocumentation.org/packages/diagram/topics/plotmat'>diagram::plotmat()</a></code>.</dd>
-      <dt>state_names</dt>
-      <dd>character vector, optional. State
-names.</dd>
-      <dt>.dots</dt>
-      <dd>Used to work around non-standard evaluation.</dd>
-      <dt>.OBJECT</dt>
-      <dd>An object of class <code>uneval_matrix</code>.</dd>
-      <dt>x</dt>
-      <dd>An <code>uneval_matrix</code> to plot.</dd>
-      <dt>relsize</dt>
-      <dd>Argument passed to
-<code><a href='http://www.rdocumentation.org/packages/diagram/topics/plotmat'>diagram::plotmat()</a></code>.</dd>
-      <dt>shadow.size</dt>
-      <dd>Argument passed to
-<code><a href='http://www.rdocumentation.org/packages/diagram/topics/plotmat'>diagram::plotmat()</a></code>.</dd>
-      <dt>latex</dt>
-      <dd>Argument passed to
-<code><a href='http://www.rdocumentation.org/packages/diagram/topics/plotmat'>diagram::plotmat()</a></code>.</dd>
-    </dl>
+<code><a href='define_parameters.html'>define_parameters()</a></code>. For <code>plot</code>, additional arguments
+passed to <code><a href='http://www.rdocumentation.org/packages/diagram/topics/plotmat'>diagram::plotmat()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>state_names</th>
+      <td><p>character vector, optional. State
+names.</p></td>
+    </tr>
+    <tr>
+      <th>.dots</th>
+      <td><p>Used to work around non-standard evaluation.</p></td>
+    </tr>
+    <tr>
+      <th>.OBJECT</th>
+      <td><p>An object of class <code>uneval_matrix</code>.</p></td>
+    </tr>
+    <tr>
+      <th>x</th>
+      <td><p>An <code>uneval_matrix</code> to plot.</p></td>
+    </tr>
+    <tr>
+      <th>relsize</th>
+      <td><p>Argument passed to <code><a href='http://www.rdocumentation.org/packages/diagram/topics/plotmat'>diagram::plotmat()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>shadow.size</th>
+      <td><p>Argument passed to
+<code><a href='http://www.rdocumentation.org/packages/diagram/topics/plotmat'>diagram::plotmat()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>latex</th>
+      <td><p>Argument passed to <code><a href='http://www.rdocumentation.org/packages/diagram/topics/plotmat'>diagram::plotmat()</a></code>.</p></td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code>uneval_matrix</code> (actually
-a named list of <code>lazy</code> expressions).</p>
+    <p>An object of class <code>uneval_matrix</code> (actually a
+named list of <code>lazy</code> expressions).</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Parameters names are searched first in a parameter object
-defined with <code><a href='define_parameters.html'>define_parameters()</a></code> and linked
-with the matrix through <code><a href='define_strategy.html'>define_strategy()</a></code>;
-then in the environment where the matrix was defined.</p>
     <p>Matric cells are listed by row.</p>
-    <p>The completary probability of all other row probabilities
-can be conveniently reffered as <code>C</code>.</p>
-    <p>Only matrix size is checked during this step (the matrix
+<p>Parameters names are searched first in a parameter object
+defined with <code><a href='define_parameters.html'>define_parameters()</a></code> and linked with the
+matrix through <code><a href='define_strategy.html'>define_strategy()</a></code>; then in the
+environment where the matrix was defined.</p>
+<p>The complementary probability of all other row
+probabilities can be conveniently referred to as <code>C</code>.</p>
+<p>The matrix code can be re-indented for readability with
+<code><a href='reindent_transition.html'>reindent_transition()</a></code>.</p>
+<p>Only matrix size is checked during this step (the matrix
 must be square). Other conditions (such as row sums being
 equal to 1) are tested later, during model evaluation.</p>
-    <p>For the <code>modify</code> function existing matrix cells are
+<p>For the <code>modify</code> function, existing matrix cells are
 replaced with the new expression. Cells are referenced by
-name. Cell naming follows the <code>cell_x_y</code> convention,
-with <code>x</code> being the row number and <code>y</code> the
-column number.</p>
+name. Cell naming follows the <code>cell_x_y</code> convention, with
+<code>x</code> being the row number and <code>y</code> the column number.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -169,14 +185,18 @@ column number.</p>
 <span class='co'># rr must be present in a parameter object</span>
 <span class='co'># that must later be linked with define_strategy</span>
 
-<span class='fu'>define_transition</span>(
+<span class='no'>mat_2</span> <span class='kw'>&lt;-</span> <span class='fu'>define_transition</span>(
   <span class='fl'>.5</span> - <span class='no'>rr</span>, <span class='no'>rr</span>,
   <span class='fl'>.4</span>, <span class='fl'>.6</span>
-)</div><div class='output co'>#&gt; <span class='message'>No named state -&gt; generating names.</span></div><div class='output co'>#&gt; A transition matrix, 2 states.
+)</div><div class='output co'>#&gt; <span class='message'>No named state -&gt; generating names.</span></div><div class='input'><span class='no'>mat_2</span></div><div class='output co'>#&gt; A transition matrix, 2 states.
 #&gt; 
 #&gt;   A        B  
 #&gt; A 0.5 - rr rr 
 #&gt; B 0.4      0.6</div><div class='input'>
+<span class='fu'><a href='reindent_transition.html'>reindent_transition</a></span>(<span class='no'>mat_2</span>)</div><div class='output co'>#&gt; state_names = c(
+#&gt; "A"     , "B")
+#&gt; 0.5 - rr, rr ,
+#&gt; 0.4     , 0.6</div><div class='input'>
 <span class='co'># can also use C</span>
 
 <span class='fu'>define_transition</span>(
@@ -231,7 +251,7 @@ column number.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Antoine Filipovic-Pierucci, Kevin Zarca.</p>
+  <p>Developed by Antoine Filipovic-Pierucci.</p>
 </div>
 
 <div class="pkgdown">

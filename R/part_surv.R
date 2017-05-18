@@ -1,3 +1,6 @@
+allowed_fit_distributions <- c("exp", "weibull", "lnorm", "llogis", 
+                               "gamma", "gompertz", "gengamma")
+
 #' Define Partitioned Survival
 #' 
 #' Define a partitioned survival model with progression-free
@@ -212,7 +215,7 @@ compute_counts.eval_part_surv <- function(x, init,
     all(init[-1] == 0)
   )
   
-  res <- data.frame(
+  res <- tibble::tibble(
     progression_free = x$pfs_surv,
     progression      = x$os_surv - x$pfs_surv, 
     death            = 1 - x$os_surv
@@ -441,6 +444,15 @@ join_fits_to_def <- function(surv_def, fit_tibble) {
         gsub('"', '', .),
       .type = ~ toupper(.type)
     )
+  ok_dist_names <-
+    should_be_fits_2$dist %in% c(allowed_fit_distributions, "km")
+  if(any(!ok_dist_names))
+    stop("disallowed distribution names in use_fits file: ",
+         paste(unique(should_be_fits_2$dist[!ok_dist_names]), collapse = ", "),
+         "\n",
+         "allowed distributions: ",
+         paste(allowed_fit_distributions, collapse = ", ")
+    )
   ## and join in the fits and subset definitions
   should_be_fits_3 <- should_be_fits_2 %>%
     dplyr::left_join(
@@ -452,12 +464,12 @@ join_fits_to_def <- function(surv_def, fit_tibble) {
         ".subset" = "set_name"
       )
     )
-  if (any(problem <- is.null(should_be_fits_3$fit) |
-          is.na(should_be_fits_3$fit))) {
+  problem <- sapply(should_be_fits_3$fit, is.null)
+  if (any(problem)) {
     print(surv_def[problem, ])
     stop("fit not found for lines ",
          paste(which(problem), collapse = ", "),
-         "(shown above)")
+         " (shown above); check distribution names for fits")
   }
   should_be_fits_3
 }

@@ -6,10 +6,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Time-varying values • heemod</title>
-<!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><!-- mathjax --><script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
@@ -59,7 +59,7 @@
     <div class="page-header toc-ignore">
       <h1>Time-varying values</h1>
             
-            <h4 class="date">2017-02-26</h4>
+            <h4 class="date">2017-05-09</h4>
           </div>
 
     
@@ -73,8 +73,8 @@
 <p>These two situations can be modelled using the <code>model_time</code> (or its alias <code>markov_cycle</code>) and <code>state_time</code> variables, respectively.</p>
 <div id="how-to-specifiy-time-dependency" class="section level2">
 <h2 class="hasAnchor">
-<html><body><a href="#how-to-specifiy-time-dependency" class="anchor"> </a></body></html>How to specifiy time-dependency</h2>
-<p>These variables takes increasing values with each cycles, starting from 1. For example the age of individuals at any moment can be defined as <code>Initial age + markov_cycle</code>. The time an individual spends in a state is equal to <code>state_cucle</code>.</p>
+<a href="#how-to-specifiy-time-dependency" class="anchor"></a>How to specifiy time-dependency</h2>
+<p>These variables takes increasing values with each cycles, starting from 1. For example the age of individuals at any moment can be defined as <code>Initial age + model_time</code>. The time an individual spends in a state is equal to <code>state_time</code>.</p>
 <p>Both variables can be used in <code><a href="../reference/define_parameters.html">define_parameters()</a></code>, <code><a href="../reference/define_state.html">define_state()</a></code>, or <code><a href="../reference/define_transition.html">define_transition()</a></code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/define_parameters.html">define_parameters</a></span>(
   <span class="dt">mr =</span> <span class="kw">exp</span>(-<span class="st"> </span>state_time *<span class="st"> </span>lambda),
@@ -107,7 +107,7 @@
 </div>
 <div id="details" class="section level2">
 <h2 class="hasAnchor">
-<html><body><a href="#details" class="anchor"> </a></body></html>Details</h2>
+<a href="#details" class="anchor"></a>Details</h2>
 <p>Using <code>model_time</code> in a model does not change the execution speed of the analysis. On the other hand adding <code>state_time</code> may slow down the analysis, especially if the model is run for many cycles <strong>and</strong> a transition probability depends on <code>state_time</code>.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
 <p>To mitigate this drawback it is possible to limit the number of state expansion with <code>state_time_limit</code>. Because most time-varying values reach an asymptotic value quite fast, it is unnecessary to expand the states any further. The last cycle value is repeated until the end.</p>
 <p>The limit can be defined globally, per state, or per model and state. In the following example probabilities are kept constant after <em>10</em> cycles for state <strong>B</strong> and <em>20</em> cycles for state <strong>D</strong> in strategy <strong>I</strong>, and <em>15</em> cycles in state <strong>B</strong> in strategy <strong>II</strong>.</p>
@@ -115,7 +115,7 @@
   <span class="dt">I =</span>  strat_1,
   <span class="dt">II =</span> strat_2,
   <span class="dt">cycles =</span> <span class="dv">100</span>,
-  <span class="dt">state_cycle_limit =</span> <span class="kw">list</span>(
+  <span class="dt">state_time_limit =</span> <span class="kw">list</span>(
     <span class="dt">I =</span> <span class="kw">c</span>(<span class="dt">B =</span> <span class="dv">10</span>, <span class="dt">D =</span> <span class="dv">20</span>),
     <span class="dt">II =</span> <span class="kw">c</span>(<span class="dt">B =</span> <span class="dv">15</span>)
   )

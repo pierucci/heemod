@@ -16,6 +16,7 @@
 #' 
 #' @param location Directory where the files are located.
 #' @param reference Name of the reference file.
+#' @param run_dsa Run DSA?
 #' @param run_psa Run PSA?.
 #' @param run_demo Run demgraphic analysis?
 #' @param save Should the outputs be saved?
@@ -29,11 +30,13 @@
 #'   
 #' @export
 run_model_tabular <- function(location, reference = "REFERENCE.csv",
+                              run_dsa = TRUE,
                               run_psa = TRUE, run_demo = TRUE,
                               save = FALSE, overwrite = FALSE) {
   
   inputs <- gather_model_info(location, reference)
   outputs <- eval_models_from_tabular(inputs,
+                                      run_dsa = run_dsa,
                                       run_psa = run_psa,
                                       run_demo = run_demo)
   
@@ -172,6 +175,7 @@ gather_model_info <- function(base_dir, ref_file) {
 #' 
 #' @param inputs Result from 
 #'   [gather_model_info()].
+#' @param run_dsa Run DSA?   
 #' @param run_psa Run PSA?
 #' @param run_demo Run demographic analysis?
 #'   
@@ -187,6 +191,7 @@ gather_model_info <- function(base_dir, ref_file) {
 #'   
 #' @keywords internal
 eval_models_from_tabular <- function(inputs,
+                                     run_dsa = TRUE,
                                      run_psa = TRUE,
                                      run_demo = TRUE) {
   
@@ -225,7 +230,7 @@ eval_models_from_tabular <- function(inputs,
   )
   
   model_dsa <- NULL
-  if (! is.null(inputs$param_info$dsa)) {
+  if (! is.null(inputs$param_info$dsa) & run_dsa) {
     if (options()$heemod.verbose) message("** Running DSA...")
     model_dsa <- run_dsa(
       model_runs,
@@ -766,7 +771,10 @@ create_model_from_tabular <- function(state_info,
     TM <- tm_info
   }
   
-  define_strategy_(transition = TM, states = states)
+  define_strategy_(transition = TM, states = states,
+                   starting_values = check_starting_values(
+                     define_starting_values(),
+                     get_state_value_names(states)))
 }
 
 #' Load Data From a Folder Into an Environment
@@ -812,6 +820,27 @@ create_df_from_tabular <- function(df_dir, df_envir) {
   ## do the assignments
   for(i in seq(along = all_files)){
     this_val <- read_file(all_files[i])
+    
+    ## check for accidental commas in numbers
+    comma_cols <- 
+      which(sapply(sapply(this_val, function(x){grep(",", x)}),
+                   any)
+      )
+
+    for(this_comma_col in comma_cols){
+      try_numeric <- try(as.numeric(gsub(",", "", this_val[, this_comma_col])), 
+                         silent = TRUE)
+      if(!inherits(try_numeric, "try-error")){
+        this_val[, this_comma_col] <- try_numeric
+        message(paste("converting column",
+                      names(this_val)[this_comma_col],
+                      "from file",
+                      basename(all_files[i]),
+                      "to numeric despite it having commas"
+                      )
+                )
+    }
+    }
     assign(obj_names[i], this_val, envir = df_envir)
   }
   df_envir
@@ -1263,14 +1292,26 @@ modify_param_defs_for_multinomials <- function(param_defs, psa) {
 ##   properly formatted and have reasonable data
 check_survival_specs <- 
   function(surv_specs){
-    
+    ## if there are troubles with absolute file paths, 
+    ##   might want to add an "absolute" column to surv_specs
+    ##   to be explicit (if, possibly, a little redundant)
     if(!is.data.frame(surv_specs) || nrow(surv_specs) == 0)
       stop("surv_specs must be a data frame with at least one row")
-    
+    if(!("event_code" %in% names(surv_specs))){
+      warning("event_code not defined in surv_specs; setting to 1 for all rows")
+      surv_specs$event_code <- 1
+    }
+    if(!("censor_code" %in% names(surv_specs))){
+      warning("censor_code not defined in surv_specs; setting to 0 for all rows")
+      surv_specs$censor_code <- 0
+    }
+      
     surv_spec_col_names <- c("type", "treatment", "data_directory", "data_file",
                              "fit_directory", "fit_name", "fit_file",
-                             "time_col", "treatment_col", "censor_col")
-    if(! identical(names(surv_specs), surv_spec_col_names)){
+                             "time_col", "treatment_col", "censor_col",
+                             "event_code", "censor_code"
+                             )
+    if(! identical(sort(names(surv_specs)), sort(surv_spec_col_names))){
       extra_names <- setdiff(names(surv_specs), surv_spec_col_names)
       missing_names <- setdiff(surv_spec_col_names, names(surv_specs))
       names_message <- paste("surv_ref must have column names:\n",

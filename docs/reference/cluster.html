@@ -6,13 +6,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Run  — cluster • heemod</title>
+<title>Run <code>heemod</code> on a Cluster — cluster • heemod</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -77,7 +79,7 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Run </h1>
+    <h1>Run <code>heemod</code> on a Cluster</h1>
     </div>
 
     
@@ -86,24 +88,33 @@
 automagically used by <code>heemod</code> functions.</p>
     
 
-    <pre><span class='fu'>use_cluster</span>(<span class='no'>num_cores</span>, <span class='kw'>cluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>close</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+    <pre class="usage"><span class='fu'>use_cluster</span>(<span class='no'>num_cores</span>, <span class='kw'>cluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>close</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
 <span class='fu'>status_cluster</span>(<span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
 <span class='fu'>close_cluster</span>()</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>num_cores</dt>
-      <dd>Number of core.</dd>
-      <dt>cluster</dt>
-      <dd>A custom cluster. See details.</dd>
-      <dt>close</dt>
-      <dd>Close existing cluster before defining a new
-one?</dd>
-      <dt>verbose</dt>
-      <dd>Print cluster info.</dd>
-    </dl>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>num_cores</th>
+      <td><p>Number of core.</p></td>
+    </tr>
+    <tr>
+      <th>cluster</th>
+      <td><p>A custom cluster. See details.</p></td>
+    </tr>
+    <tr>
+      <th>close</th>
+      <td><p>Close existing cluster before defining a new
+one?</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>Print cluster info.</p></td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
@@ -118,8 +129,8 @@ is defined, <code>FALSE</code> otherwise.</p>
 <code>use_cluster</code>, then run functions such as
 <code><a href='run_psa.html'>run_psa()</a></code> that make use of the cluster. To
 stop using the cluster run <code>close_cluster()</code>.</p>
-    <p>The cluster status is given by <code>status_cluster</code>.</p>
-    <p>A custom cluster can be passed to <code>use_cluster</code> with
+<p>The cluster status is given by <code>status_cluster</code>.</p>
+<p>A custom cluster can be passed to <code>use_cluster</code> with
 the <code>cluster</code> argument. This custom custer needs to
 work with <code><a href='http://www.rdocumentation.org/packages/parallel/topics/clusterApply'>parallel::parLapply()</a></code>.</p>
     
@@ -140,7 +151,7 @@ work with <code><a href='http://www.rdocumentation.org/packages/parallel/topics/
 
       <footer>
       <div class="copyright">
-  <p>Developed by Antoine Filipovic-Pierucci, Kevin Zarca.</p>
+  <p>Developed by Antoine Filipovic-Pierucci.</p>
 </div>
 
 <div class="pkgdown">
