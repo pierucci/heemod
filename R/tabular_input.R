@@ -16,6 +16,7 @@
 #' 
 #' @param location Directory where the files are located.
 #' @param reference Name of the reference file.
+#' @param run_dsa Run DSA?
 #' @param run_psa Run PSA?.
 #' @param run_demo Run demgraphic analysis?
 #' @param save Should the outputs be saved?
@@ -29,11 +30,13 @@
 #'   
 #' @export
 run_model_tabular <- function(location, reference = "REFERENCE.csv",
+                              run_dsa = TRUE,
                               run_psa = TRUE, run_demo = TRUE,
                               save = FALSE, overwrite = FALSE) {
   
   inputs <- gather_model_info(location, reference)
   outputs <- eval_models_from_tabular(inputs,
+                                      run_dsa = run_dsa,
                                       run_psa = run_psa,
                                       run_demo = run_demo)
   
@@ -172,6 +175,7 @@ gather_model_info <- function(base_dir, ref_file) {
 #' 
 #' @param inputs Result from 
 #'   [gather_model_info()].
+#' @param run_dsa Run DSA?   
 #' @param run_psa Run PSA?
 #' @param run_demo Run demographic analysis?
 #'   
@@ -187,6 +191,7 @@ gather_model_info <- function(base_dir, ref_file) {
 #'   
 #' @keywords internal
 eval_models_from_tabular <- function(inputs,
+                                     run_dsa = TRUE,
                                      run_psa = TRUE,
                                      run_demo = TRUE) {
   
@@ -225,7 +230,7 @@ eval_models_from_tabular <- function(inputs,
   )
   
   model_dsa <- NULL
-  if (! is.null(inputs$param_info$dsa)) {
+  if (! is.null(inputs$param_info$dsa) & run_dsa) {
     if (options()$heemod.verbose) message("** Running DSA...")
     model_dsa <- run_dsa(
       model_runs,
