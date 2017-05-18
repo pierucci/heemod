@@ -373,8 +373,7 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
 #' 
 #' The input data frame is expected to contain state 
 #' information for all the models you will use in an 
-#' analysis. For more information see the vignette: 
-#' `vignette("file-input", package = "heemod")`.
+#' analysis.
 #' 
 #' @param state_info Result for one model of 
 #'   [parse_multi_spec()].
@@ -772,7 +771,11 @@ create_model_from_tabular <- function(state_info,
     TM <- tm_info
   }
   
-  define_strategy_(transition = TM, states = states)
+  define_strategy_(
+    transition = TM, states = states,
+    starting_values = check_starting_values(
+      define_starting_values(),
+      get_state_value_names(states)))
 }
 
 #' Load Data From a Folder Into an Environment
@@ -818,6 +821,28 @@ create_df_from_tabular <- function(df_dir, df_envir) {
   ## do the assignments
   for(i in seq(along = all_files)){
     this_val <- read_file(all_files[i])
+      
+    ## check for accidential commas in numbers
+    comma_cols <- 
+      which(sapply(sapply(this_val, function(x){grep(",", x)}),
+                   any)
+      )
+
+    for(this_comma_col in comma_cols){
+      try_numeric <- try(as.numeric(gsub(",", "", this_val[, this_comma_col])), 
+                         silent = TRUE)
+      if(!inherits(try_numeric, "try-error")){
+        this_val[, this_comma_col] <- try_numeric
+        message(paste("converting column",
+                      names(this_val)[this_comma_col],
+                      "from file",
+                      basename(all_files[i]),
+                      "to numeric despite it having commas"
+                      )
+                )
+    }
+    }
+
     assign(obj_names[i], this_val, envir = df_envir)
   }
   df_envir
@@ -1028,19 +1053,19 @@ filter_blanks <- function(x) {
 #' @param x A file name.
 #' @return Whether the file is (respectively)
 #'  csv, xlsx, or xls.
-#' @rdname file-checkers
+#' @rdname file_checkers
 #'   
 #' @keywords internal
 is_csv <- function(x) {
   tolower(tools::file_ext(x)) == "csv"
 }
 
-#' @rdname file-checkers
+#' @rdname file_checkers
 is_xlsx <- function(x) {
   tolower(tools::file_ext(x)) == "xlsx"
 }
 
-#' @rdname file-checkers
+#' @rdname file_checkers
 is_xls <- function(x) {
   tolower(tools::file_ext(x)) == "xls"
 }
@@ -1264,8 +1289,7 @@ modify_param_defs_for_multinomials <- function(param_defs, psa) {
   param_defs
 }
 
-
-#' construct a survival object from tabular specification
+#' Construct a survival object from tabular specification
 #'
 #' @param surv_def a data frame with the specification.  See details.
 #' @param fit_tibble the name of the tibble from which to take fits.
@@ -1275,12 +1299,11 @@ modify_param_defs_for_multinomials <- function(param_defs, psa) {
 #' @details  This function is meant to be used only from within
 #'   tabular_input.R.   It won't work well otherwise, in that
 #'   the environment is unlikely to have what you need.
-#' 
+#' @keywords internal
 #' columns of surv_def:  .strategy, .type, .subset, dist, until
 #'   where dist can be either the name of a distribution
 #'   along with parameters, or a reference to a fit
 #'   for example:  fit('exp') or exp(rate = 0.5)
-
 #' @return a list with one element for each strategy.   Each element
 #'   is in turn a `part_surv` object, a list with two elements, 
 #'   pfs and os.   And those
@@ -1373,8 +1396,8 @@ join_fits_across_time <- function(this_part) {
   if ("until" %in% names(this_part)) {
     this_part <- dplyr::arrange_(this_part, ~ until)
     
-    join_(dots = this_part$fit, 
-             at= this_part$until[!is.na(this_part$until)])
+    join_(.dots = this_part$fit, 
+          at= this_part$until[!is.na(this_part$until)])
     
   } else {
     if (nrow(this_part) > 1) {
@@ -1413,7 +1436,7 @@ make_part_surv_from_small_tibble <- function(st, state_names) {
 #'   assumptions), fit (for the fitted survival object) and
 #'   set_def (how the subset of data was defined, just to
 #'   keep it around)
-
+#' @keywords internal
 #' @return a tibble of partitioned survival objects, similar to the
 #'   original tibble of survival fits, with all the columns
 #'   except type and fit, and a new column part_surv.

@@ -1,13 +1,14 @@
 Package: heemod
 Title: Models for Health Economic Evaluation
-Version: 0.9.0.9001
+Version: 0.9.1.9004
 Authors@R: c(
     person("Antoine", "Filipovic-Pierucci", email = "pierucci@gmail.com", role = c("aut", "cre")),
-    person("Kevin", "Zarca", email = "kevin.zarca@urc-eco.fr", role = "aut"),
+    person("Kevin", "Zarca", role = "ctb"),
     person("Matthew", "Wiener", role = "ctb"),
     person("Zdenek", "Kabat", role = "ctb"),
     person("Vojtech", "Filipec", role = "ctb"),
-	  person("Jordan", "Amdahl", role=c("ctb"))
+	  person("Jordan", "Amdahl", role=c("ctb")),
+	  person("Yonatan", "Carranza Alarcon", role=c("ctb"))
     )
 Description: Health Economic Evaluation Modelling:
     decision trees and cohort simulations. Provides a simple
@@ -17,21 +18,21 @@ Description: Health Economic Evaluation Modelling:
     (non-homogeneous Markov models and semi-Markov models)
     are supported.
 Depends: R (>= 3.2.2)
-Imports:  dplyr,
-          ggplot2 (>= 2.2.0),
-          graphics,
-          grDevices,
-          lazyeval,
-          memoise,
-          mvnfast,
-          plyr,
-          pryr,
-          rgho,
-          stats,
-          tibble,
-          tidyr,
-          tools,
-          utils
+Imports:
+    dplyr,
+    ggplot2 (>= 2.2.0),
+    graphics,
+    grDevices,
+    lazyeval,
+    memoise,
+    mvnfast,
+    plyr,
+    pryr,
+    stats,
+    tibble,
+    tidyr,
+    tools,
+    utils
 License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr
@@ -39,7 +40,6 @@ RoxygenNote: 6.0.1
 Suggests:
     diagram,
     flexsurv,
-    formatR,
     Hmisc,
     knitr,
     logitnorm,
@@ -47,7 +47,9 @@ Suggests:
     optimx,
     parallel,
     readxl,
+    rgho,
     rmarkdown,
+    stringr,
     survival,
     testthat,
     triangle

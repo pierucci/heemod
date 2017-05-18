@@ -159,8 +159,18 @@ eval_resample <- function(psa, N) {
   colnames(list_res) <- names(psa$list_qdist)
   res <- as.data.frame(list_res)
   
-  for (f in psa$multinom) {
-    res <- f(res)
+  for (m in psa$multinom) {
+    call_denom <- make_call(m, "+")
+    list_expr <- lazyeval::as.lazy_dots(
+      c(list(
+        .denom = call_denom),
+      stats::setNames(
+        lapply(
+          m,
+          function(x) as.call(list(as.name("/"), as.name(x), as.name(".denom")))),
+        m)))
+    res <- dplyr::mutate_(res, .dots = list_expr) %>% 
+      dplyr::select_(~ - .denom)
   }
   res
 }

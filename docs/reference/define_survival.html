@@ -11,8 +11,8 @@
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -84,18 +86,23 @@
     <p>Define a parametric survival distribution.</p>
     
 
-    <pre><span class='fu'>define_survival</span>(<span class='kw'>distribution</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"exp"</span>, <span class='st'>"weibull"</span>, <span class='st'>"weibullPH"</span>, <span class='st'>"lnorm"</span>,
+    <pre class="usage"><span class='fu'>define_survival</span>(<span class='kw'>distribution</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"exp"</span>, <span class='st'>"weibull"</span>, <span class='st'>"weibullPH"</span>, <span class='st'>"lnorm"</span>,
   <span class='st'>"llogis"</span>, <span class='st'>"gamma"</span>, <span class='st'>"gompertz"</span>, <span class='st'>"gengamma"</span>, <span class='st'>"gengamma.orig"</span>, <span class='st'>"genf"</span>,
   <span class='st'>"genf.orig"</span>), <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>distribution</dt>
-      <dd>A parametric survival distribution.</dd>
-      <dt>...</dt>
-      <dd>Additional distribution parameters (see
-respective distribution help pages).</dd>
-    </dl>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>distribution</th>
+      <td><p>A parametric survival distribution.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Additional distribution parameters (see
+respective distribution help pages).</p></td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
@@ -105,14 +112,14 @@ respective distribution help pages).</dd>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='fu'>define_survival</span>(<span class='kw'>distribution</span> <span class='kw'>=</span> <span class='st'>"exp"</span>, <span class='kw'>rate</span> <span class='kw'>=</span> <span class='fl'>.5</span>)</div><div class='output co'>#&gt; $distribution
-#&gt; [1] &quot;exp&quot;
+#&gt; [1] "exp"
 #&gt; 
 #&gt; $rate
 #&gt; [1] 0.5
 #&gt; 
-#&gt; attr(,&quot;class&quot;)
-#&gt; [1] &quot;surv_dist&quot;</div><div class='input'><span class='fu'>define_survival</span>(<span class='kw'>distribution</span> <span class='kw'>=</span> <span class='st'>"gompertz"</span>, <span class='kw'>rate</span> <span class='kw'>=</span> <span class='fl'>.5</span>, <span class='kw'>shape</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div><div class='output co'>#&gt; $distribution
-#&gt; [1] &quot;gompertz&quot;
+#&gt; attr(,"class")
+#&gt; [1] "surv_object" "surv_dist"  </div><div class='input'><span class='fu'>define_survival</span>(<span class='kw'>distribution</span> <span class='kw'>=</span> <span class='st'>"gompertz"</span>, <span class='kw'>rate</span> <span class='kw'>=</span> <span class='fl'>.5</span>, <span class='kw'>shape</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div><div class='output co'>#&gt; $distribution
+#&gt; [1] "gompertz"
 #&gt; 
 #&gt; $rate
 #&gt; [1] 0.5
@@ -120,8 +127,8 @@ respective distribution help pages).</dd>
 #&gt; $shape
 #&gt; [1] 1
 #&gt; 
-#&gt; attr(,&quot;class&quot;)
-#&gt; [1] &quot;surv_dist&quot;</div><div class='input'>
+#&gt; attr(,"class")
+#&gt; [1] "surv_object" "surv_dist"  </div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -139,7 +146,7 @@ respective distribution help pages).</dd>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Antoine Filipovic-Pierucci, Kevin Zarca.</p>
+  <p>Developed by Antoine Filipovic-Pierucci.</p>
 </div>
 
 <div class="pkgdown">

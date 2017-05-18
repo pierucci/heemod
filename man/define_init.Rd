@@ -11,7 +11,7 @@ define_init_(.dots)
 }
 \arguments{
 \item{...}{Name-value pairs of expressions defining
-initial counts}
+initial counts.}
 
 \item{.dots}{Used to work around non-standard evaluation.}
 }
