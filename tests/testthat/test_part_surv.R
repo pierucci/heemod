@@ -233,7 +233,12 @@ test_that(
     expect_error(capture.output(join_fits_to_def(
       bad_surv_def, 
       fake_fit_tib)),
-      "disallowed distribution names in use_fits")
+      "disallowed distribution name in use_fits")
+    expect_error(capture.output(join_fits_to_def(
+      surv_def_join,
+      fake_fit_tib)),
+      "subset name GT50 from specification of fits"
+    )
     names(surv_def)[1] <- "strategy"
     expect_error(join_fits_to_def(surv_def, fake_fit_tib),
                  "missing required names in 'surv_def':", fixed = TRUE)
@@ -241,8 +246,14 @@ test_that(
     names(fake_fit_tib)[1] <- ".strategy"
     expect_error(join_fits_to_def(surv_def, fake_fit_tib),
                  "missing required names in 'fit_tibble':", fixed = TRUE)
-    
-      })
+    names(fake_fit_tib)[1] <- "type"
+    fake_fit_tib$set_name[c(15)] <- "GT50"
+    expect_error(capture.output(join_fits_to_def(surv_def_join, 
+                                  fake_fit_tib)),
+                 "fit not found for line"
+    )
+      }
+  )
 
 test_that("we catch bad names in construct_part_surv_tib",
           {
@@ -327,3 +338,32 @@ test_that("join_fits_across_time works",
       "unless 'until' is also specified", fixed = TRUE)
   }
 )
+
+test_that("making part_surv from survival fits works",
+          {
+            location <- system.file("tabular/surv", package = "heemod")
+            ok_surv_info <-
+              heemod:::read_file(system.file("tabular/surv/survival_info.csv",
+                                             package = "heemod"))
+            these_fits <-
+              heemod:::survival_from_data(
+                location = location,
+                survival_specs = ok_surv_info,
+                dists = c("exp", "weibull"),
+                save_fits = FALSE,
+                use_envir = new.env()
+              )
+            these_part_survs <- 
+              part_survs_from_surv_inputs(these_fits[[1]],
+                                          c("ProgressionFree",
+                                            "Progressive",
+                                            "Terminal",
+                                            "Death"))
+            expect_equal(nrow(these_part_survs), 15)
+            expect_identical(
+              names(these_part_survs),
+              c("treatment", "set_name", "dist", "set_def", "part_surv")
+            )
+            expect_identical(class(these_part_survs$part_surv[[1]]), "part_surv")
+          }
+          )

@@ -325,6 +325,7 @@ guess_part_surv_state_names <- function(state_names) {
 #'   elements are survival objects of various kinds, with the
 #'   commonality that they can be used in [compute_surv()].
 #'
+#' @examples
 
 construct_part_surv_tib <-
   function(surv_def, ref,
@@ -446,13 +447,33 @@ join_fits_to_def <- function(surv_def, fit_tibble) {
     )
   ok_dist_names <-
     should_be_fits_2$dist %in% c(allowed_fit_distributions, "km")
+  wrong_dist_names <-
+    unique(should_be_fits_2$dist[!ok_dist_names])
   if(any(!ok_dist_names))
-    stop("disallowed distribution names in use_fits file: ",
-         paste(unique(should_be_fits_2$dist[!ok_dist_names]), collapse = ", "),
+    stop("disallowed distribution name", 
+         plur(length(wrong_dist_names)),
+         " in use_fits file: ",
+         paste(wrong_dist_names, collapse = ", "),
          "\n",
          "allowed distributions: ",
          paste(allowed_fit_distributions, collapse = ", ")
     )
+  
+  ok_subset_names <-
+    should_be_fits_2$.subset %in% fit_tibble$set_name
+  missing_set_names <- 
+    unique(should_be_fits_2$.subset[!ok_subset_names])
+  missing_for_message <- paste0("subset name", 
+                        plur(length(missing_set_names)))
+  if(length(missing_set_names) > 0)
+    stop(missing_for_message,
+         " ",
+         paste(missing_set_names, collapse = ", "),
+         " from specification of fits to use not present in fits;\n",
+         " could ", missing_for_message, " be misspelled, ",
+         "or might the fits need to be rerun?"
+         )
+  
   ## and join in the fits and subset definitions
   should_be_fits_3 <- should_be_fits_2 %>%
     dplyr::left_join(
@@ -464,12 +485,19 @@ join_fits_to_def <- function(surv_def, fit_tibble) {
         ".subset" = "set_name"
       )
     )
-  problem <- sapply(should_be_fits_3$fit, is.null)
+  problem <- sapply(should_be_fits_3$fit, is.null) |
+    is.na(should_be_fits_3$fit)
   if (any(problem)) {
     print(surv_def[problem, ])
-    stop("fit not found for lines ",
+    stop("fit not found for line",
+         plur(sum(problem)),
+         " ",
          paste(which(problem), collapse = ", "),
-         " (shown above); check distribution names for fits")
+         " (shown above);\n",
+         "check that subsets are assigned to the proper ",
+         "survival type (PFS or OS), and that fits exist ",
+         "(are not NULL)"
+    )
   }
   should_be_fits_3
 }
