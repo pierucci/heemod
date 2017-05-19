@@ -342,31 +342,27 @@ test_that("join_fits_across_time works",
 
 ## don't have survival_from_data here.  Need to get saved data to run this test.
 
-# test_that("making part_surv from survival fits works",
-#           {
-#             location <- system.file("tabular/surv", package = "heemod")
-#             ok_surv_info <-
-#               heemod:::read_file(system.file("tabular/surv/survival_info.csv",
-#                                              package = "heemod"))
-#             these_fits <-
-#               heemod:::survival_from_data(
-#                 location = location,
-#                 survival_specs = ok_surv_info,
-#                 dists = c("exp", "weibull"),
-#                 save_fits = FALSE,
-#                 use_envir = new.env()
-#               )
-#             these_part_survs <- 
-#               part_survs_from_surv_inputs(these_fits[[1]],
-#                                           c("ProgressionFree",
-#                                             "Progressive",
-#                                             "Terminal",
-#                                             "Death"))
-#             expect_equal(nrow(these_part_survs), 15)
-#             expect_identical(
-#               names(these_part_survs),
-#               c("treatment", "set_name", "dist", "set_def", "part_surv")
-#             )
-#             expect_identical(class(these_part_survs$part_surv[[1]]), "part_surv")
-#           }
-#           )
+test_that("making part_surv from survival fits works",
+          {
+            location <- system.file("tabular/surv", package = "heemod")
+            ok_surv_info <-
+              heemod:::read_file(system.file("tabular/surv/survival_info.csv",
+                                             package = "heemod"))
+            fake_fit_tib <- read_file(system.file("tabular/surv",
+                                                  "fake_fit_tib.csv", 
+                                                  package = "heemod"))
+            
+            these_part_survs <-
+              part_survs_from_surv_inputs(fake_fit_tib,
+                                          c("ProgressionFree",
+                                            "Progressive",
+                                            "Terminal",
+                                            "Death"))
+            expect_equal(nrow(these_part_survs), 14)
+            expect_identical(
+              names(these_part_survs),
+              c("treatment", "set_name", "dist", "set_def", "part_surv")
+            )
+            expect_identical(class(these_part_survs$part_surv[[1]]), "part_surv")
+          }
+          )
