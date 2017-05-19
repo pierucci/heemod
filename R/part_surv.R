@@ -227,7 +227,11 @@ compute_counts.eval_part_surv <- function(x, init,
   }
   
   if (any(res < 0)) {
-    stop("Negative counts in partitioned model.")
+    neg_cycles <- which(res < 0, arr.ind = TRUE)[, 1]
+    stop("Negative counts in partitioned survival model, at cycle",
+         plur(length(neg_cycles)),
+         ": ",
+         paste(neg_cycles, collapse = ", "))
   }
   
   res <- res * sum(init)
