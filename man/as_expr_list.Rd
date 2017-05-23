@@ -13,6 +13,6 @@ as_expr_list(.dots)
 A list of expression.
 }
 \description{
-This function is used by \code{\link[=interp_heemod]{interp_heemod()}}.
+This function is used by \code{\link[=interpolate]{interpolate()}}.
 }
 \keyword{internal}

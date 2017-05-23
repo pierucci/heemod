@@ -1,0 +1,9 @@
+.strategy,.type,dist,until
+A,pfs,fit('km'),100
+A,pfs,fit('exp'),
+A,os,fit('km'),100
+A,os,fit('exp'),
+B,pfs,fit('km'),100
+B,pfs,fit('exp'),
+B,os,fit('km'),100
+B,os,fit('exp'),

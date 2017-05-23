@@ -61,6 +61,11 @@ b = a + 543',
       "0 unevaluated parameter.",
       fixed = TRUE
     )
+    
+    expect_identical(
+      to_text_dots(par1),
+      to_text_dots(modify(par1))
+    )
   }
 )
 
@@ -111,8 +116,7 @@ test_that(
 )
 
 test_that(
-  "we catch infinite parameters",
-  {
+  "we catch infinite parameters", {
     par1 <- define_parameters(
       a = 2,
       b = 1 / (markov_cycle - 3)
@@ -137,5 +141,20 @@ test_that(
         par1, 5
       )
     )
+  }
+)
+
+test_that(
+  "we correctly report parameter evaluation errors", {
+    par1 <- define_parameters(
+      a = 2,
+      b = 3,
+      d = A + b,
+      g = a + b
+    )
+    expect_error(
+      eval_parameters(par1),
+      "Error in parameter: d",
+      fixed = TRUE)
   }
 )

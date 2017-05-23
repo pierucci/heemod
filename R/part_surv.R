@@ -82,10 +82,15 @@ define_part_surv <- function(pfs, os, state_names,
 }
 
 
+
 #' @export
 #' @rdname define_part_surv
 define_part_surv_ <- function(pfs, os, state_names,
                               cycle_length = 1) {
+  
+  if (is.null(names(state_names))) {
+    state_names <- guess_part_surv_state_names(state_names)
+  }
   
   stopifnot(
     inherits(pfs, "lazy"),
@@ -178,7 +183,7 @@ compute_counts.eval_part_surv <- function(x, init,
     all(init[-1] == 0)
   )
   
-  res <- data.frame(
+  res <- tibble::tibble(
     progression_free = x$pfs_surv,
     progression      = x$os_surv - x$pfs_surv, 
     death            = 1 - x$os_surv

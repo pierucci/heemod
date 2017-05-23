@@ -9,7 +9,7 @@ r:
 branches:
   only:
     - master
-    - devel
+    - cran
     - /^hotfix\/.*$/
     - /^release\/.*$/
 
