@@ -57,8 +57,8 @@ run_psa <- function(model, psa, N, resample) {
     list_res[[n]]$.index <- index
   }
   
-  res <- Reduce(dplyr::bind_rows, list_res)
-  
+  res <- 
+    dplyr::bind_rows(list_res)
   res <- dplyr::mutate_(res, .dots = get_ce(model))
   
   run_model <- res %>% 

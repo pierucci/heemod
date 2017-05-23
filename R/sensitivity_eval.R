@@ -60,7 +60,8 @@ run_dsa <- function(model, dsa) {
     list_res[[i]]$.strategy_names <- strategy_names[i]
   }
   
-  res <- Reduce(dplyr::bind_rows, list_res) %>% 
+  res <- 
+    dplyr::bind_rows(list_res) %>%
     tidyr::gather_(
       ".par_names", ".par_value",
       dsa$variables, na.rm = TRUE) %>% 

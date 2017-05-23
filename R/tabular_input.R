@@ -290,7 +290,8 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
     tm_info <- parse_multi_spec(
       tm_info,
       group_vars = c("from", "to"))
-    tab_undefined <- do.call("rbind", tm_info) %>% 
+    tab_undefined <- 
+      dplyr::bind_rows(tm_info) %>%
       dplyr::filter_(~ is.na(prob))
     
     if (nrow(tab_undefined) > 0) {
@@ -886,8 +887,8 @@ parse_multi_spec <- function(multi_spec,
     dplyr::group_by_(.dots = group_vars) %>%
     dplyr::filter_(~ n() > 1)
   
-  multi_spec <- rbind(just_once, as.data.frame(more_than_once))
-  
+  multi_spec <- 
+    dplyr::bind_rows(just_once, as.data.frame(more_than_once))
   rownames(multi_spec) <- NULL
   list_spec <- split(multi_spec, multi_spec[, split_on])
   ## sort by order of appearance of split variables in multi_spec
@@ -1235,7 +1236,7 @@ modify_param_defs_for_multinomials <- function(param_defs, psa) {
       (this_pos + 1):nrow(param_defs)
     }
     
-    param_defs <- rbind(
+    param_defs <- dplyr::bind_rows(
       param_defs[start_index,],
       replacements[[i]],
       param_defs[end_index,])

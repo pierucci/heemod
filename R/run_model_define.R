@@ -175,8 +175,9 @@ run_model_ <- function(uneval_strategy_list,
     list_res[[n]]$.strategy_names <- n
   }
   
-  res <- Reduce(dplyr::bind_rows, list_res) %>% 
-    dplyr::mutate_(.dots = ce)
+  res <- 
+    dplyr::bind_rows(list_res) %>%
+      dplyr::mutate_(.dots = ce)
   
   root_strategy <- get_root_strategy(res)
   noncomparable_strategy <- get_noncomparable_strategy(res)
