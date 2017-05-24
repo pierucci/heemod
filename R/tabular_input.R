@@ -1129,12 +1129,13 @@ save_outputs <- function(outputs, output_dir, overwrite) {
     row.names = FALSE
   )
   
-  utils::write.csv(
-    summary(outputs$dsa)$res_comp,
-    file = file.path(output_dir, "dsa.csv"),
-    row.names = FALSE
-  )
-  
+  if(!is.null(outputs$dsa)){
+    utils::write.csv(
+      summary(outputs$dsa)$res_comp,
+      file = file.path(output_dir, "dsa.csv"),
+      row.names = FALSE
+    )
+  }
   
   utils::write.csv(
     outputs$psa$psa,
@@ -1151,19 +1152,20 @@ save_outputs <- function(outputs, output_dir, overwrite) {
   this_file <- "state_count_plot"
   save_graph(this_plot, output_dir, this_file)
   
-  this_plot <- plot(outputs$dsa)
-  this_file <- "dsa"
-  save_graph(this_plot, output_dir, this_file)
-  
+  if(!is.null(outputs$dsa)){
+    this_plot <- plot(outputs$dsa)
+    this_file <- "dsa"
+    save_graph(this_plot, output_dir, this_file)
+  }
   
   ## plots about differences between models
   if (options()$heemod.verbose) message("** Generating plots with model differences...")
   
-  this_plot <- plot(outputs$dsa, type = "difference")
-  this_file <- "dsa_diff"
-  
-  save_graph(this_plot, output_dir, this_file)
-  
+  if(!is.null(outputs$dsa)){
+    this_plot <- plot(outputs$dsa, type = "difference")
+    this_file <- "dsa_diff"
+    save_graph(this_plot, output_dir, this_file)
+  }
   if(!is.null(outputs$psa)){
     this_plot <- plot(outputs$psa)
     this_file <- paste("psa")
