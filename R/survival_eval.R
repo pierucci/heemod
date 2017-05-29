@@ -705,6 +705,11 @@ eval_surv.surv_dist <- function(x, time,
   ret
 }
 
+#' @rdname eval_surv
+#' @export
+eval_surv.registry <- function(x, time, ...){
+  look_up(data = x, time = time, bin = "time", value = "survival")
+}
 
 eval_surv.lazy <- function(x, ...){
   eval_surv(lazyeval::lazy_eval(x), ...)
