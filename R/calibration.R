@@ -37,8 +37,8 @@
 #'   output from `fn_values`.
 #' @param initial_values Optional starting values. See 
 #'   details.
-#' @param method Optimisation method (`Nelder-Mead` or
-#'   `BFGS`).
+#' @param method Optimisation method (`Nelder-Mead`,
+#'   `BFGS`, or `L-BFGS-B`).
 #' @param ... Optional arguments passed to 
 #'   [optimx::optimx()].
 #'   
@@ -52,7 +52,8 @@
 calibrate_model <- function(x, parameter_names,
                             fn_values, target_values,
                             initial_values = NULL,
-                            method = c("Nelder-Mead", "BFGS"),
+                            method = c("Nelder-Mead", "BFGS",
+                                       "L-BFGS-B"),
                             ...) {
   method <- match.arg(method)
   
