@@ -17,8 +17,7 @@
 #' @param ... Formulas defining parameter distributions.
 #' @param correlation A correlation matrix for parameters or
 #'   the output of [define_correlation()].
-#' @param list_qdist List of resampling functions.
-#' @param list_multi List of multinomial parameters.
+#' @param .dots Pair/values of expressions coercible to lazy objects.
 #'   
 #' @return An object of class `resamp_definition`. 
 #'   Contains `list_qdist`, a list of quantile 
@@ -29,10 +28,15 @@
 #'   
 define_psa <- function(...,
                        correlation) {
-  .dots <- list(...)
+  .dots <- lazyeval::lazy_dots(...)
+  define_psa_(.dots, correlation)
+}
   
+#' @rdname define_psa
+define_psa_ <- function(.dots = list(), correlation) {
+  eval_dots <- lazyeval::lazy_eval(.dots)
   lapply(
-    .dots,
+    eval_dots,
     function(x) {
       if (! inherits(x, "formula")) {
         stop("Parameter distributions must be written as formulas.")
@@ -44,7 +48,7 @@ define_psa <- function(...,
   )
   
   list_input <- lapply(
-    .dots,
+    eval_dots,
     function(x) {
       eval(rhs(x), envir = asNamespace("heemod"))
     })
@@ -63,7 +67,7 @@ define_psa <- function(...,
   
   names(list_qdist) <- unlist(
     lapply(
-      .dots,
+      eval_dots,
       function(x) all.vars(lhs(x))
     )
   )
@@ -73,7 +77,7 @@ define_psa <- function(...,
     inherits, "multinom_param"))
   
   list_multi <- lapply(
-    .dots[is_multinom],
+    eval_dots[is_multinom],
     function(x) all.vars(lhs(x), unique = FALSE)
   )
   
@@ -94,12 +98,6 @@ define_psa <- function(...,
   if (missing(correlation)){
     correlation <- diag(length(list_qdist))
   }
-  
-  define_psa_(list_qdist, list_multi, correlation)
-}
-
-#' @rdname define_psa
-define_psa_ <- function(list_qdist, list_multi, correlation) {
   
   if (any(duplicated(names(list_qdist)))) {
     stop("Some parameter names are duplicated.")
