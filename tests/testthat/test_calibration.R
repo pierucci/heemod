@@ -90,6 +90,18 @@ expect_error(
   ),
   "Parameter q not present in model parameters."
 )
+expect_error(
+  calibrate_model(
+    res_mod,
+    parameter_names = "p",
+    fn_values = f,
+    target_values = 130,
+    initial_values = c(p = 0.5, p = 0.9),
+    lower = 0, upper = 1
+    ),
+  "length of initial values is not the same as length of parameter names"
+)
+
 
   cal_params_2 <- calibrate_model(
     res_mod,
