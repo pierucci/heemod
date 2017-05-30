@@ -707,7 +707,7 @@ eval_surv.surv_dist <- function(x, time,
 
 #' @rdname eval_surv
 #' @export
-eval_surv.registry <- function(x, time, ...){
+eval_surv.surv_table <- function(x, time, ...){
   look_up(data = x, time = time, bin = "time", value = "survival")
 }
 

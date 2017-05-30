@@ -130,26 +130,26 @@ define_spline_survival <- function(scale = c("hazard", "odds",
 #'
 #' @param x a data frame with columns `time` and `survival` 
 #'
-#' @return a `registry` object, which can be used with [compute_surv()].
+#' @return a `surv_table` object, which can be used with [compute_surv()].
 #' @export
 #'
 #' @examples
 #'  x <- data.frame(time = c(0, 1, 5, 10), survival = c(1, 0.9, 0.7, 0.5))
-#'  define_registry_survival(x)
+#'  define_surv_table(x)
 #'  
-define_registry_survival <- function(x){
-  UseMethod("define_registry_survival")
+define_surv_table <- function(x){
+  UseMethod("define_surv_table")
 }
 
-#' @rdname define_registry_survival
+#' @rdname define_surv_table
 #' @export
-define_registry_survival.data.frame <- function(x){
+define_surv_table.data.frame <- function(x){
   required_names <- c("time", "survival")
   names_present <- required_names %in% names(x)
   if(any(!names_present)){
     stop("missing column",
          plur(sum(!names_present)),
-         " in registry object: ",
+         " in surv_table object: ",
          paste(required_names[!names_present], collapse = ", ")
     )
   }
@@ -165,7 +165,7 @@ define_registry_survival.data.frame <- function(x){
     )
   
   if(x$time[1] != 0 | x$survival[1] != 1)
-    stop("registry data must start with time 0 and survival 1")
+    stop("surv_table data must start with time 0 and survival 1")
   
   increasing_survival <- diff(x$survival) > 0
   if(any(increasing_survival)){
@@ -180,11 +180,11 @@ define_registry_survival.data.frame <- function(x){
                sep = "", collapse = ", ")
     )
   }
-  class(x) <- c("registry", "surv_object", "data.frame")
+  class(x) <- c("surv_table", "surv_object", "data.frame")
   x
 }
-#' @rdname define_registry_survival
+#' @rdname define_surv_table
 #' @export
-define_registry_survival.character <- function(x){
-  define_registry_survival(read_file(x))
+define_surv_table.character <- function(x){
+  define_surv_table(read_file(x))
 }
