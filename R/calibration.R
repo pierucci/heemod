@@ -55,7 +55,6 @@ calibrate_model <- function(x, parameter_names,
                             method = c("Nelder-Mead", "BFGS",
                                        "L-BFGS-B"),
                             ...) {
-  method <- match.arg(method)
   
   # if initial values were not supplied,
   # extract them from the model

@@ -79,8 +79,6 @@
 #' @importFrom memoise memoise
 #' @importFrom memoise timeout
 #'   
-#' @importFrom rgho get_gho_data
-#'   
 #' @importFrom utils read.csv
 #' @importFrom utils write.csv
 #' @importFrom utils packageVersion
