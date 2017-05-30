@@ -55,6 +55,7 @@ calibrate_model <- function(x, parameter_names,
                             method = c("Nelder-Mead", "BFGS",
                                        "L-BFGS-B"),
                             ...) {
+  method <- match.arg(method)
   
   # if initial values were not supplied,
   # extract them from the model
@@ -77,6 +78,11 @@ calibrate_model <- function(x, parameter_names,
   }
   
   if (is.null(dim(initial_values))) {
+    if(length(initial_values) != length(parameter_names))
+      stop("initial_values is not a matrix or data.frame ",
+           "and length of initial values is not the same ",
+           "as length of parameter names, so hard to ",
+           "assign names automatically")
     if (is.null(names(initial_values))) {
       names(initial_values) <- parameter_names
     }
@@ -87,9 +93,19 @@ calibrate_model <- function(x, parameter_names,
     colnames(initial_values) <- parameter_names
   }
   
+  if(!identical(colnames(initial_values), parameter_names)){
+    stop("column names of initial values do not ", 
+         "match parameter names:\n",
+         "column names: ",
+         paste(colnames(initial_values), collapse = ", "),
+         "\n",
+         "parameter names: ", 
+         paste(parameter_names, collapse = ", ")
+         )
+  }
+  
   stopifnot(
-    is.matrix(initial_values),
-    identical(colnames(initial_values), parameter_names)
+    is.matrix(initial_values)
   )
   
   model_parameters <- get_parameter_names(x)

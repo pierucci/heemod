@@ -55,8 +55,56 @@ expect_equal(cal_params,
                             value = c(0.00042089455, 0.00042089455),
                             convcode = c(NA, NA))
                  )
+expect_error(
+  cal_params <- calibrate_model(
+    res_mod,
+    parameter_names = "p",
+    fn_values = f,
+    target_values = 130,
+    initial_values = data.frame(p = c("hello", 0.9)),
+    lower = 0, upper = 1
+  ),
+  "initial parameter values are not numeric"
+)
+
+expect_error(
+  cal_params <- calibrate_model(
+    res_mod,
+    parameter_names = "q",
+    fn_values = f,
+    target_values = 130,
+    initial_values = data.frame(p = c(0.5, 0.9)),
+    lower = 0, upper = 1
+  ),
+  "column names of initial values do not match parameter names"
+)
+
+expect_error(
+  cal_params <- calibrate_model(
+    res_mod,
+    parameter_names = "q",
+    fn_values = f,
+    target_values = 130,
+    initial_values = data.frame(q = c(0.5, 0.9)),
+    lower = 0, upper = 1
+  ),
+  "Parameter q not present in model parameters."
+)
+
+  cal_params_2 <- calibrate_model(
+    res_mod,
+    parameter_names = "p",
+    fn_values = f,
+    target_values = 130,
+    initial_values = data.frame(p = c(0.5, 0.9)),
+    lower = 0, upper = 1
+  )
+
+expect_identical(cal_params, cal_params_2)
+
           }
 )
+
 
 test_that("defining calibration function works",
           {
