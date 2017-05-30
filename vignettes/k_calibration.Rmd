@@ -201,7 +201,7 @@ res_cal
 The new parameter values are `r sprintf("%.2f", res_cal$gamma)` for `gamma` and `r sprintf("%.2f", res_cal$rrNP1)` for `rrNP1`. The `convcode` code at 0 indicates the calibration was successful.
 
 It is possible to specify several possible starting values for the calibration procedure in order to explore the parameter space:
-```{r calibrate_init eval = FALSE}
+```{r calibrate_init, eval = FALSE}
 start <- data.frame(
   gamma = c(1.0, 1.5, 2.0),
   rrNP1 = c(0.2, 0.3, 0.4)
