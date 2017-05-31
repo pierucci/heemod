@@ -309,15 +309,26 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
     # tm_info <- combine_part_surv_(fit_matrix, use_fits)
   }
   
-  if (length(pb <- setdiff(names(state_info), names(tm_info)))) {
-    stop(sprintf(
-      "Mismatching model names between TM file and state file: %s.",
-      paste(pb, collapse = ", ")
-    ))
-  }
+  one_way <- setdiff(names(state_info), names(tm_info))
+  other_way <- setdiff(names(tm_info), names(state_info))
+  if (length(c(one_way, other_way))){
+    err_string <- "Mismatching model names between transition (TM) file and state file.\n"
+    if(length(one_way))
+      err_string <-
+        paste(err_string,
+              "In state file but not TM file:", 
+              paste(one_way, collapse = ", "),
+              "\n")
+    if(length(other_way))
+      err_string <-
+        paste(err_string,
+              "In TM but not state file:", 
+              paste(other_way, collapse = ", "),
+              "\n")
+    stop(err_string)
+    }
   
   tm_info <- tm_info[names(state_info)]
-  
   
   
   if (options()$heemod.verbose) message("*** Defining models...")
@@ -372,7 +383,7 @@ create_states_from_tabular <- function(state_info,
     stop("'state_info' must be a data frame.")
   }
   if(!(".state" %in% names(state_info))) {
-    stop("'.state' should be a column name.")
+    stop("'.state' should be a column name of the state file.")
   }
   if (any(duplicated(state_info$.state))) {
     stop(sprintf(
@@ -569,7 +580,7 @@ create_parameters_from_tabular <- function(param_defs,
     }
     
     if (all(is.na(param_defs$low))) {
-      stop("Non non-missing values in columns 'low' and 'high'.")
+      stop("No non-missing values in columns 'low' and 'high'.")
     }
     
     param_sens <- param_defs$parameter[! is.na(param_defs$low)]
@@ -667,7 +678,9 @@ create_options_from_tabular <- function(opt) {
   }
   
   if (any(duplicated(opt$option))) {
-    stop("Some option names are duplicated.")
+    stop("Some option names are duplicated: ",
+         paste(unique(opt$option[duplicated(opt$option)]),
+               collapse = ", "))
   }
   
   res <- list()
