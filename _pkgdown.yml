@@ -10,12 +10,14 @@ reference:
     - define_transition
     - define_part_surv
     - define_strategy
+    - define_starting_values
   - title: Parameters
     contents:
     - define_parameters
   - title: Run the model
     contents:
     - run_model
+    - define_init
     - define_inflow
     - summary.run_model
     - plot.run_model
@@ -26,7 +28,6 @@ reference:
     - run_dsa
     - define_psa
     - distributions
-    - define_multinom
     - define_correlation
     - run_psa
     - export_savi
@@ -35,8 +36,7 @@ reference:
   - title: Heterogeneity
     desc:  Assess population heterogeneity
     contents:
-    - update
-    - update-model
+    - update_model
   - title: Survival data
     contents:
     - define_survival
@@ -46,9 +46,10 @@ reference:
     - apply_hr
     - apply_or
     - add_hazards
-    - pool
-    - project
+    - mix
+    - join
     - set_covariates
+    - plot.surv_object
   - title: Calibration
     contents:
     - calibrate_model
@@ -63,33 +64,33 @@ reference:
     - modify
     - probability
     - rescale_discount_rate
-    - who-mortality
+    - who_mortality
+    - reindent_transition
   - title: Other features
     contents:
     - cluster
-    - get_code
     - heemod
     - run_model_tabular
 
 articles:
   - title: Introduction
     contents:
-    - a-introduction
-    - b-time-dependency
-    - j-survival
+    - a_introduction
+    - b_time_dependency
+    - j_survival
   - title: Examples
     contents:
-    - c-homogeneous
-    - d-non-homogeneous
+    - c_homogeneous
+    - d_non_homogeneous
   - title: Sensitivity
     contents:
-    - e-probabilistic
-    - f-sensitivity
+    - e_probabilistic
+    - f_sensitivity
   - title: Heterogeneity
     contents:
-    - g-heterogeneity
+    - g_heterogeneity
   - title: Other features
     contents:
-    - h-tabular
-    - i-reproduction
-    - k-calibration
+    - h_tabular
+    - i_reproduction
+    - k_calibration

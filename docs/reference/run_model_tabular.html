@@ -11,8 +11,8 @@
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -84,24 +86,37 @@
     <p>This function runs a model from tabular input.</p>
     
 
-    <pre><span class='fu'>run_model_tabular</span>(<span class='no'>location</span>, <span class='kw'>reference</span> <span class='kw'>=</span> <span class='st'>"REFERENCE.csv"</span>, <span class='kw'>run_psa</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+    <pre class="usage"><span class='fu'>run_model_tabular</span>(<span class='no'>location</span>, <span class='kw'>reference</span> <span class='kw'>=</span> <span class='st'>"REFERENCE.csv"</span>, <span class='kw'>run_psa</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>run_demo</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>save</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>location</dt>
-      <dd>Directory where the files are located.</dd>
-      <dt>reference</dt>
-      <dd>Name of the reference file.</dd>
-      <dt>run_psa</dt>
-      <dd>Run PSA?.</dd>
-      <dt>run_demo</dt>
-      <dd>Run demgraphic analysis?</dd>
-      <dt>save</dt>
-      <dd>Should the outputs be saved?</dd>
-      <dt>overwrite</dt>
-      <dd>Should the outputs be overwritten?</dd>
-    </dl>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>location</th>
+      <td><p>Directory where the files are located.</p></td>
+    </tr>
+    <tr>
+      <th>reference</th>
+      <td><p>Name of the reference file.</p></td>
+    </tr>
+    <tr>
+      <th>run_psa</th>
+      <td><p>Run PSA?.</p></td>
+    </tr>
+    <tr>
+      <th>run_demo</th>
+      <td><p>Run demgraphic analysis?</p></td>
+    </tr>
+    <tr>
+      <th>save</th>
+      <td><p>Should the outputs be saved?</p></td>
+    </tr>
+    <tr>
+      <th>overwrite</th>
+      <td><p>Should the outputs be overwritten?</p></td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
@@ -142,7 +157,7 @@ directory containing the tables to be loaded.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Antoine Filipovic-Pierucci, Kevin Zarca.</p>
+  <p>Developed by Antoine Filipovic-Pierucci.</p>
 </div>
 
 <div class="pkgdown">

@@ -62,8 +62,8 @@ run_model <- function(...,
   
   uneval_strategy_list <- list(...)
   
-  init <- check_init(init, uneval_strategy_list[[1]])
-  inflow <- check_inflow(inflow, uneval_strategy_list[[1]])
+  init <- check_init(init, get_state_names(uneval_strategy_list[[1]]))
+  inflow <- check_inflow(inflow, get_state_names(uneval_strategy_list[[1]]))
   
   run_model_(
     uneval_strategy_list = uneval_strategy_list,
@@ -205,7 +205,8 @@ run_model_ <- function(uneval_strategy_list,
       root_strategy = root_strategy,
       central_strategy = central_strategy,
       noncomparable_strategy = noncomparable_strategy,
-      state_time_limit = state_time_limit
+      state_time_limit = state_time_limit,
+      frontier = if (! is.null(root_strategy)) get_frontier(res)
     ),
     class = c("run_model", class(res))
   )
@@ -246,8 +247,7 @@ get_root_strategy.default <- function(x, ...) {
     return(invisible(NULL))
   }
   (x %>% 
-      dplyr::arrange_(.dots = list(~ .cost, ~ desc(.effect))) %>% 
-      dplyr::slice(1))$.strategy_names
+      dplyr::arrange_(~ .cost, ~ desc(.effect)))$.strategy_names[1]
 }
 
 get_root_strategy.run_model <- function(x, ...) {
@@ -448,7 +448,7 @@ get_method.run_model <- function(x) {
 }
 
 get_state_names.run_model <- function(x, ...) {
-  get_state_names(x$uneval_strategy_list[[1]])
+  get_state_names(get_states(x$uneval_strategy_list[[1]]))
 }
 
 get_expand_limit <- function(x, strategy) {
@@ -484,7 +484,7 @@ get_parameter_values.run_model <- function(x, parameter_names,
       seq_along(parameter_names),
       function(i) {
         as.vector(unlist(
-          get_eval_strategy_list(x)[[strategy]]$parameters[cycles[i], parameter_names[i]]
+          get_eval_strategy_list(x)[[strategy]]$complete_parameters[cycles[i], parameter_names[i]]
         ))
       }),
     parameter_names)

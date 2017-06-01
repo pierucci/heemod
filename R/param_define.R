@@ -117,10 +117,12 @@ modify.uneval_parameters <- function(.OBJECT, ...) {
 }
 
 modify_.uneval_parameters <- function(.OBJECT, .dots) {
-  
-  check_names(names(.dots))
-  
-  utils::modifyList(.OBJECT, .dots)
+  if (length(.dots)) {
+    check_names(names(.dots))
+    utils::modifyList(.OBJECT, .dots)
+  } else {
+    .OBJECT
+  }
 }
 
 #' Define Inflow for a BIA
@@ -140,15 +142,15 @@ define_inflow <- function(...) {
 #' @export
 #' @rdname define_inflow
 define_inflow_ <- function(.dots) {
-  
-  structure(.dots,
-            class = c("uneval_inflow", class(.dots)))
+  structure(
+    .dots,
+    class = c("uneval_inflow", class(.dots)))
 }
 
 #' Define Initial Counts
 #' 
 #' @param ... Name-value pairs of expressions defining
-#'   initial counts
+#'   initial counts.
 #' @param .dots Used to work around non-standard evaluation.
 #'   
 #' @return An object similar to the return value of
@@ -162,62 +164,98 @@ define_init <- function(...) {
 #' @export
 #' @rdname define_init
 define_init_ <- function(.dots) {
-  
-  structure(.dots,
-            class = c("uneval_init", class(.dots)))
+  structure(
+    .dots,
+    class = c("uneval_init", class(.dots)))
 }
+
+#' Define Starting State Values
+#'
+#' @param ... Name-value pairs of expressions defining
+#'   starting values.
+#' @param .dots Used to work around non-standard evaluation.
+#'
+#' @return An object similar to the return value of
+#'   [define_parameters()].
+#' @export
+define_starting_values <- function(...) {
+  .dots <- lazyeval::lazy_dots(...)
+  define_starting_values_(.dots)
+}
+
+#' @export
+#' @rdname define_starting_values
+define_starting_values_ <- function(.dots) {
+  structure(
+    .dots,
+    class = c("uneval_starting_values", class(.dots)))
+}
+
+to_check <- "'define_init()', 'define_inflow()' or 'define_starting_values()'"
 
 check_init <- function(x, ref) {
   UseMethod("check_init")
 }
 
 check_init.lazy_dots <- function(x, ref) {
-  sn <- get_state_names(ref)
+  original_class <- class(x)
   
-  if (is.null(names(x)) || all(names(x) == "")) {
-    names(x) <- sn
+  if (length(x)) {
+    if (is.null(names(x)) || all(names(x) == "")) {
+      stop(to_check, " values must be named.")
+    }
+    
+    if (! all(names(x) %in% ref)) {
+      stop("Some ", to_check, " names are incorrect.")
+    }
+    
+    if (any(duplicated(names(x)))) {
+      stop("Duplicated names in ", to_check, ".")
+    }
   }
   
-  if (! all(sn == names(x))) {
-    stop("Some 'init' of 'inflow' names are not state names.")
-  }
+  res <- stats::setNames(
+    object = lazyeval::as.lazy_dots(
+      lapply(ref, function(x) 0),
+      env = globalenv()),
+    nm = ref)
   
-  if (! length(x) == get_state_number(ref)) {
-    stop(sprintf(
-      "Length of 'init' or 'inflow' (%i) differs from number of states (%i).",
-      length(x),
-      get_state_number(ref)
-    ))
-  }
+  res <- utils::modifyList(
+    res, x
+  )
   
-  if (! all(sort(names(x)) == sort(get_state_names(ref)))) {
-    stop("Names of 'init' or 'inflow' differ from state names.")
-  }
-  
-  x
+  structure(res, class = original_class)
 }
 
 check_init.default <- function(x, ref) {
   
-  if (! length(x) == get_state_number(ref)) {
-    stop(sprintf(
-      "Length of 'init' or 'inflow' (%i) differs from number of states (%i).",
-      length(x),
-      get_state_number(ref)
-    ))
+  if (! length(x) == length(ref)) {
+    stop("Incorrect length in ", to_check, ".")
   }
   
   if (is.null(names(x))) {
-    names(x) <- get_state_names(ref)
-  } else if (! all(names(x) == get_state_names(ref))) {
-    stop("'init' or 'inflow' names are not all state names.")
+    names(x) <- ref
   }
   
-  define_init_(lazyeval::as.lazy_dots(lapply(x, function(x) x)))
+  if (! all(sort(names(x)) == sort(ref))) {
+    stop("Some ", to_check, " names are incorrect.")
+  }
+  
+  define_init_(lazyeval::as.lazy_dots(
+    lapply(x[ref], function(x) x),
+    env = globalenv()))
 }
 
 check_inflow <- function(x, ...) {
   res <- check_init(x, ...)
-  structure(res,
-            class = c("uneval_inflow", class(res)))
+  structure(
+    res,
+    class = c("uneval_inflow", class(res)))
+}
+
+check_starting_values <- function(x, ...) {
+  res <- check_init(x, ...)
+  structure(
+    res,
+    class = c("starting_values", class(res)))
 }

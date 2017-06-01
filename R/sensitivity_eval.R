@@ -51,7 +51,7 @@ run_dsa <- function(model, dsa) {
       e_newdata,
       list(unlist(lapply(
         tab$.mod,
-        function(x) x$parameters[1, dsa$variables]))[pos_par]))
+        function(x) x$complete_parameters[1, dsa$variables]))[pos_par]))
     
     names(e_newdata)[length(e_newdata)] <- n
   }

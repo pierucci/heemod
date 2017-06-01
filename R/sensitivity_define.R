@@ -65,10 +65,12 @@ define_dsa_ <- function(par_names, low_dots, high_dots) {
   
   tab <- tibble::tibble()
   for (i in seq_along(dots)) {
-    tab <- dplyr::bind_rows(
-      tab,
-      stats::setNames(tibble::tibble(dots[i]), names(dots)[i])
-    )
+    suppressWarnings({ # tofix https://github.com/tidyverse/dplyr/issues/2688
+      tab <- dplyr::bind_rows(
+        tab,
+        stats::setNames(tibble::tibble(dots[i]), names(dots)[i])
+      )
+    })
   }
   
   clean_null <- function(x) {
