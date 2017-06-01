@@ -38,7 +38,8 @@ test_that(
         tempdf, arg1 = c("A"),
         arg2 = c(3), arg3 = c(0.5),
         bin  = c("arg2", "arg3")
-      )
+      ),
+      "Some values were not found, returning missing data"
     )
     
   }
@@ -62,7 +63,9 @@ test_that(
         arg2 = c(1, 1, 3.2, 3.0, 5), 
         arg3 = c(1, 1, 1, 2, 3),
         bin  = c("arg2", "xxx")
-      )
+      ),
+      "Names in 'bin' not found in source data: xxx.",
+      fixed = TRUE
     )
     expect_error(
       look_up(
@@ -70,7 +73,9 @@ test_that(
         arg2 = c(1, 1, 3.2, 3.0, 5), 
         arg3 = c(1, 1, 1, 2, 3),
         bin  = c("arg2", "arg1")
-      )
+      ),
+      "Some variables in 'bin' are not numeric in the selection data: arg1.",
+      fixed = TRUE
     )
     tempdf2 <- tempdf
     tempdf2$arg2 <- as.character(tempdf2$arg2)
@@ -80,7 +85,9 @@ test_that(
         arg2 = c(1, 1, 3.2, 3.0, 5), 
         arg3 = c(1, 1, 1, 2, 3),
         bin  = c("arg2", "arg3")
-      )
+      ),
+      "Some variables in 'bin' are not numeric in the source data: arg2.",
+      fixed = TRUE
     )
     tempdf3 <- rbind(
       tempdf, data.frame(
@@ -91,7 +98,9 @@ test_that(
         arg2 = c(1, 1, 3.2, 3.0, 5), 
         arg3 = c(1, 1, 1, 2, 3),
         bin  = c("arg2", "arg3")
-      )
+      ),
+      "Some rows in 'data' are duplicates: 61",
+      fixed = TRUE
     )
     expect_error(
       look_up(
@@ -99,27 +108,36 @@ test_that(
         arg2 = c(1, 1, 3.2, 3.0, 5), 
         c(1, 1, 1, 2, 3),
         bin  = c("arg2", "arg3")
-      )
+      ),
+      "All variables passed to 'look_up()' must be named.",
+      fixed = TRUE
     )
     expect_error(
       look_up(
         just_numeric, age = c(0, 30, 40)
-      )
+      ),
+      "'data' must be a data.frame",
+      fixed = TRUE
     )
     
     expect_error(
-      look_up(oned_array, age = c(0, 30, 40))
+      look_up(oned_array, age = c(0, 30, 40)),
+      "not found"
     )
     
     ## unspecified output_col with multiple possibilities
     expect_error(
-      look_up(multiple_outputs_df, age = c(0, 30, 40))
+      look_up(multiple_outputs_df, age = c(0, 30, 40)),
+      "Names passed to 'look_up()' not found in 'data': value.",
+      fixed = TRUE
     )
     expect_error(
       look_up(
         multiple_outputs_df, age = c(0, 30, 40), 
         value = "random"
-      )
+      ),
+      "Names passed to 'look_up()' not found in 'data': random.",
+      fixed = TRUE
     )
   }
 )

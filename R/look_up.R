@@ -26,9 +26,8 @@
 #' @example inst/examples/example_look_up.R
 look_up <- function(data, ..., bin = FALSE, value = "value") {
   
-  stopifnot(
-    inherits(data, "data.frame")
-  )
+  if(!inherits(data, "data.frame"))
+    stop("'data' must be a data.frame")  
   
   data <- clean_factors(data)
   
@@ -66,7 +65,7 @@ look_up <- function(data, ..., bin = FALSE, value = "value") {
     
     if (any(pb <- ! bin %in% num_vars)) {
       stop(sprintf(
-        "Some variables in 'bin' are not numeric: %s.",
+        "Some variables in 'bin' are not numeric in the selection data: %s.",
         paste(bin[pb], collapse = ", ")
       ))
     }
