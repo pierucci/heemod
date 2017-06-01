@@ -112,6 +112,19 @@ test_that(
       "All variables passed to 'look_up()' must be named.",
       fixed = TRUE
     )
+    tempdf4 <- tempdf
+    tempdf4$arg2[60] <- Inf
+    expect_error(
+      look_up(
+        tempdf4, arg1 = c("A", "B", "C", "B", "A"),
+        arg2 = c(1, 1, 3.2, 3.0, 5), 
+        arg3 = c(1, 1, 1, 2, 3),
+        bin  = c("arg2", "arg3")
+      ),
+      "infinite values in look_up table element: arg2",
+      fixed = TRUE
+    )
+    
     expect_error(
       look_up(
         just_numeric, age = c(0, 30, 40)
