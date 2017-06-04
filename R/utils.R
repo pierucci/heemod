@@ -17,6 +17,8 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
 #' @param r discount rate.
 #' @param first logical. Should discouting start at the 
 #'   first value ?
+#' @param time numeric. Time values over which to discount,
+#'   defaults to counting sequence of same length as x.
 #'   
 #' @return A numeric vector of the same length as `x`.
 #' @export
@@ -27,14 +29,14 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
 #' discount(rep(10, 5), .02, first = FALSE)
 #' 
 #' @keywords internal
-discount <- function(x, r, first = FALSE) {
+discount <- function(x, r, first = FALSE, time = seq_along(x)) {
   if (length(r) > 1) r <- r[1]
   stopifnot(
     r >= 0,
     r <= 1
   )
   
-  x / (1 + r) ^ (seq_along(x) - (1 - isTRUE(first)))
+  x / (1 + r) ^ (time + isTRUE(first))
 }
 
 #' Check if All the Elements of a List Are the Same

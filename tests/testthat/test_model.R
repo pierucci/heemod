@@ -241,6 +241,8 @@ test_that(
   "eval_matrix works", {
     par <- tibble::tibble(
       markov_cycle = 2:3,
+      model_time = 2:3,
+      state_time = 1,
       a = c(.1, .2)
     )
     mat <- define_transition(
@@ -251,11 +253,11 @@ test_that(
     res <- heemod:::eval_transition(mat, par)
     
     expect_identical(
-      round(res[[1]], 2),
+      unname(round(res[[1]], 2)),
       structure(c(0.5, 0.1, 0.5, 0.9), .Dim = c(2L, 2L))
     )
     expect_identical(
-      round(res[[2]], 2),
+      unname(round(res[[2]], 2)),
       structure(c(0.67, 0.2, 0.33, 0.8), .Dim = c(2L, 2L))
     )
     

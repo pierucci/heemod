@@ -28,114 +28,6 @@ substitute_dots <- function(.dots, .values) {
   )
 }
 
-#' Expand Time-Dependant States into Tunnel States
-#' 
-#' This function for transition matrices and state values 
-#' expands states relying on `state_time` in a serie
-#' of tunnels states.
-#' 
-#' @param x A transition matrix or a state list.
-#' @param state_pos Position of the state to expand.
-#' @param state_name Original name of the sate to expand.
-#' @param cycles Number of cycle of the model.
-#' @param n Postition in the expansion process.
-#' @param ... Addition parameters passed to methods.
-#'   
-#' @return The same object type as the input.
-#' @keywords internal
-expand_state <- function(x, ...) {
-  UseMethod("expand_state")
-}
-
-#' @export
-#' @rdname expand_state
-expand_state.uneval_matrix <- function(x, state_pos,
-                                       state_name, cycles, n = 1) {
-  L <- length(x)
-  N <- sqrt(L)
-  
-  if (n <= cycles) {
-    # positions to insert 0
-    i <- seq(0, L - 1, N) + state_pos
-    i[state_pos] <- i[state_pos] - 1
-    res <- insert(x, i, list(lazyeval::lazy(0)))
-    
-    # row to duplicate
-    new <- res[seq(
-      from = get_tm_pos(state_pos, 1, N+1),
-      to = get_tm_pos(state_pos, N+1, N+1))]
-    
-    # edit state_time
-    new <- substitute_dots(new, list(state_time = n))
-    
-    # and reinsert
-    res <- insert(res, (N+1)*(state_pos-1),
-                  new)
-    
-    sn <- get_state_names(x)
-    sn[state_pos] <- sprintf(".%s_%i", state_name, n)
-    sn <- insert(sn, state_pos, sprintf(".%s_%i", state_name, n + 1))
-    
-    tm_ext <- define_transition_(res, sn)
-    
-    expand_state(
-      x = tm_ext,
-      state_pos = state_pos + 1,
-      state_name = state_name,
-      n = n + 1,
-      cycles = cycles
-    )
-  } else {
-    x[get_tm_pos(state_pos, 1, N):get_tm_pos(state_pos, N, N)] <-
-      substitute_dots(
-        x[get_tm_pos(state_pos, 1, N):get_tm_pos(state_pos, N, N)],
-        list(state_time = n)
-      )
-    x
-  }
-}
-
-#' @export
-#' @rdname expand_state
-expand_state.uneval_state_list <- function(x, state_name, cycles) {
-  
-  st <- x[[state_name]]
-  x[state_name] <- NULL
-  
-  id <- seq_len(cycles + 1)
-  res <- lapply(
-    id,
-    function(x) substitute_dots(st, list(state_time = x))
-  )
-  names(res) <- sprintf(".%s_%i", state_name, id)
-  
-  structure(
-    c(x, res),
-    class = class(x)
-  )
-}
-
-#' @export
-#' @rdname expand_state
-expand_state.uneval_inflow <- function(x, ...) {
-  expand_state.uneval_init(x, ...)
-}
-
-#' @export
-#' @rdname expand_state
-expand_state.uneval_init <- function(x, state_name, cycles) {
-  res <- insert(
-    x,
-    which(names(x) == state_name),
-    stats::setNames(
-      rep(list(lazyeval::lazy(0)), cycles),
-      sprintf(".%s_%i", state_name, seq_len(cycles) + 1))
-  )
-  
-  names(res)[which(names(res) == state_name)] <- sprintf(".%s_1", state_name)
-  structure(res, class = class(x))
-}
-
 #' Convert Lazy Dots to Expression List
 #' 
 #' This function is used by [interpolate()].
@@ -243,10 +135,16 @@ all.funs <- function(expr) {
 complete_stl <- function(scl, state_names,
                          strategy_names, cycles) {
   uni <- FALSE
+  
+  
+  if(is.null(scl)) {
+    scl <- cycles + 1
+  }
+  
   if (is.numeric(scl) && length(scl) == 1 && is.null(names(scl))) {
     uni <- TRUE
     stopifnot(
-      scl <= cycles,
+      scl <= (cycles + 1),
       scl > 0,
       ! is.na(scl),
       is.wholenumber(scl)

@@ -130,7 +130,7 @@ get_state_names.part_surv <- function(x) {
   x$state_names
 }
 
-eval_transition.part_surv <- function(x, parameters) {
+eval_transition.part_surv <- function(x, parameters, expand) {
   
   time_ <- c(0, parameters$markov_cycle)
   
