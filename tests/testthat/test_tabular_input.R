@@ -400,6 +400,21 @@ test_that(
       "Unknown options: cycleszzz", 
       fixed = TRUE
     )
+  
+    opt_pb <- structure(list(
+      option = c("cost", "effect", "method", "cycles", 
+                 "n", "init"),
+      value = c("cost", "qaly", "end", "50", "100", "c(1, 0, 0, 0)")),
+      .Names = c("option", 
+                 "value"),
+      row.names = c(1L, 2L, 3L, 4L, 5L, 6L),
+      class = "data.frame")
+    
+    expect_warning(
+      heemod:::create_options_from_tabular(opt_pb),
+      "initial values enclosed in c(); removing",
+      fixed = TRUE
+    )
     
     test_par <- define_parameters(
       a = 2,

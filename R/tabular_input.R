@@ -693,6 +693,12 @@ create_options_from_tabular <- function(opt) {
   names(res) <- opt$option
   
   if (! is.null(res$init)) {
+    if(substr(res$init, 1, 2) == "c(" & 
+       substr(res$init, nchar(res$init), nchar(res$init)) == ")"){
+      res$init <- substr(res$init, 3, nchar(res$init))
+      res$init <- substr(res$init, 1, nchar(res$init) - 1)
+      warning("initial values enclosed in c(); removing")
+    }
     res$init <- as_numeric_safe(
       strsplit(res$init, ",")[[1]]
     )
