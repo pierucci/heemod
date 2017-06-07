@@ -41,3 +41,4 @@ Expand States and Transition
 \details{
 \code{init} need not be integer. E.g. \code{c(A = 1, B = 0.5, C = 0.1, ...)}.
 }
+\keyword{internal}
