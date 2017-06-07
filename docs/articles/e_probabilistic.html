@@ -59,7 +59,7 @@
     <div class="page-header toc-ignore">
       <h1>Probabilistic Uncertainty Analysis</h1>
             
-            <h4 class="date">2017-05-16</h4>
+            <h4 class="date">2017-06-07</h4>
           </div>
 
     
@@ -242,14 +242,14 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 ## Values:
 ## 
 ##      cost_health cost_drugs cost_total life_year
-## comb    98158176   77495405   93632967 17757.884
-## mono    50358740   20238994   49965440  8884.545
+## comb   101251204   79599252   94808861 18239.975
+## mono    50573004   20246228   50084969  8887.721
 ## 
 ## Net monetary benefit difference:
 ## 
 ##       1000    5000     6000    10000
-## 1 34794.19   0.000    0.000     0.00
-## 2     0.00 699.166 9572.504 45065.86
+## 1 35371.64    0.00     0.00     0.00
+## 2     0.00 2037.38 11389.63 48798.65
 ## 
 ## Efficiency frontier:
 ## 
@@ -258,7 +258,7 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 ## Differences:
 ## 
 ##      Cost Diff. Effect Diff.     ICER Ref.
-## comb   43667.53     8.873339 4921.206 mono</code></pre>
+## comb   44723.89     9.352254 4782.151 mono</code></pre>
 </div>
 <div id="result-interpretation" class="section level2">
 <h2 class="hasAnchor">
@@ -278,8 +278,6 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 <p><img src="e_probabilistic_files/figure-html/unnamed-chunk-11-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>Or on the difference between strategies:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(pm, <span class="dt">type =</span> <span class="st">"cov"</span>, <span class="dt">diff =</span> <span class="ot">TRUE</span>, <span class="dt">threshold =</span> <span class="dv">5000</span>)</code></pre></div>
-<pre><code>## Warning in compute_prop_var(mgcv::gam(formula = form_nmb, data = .)): Only
-## 98% of variance explained, results may be inaccurate.</code></pre>
 <p><img src="e_probabilistic_files/figure-html/unnamed-chunk-12-1.png" width="384" style="display: block; margin: auto;"></p>
 <p>As usual plots can be modified with the standard <code>ggplot2</code> syntax.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
@@ -325,7 +323,7 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 
 
       <footer><div class="copyright">
-  <p>Developed by Antoine Filipovic-Pierucci.</p>
+  <p>Developed by Antoine Filipovic-Pierucci, Kevin Zarca.</p>
 </div>
 
 <div class="pkgdown">
