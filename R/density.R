@@ -5,9 +5,9 @@
 #' 
 #' These functions are not exported, but only used in 
 #' [define_psa()]. To specify a user-made function
-#' use `define_distribution`.
+#' use [define_distribution()].
 #' 
-#' `define_distribution` takes as argument a function
+#' [define_distribution()] takes as argument a function
 #' with a single argument, `x`, corresponding to a
 #' vector of quantiles. It returns the distribution values
 #' for the given quantiles. See examples
