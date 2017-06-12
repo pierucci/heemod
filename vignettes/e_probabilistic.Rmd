@@ -199,7 +199,7 @@ Now that the distributions of parameters are set we can simply run the probabili
 pm <- run_psa(
   model = res_mod,
   psa = rsp,
-  N = 100
+  N = 10
 )
 ```
 
@@ -230,13 +230,13 @@ To compute EVPPI the results can also be exported with `export_savi()` in a form
 A covariance analysis can be performed on strategy results:
 
 ```{r, fig.width = 6, fig.height = 4, fig.align='center'}
-plot(pm, type = "cov")
+#plot(pm, type = "cov")
 ```
 
 Or on the difference between strategies:
 
 ```{r, fig.width = 4, fig.height = 4, fig.align='center'}
-plot(pm, type = "cov", diff = TRUE, threshold = 5000)
+#plot(pm, type = "cov", diff = TRUE, threshold = 5000)
 ```
 
 As usual plots can be modified with the standard `ggplot2` syntax.
