@@ -194,7 +194,25 @@ test_that(
       fixed = TRUE
     )
     
-    
+    na_state_spec <- data.frame(
+      .model = rep("A", 5),
+      .state = c("PrimaryTHR", "SuccessfulPrimary",
+                 "RevisionTHR", "SuccessfulRevision",
+                 "Death"),
+      cost = c(0, 0, 5294, 0, NA),
+      qaly = c(0.0, 0.85, 0.30, 0.75, 0.00),
+      .discount.qaly = c(0.01, NA, NA, NA, NA),
+      stringsAsFactors = FALSE
+    )
+    expect_error(create_states_from_tabular(na_state_spec),
+                 "value cost for strategy 'A' has missing values",
+                 fixed = TRUE
+                 )
+    na_state_spec$qaly[1] <- NA
+    expect_error(create_states_from_tabular(na_state_spec),
+                 "values cost, qaly for strategy 'A' have missing values",
+                 fixed = TRUE
+                 )
     dup_state <- structure(list(
       .model = c("standard", "standard", "standard", 
                  "standard", "standard"),

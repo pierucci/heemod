@@ -274,8 +274,11 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   if(! inherits(ref, "data.frame")) stop("'ref' must be a data frame.")
   
   if (options()$heemod.verbose) message("*** Reading states...")
+  state_file_info <- 
+    read_file(ref$full_file[ref$data == "state"])
+  
   state_info <- parse_multi_spec(
-    read_file(ref$full_file[ref$data == "state"]),
+    state_file_info,
     group_vars = ".state"
   )
   state_names <- state_info[[1]]$.state
@@ -396,11 +399,32 @@ create_states_from_tabular <- function(state_info,
     ))
   }
   
+  
+  
   state_names <- state_info$.state
   values <- setdiff(names(state_info), c(".model", ".state"))
   discounts <- values[grep("^\\.discount", values)]
   values <- setdiff(values, discounts)
   discounts_clean <- gsub("^\\.discount\\.(.+)", "\\1", discounts)
+
+  num_missing_per_column <- colSums(sapply(state_info, is.na))
+  missing_col_names <- names(num_missing_per_column)[num_missing_per_column > 0]
+  ## missing names are allowed for discount columns
+  missing_col_names <- setdiff(missing_col_names, discounts)
+  if(length(missing_col_names)){
+    stop("value",
+         plur(length(missing_col_names)),
+         " ",
+         paste(missing_col_names, collapse = ", "),
+         " for strategy '",
+         unique(state_info$.model),
+         "'",
+         ifelse(length(missing_col_names) == 1, " has ", " have "),
+         "missing values in the state file.\n",
+         "Please make sure all values are defined for all states ",
+         "(even when the value is 0)."
+    )
+  }
   
   if (! all(discounts_clean %in% values)) {
     stop(sprintf(
