@@ -274,8 +274,11 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   if(! inherits(ref, "data.frame")) stop("'ref' must be a data frame.")
   
   if (options()$heemod.verbose) message("*** Reading states...")
+  state_file_info <- 
+    read_file(ref$full_file[ref$data == "state"])
+  
   state_info <- parse_multi_spec(
-    read_file(ref$full_file[ref$data == "state"]),
+    state_file_info,
     group_vars = ".state"
   )
   state_names <- state_info[[1]]$.state
@@ -302,34 +305,31 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
     other_way <- setdiff(names(tm_info), names(state_info))
   }
   
-  
-  # if (trans_type == "part_surv"){
-  #   fit_tib <- survival_fits_from_ref_struc(
-  #     ref, df_env,
-  #     save_fits = FALSE,
-  #     just_load = TRUE)[[1]]
-  #   
-  #   assign("fit_tib", fit_tib, df_env)
-  #   use_fits_file <- ref[ref$data == "use_fits", "full_file"]
-  #   use_fits <- read_file(use_fits_file)
-  #   tm_info <- construct_part_surv_tib(use_fits, fit_tib, env = df_env,
-  #                                      state_names = state_names)
-  #   one_way <- setdiff(names(state_info), unique(tm_info$.strategy))
-  #   other_way <- setdiff(unique(tm_info$.strategy), names(state_info))
-  # }
-  
-  if (length(pb <- union(one_way, other_way))) {
-    stop(sprintf(
-      "Mismatching model names between TM file and state file: %s.",
-      paste(pb, collapse = ", ")
-    ))
-  }
+  one_way <- setdiff(names(state_info), names(tm_info))
+  other_way <- setdiff(names(tm_info), names(state_info))
+  if (length(c(one_way, other_way))){
+    err_string <- "Mismatching model names between transition (TM) file and state file.\n"
+    if(length(one_way))
+      err_string <-
+        paste(err_string,
+              "In state file but not TM file:", 
+              paste(one_way, collapse = ", "),
+              "\n")
+    if(length(other_way))
+      err_string <-
+        paste(err_string,
+              "In TM but not state file:", 
+              paste(other_way, collapse = ", "),
+              "\n")
+    stop(err_string)
+    }
   
   if (trans_type == "part_surv") {
     tm_info <- dplyr::filter_(tm_info, ~.strategy %in% names(state_info))
   } else {
     tm_info <- tm_info[names(state_info)]
   }
+
   if (options()$heemod.verbose) message("*** Defining models...")
   models <- lapply(
     seq_along(state_info),
@@ -389,7 +389,7 @@ create_states_from_tabular <- function(state_info,
     stop("'state_info' must be a data frame.")
   }
   if(!(".state" %in% names(state_info))) {
-    stop("'.state' should be a column name.")
+    stop("'.state' should be a column name of the state file.")
   }
   if (any(duplicated(state_info$.state))) {
     stop(sprintf(
@@ -399,11 +399,32 @@ create_states_from_tabular <- function(state_info,
     ))
   }
   
+  
+  
   state_names <- state_info$.state
   values <- setdiff(names(state_info), c(".model", ".state"))
   discounts <- values[grep("^\\.discount", values)]
   values <- setdiff(values, discounts)
   discounts_clean <- gsub("^\\.discount\\.(.+)", "\\1", discounts)
+
+  num_missing_per_column <- colSums(sapply(state_info, is.na))
+  missing_col_names <- names(num_missing_per_column)[num_missing_per_column > 0]
+  ## missing names are allowed for discount columns
+  missing_col_names <- setdiff(missing_col_names, discounts)
+  if(length(missing_col_names)){
+    stop("value",
+         plur(length(missing_col_names)),
+         " ",
+         paste(missing_col_names, collapse = ", "),
+         " for strategy '",
+         unique(state_info$.model),
+         "'",
+         ifelse(length(missing_col_names) == 1, " has ", " have "),
+         "missing values in the state file.\n",
+         "Please make sure all values are defined for all states ",
+         "(even when the value is 0)."
+    )
+  }
   
   if (! all(discounts_clean %in% values)) {
     stop(sprintf(
@@ -586,7 +607,7 @@ create_parameters_from_tabular <- function(param_defs,
     }
     
     if (all(is.na(param_defs$low))) {
-      stop("Non non-missing values in columns 'low' and 'high'.")
+      stop("No non-missing values in columns 'low' and 'high'.")
     }
     
     param_sens <- param_defs$parameter[! is.na(param_defs$low)]
@@ -684,7 +705,9 @@ create_options_from_tabular <- function(opt) {
   }
   
   if (any(duplicated(opt$option))) {
-    stop("Some option names are duplicated.")
+    stop("Some option names are duplicated: ",
+         paste(unique(opt$option[duplicated(opt$option)]),
+               collapse = ", "))
   }
   
   res <- list()
@@ -694,6 +717,12 @@ create_options_from_tabular <- function(opt) {
   names(res) <- opt$option
   
   if (! is.null(res$init)) {
+    if(substr(res$init, 1, 2) == "c(" & 
+       substr(res$init, nchar(res$init), nchar(res$init)) == ")"){
+      res$init <- substr(res$init, 3, nchar(res$init))
+      res$init <- substr(res$init, 1, nchar(res$init) - 1)
+      warning("initial values enclosed in c(); removing")
+    }
     res$init <- as_numeric_safe(
       strsplit(res$init, ",")[[1]]
     )
