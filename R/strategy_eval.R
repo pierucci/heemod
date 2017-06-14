@@ -248,6 +248,7 @@ compute_values <- function(states, counts) {
 #' Expand States and Transition
 #' 
 #' @inherit eval_strategy
+#' @keywords internal
 #'   
 #' @return Expanded states, transitions, input and inflow 
 #'   (if they require expansion; otherwise return inputs

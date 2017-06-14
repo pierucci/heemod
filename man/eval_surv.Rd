@@ -12,6 +12,7 @@
 \alias{eval_surv.surv_po}
 \alias{eval_surv.surv_add_haz}
 \alias{eval_surv.surv_dist}
+\alias{eval_surv.surv_table}
 \title{Evaluate Survival Distributions}
 \usage{
 eval_surv(x, time, cycle_length = 1, type = c("prob", "surv"), ...)
@@ -45,6 +46,8 @@ eval_surv(x, time, cycle_length = 1, type = c("prob", "surv"), ...)
 
 \method{eval_surv}{surv_dist}(x, time, cycle_length = 1, type = c("prob",
   "surv"), ...)
+
+\method{eval_surv}{surv_table}(x, time, ...)
 }
 \arguments{
 \item{x}{A survival distribution object}

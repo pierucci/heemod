@@ -203,7 +203,7 @@ test_that(
 )
 
 test_that(
-  "Defining Survial Distributions",
+  "Defining Survival Distributions",
   {
     surv1 = define_survival(
       dist = "weibull",
@@ -292,6 +292,36 @@ test_that(
     
     expect_equal(surv5_surv, fs5_surv, tolerance=1E-4)
     expect_equal(surv5_prob, fs5_prob, tolerance=1E-4)
+    
+    bad_surv_table_df <- data.frame(time = c(0, 1, 5, 10),
+                                  survival = c(1, 0.9, 0.5, 0.6))
+    expect_error(define_surv_table(bad_surv_table_df),
+                 "survival cannot increase over time")
+    bad_surv_table_df <- data.frame(time = c(0, 1, 5, 5),
+                                  survival = c(1, 0.9, 0.5, 0.4))
+    expect_error(define_surv_table(bad_surv_table_df),
+                 "any time can appear only once")
+    bad_surv_table_df <- data.frame(time = c(0, 1, 5, 10),
+                                  surv = c(1, 0.9, 0.7, 0.4))
+    expect_error(define_surv_table(bad_surv_table_df),
+                 "missing column in surv_table object")
+    bad_surv_table_df <- data.frame(time = c(1, 5, 10),
+                                  survival = c(0.9, 0.7, 0.4))
+    expect_error(define_surv_table(bad_surv_table_df),
+                 "surv_table data must start with time 0 and survival 1")
+    bad_surv_table_df <- data.frame(time = c(0, 1, 5, 10),
+                                  survival = c(0.95, 0.9, 0.7, 0.4))
+    expect_error(define_surv_table(bad_surv_table_df),
+                 "surv_table data must start with time 0 and survival 1")
+    
+    surv_table_df <- data.frame(time = c(0, 1, 5, 10),
+                              survival = c(1, 0.9, 0.7, 0.4))
+    reg <- define_surv_table(surv_table_df)
+    
+    expect_equal(compute_surv(reg, time = c(0.5, 1.5, 2.5, 5.5, 11)),
+                 c(1, 0.9, 0.9, 0.7, 0.4))
+    reg2 <- define_surv_table(system.file("tabular/surv/surv_table.csv", package = "heemod"))
+    expect_identical(reg, reg2)
   }
 )
 
