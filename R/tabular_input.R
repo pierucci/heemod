@@ -16,6 +16,7 @@
 #' 
 #' @param location Directory where the files are located.
 #' @param reference Name of the reference file.
+#' @param run_dsa Run DSA?
 #' @param run_psa Run PSA?.
 #' @param run_demo Run demgraphic analysis?
 #' @param save Should the outputs be saved?
@@ -29,11 +30,13 @@
 #'   
 #' @export
 run_model_tabular <- function(location, reference = "REFERENCE.csv",
+                              run_dsa = TRUE, 
                               run_psa = TRUE, run_demo = TRUE,
                               save = FALSE, overwrite = FALSE) {
   
   inputs <- gather_model_info(location, reference)
   outputs <- eval_models_from_tabular(inputs,
+                                      run_dsa = run_dsa,
                                       run_psa = run_psa,
                                       run_demo = run_demo)
   
@@ -172,6 +175,7 @@ gather_model_info <- function(base_dir, ref_file) {
 #' 
 #' @param inputs Result from 
 #'   [gather_model_info()].
+#' @param run_dsa Run DSA?
 #' @param run_psa Run PSA?
 #' @param run_demo Run demographic analysis?
 #'   
@@ -187,6 +191,7 @@ gather_model_info <- function(base_dir, ref_file) {
 #'   
 #' @keywords internal
 eval_models_from_tabular <- function(inputs,
+                                     run_dsa = TRUE,
                                      run_psa = TRUE,
                                      run_demo = TRUE) {
   
@@ -225,7 +230,7 @@ eval_models_from_tabular <- function(inputs,
   )
   
   model_dsa <- NULL
-  if (! is.null(inputs$param_info$dsa)) {
+  if (run_dsa & ! is.null(inputs$param_info$dsa)) {
     if (options()$heemod.verbose) message("** Running DSA...")
     model_dsa <- run_dsa(
       model_runs,
@@ -293,7 +298,8 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
     tm_info <- parse_multi_spec(
       tm_info,
       group_vars = c("from", "to"))
-    tab_undefined <- do.call("rbind", tm_info) %>% 
+    tab_undefined <- 
+      dplyr::bind_rows(tm_info) %>%
       dplyr::filter_(~ is.na(prob))
     
     if (nrow(tab_undefined) > 0) {
@@ -958,8 +964,8 @@ parse_multi_spec <- function(multi_spec,
     dplyr::group_by_(.dots = group_vars) %>%
     dplyr::filter_(~ n() > 1)
   
-  multi_spec <- rbind(just_once, as.data.frame(more_than_once))
-  
+  multi_spec <- 
+    dplyr::bind_rows(just_once, as.data.frame(more_than_once))
   rownames(multi_spec) <- NULL
   list_spec <- split(multi_spec, multi_spec[, split_on])
   ## sort by order of appearance of split variables in multi_spec
@@ -1157,12 +1163,13 @@ save_outputs <- function(outputs, output_dir, overwrite) {
     row.names = FALSE
   )
   
-  utils::write.csv(
-    summary(outputs$dsa)$res_comp,
-    file = file.path(output_dir, "dsa.csv"),
-    row.names = FALSE
-  )
-  
+  if(!is.null(outputs$dsa)){
+    utils::write.csv(
+      summary(outputs$dsa)$res_comp,
+      file = file.path(output_dir, "dsa.csv"),
+      row.names = FALSE
+    )
+  }
   
   utils::write.csv(
     outputs$psa$psa,
@@ -1179,19 +1186,20 @@ save_outputs <- function(outputs, output_dir, overwrite) {
   this_file <- "state_count_plot"
   save_graph(this_plot, output_dir, this_file)
   
-  this_plot <- plot(outputs$dsa)
-  this_file <- "dsa"
-  save_graph(this_plot, output_dir, this_file)
-  
+  if(!is.null(outputs$dsa)){
+    this_plot <- plot(outputs$dsa)
+    this_file <- "dsa"
+    save_graph(this_plot, output_dir, this_file)
+  }
   
   ## plots about differences between models
   if (options()$heemod.verbose) message("** Generating plots with model differences...")
   
-  this_plot <- plot(outputs$dsa, type = "difference")
-  this_file <- "dsa_diff"
-  
-  save_graph(this_plot, output_dir, this_file)
-  
+  if(!is.null(outputs$dsa)){
+    this_plot <- plot(outputs$dsa, type = "difference")
+    this_file <- "dsa_diff"
+    save_graph(this_plot, output_dir, this_file)
+  }
   if(!is.null(outputs$psa)){
     this_plot <- plot(outputs$psa)
     this_file <- paste("psa")
@@ -1309,7 +1317,7 @@ modify_param_defs_for_multinomials <- function(param_defs, psa) {
         (this_pos + 1):nrow(param_defs)
       }
     
-    param_defs <- rbind(
+    param_defs <- dplyr::bind_rows(
       param_defs[start_index,],
       replacements[[i]],
       param_defs[end_index,])
