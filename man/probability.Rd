@@ -52,7 +52,7 @@ rescale_prob(p = .65, from = 5)
 
 # convert 1-year probability 
 # to 1-month probability
-prob_to_prob(p = .5, to = 1/12)
+rescale_prob(p = .5, to = 1/12)
 
 # convert rate per 1000 PY
 # to 5-year probability

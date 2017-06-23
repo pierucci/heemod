@@ -78,7 +78,8 @@ combine_models <- function(newmodels, weights, oldmodel) {
     list_res[[i]]$.strategy_names <- strategy_names[i]
   }
   
-  res <- Reduce(dplyr::bind_rows, list_res) %>% 
+  res <- 
+    dplyr::bind_rows(list_res) %>%
     dplyr::mutate_(.dots = get_ce(oldmodel))
   
   root_strategy <- get_root_strategy(res)

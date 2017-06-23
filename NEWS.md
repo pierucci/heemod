@@ -9,6 +9,7 @@
   * Starting values with `define_starting_values()`.
   * Check for comma as a deciaml separator in tabular data.
   * Auto-reindent transition matrices with `reindent_transition()`.
+  * Discounting per year with the `period` argument.
 
 ### Bugfixes
 

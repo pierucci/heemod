@@ -31,10 +31,6 @@ define_strategy <- function(...,
                             starting_values = define_starting_values()) {
 
   states <- define_state_list_(list(...))
-  starting_values <- check_starting_values(
-    x = starting_values,
-    ref = get_state_value_names(states))
-  
   define_strategy_(
     transition = transition,
     states = states,
@@ -45,6 +41,11 @@ define_strategy <- function(...,
 #' @rdname define_strategy
 #' @export
 define_strategy_ <- function(transition, states, starting_values) {
+  
+  starting_values <- check_starting_values(
+    x = starting_values,
+    ref = get_state_value_names(states)
+  )
   
   if (! get_state_number(states) == get_state_number(transition)) {
     stop(sprintf(

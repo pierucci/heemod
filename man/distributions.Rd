@@ -78,9 +78,9 @@ Define a distribution for PSA parameters.
 \details{
 These functions are not exported, but only used in
 \code{\link[=define_psa]{define_psa()}}. To specify a user-made function
-use \code{define_distribution}.
+use \code{\link[=define_distribution]{define_distribution()}}.
 
-\code{define_distribution} takes as argument a function
+\code{\link[=define_distribution]{define_distribution()}} takes as argument a function
 with a single argument, \code{x}, corresponding to a
 vector of quantiles. It returns the distribution values
 for the given quantiles. See examples

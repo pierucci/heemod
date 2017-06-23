@@ -15,8 +15,9 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
 #' 
 #' @param x numeric. A quantity to discount.
 #' @param r discount rate.
-#' @param first logical. Should discouting start at the 
+#' @param first logical. Should discouting start at the
 #'   first value ?
+#' @param period Number of cycle per unit of discount rate.
 #'   
 #' @return A numeric vector of the same length as `x`.
 #' @export
@@ -27,15 +28,16 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
 #' discount(rep(10, 5), .02, first = FALSE)
 #' 
 #' @keywords internal
-discount <- function(x, r, first = FALSE, by_period = NULL) {
+discount <- function(x, r, first = FALSE, period = 1) {
   if (length(r) > 1) r <- r[1]
   stopifnot(
     r >= 0,
-    r <= 1
+    r <= 1,
+    period > 0
   )
-  t <- (seq_along(x) - (1 - isTRUE(first)))
-  if(!is.null(by_period)) t <- trunc(t/by_period)
-  x / (1 + r) ^ t
+  
+  dr <- trunc((seq_along(x) - (1 - isTRUE(first))) / period)
+  x / (1 + r) ^ dr
 }
 
 #' Check if All the Elements of a List Are the Same
