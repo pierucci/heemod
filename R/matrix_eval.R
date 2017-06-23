@@ -194,7 +194,8 @@ eval_transition.uneval_matrix <- function(x, parameters, expand = NULL) {
   structure(
     split_along_dim(array_res, 1),
     class = c("eval_matrix", "list"),
-    state_names = colnames(trans_matrix[1,,])
+    state_names = colnames(trans_matrix[1,,]),
+    entry = expand$state_time == 1
   )
 }
 

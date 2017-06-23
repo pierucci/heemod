@@ -304,7 +304,8 @@ test_that(
       structure(c(0.67, 0.2, 0.33, 0.8),
                 .Dim = c(2L, 2L))),
       class = c("eval_matrix", "list"),
-      state_names = c("A", "B"))
+      state_names = c("A", "B"),
+      entry = c(T,T))
     infw <- data.frame(c(0, 0), c(0, 0))
     
     expect_identical(

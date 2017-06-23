@@ -239,17 +239,70 @@ compute_counts.eval_matrix <- function(x, init, inflow, ...) {
     ))
   }
   
-  i <- 0
-  add_and_mult <- function(x, y) {
-    i <<- i + 1
-    (x + unlist(inflow[i, ])) %*% y
-  }
+  # i <- 0
+  # add_and_mult <- function(x, y) {
+  #   i <<- i + 1
+  #   (x + unlist(inflow[i, ])) %*% y
+  # }
+  # 
+  # list_counts <- Reduce(
+  #   add_and_mult,
+  #   x,
+  #   init,
+  #   accumulate = TRUE
+  # )
   
-  list_counts <- Reduce(
-    add_and_mult,
+  # Make a diagonal matrix of inital state vector
+  init_mat = diag(init)
+  
+  # Do element-wise multiplication to get the numbers
+  # undergoing each transition
+  i <- 0
+  calc_trans <- function(x, y) {
+    i <<- i + 1
+    (colSums(x) + diag(unlist(inflow[i, ]))) * y
+  }
+  uncond_trans <- Reduce(
+    calc_trans,
     x,
-    init,
+    init_mat,
     accumulate = TRUE
+  )
+  
+  # Sum over columns to get trace
+  list_counts <- lapply(
+    uncond_trans,
+    colSums
+  )
+  # Zero out diagonals and non-entry tunnels
+  zero_diag <- function(uncond) {
+    n_cols = ncol(uncond)
+    diag_one = diag(1,n_cols)
+    diag_one[ ,!attr(x,"entry")] <- 1
+    return(uncond - uncond*diag_one)
+  }
+  zero_diag_trans <- lapply(
+    uncond_trans,
+    zero_diag
+  )
+  
+  # Sum over rows, add inflow to get entry counts
+  i <- 0
+  entry_counts <- lapply(
+    zero_diag_trans,
+    function(mat){
+      i <<- i + 1
+      colSums(mat) + inflow[1,]
+    }
+  )
+  
+  # Add initial state vector to entry at time 0
+  entry_counts[[1]] = entry_counts[[1]] + init
+  
+  # Sum over columns to get exit counts
+  exit_counts <- lapply(
+    zero_diag_trans,
+    rowSums
   )
   
   res <- dplyr::as.tbl(
