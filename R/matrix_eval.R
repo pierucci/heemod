@@ -117,8 +117,8 @@ eval_transition.uneval_matrix <- function(x, parameters, expand = NULL) {
   # fill out long-form transition table
   trans_table <- plyr::ldply(seq_len(n_state), function(from) {
     plyr::ldply(seq_len(n_state), function(to) {
-      time_values %>%
         dplyr::mutate(
+          time_values,
           .from = state_names[from],
           .to = state_names[to],
           .value = lazyeval::lazy_eval(
@@ -133,7 +133,8 @@ eval_transition.uneval_matrix <- function(x, parameters, expand = NULL) {
   # requiring expansion are identified
   trans_table <- trans_table %>%
     dplyr::left_join(
-      expand %>% dplyr::transmute(
+      dplyr::transmute(
+        expand,
         .state = .state,
         state_time = state_time,
         .expand_from_state = .expand,
@@ -144,8 +145,7 @@ eval_transition.uneval_matrix <- function(x, parameters, expand = NULL) {
     ) %>%
     dplyr::filter(.limit >= state_time) %>%
     dplyr::left_join(
-      expand %>%
-        dplyr::filter(state_time == 1) %>%
+        dplyr::filter(expand, state_time == 1) %>%
         dplyr::transmute(
           .state = .state,
           .expand_to_state = .expand,
@@ -161,8 +161,8 @@ eval_transition.uneval_matrix <- function(x, parameters, expand = NULL) {
       )
     ) %>%
     dplyr::left_join(
-      expand %>%
         dplyr::transmute(
+          expand,
           .state = .state,
           state_time = state_time,
           .to_name_expanded = .full_state,

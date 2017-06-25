@@ -29,6 +29,8 @@ eval_state_list <- function(x, parameters, expand = NULL) {
     )
   }
   
+  exp_state_names <- expand$.full_state
+  
   f <- function(i) {
     obj <- discount_hack(x[[i]])
     
@@ -54,20 +56,102 @@ eval_state_list <- function(x, parameters, expand = NULL) {
     dplyr::left_join(expand, by = c(".state" =  ".state", "state_time" = "state_time")) %>%
     dplyr::filter(state_time <= .limit) %>%
     dplyr::mutate(
-      .full_state = factor(.full_state, levels = unique(.full_state)),
+      .full_state = factor(.full_state, levels = unique(exp_state_names)),
       .name = factor(.name, levels = unique(.name))
     ) %>%
     reshape2::dcast(markov_cycle + .full_state ~ .name, value.var = ".value", fill = 0)
-  
   
   vars_df_list <- vars_df %>%
     split(.$.full_state) %>%
     lapply(function(state) dplyr::select(state, -.full_state))
   
-  structure(
+  res <- structure(
     vars_df_list,
     class = c("eval_state_list", class(vars_df_list))
   )
+  
+  # Evaluate state transition values (if present)
+  state_trans_uneval <- attr(x, "transitions")
+  if(!is.null(state_trans_uneval)) {
+    
+    # Get number/names of states
+    n_states_trans <- length(state_trans_uneval)
+    from_state_names <- lapply(state_trans_uneval, function(y) attr(y, "from"))
+    to_state_names <- lapply(state_trans_uneval, function(y) attr(y, "to"))
+    
+    f_state_val <- function(i) {
+      obj <- discount_hack(state_trans_uneval[[i]])
+      from_states <- from_state_names[[i]]
+      if(any(is.na(from_states))) from_states <- state_names
+      to_states <- to_state_names[[i]]
+      if(any(is.na(to_states))) to_states <- state_names
+      from_states_expanded <- dplyr::filter(expand, .state %in% from_states)
+      max_st <- max(expand$.limit)
+      
+      # update calls to dispatch_strategy()
+      obj <- dispatch_strategy_hack(obj)
+      
+      var_names <- names(obj)
+      
+      # bottleneck!
+      eval_params <- parameters %>%
+        dplyr::mutate_(.trans_id = i, .dots = obj) %>%
+        .[c("markov_cycle", "state_time", ".trans_id", var_names)]
+      
+      # Expand evaluated values to all relevant to/from states
+      to_from_df <- expand.grid(
+        .from = from_states,
+        .to = to_states,
+        stringsAsFactors = FALSE
+      )
+      tidyr::crossing(to_from_df, eval_params)
+    }
+    
+    # Evaluate and Handle expansion
+    st_var_mat <- ldply(seq_len(n_states_trans), f_state_val) %>%
+      reshape2::melt(
+        id.vars = c("markov_cycle", "state_time", ".trans_id", ".from", ".to"),
+        variable.name = ".name",
+        value.name = ".value"
+      ) %>%
+      dplyr::left_join(
+        dplyr::transmute(
+          expand,
+          .state = .state,
+          .from_name_expanded = .full_state,
+          .limit = .limit,
+          state_time = state_time
+        ),
+        by = c(".from" =  ".state", "state_time" = "state_time")
+      ) %>%
+      dplyr::mutate(.to_state_time = 1) %>%
+      dplyr::left_join(
+        dplyr::transmute(
+          expand,
+          .state = .state,
+          .to_name_expanded = .full_state,
+          state_time = state_time
+        ),
+        by = c(".to" =  ".state", ".to_state_time" = "state_time")
+      ) %>%
+      dplyr::filter(state_time <= .limit) %>%
+      dplyr::mutate(
+        .to_name_expanded = factor(.to_name_expanded, levels = unique(exp_state_names)),
+        .from_name_expanded = factor(.from_name_expanded, levels = unique(exp_state_names)),
+        .name = factor(.name, levels = unique(.name))
+      ) %>%
+      reshape2::acast(
+        .from_name_expanded ~ .to_name_expanded ~ markov_cycle ~ .name,
+        value.var = ".value",
+        fun.aggregate = sum,
+        fill = 0,
+        drop = F
+      )
+    
+    attr(res, "transitions") <- st_var_mat
+  }
+  
+  res
 }
 
 get_state_value_names.eval_state_list <- function(x){

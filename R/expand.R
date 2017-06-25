@@ -14,11 +14,48 @@ has_state_time.part_surv <- function(x, ...) {
 
 #' @export
 has_state_time.uneval_state_list <- function(x, ...) {
-  unlist(lapply(x, has_state_time))
+  state_names <- get_state_names(x)
+  s_expand <- unlist(lapply(x, function(y) has_state_time(y)))
+  
+  # Figure out state expansion based on state transitions
+  # References to state_time in state transitions are based
+  # on the from state.  If the from state is NA, then use
+  # of state_time will expand ALL states.
+  state_trans <- attr(x, "transitions")
+  if(!is.null(state_trans)) {
+    st_to_expand <- has_state_time(state_trans)
+    st_from <- lapply(state_trans, function(y) attr(y, "from"))
+    st_expand <- st_from[st_to_expand]
+    st_from_expanded <- unlist(st_expand)
+    if(any(is.na(st_from_expanded))) {
+      # Expand all states if from state is NA in a value referencing
+      # state_time
+      s_expand <- rep(T, length(s_expand))
+    } else {
+      for(i in seq_len(length(state_names))) {
+        # Expand states where state transitions from reference
+        # state_time
+        if(state_names[i] %in% st_from_expanded) {
+          s_expand[i] <- T
+        }
+      }
+    }
+  }
+  s_expand
+}
+
+#' @export
+has_state_time.uneval_state_transition_list <- function(x, ...) {
+  unlist(lapply(x, function(y) any(has_state_time(y))))
 }
 
 #' @export
 has_state_time.state <- function(x, ...) {
+  any(unlist(lapply(x, function(y) "state_time" %in% all.vars(y$expr))))
+}
+
+#' @export
+has_state_time.state_transition <- function(x, ...) {
   any(unlist(lapply(x, function(y) "state_time" %in% all.vars(y$expr))))
 }
 
@@ -109,6 +146,15 @@ interpolate.state <- function(x, ...) {
 
 #' @export
 #' @rdname interpolate
+interpolate.state_transition <- function(x, ...) {
+  from <- attr(x, "from")
+  to <- attr(x, "to")
+  res <- interpolate.default(x, ...)
+  define_state_transition_(from = from, to = to, res)
+}
+
+#' @export
+#' @rdname interpolate
 interpolate.part_surv <- function(x, ...) {
   x
 }
@@ -116,6 +162,19 @@ interpolate.part_surv <- function(x, ...) {
 #' @export
 #' @rdname interpolate
 interpolate.uneval_state_list <- function(x, ...) {
+  for (i in seq_along(x)) {
+    x[[i]] <- interpolate(x[[i]], ...)
+  }
+  state_trans <- attr(x, "transitions")
+  if(!is.null(state_trans)) {
+    attr(x, "transitions") <- interpolate(state_trans)
+  }
+  x
+}
+
+#' @export
+#' @rdname interpolate
+interpolate.uneval_state_transition_list <- function(x, ...) {
   for (i in seq_along(x)) {
     x[[i]] <- interpolate(x[[i]], ...)
   }

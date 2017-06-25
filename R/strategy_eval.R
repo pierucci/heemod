@@ -267,37 +267,30 @@ compute_counts.eval_matrix <- function(x, init, inflow, ...) {
   # Sum over columns to get trace
   counts_array <- colSums(uncond_trans, dim=1) %>% t
   
-  # Create an indicator array for transitions representing state
-  # deparatures and multiply by unconditional transition probs
+  # Create an indicator array for transitions representing inter-state
+  # transitions and multiply by unconditional transition probs
   zero_diag <- diag(1, n_state)
   zero_diag[ ,!attr(x,"entry")] <- 1
   zero_diag <- zero_diag %>%
     rep(n_cycle + 1) %>%
     array(c(n_state, n_state, n_cycle + 1))
-  zero_diag_trans <- uncond_trans * (1 - zero_diag)
+  trans_counts <- uncond_trans * (1 - zero_diag)
   
-  # Sum entries, add inflow and init
-  entry_counts <- inflow + t(colSums(zero_diag_trans[ , ,-(n_cycle + 1), drop = F],2))
-  entry_counts[1, ] <- entry_counts[1, ] + init
-  
-  # Sum exits
-  exit_counts <- aperm(zero_diag_trans[ , ,-1, drop = F], c(2,1,3)) %>%
-    colSums(dim=1) %>%
-    t
-  
-  # Convert coutns to data_frames
+  # Convert counts to data_frames
   counts_df <- dplyr::as.tbl(as.data.frame(counts_array))
   colnames(counts_df) <- state_names
-  entries_df <- dplyr::as.tbl(as.data.frame(entry_counts))
-  colnames(entry_counts) <- state_names
-  exits_df <- dplyr::as.tbl(as.data.frame(exit_counts))
-  colnames(exits_df) <- state_names
+  
+  # Set dimnames on transition counts
+  dimnames(trans_counts) <- list(
+    state_names,
+    state_names,
+    NULL
+  )
   
   structure(
     counts_df,
     class = c("cycle_counts", class(counts_df)),
-    entry = entries_df,
-    exit = exits_df
+    transitions = trans_counts[ , , -1, drop = F]
   )
 }
 
@@ -318,6 +311,9 @@ compute_counts.eval_matrix <- function(x, init, inflow, ...) {
 compute_values <- function(states, counts, init, inflow, starting) {
   states_names <- get_state_names(states)
   state_values_names <- get_state_value_names(states)
+  
+  n_states <- length(states_names)
+  n_state_vals <- length(state_values_names)
   num_cycles <- nrow(counts)
   
   ## combine the list of states into a single large array
@@ -343,6 +339,22 @@ compute_values <- function(states, counts, init, inflow, starting) {
   vals_x_counts <- state_val_array * counts_mat
   wtd_sums <- rowSums(vals_x_counts, dims = 2) + starting * rowSums(inflow)
   wtd_sums[1, ] <- wtd_sums[1, ] + sum(init) * starting[1, ]
+  
+  # Handle transitional costs
+  if(!is.null(attr(states, "transitions"))) {
+    
+    # Arrange trans counts into array to match state transitions
+    st_count_mat <- array(
+      rep(attr(counts, "transitions"), n_state_vals),
+      dim = c(n_states, n_states, num_cycles, n_state_vals)
+    )
+    
+    trans_values <- colSums(st_count_mat * attr(states, "transitions"), dim=2)
+    
+    wtd_sums <- wtd_sums + trans_values
+    
+  }
+  
   res <- data.frame(markov_cycle = states[[1]]$markov_cycle, wtd_sums)
   names(res)[-1] <- state_values_names
   
