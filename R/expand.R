@@ -27,16 +27,18 @@ has_state_time.uneval_state_list <- function(x, ...) {
     st_from <- lapply(state_trans, function(y) attr(y, "from"))
     st_expand <- st_from[st_to_expand]
     st_from_expanded <- unlist(st_expand)
-    if(any(is.na(st_from_expanded))) {
-      # Expand all states if from state is NA in a value referencing
-      # state_time
-      s_expand <- rep(T, length(s_expand))
-    } else {
-      for(i in seq_len(length(state_names))) {
-        # Expand states where state transitions from reference
+    if(!is.null(st_from_expanded)){
+      if(any(is.na(st_from_expanded))) {
+        # Expand all states if from state is NA in a value referencing
         # state_time
-        if(state_names[i] %in% st_from_expanded) {
-          s_expand[i] <- T
+        s_expand <- rep(T, length(s_expand))
+      } else {
+        for(i in seq_len(length(state_names))) {
+          # Expand states where state transitions from reference
+          # state_time
+          if(state_names[i] %in% st_from_expanded) {
+            s_expand[i] <- T
+          }
         }
       }
     }
