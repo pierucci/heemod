@@ -91,7 +91,6 @@ eval_transition.uneval_matrix <- function(x, parameters, expand = NULL) {
   # Set up time values for which transition probabilities
   # will be evaluated
   time_values <- tibble::tibble(
-    state_time = parameters$state_time,
     model_time = parameters$model_time
   )
   
@@ -115,70 +114,59 @@ eval_transition.uneval_matrix <- function(x, parameters, expand = NULL) {
   
   # Loop through each cell of unexpanded transition matrix and
   # fill out long-form transition table
-  trans_table <- plyr::ldply(seq_len(n_state), function(from) {
-    plyr::ldply(seq_len(n_state), function(to) {
-        dplyr::mutate(
-          time_values,
-          .from = state_names[from],
-          .to = state_names[to],
-          .value = lazyeval::lazy_eval(
-            x[[(from - 1) * n_state + to]],
-            data = parameters
-          )
-        )
-    })
-  })
+  # trans_table <- plyr::ldply(seq_len(n_state), function(from) {
+  #   plyr::ldply(seq_len(n_state), function(to) {
+  #       dplyr::mutate(
+  #         time_values,
+  #         .from = state_names[from],
+  #         .to = state_names[to],
+  #         .value = lazyeval::lazy_eval(
+  #           x[[(from - 1) * n_state + to]],
+  #           data = parameters
+  #         )
+  #       )
+  #   })
+  # })
   
-  # Join transitions w/ expansion table so that to/from states
-  # requiring expansion are identified
-  trans_table <- trans_table %>%
+  nrow_param = nrow(parameters)
+  
+  trans_table <- tibble::tibble(
+    model_time = rep(parameters$model_time, times = n_state^2),
+    state_time = rep(parameters$state_time, times = n_state^2),
+    .from = rep(state_names, each = n_state * nrow_param),
+    .to = rep(state_names, times = n_state, each = nrow_param),
+    .value = unlist(dplyr::mutate_(parameters, .dots = x)[names(x)])
+  ) %>%
     dplyr::left_join(
       dplyr::transmute(
         expand,
         .state = .state,
         state_time = state_time,
-        .expand_from_state = .expand,
-        .from_name_expanded = .full_state,
-        .limit = .limit
+        .from_e = .full_state,
+        .from_lim = .limit
       ),
       by = c(".from" = ".state", "state_time" = "state_time")
     ) %>%
-    dplyr::filter(.limit >= state_time) %>%
-    dplyr::left_join(
-        dplyr::filter(expand, state_time == 1) %>%
-        dplyr::transmute(
-          .state = .state,
-          .expand_to_state = .expand,
-          .to_name_expand_first = .full_state
-        ),
-      by = c(".to" = ".state")
-    ) %>%
+    dplyr::filter(.from_lim >= state_time) %>%
     dplyr::mutate(
-      .to_state_time = ifelse(
-        .expand_to_state & .to == .from,
-        pmin(.limit, state_time + 1),
-        1
-      )
+      .to_state_time = ifelse(.from == .to, pmin(state_time + 1, .from_lim), 1)
     ) %>%
     dplyr::left_join(
-        dplyr::transmute(
-          expand,
-          .state = .state,
-          state_time = state_time,
-          .to_name_expanded = .full_state,
-          state_time = state_time
-        ),
+      dplyr::transmute(
+        expand,
+        .state = .state,
+        state_time = state_time,
+        .to_e = .full_state
+      ),
       by = c(".to" = ".state", ".to_state_time" = "state_time")
     )
-  
-  e_state_names <- unique(trans_table$.from_name_expanded)
   
   # Reshape into 3d matrix and calculate complements
   trans_matrix <- trans_table %>%
     reshape2::acast(
       model_time ~
-        factor(.from_name_expanded, levels = e_state_names) ~
-        factor(.to_name_expanded, levels = e_state_names),
+        factor(.from_e, levels = expand$.full_state) ~
+        factor(.to_e, levels = expand$.full_state),
       value.var = ".value",
       fill = 0
     ) %>%
@@ -186,7 +174,7 @@ eval_transition.uneval_matrix <- function(x, parameters, expand = NULL) {
   
   array_res <- structure(
     trans_matrix,
-    state_names = e_state_names
+    state_names = expand$.full_state
   )
   
   check_matrix(array_res)

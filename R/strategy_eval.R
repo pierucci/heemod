@@ -60,7 +60,7 @@ eval_strategy <- function(strategy, parameters, cycles,
   
   # Build table to determine number of tunnels for each state
   expand_table <- tibble::tibble(
-      .state = attr(states, "names"),
+      .state = factor(attr(states, "names"), levels = attr(states, "names")),
       .expand = to_expand,
       .limit = ifelse(to_expand, expand_limit, 1)
     )%>%
@@ -76,6 +76,10 @@ eval_strategy <- function(strategy, parameters, cycles,
           .expand = st$.expand
         )
       }
+    ) %>%
+    dplyr::mutate(
+      .state = as.character(.state),
+      .full_state = as.character(.full_state)
     )
   
   # Inform user about state expansion
