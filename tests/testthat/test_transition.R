@@ -268,3 +268,130 @@ test_that("Error when same state in from/to", {
     )
   )
 })
+
+test_that("Partitioned Survival", {
+  
+  surv_dist1 <- define_survival(
+    distribution = "exp",
+    rate = .1
+  )
+  surv_dist2 <- define_survival(
+    distribution = "exp",
+    rate = .07
+  )
+  
+  par <- define_parameters()
+  
+  trans <- define_part_surv(
+    pfs = surv_dist1,
+    os = surv_dist2,
+    cycle_length = c(1, 1)
+  )
+  
+  strat <- define_strategy(
+    transition = trans,
+    "A" = define_state(
+      cost_med = discount(1000, 0.035),
+      cost_health = 0,
+      ly = discount(1, 0.035)
+    ),
+    "B" = define_state(
+      cost_med = 0,
+      cost_health = 0,
+      ly = discount(1, 0.035)
+    ),
+    "C" = define_state(
+      cost_med = 0,
+      cost_health = 0,
+      ly = 0
+    ),
+    define_state_transition(
+      from = NA,
+      to = c("B","C"),
+      cost_med = 0,
+      cost_health = discount(10000, 0.035),
+      ly = 0
+    )
+  )
+  
+  strat2 <- define_strategy(
+    transition = trans,
+    "A" = define_state(
+      cost_med = discount(1000, 0.035),
+      cost_health = 0,
+      ly = discount(1, 0.035)
+    ),
+    "B" = define_state(
+      cost_med = 0,
+      cost_health = 0,
+      ly = discount(1, 0.035)
+    ),
+    "C" = define_state(
+      cost_med = 0,
+      cost_health = 0,
+      ly = 0
+    ),
+    define_state_transition(
+      from = "A",
+      to = NA,
+      cost_med = 0,
+      cost_health = discount(10000, 0.035),
+      ly = 0
+    ),
+    define_state_transition(
+      from = "B",
+      to = NA,
+      cost_med = 0,
+      cost_health = discount(10000, 0.035),
+      ly = 0
+    )
+  )
+  
+  strat3 <- define_strategy(
+    transition = trans,
+    define_state_transition(
+      from = "A",
+      to = "B",
+      cost_med = 0,
+      cost_health = discount(10000, 0.035),
+      ly = 0
+    ),
+    "A" = define_state(
+      cost_med = discount(1000, 0.035),
+      cost_health = 0,
+      ly = discount(1, 0.035)
+    ),
+    "B" = define_state(
+      cost_med = 0,
+      cost_health = 0,
+      ly = discount(1, 0.035)
+    ),
+    "C" = define_state(
+      cost_med = 0,
+      cost_health = 0,
+      ly = 0
+    ),
+    define_state_transition(
+      from = "B",
+      to = "C",
+      cost_med = 0,
+      cost_health = discount(10000, 0.035),
+      ly = 0
+    )
+  )
+  
+  res_mod <- run_model(
+    strat = strat,
+    strat2 = strat2,
+    strat3 = strat3,
+    parameters = par,
+    cycles = 10,
+    cost = cost_med + cost_health,
+    effect = ly,
+    method = "life-table",
+    init = c(1, 0, 0)
+  )
+  
+  expect_equal(res_mod$run_model$.cost, c(15610.45, 15610.45, 15610.45), tolerance=1e-2)
+  
+})

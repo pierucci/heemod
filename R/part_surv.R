@@ -203,7 +203,22 @@ compute_counts.eval_part_surv <- function(x, init,
   names(res) <- x$state_names[names(res)]
   res <- res[x$state_names]
   
-  structure(res, class = c("cycle_counts", class(res)))
+  n_state <- length(x$state_names)
+  n_cycle <- nrow(res)
+  
+  trans_counts <- array(
+    rep(0, n_state * n_state * (n_cycle - 1)),
+    dim = c(n_state, n_state, (n_cycle - 1))
+  )
+  
+  trans_counts[1, 2, ] <- x$pfs_surv[-n_cycle] - x$pfs_surv[-1]
+  trans_counts[2, 3, ] <- x$os_surv[-n_cycle] - x$os_surv[-1]
+  
+  structure(
+    res,
+    class = c("cycle_counts", class(res)),
+    transitions = trans_counts
+  )
 }
 
 guess_part_surv_state_names <- function(state_names) {
