@@ -34,6 +34,8 @@ eval_strategy <- function(strategy, parameters, cycles,
                           init, method, expand_limit,
                           inflow, strategy_name) {
   
+  .state <- .full_state <- .expand <- NULL
+  
   stopifnot(
     cycles > 0,
     length(cycles) == 1
@@ -269,7 +271,7 @@ compute_counts.eval_matrix <- function(x, init, inflow, ...) {
     array(c(n_state,n_state,n_cycle+1))
   
   # Sum over columns to get trace
-  counts_array <- colSums(uncond_trans, dim=1) %>% t
+  counts_array <- colSums(uncond_trans, dims=1) %>% t
   
   # Create an indicator array for transitions representing inter-state
   # transitions and multiply by unconditional transition probs
@@ -353,7 +355,7 @@ compute_values <- function(states, counts, init, inflow, starting) {
       dim = c(n_states, n_states, num_cycles, n_state_vals)
     )
     
-    trans_values <- colSums(st_count_mat * attr(states, "transitions"), dim=2)
+    trans_values <- colSums(st_count_mat * attr(states, "transitions"), dims=2)
     
     wtd_sums <- wtd_sums + trans_values
     

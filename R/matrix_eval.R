@@ -85,6 +85,10 @@ eval_transition <- function(x, ...) {
 
 eval_transition.uneval_matrix <- function(x, parameters, expand = NULL) {
   
+  # Assinging NULLS to avoid CMD Check issues
+  .from <- .to <- .limit <- .from_lim <- .to_state_time <- NULL
+  .to_state_time <- .value <- .state <- state_time <- .full_state <- NULL
+  
   # update calls to dispatch_strategy()
   x <- dispatch_strategy_hack(x)
   
@@ -111,22 +115,6 @@ eval_transition.uneval_matrix <- function(x, parameters, expand = NULL) {
       .limit = 1
     )
   }
-  
-  # Loop through each cell of unexpanded transition matrix and
-  # fill out long-form transition table
-  # trans_table <- plyr::ldply(seq_len(n_state), function(from) {
-  #   plyr::ldply(seq_len(n_state), function(to) {
-  #       dplyr::mutate(
-  #         time_values,
-  #         .from = state_names[from],
-  #         .to = state_names[to],
-  #         .value = lazyeval::lazy_eval(
-  #           x[[(from - 1) * n_state + to]],
-  #           data = parameters
-  #         )
-  #       )
-  #   })
-  # })
   
   nrow_param = nrow(parameters)
   

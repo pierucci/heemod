@@ -363,7 +363,7 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
         create_model_from_tabular(state_info[[i]], 
                                   this_tm,
                                   df_env = df_env,
-                                  state_trans = this_state_trans)
+                                  state_trans_info = this_state_trans)
       }
     })  
   

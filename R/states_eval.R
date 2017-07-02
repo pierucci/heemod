@@ -14,6 +14,10 @@
 #' @keywords internal
 eval_state_list <- function(x, parameters, expand = NULL) {
   
+  # Assinging NULLS to avoid CMD Check issues
+  .state <- .limit <- state_time <- .value <- NULL
+  .full_state <- .name <- .to_name_expanded <- .from_name_expanded <- NULL
+  
   # Get number/names of states
   n_states <- length(x)
   state_names <- names(x)

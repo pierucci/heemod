@@ -282,6 +282,7 @@ modify_.uneval_state_list <- function(.OBJECT, .dots) {
 #' @export
 #' @rdname define_state_transition
 modify.state_transition <- function(.OBJECT, ...) {
+  
   .dots <- lazyeval::lazy_dots(...)
   
   modify_(.OBJECT = .OBJECT, .dots = .dots)
@@ -372,7 +373,7 @@ modify.uneval_state_transition_list <- function(.OBJECT, ...) {
 modify_.uneval_state_transition_list <- function(.OBJECT, .dots) {
   
   # Update states
-  res <- utils::modifyList(.OBJECT, s_dots)
+  res <- utils::modifyList(.OBJECT, .dots)
   
   res
 }

@@ -84,9 +84,14 @@ eval_parameters <- function(x, cycles = 1,
 }
 
 eval_init <- function(x, parameters, expand) {
+  
+  # Assinging NULLS to avoid CMD Check issues
+  .state <- .limit <- model_time <- state_time <- .value <- NULL
+  
   to_keep <- names(x)
   
-  init_df <- dplyr::mutate_(.data = parameters %>% dplyr::filter(model_time == 1), .dots = x)[c("state_time", to_keep)] %>%
+  init_df <- dplyr::mutate_(.data = parameters %>% dplyr::filter(model_time == 1), .dots = x) %>%
+    .[c("state_time", to_keep)] %>%
     reshape2::melt(
       id.vars = c("state_time"),
       variable.name = ".state",
@@ -113,6 +118,10 @@ eval_init <- function(x, parameters, expand) {
 
 eval_starting_values <- function(x, parameters) {
   
+  # Assinging NULLS to avoid CMD Check issues
+  state_time <- NULL
+  
+  
   to_keep <- names(x)
   
   start_df <- dplyr::mutate_(
@@ -127,6 +136,10 @@ eval_starting_values <- function(x, parameters) {
 }
 
 eval_inflow <- function(x, parameters, expand) {
+  
+  # Assinging NULLS to avoid CMD Check issues
+  .state <- .limit <- state_time <- .value <- NULL
+  
   to_keep <- names(x)
   inflow_df <- dplyr::mutate_(.data = parameters, .dots = x)[c("model_time", "state_time", to_keep)] %>%
     reshape2::melt(
