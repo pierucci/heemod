@@ -4,7 +4,7 @@
 \alias{compute_values}
 \title{Compute State Values per Cycle}
 \usage{
-compute_values(states, counts)
+compute_values(states, counts, init, inflow, starting)
 }
 \arguments{
 \item{states}{An object of class \code{eval_state_list}.}

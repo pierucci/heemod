@@ -6,8 +6,8 @@ print.uneval_model <- function(x, ...) {
   cat(sprintf(
     "A Markov model strategy:
 
-    %i state%s,
-    %i state value%s\n",
+      %i state%s,
+      %i state value%s\n",
     n_states,
     plur(n_states),
     n_state_values,

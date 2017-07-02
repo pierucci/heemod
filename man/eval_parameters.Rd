@@ -4,7 +4,8 @@
 \alias{eval_parameters}
 \title{Evaluate Markov model parameters}
 \usage{
-eval_parameters(x, cycles = 1, strategy_name = NA)
+eval_parameters(x, cycles = 1, strategy_name = NA,
+  max_state_time = cycles)
 }
 \arguments{
 \item{x}{an \code{uneval_parameters} object.}

@@ -166,6 +166,9 @@ Both strategies can then be combined in a model and run for 50 years with `run_m
 res_mod <- run_model(
   mono = strat_mono,
   comb = strat_comb,
+  parameters = define_parameters(
+    rr = rr
+  ),
   cycles = 50,
   cost = cost_total,
   effect = life_year

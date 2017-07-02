@@ -1,0 +1,4 @@
+.model,.transition,from,to,cost,qaly,.discount.cost
+standard,Success,PrimaryTHR,SuccessfulPrimary,1000,0,0.015
+standard,Dying,,Death,10000,0,0.015
+new,Dying,,Death,10000,0,0.015

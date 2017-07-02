@@ -39,60 +39,143 @@ eval_strategy <- function(strategy, parameters, cycles,
     length(cycles) == 1
   )
   
-  ## expand states if necessary, and retrieve values.   
-  ##  If no expansion, then it returns the same values
-  expanded <- expand_if_necessary(
-    strategy      = strategy,
-    parameters    = parameters, 
-    cycles        = cycles,
-    init          = init,
-    method        = method,
-    expand_limit  = expand_limit,
-    inflow        = inflow,
-    strategy_name = strategy_name)
+  # Extract and count states
+  states <- get_states(strategy)
+  n_states = length(states)
   
-  uneval_states <- expanded$uneval_states
-  uneval_transition <- expanded$uneval_transition
-  init <- expanded$init
-  inflow <- expanded$inflow
-  starting_values <- expanded$starting_values
-  n_indiv <- expanded$n_indiv
-  parameters <- expanded$parameters
-  actually_expanded_something <- expanded$actually_expanded_something
+  # Extract transitions
+  transitions <- get_transition(strategy)
   
-  states <- eval_state_list(uneval_states, parameters)
+  # Interpolate to determine propogation of state_time
+  i_params <- interpolate(parameters)
+  i_state <- interpolate(states, more = as_expr_list(i_params))
+  i_trans <- interpolate(transitions, more = as_expr_list(i_params))
   
-  transition <- eval_transition(uneval_transition,
-                                parameters)
+  # Determine which states need to be expanded
+  state_td <- has_state_time(i_state)
+  mat_td <- has_state_time(i_trans) %>%
+    matrix(nrow = n_states, ncol = n_states, byrow = TRUE) %>%
+    apply(1, any)
+  to_expand <- state_td | mat_td
   
+  # Build table to determine number of tunnels for each state
+  expand_table <- tibble::tibble(
+    .state = factor(attr(states, "names"), levels = attr(states, "names")),
+    .expand = to_expand,
+    .limit = ifelse(to_expand, expand_limit, 1)
+  )%>%
+    plyr::ddply(
+      ".state",
+      function(st) {
+        if(st$.expand) full_names <- paste0(".", st$.state, "_", seq_len(st$.limit))
+        else full_names <- st$.state
+        tibble::tibble(
+          state_time = seq_len(st$.limit),
+          .limit = st$.limit,
+          .full_state = full_names,
+          .expand = st$.expand
+        )
+      }
+    ) %>%
+    dplyr::mutate(
+      .state = as.character(.state),
+      .full_state = as.character(.full_state)
+    )
+  
+  # Inform user about state expansion
+  if(any(expand_table$.expand)){
+    expanded <- expand_table %>%
+      dplyr::filter(.expand) %>%
+      dplyr::distinct(.state)
+    message(
+      sprintf(
+        "%s: detected use of 'state_time', expanding state%s: %s.",
+        strategy_name,
+        plur(length(expanded$.state)),
+        paste(expanded$.state, collapse = ", ")
+      )
+    )
+  }
+  
+  # Evaluate parameters
+  e_parameters <- eval_parameters(
+    parameters,
+    cycles = cycles,
+    strategy_name = strategy_name,
+    max_state_time = max(expand_table$.limit)
+  )
+  
+  # Evaluate Initial State Values
+  e_start_values <- eval_starting_values(
+    strategy$starting_values,
+    e_parameters
+  )
+  
+  # Evaluate Initial Counts
+  e_init <- eval_init(
+    init,
+    e_parameters,
+    expand_table
+  )
+  
+  # Inflow (now includes init)
+  e_inflow <- eval_inflow(
+    inflow,
+    e_parameters,
+    expand_table
+  )
+  
+  # Evaluate States
+  e_states <- eval_state_list(
+    get_states(strategy),
+    e_parameters,
+    expand_table
+  )
+  
+  # Evaluate Transitions
+  e_transition <- eval_transition(
+    get_transition(strategy),
+    e_parameters,
+    expand_table
+  )
+  
+  # Compute counts
   count_table <- compute_counts(
-    x = transition,
-    init = init,
-    inflow = inflow
-  ) %>% 
+    x = e_transition,
+    init = e_init,
+    inflow = e_inflow
+  ) %>%
     correct_counts(method = method)
   
-  values <- compute_values(states, count_table)
-  values[1, names(starting_values)] <- values[1, names(starting_values)] +
-    starting_values * n_indiv
+  # Compute values
+  values <- compute_values(
+    states = e_states,
+    counts = count_table,
+    init = e_init,
+    inflow = e_inflow,
+    starting = e_start_values
+  )
   
-  if (actually_expanded_something) {
-    for (st in expanded$expanded_states) {
-      count_table[[st]] <- rowSums(count_table[expanded$expansion_cols[[st]]])
-      count_table <- count_table[- which(names(count_table) %in% expanded$expansion_cols[[st]])]
-    }
-  }
+  # Get counts of individuals
+  n_indiv <- sum(e_inflow) + sum(e_init)
+  
+  # Aggregate over states
+  count_table_agg <- plyr::dlply(
+    expand_table,
+    ".state",
+    function(st) rowSums(count_table[st$.full_state])
+  ) %>%
+    do.call(tibble::tibble, .)
   
   structure(
     list(
-      parameters = parameters,
-      complete_parameters = expanded$complete_parameters,
-      transition = transition,
-      states = states,
-      counts = count_table,
+      parameters = e_parameters,
+      transition = e_transition,
+      states = e_states,
+      counts = count_table_agg,
       values = values,
-      e_init = init,
-      e_inflow = inflow,
+      e_init = e_init,
+      e_inflow = e_inflow,
       n_indiv = n_indiv,
       cycles = cycles,
       expand_limit = expand_limit
@@ -154,48 +237,65 @@ compute_counts <- function(x, ...) {
 #' @export
 compute_counts.eval_matrix <- function(x, init, inflow, ...) {
   
-  if (! length(init) == get_matrix_order(x)) {
+  n_state <- get_matrix_order(x)
+  n_cycle <- length(x)
+  state_names <- get_state_names(x)
+  
+  if (! ncol(inflow) == get_matrix_order(x)) {
     stop(sprintf(
-      "Length of 'init' vector (%i) differs from the number of states (%i).",
-      length(init),
+      "Number of columns of 'inflow' matrix (%i) differs from the number of states (%i).",
+      ncol(inflow),
       get_matrix_order(x)
     ))
   }
   
-  if (! length(inflow) == get_matrix_order(x)) {
-    stop(sprintf(
-      "Length of 'inflow' vector (%i) differs from the number of states (%i).",
-      length(inflow),
-      get_matrix_order(x)
-    ))
-  }
+  # Make a diagonal matrix of inital state vector
+  init_mat = diag(init)
   
+  # Do element-wise multiplication to get the numbers
+  # undergoing each transition
   i <- 0
-  add_and_mult <- function(x, y) {
+  calc_trans <- function(x, y) {
     i <<- i + 1
-    (x + unlist(inflow[i, ])) %*% y
+    (colSums(x) + diag(unlist(inflow[i, ]))) * y
   }
-  
-  list_counts <- Reduce(
-    add_and_mult,
+  uncond_trans <- Reduce(
+    calc_trans,
     x,
-    init,
+    init_mat,
     accumulate = TRUE
+  ) %>%
+    unlist %>%
+    array(c(n_state,n_state,n_cycle+1))
+  
+  # Sum over columns to get trace
+  counts_array <- colSums(uncond_trans, dim=1) %>% t
+  
+  # Create an indicator array for transitions representing inter-state
+  # transitions and multiply by unconditional transition probs
+  zero_diag <- diag(1, n_state)
+  zero_diag[ ,!attr(x,"entry")] <- 1
+  zero_diag <- zero_diag %>%
+    rep(n_cycle + 1) %>%
+    array(c(n_state, n_state, n_cycle + 1))
+  trans_counts <- uncond_trans * (1 - zero_diag)
+  
+  # Convert counts to data_frames
+  counts_df <- dplyr::as.tbl(as.data.frame(counts_array))
+  colnames(counts_df) <- state_names
+  
+  # Set dimnames on transition counts
+  dimnames(trans_counts) <- list(
+    state_names,
+    state_names,
+    NULL
   )
   
-  res <- dplyr::as.tbl(
-    as.data.frame(
-      matrix(
-        unlist(list_counts),
-        byrow = TRUE,
-        ncol = get_matrix_order(x)
-      )
-    )
+  structure(
+    counts_df,
+    class = c("cycle_counts", class(counts_df)),
+    transitions = trans_counts[ , , -1, drop = F]
   )
-  
-  colnames(res) <- get_state_names(x)
-  
-  structure(res, class = c("cycle_counts", class(res)))
 }
 
 #' Compute State Values per Cycle
@@ -212,11 +312,14 @@ compute_counts.eval_matrix <- function(x, init, inflow, ...) {
 #' @keywords internal
 ## slightly harder to read than the original version, but much faster
 ## identical results to within a little bit of numerical noise
-compute_values <- function(states, counts) {
+compute_values <- function(states, counts, init, inflow, starting) {
   states_names <- get_state_names(states)
   state_values_names <- get_state_value_names(states)
+  
+  n_states <- length(states_names)
+  n_state_vals <- length(state_values_names)
   num_cycles <- nrow(counts)
-
+  
   ## combine the list of states into a single large array
   dims_array_1 <- c(
     num_cycles,
@@ -226,160 +329,38 @@ compute_values <- function(states, counts) {
   dims_array_2 <- dims_array_1 + c(0, 1, 0)
   
   state_val_array <- array(unlist(states), dim = dims_array_2)
-
+  
   ## get rid of markov_cycle
   mc_col <- match("markov_cycle", names(states[[1]]))
   state_val_array <- state_val_array[, -mc_col, , drop = FALSE]
-
+  
   ## put counts into a similar large array
   counts_mat <- array(unlist(counts[, states_names]),
                       dim = dims_array_1[c(1, 3, 2)])
   counts_mat <- aperm(counts_mat, c(1, 3, 2))
-
+  
   # multiply, sum, and add markov_cycle back in
   vals_x_counts <- state_val_array * counts_mat
-  wtd_sums <- rowSums(vals_x_counts, dims = 2)
-  res <- data.frame(markov_cycle = states[[1]]$markov_cycle, wtd_sums)
-  names(res)[-1] <- state_values_names
-
-  res
-}
-
-#' Expand States and Transition
-#' 
-#' @inherit eval_strategy
-#' @keywords internal
-#'   
-#' @return Expanded states, transitions, input and inflow 
-#'   (if they require expansion; otherwise return inputs
-#'   unchanged).
-#'   
-expand_if_necessary <- function(strategy, parameters, 
-                                cycles, init, method,
-                                expand_limit, inflow,
-                                strategy_name) {
-  uneval_transition <- get_transition(strategy)
-  uneval_states <- get_states(strategy)
-  to_expand <- NULL
+  wtd_sums <- rowSums(vals_x_counts, dims = 2) + starting * rowSums(inflow)
+  wtd_sums[1, ] <- wtd_sums[1, ] + sum(init) * starting[1, ]
   
-  i_parameters <- interpolate(parameters)
-  
-  i_uneval_transition <- interpolate(uneval_transition,
-                                     more = as_expr_list(i_parameters))
-  
-  i_uneval_states <- interpolate(uneval_states,
-                                 more = as_expr_list(i_parameters))
-  
-  
-  td_tm <- has_state_time(i_uneval_transition)
-  
-  td_st <- has_state_time(i_uneval_states)
-  
-  # no expansion if
-  expand <- any(c(td_tm, td_st))
-  
-  # because parameters are deleted if expand
-  old_parameters <- parameters
-  
-  if (expand) {
-    if (inherits(uneval_transition, "part_surv")) {
-      stop("Cannot use 'state_time' with partitionned survival.")
-    }
+  # Handle transitional costs
+  if(!is.null(attr(states, "transitions"))) {
     
-    uneval_transition <- i_uneval_transition
-    uneval_states <- i_uneval_states
-    
-    # parameters not needed anymore because of interp
-    parameters <- define_parameters()
-    
-    # from cells to cols
-    td_tm <- td_tm %>%
-      matrix(nrow = get_matrix_order(uneval_transition),
-             byrow = TRUE) %>%
-      apply(1, any)
-    
-    to_expand <- sort(unique(c(
-      get_state_names(uneval_transition)[td_tm],
-      get_state_names(uneval_states)[td_st]
-    )))
-    
-    message(
-      sprintf(
-        "%s: detected use of 'state_time', expanding state%s: %s.",
-        strategy_name,
-        plur(length(to_expand)),
-        paste(to_expand, collapse = ", ")
-      )
+    # Arrange trans counts into array to match state transitions
+    st_count_mat <- array(
+      rep(attr(counts, "transitions"), n_state_vals),
+      dim = c(n_states, n_states, num_cycles, n_state_vals)
     )
     
-    for (st in to_expand) {
-      init <- expand_state(init, state_name = st, cycles = expand_limit[st])
-      
-      inflow <- expand_state(inflow, state_name = st, cycles = expand_limit[st])
-    }
+    trans_values <- colSums(st_count_mat * attr(states, "transitions"), dim=2)
     
-    for (st in to_expand) {
-      uneval_transition <- expand_state(
-        x = uneval_transition,
-        state_pos = which(get_state_names(uneval_transition) == st),
-        state_name = st,
-        cycles = expand_limit[st]
-      )
-      
-      uneval_states <- expand_state(x = uneval_states,
-                                    state_name = st,
-                                    cycles = expand_limit[st])
-    }
+    wtd_sums <- wtd_sums + trans_values
+    
   }
   
-  parameters <- eval_parameters(parameters,
-                                cycles = cycles,
-                                strategy_name = strategy_name)
+  res <- data.frame(markov_cycle = states[[1]]$markov_cycle, wtd_sums)
+  names(res)[-1] <- state_values_names
   
-  # to retain values in case of expansion
-  if (expand) {
-    complete_parameters <- eval_parameters(structure(
-      c(lazyeval::lazy_dots(state_time = 1),
-        old_parameters),
-      class = class(old_parameters)
-    ),
-    cycles = 1,
-    strategy_name = strategy_name)
-  } else {
-    complete_parameters <- parameters[1,]
-  }
-  
-  e_init <- unlist(eval_init(x = init, parameters[1,]))
-  e_inflow <- eval_inflow(x = inflow, parameters)
-  e_starting_values <- unlist(
-    eval_starting_values(
-      x = strategy$starting_values,
-      parameters[1, ]))
-  n_indiv <- sum(e_init, unlist(e_inflow))
-  
-  if (any(is.na(e_init)) || any(is.na(e_inflow)) || any(is.na(e_starting_values))) {
-    stop("Missing values not allowed in 'init', 'inflow' or 'starting values'.")
-  }
-  
-  if (!any(e_init > 0)) {
-    stop("At least one init count must be > 0.")
-  }
-  
-  exp_cols <- list()
-  for (st in to_expand) {
-    exp_cols[[st]] <- sprintf(".%s_%i", st, seq_len(expand_limit[st] + 1))
-  }
-  
-  list(
-    uneval_transition = uneval_transition,
-    uneval_states = uneval_states,
-    init = e_init,
-    inflow = e_inflow,
-    starting_values = e_starting_values,
-    n_indiv = n_indiv,
-    parameters = parameters,
-    complete_parameters = complete_parameters,
-    actually_expanded_something = expand,
-    expanded_states = to_expand,
-    expansion_cols = exp_cols)
+  res
 }
