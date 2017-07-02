@@ -29,14 +29,15 @@ values.}
 
 \item{.dots}{Used to work around non-standard evaluation.}
 
-\item{.OBJECT}{An object of class \code{state}.}
+\item{.OBJECT}{An object of class \code{state_transition}.}
 }
 \value{
-An object of class \code{state} (actually a named
+An object of class \code{state_transition} (actually a named
 list of \code{lazy} expressions).
 }
 \description{
-Define the values characterising a Markov Model trasition into, out of, or between states.
+Define the values characterising a Markov Model trasition into,
+out of, or between states.
 }
 \details{
 As with \code{\link[=define_parameters]{define_parameters()}}, state transition values are

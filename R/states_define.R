@@ -63,7 +63,8 @@ modify_.state <- function(.OBJECT, .dots) {
 
 #' Define a Markov Model State Transition
 #' 
-#' Define the values characterising a Markov Model trasition into, out of, or between states.
+#' Define the values characterising a Markov Model trasition into,
+#' out of, or between states.
 #' 
 #' As with [define_parameters()], state transition values are
 #' defined sequentially. Later state definition can thus
@@ -82,13 +83,12 @@ modify_.state <- function(.OBJECT, .dots) {
 #' state.
 #' @param ... Name-value pairs of expressions defining state
 #'   values.
-#' @param .OBJECT An object of class `state`.
+#' @param .OBJECT An object of class `state_transition`.
 #' @param .dots Used to work around non-standard evaluation.
 #'   
-#' @return An object of class `state` (actually a named
+#' @return An object of class `state_transition` (actually a named
 #'   list of `lazy` expressions).
 #' @export
-#'   
 define_state_transition <- function(from = NA, to = NA, ...) {
   if(any(from[!is.na(from)] %in% to[!is.na(from)])) {
     stop("State transition may not include same state both in 'from' and 'to'.")
@@ -303,6 +303,47 @@ modify_.state_transition <- function(.OBJECT, .dots) {
   utils::modifyList(.OBJECT, .dots)
 }
 
+#' Define Markov Model State Transition List
+#' 
+#' Define the state transitions of a Markov model by combining 
+#' `state_transition` objects.
+#' 
+#' All states transitions should have the same value names
+#' as model states.
+#' 
+#' The `modify` function can modify existing state
+#' transitions or add new ones.
+#' 
+#' @param ... expressions defining model state transtiions.
+#' @param .OBJECT An `uneval_state_transition_list` object.
+#' @param .dots List of states, only used by 
+#'   `define_state_list_` to avoid using `...`.
+#'   
+#' @return An object of class `uneval_state_list` (a 
+#'   list of `state` objects).
+#'   
+#' @examples
+#' \dontrun{
+#' s1 <- define_state_transition(from = "A", cost = 1, util = 1)
+#' s2 <- define_state_transition(from = "B", cost = 3, util = .4)
+#' 
+#' states_trans_mod <- define_state_transition_list(
+#'   s1,
+#'   s2
+#' )
+#' 
+#' states_mod
+#' 
+#' s1_bis <- define_state_transition_list(from = "A", cost = 0, util = 1)
+#' s3 <- define_state(to = "A", cost = 10, util = .1)
+#' 
+#' modify(
+#'   states_mod,
+#'   s1_bis,
+#'   s3
+#' )
+#' }
+#'   
 #' @keywords internal
 define_state_transition_list <- function(...) {
   .dots <- list(...)
