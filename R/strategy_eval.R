@@ -271,19 +271,13 @@ compute_counts.eval_matrix <- function(x, init, inflow, ...) {
   # Sum over columns to get trace
   counts_array <- colSums(uncond_trans, dim=1) %>% t
   
-<<<<<<< HEAD
   # Create an indicator array for transitions representing inter-state
   # transitions and multiply by unconditional transition probs
-=======
-  # Create an indicator array for transitions representing state
-  # deparatures and multiply by unconditional transition probs
->>>>>>> Completed calculations of entry/exit counts in compute_counts
   zero_diag <- diag(1, n_state)
   zero_diag[ ,!attr(x,"entry")] <- 1
   zero_diag <- zero_diag %>%
     rep(n_cycle + 1) %>%
     array(c(n_state, n_state, n_cycle + 1))
-<<<<<<< HEAD
   trans_counts <- uncond_trans * (1 - zero_diag)
   
   # Convert counts to data_frames
@@ -296,36 +290,11 @@ compute_counts.eval_matrix <- function(x, init, inflow, ...) {
     state_names,
     NULL
   )
-=======
-  zero_diag_trans <- uncond_trans * (1 - zero_diag)
-  
-  # Sum entries, add inflow and init
-  entry_counts <- inflow + t(colSums(zero_diag_trans[ , ,-(n_cycle + 1), drop = F],2))
-  entry_counts[1, ] <- entry_counts[1, ] + init
-  
-  # Sum exits
-  exit_counts <- aperm(zero_diag_trans[ , ,-1, drop = F], c(2,1,3)) %>%
-    colSums(dim=1) %>%
-    t
-  
-  # Convert coutns to data_frames
-  counts_df <- dplyr::as.tbl(as.data.frame(counts_array))
-  colnames(counts_df) <- state_names
-  entries_df <- dplyr::as.tbl(as.data.frame(entry_counts))
-  colnames(entry_counts) <- state_names
-  exits_df <- dplyr::as.tbl(as.data.frame(exit_counts))
-  colnames(exits_df) <- state_names
->>>>>>> Completed calculations of entry/exit counts in compute_counts
   
   structure(
     counts_df,
     class = c("cycle_counts", class(counts_df)),
-<<<<<<< HEAD
     transitions = trans_counts[ , , -1, drop = F]
-=======
-    entry = entries_df,
-    exit = exits_df
->>>>>>> Completed calculations of entry/exit counts in compute_counts
   )
 }
 
