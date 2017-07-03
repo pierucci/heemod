@@ -718,3 +718,24 @@ eval_surv.lazy <- function(x, ...){
 eval_surv.character <- function(x, ...){
   eval_surv(eval(parse(text = x)), ...)
 }
+
+#' @rdname eval_surv
+#' @export
+eval_surv.surv_shift <- function(x, time, ...) {
+  
+  time_ <- time
+  time_ <- time_ - x$shift
+  ret <- rep(1, length(time_))
+  keep_me <- time_ >= 0
+  if(any(keep_me)){
+    time_ <- time_[keep_me]
+    ##check_cycle_inputs(time_, cycle_length)
+    ret[keep_me] <- eval_surv(
+      x$dist,
+      time = time_,
+      ...
+    ) 
+  }
+  
+  ret
+}
