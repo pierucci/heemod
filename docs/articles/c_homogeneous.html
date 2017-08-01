@@ -59,7 +59,7 @@
     <div class="page-header toc-ignore">
       <h1>Simple Markov Models (Homogeneous)</h1>
             
-            <h4 class="date">2017-05-09</h4>
+            <h4 class="date">2017-06-07</h4>
           </div>
 
     
@@ -153,9 +153,9 @@ state_A</code></pre></div>
 ## 
 ## cost_health = discount(2756, 0.06)
 ## cost_drugs = discount(dispatch_strategy(mono = cost_zido, comb = cost_zido + 
-## cost_total =     cost_lami), 0.06)
-## life_year = cost_health + cost_drugs
-## cost_health = 1</code></pre>
+##     cost_lami), 0.06)
+## cost_total = cost_health + cost_drugs
+## life_year = 1</code></pre>
 <p>The other states for the monotherapy treatment group can be specified in the same way:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">state_B &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(
     <span class="dt">cost_health =</span> <span class="kw"><a href="../reference/discount.html">discount</a></span>(<span class="dv">3052</span>, .<span class="dv">06</span>),

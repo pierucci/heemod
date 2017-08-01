@@ -59,6 +59,7 @@ test_that(
         .4, 1
       ), byrow = TRUE, ncol = 2)
     )
+    
     rsp2 <- define_psa(
       age_init ~ normal(60, 10),
       cost_init ~ normal(1000, 100),
@@ -66,6 +67,18 @@ test_that(
       correlation = define_correlation(age_init, cost_init, .4)
     )
     
+    rsp2_lazy <- define_psa_(
+      lazyeval::lazy_dots(
+        age_init ~ normal(60, 10),
+        cost_init ~ normal(1000, 100)
+      ),
+      correlation = define_correlation(age_init, cost_init, .4)
+    ) 
+    
+    expect_equal(
+      rsp2, 
+      rsp2_lazy
+    )
     set.seed(1)
     # with run_model result
     ndt1 <- run_psa(res2, psa = rsp1, N = 10)
@@ -84,6 +97,18 @@ test_that(
     x <- define_psa(
       rate1 + rate2 + rate3 ~ multinomial(10, 50, 40),
       a + b ~ multinomial(15, 30)
+    )
+    
+    x_lazy <- define_psa_(
+      lazyeval::lazy_dots(
+        rate1 + rate2 + rate3 ~ multinomial(10, 50, 40),
+        a + b ~ multinomial(15, 30)
+      )
+    )
+    
+    expect_equal(
+      x, 
+      x_lazy
     )
     
     set.seed(1)

@@ -14,6 +14,8 @@ vignette: >
 library(heemod)
 ```
 
+## Distributions
+
 The `heemod` package provides a number of ways to estimate transition probabilities from survival distributions.  Survival distributions can come from at least three different sources:
 
   * User-definded parametric distributions.
@@ -87,6 +89,8 @@ km_medium <- set_covariates(km_cov, group = "Medium")
 km_poor   <- set_covariates(km_cov, group = "Poor")
 ```
 
+## Operations
+
 Once defined, treatment effects of various types can be applied to any survival distribution:
 
   * Hazard ratio: `apply_hr()`.
@@ -101,7 +105,7 @@ km_medium_af <- apply_af(km_medium, af = 1.2)
 In addition, distributions can be combined using a variety of operations:
 
   * Join survival distributions together: `join()`.
-  * Pool two (or more) survival distributions: `pool()`.
+  * Mix two (or more) survival distributions: `mix()`.
   * Combine two (or more) survival distributions as independent risks: `add_hazards()`.
 
 ```{r}
@@ -110,7 +114,7 @@ km_poor_join <- join(
   fitcov_poor,
   at = 365
 )
-models_all <- pool(
+models_all <- mix(
   fitcov_good, fitcov_medium, fitcov_poor,
   weights = c(0.25, 0.25, 0.5)
 )
@@ -135,7 +139,7 @@ fit_cov %>%
     fitcov_poor,
     at = 3
   ) %>%
-  pool(
+  mix(
     fitcov_medium,
     weights = c(0.25, 0.75)
   ) %>%
@@ -145,16 +149,20 @@ fit_cov %>%
   compute_surv(time = 1:5)
 ```
 
+## Applications
+
+### Transition matrix
+
 For the example we define a simple model with only 1 strategy.
 
-```{r warning=FALSE, fig.width=6, fig.height=6}
+```{r fig.width=6, fig.height=6}
 param <- define_parameters(
   p1 = compute_surv(
     surv_dist_1,
     time = model_time # can also be state_time
   ),
-  p2 = km_medium %>%
-    join(fitcov_medium, at = 730) %>%
+  p2 = km_1 %>%
+    join(fit_w, at = 730) %>%
     compute_surv(
       time = model_time,
       cycle_length = 365  # time is in days in km_medium, in years in model_time
@@ -162,9 +170,9 @@ param <- define_parameters(
 )
 
 tm <- define_transition(
-  C, p1, 0,
-  0, C,  p2,
-  0, 0,  C
+  C, p1 - p2, p2,
+  0, C,       p2,
+  0, 0,       C
 )
 
 plot(tm)
@@ -187,18 +195,20 @@ stratTM <- define_strategy(
 resTM <- run_model(
   parameters = param,
   stratTM,
-  cycles = 10
+  cycles = 15,
+  cost = cost, effect = ut
 )
-
 ```
 
 ```{r fig.width=6, fig.height=4}
 plot(resTM)
 ```
 
+### Partitioned survival model
+
 A partitioned survival model can also be computed:
 
-```{r warning=FALSE, fig.width=6, fig.height=4}
+```{r fig.width=6, fig.height=4}
 ps <- define_part_surv(
   pfs = surv_dist_1,
   os  = km_1 %>%
@@ -213,7 +223,8 @@ stratPS <- define_strategy(
 
 resPS <- run_model(
   stratPS,
-  cycles = 10
+  cycles = 15,
+  cost = cost, effect = ut
 )
 
 plot(resPS)

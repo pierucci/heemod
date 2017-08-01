@@ -10,6 +10,7 @@ reference:
     - define_transition
     - define_part_surv
     - define_strategy
+    - define_starting_values
   - title: Parameters
     contents:
     - define_parameters
@@ -27,7 +28,6 @@ reference:
     - run_dsa
     - define_psa
     - distributions
-    - define_multinom
     - define_correlation
     - run_psa
     - export_savi
@@ -46,10 +46,10 @@ reference:
     - apply_hr
     - apply_or
     - add_hazards
-    - pool
-    - project
+    - mix
+    - join
     - set_covariates
-    - plot.surv_obj
+    - plot.surv_object
   - title: Calibration
     contents:
     - calibrate_model
@@ -65,6 +65,7 @@ reference:
     - probability
     - rescale_discount_rate
     - who_mortality
+    - reindent_transition
   - title: Other features
     contents:
     - cluster

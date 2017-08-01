@@ -72,7 +72,7 @@ eval_strategy_newdata <- function(x, strategy = 1, newdata) {
           )
       })
     )
-    res <- do.call("rbind", pieces)
+    res <- dplyr::bind_rows(pieces)
     rownames(res) <- NULL
     
   } else {

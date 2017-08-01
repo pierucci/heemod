@@ -239,8 +239,8 @@ eval_surv <- function(x, time, cycle_length = 1,
 #'   to predict.
 #' @param cycle_length The value of a Markov cycle in 
 #'   absolute time units.
-#' @param type either `prob`, for transition probabilities,
-#'   or `surv`, for survival
+#' @param type Either `prob`, for transition probabilities,
+#'   or `surv`, for survival.
 #' @param ... arguments passed to methods.
 #'   
 #' @return Returns either the survival probalities or
@@ -705,6 +705,11 @@ eval_surv.surv_dist <- function(x, time,
   ret
 }
 
+#' @rdname eval_surv
+#' @export
+eval_surv.surv_table <- function(x, time, ...){
+  look_up(data = x, time = time, bin = "time", value = "survival")
+}
 
 eval_surv.lazy <- function(x, ...){
   eval_surv(lazyeval::lazy_eval(x), ...)

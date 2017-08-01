@@ -16,7 +16,6 @@
 #' @param init numeric vector, same length as number of 
 #'   model states. Number of individuals in each model state
 #'   at the beginning.
-#' @param init_cost list init cost by strategy
 #' @param method Counting method.
 #' @param expand_limit A named vector of state expansion 
 #'   limits.
@@ -33,114 +32,33 @@
 #' @keywords internal
 eval_strategy <- function(strategy, parameters, cycles, 
                           init, method, expand_limit,
-                          inflow, init_cost, strategy_name) {
+                          inflow, strategy_name) {
   
   stopifnot(
     cycles > 0,
     length(cycles) == 1
   )
   
-  uneval_transition <- get_transition(strategy)
-  uneval_states <- get_states(strategy)
-  
-  i_parameters <- interp_heemod(parameters)
-  
-  uneval_transition <- interp_heemod(
-    uneval_transition,
-    more = as_expr_list(i_parameters)
-  )
-  
-  uneval_states <- interp_heemod(
-    uneval_states,
-    more = as_expr_list(i_parameters)
-  )
-  
-  td_tm <- has_state_time(uneval_transition)
-  td_st <- has_state_time(uneval_states)
-  expand <- any(c(td_tm, td_st))
-  
-  # because parameters are deleted
-  # parameters not needed anymore because of interp
-  old_parameters <- parameters
-  parameters <- define_parameters()
-  
-  if (expand) {
-    
-    if (inherits(uneval_transition, "part_surv")) {
-      stop("Cannot use 'state_time' with partitionned survival.")
-    }
-    
-    # from cells to cols
-    td_tm <- td_tm %>% 
-      matrix(
-        nrow = get_matrix_order(uneval_transition), 
-        byrow = TRUE
-      ) %>% 
-      apply(1, any)
-    
-    to_expand <- sort(unique(c(
-      get_state_names(uneval_transition)[td_tm],
-      get_state_names(uneval_states)[td_st]
-    )))
-    
-    message(sprintf(
-      "%s: detected use of 'state_time', expanding state%s: %s.",
-      strategy_name,
-      plur(length(to_expand)),
-      paste(to_expand, collapse = ", ")
-    ))
-    
-    for (st in to_expand) {
-      init <- expand_state(
-        init, state_name = st, cycles = expand_limit[st]
-      )
-      
-      inflow <- expand_state(
-        inflow, state_name = st, cycles = expand_limit[st]
-      )
-    }
-    
-    for (st in to_expand) {
-      uneval_transition <- expand_state(
-        x = uneval_transition,
-        state_pos = which(get_state_names(uneval_transition) == st),
-        state_name = st,
-        cycles = expand_limit[st]
-      )
-      
-      uneval_states <- expand_state(
-        x = uneval_states,
-        state_name = st,
-        cycles = expand_limit[st]
-      )
-    }
-  }
-  
-  parameters <- eval_parameters(
-    parameters,
-    cycles = cycles,
+  ## expand states if necessary, and retrieve values.   
+  ##  If no expansion, then it returns the same values
+  expanded <- expand_if_necessary(
+    strategy      = strategy,
+    parameters    = parameters, 
+    cycles        = cycles,
+    init          = init,
+    method        = method,
+    expand_limit  = expand_limit,
+    inflow        = inflow,
     strategy_name = strategy_name)
   
-  complete_parameters <- eval_parameters(
-    structure(
-      c(
-        lazyeval::lazy_dots(state_time = 1),
-        old_parameters),
-      class= class(old_parameters)),
-    cycles = 1,
-    strategy_name = strategy_name)
-  
-  e_init <- unlist(eval_init(x = init, parameters[1, ]))
-  e_inflow <- eval_inflow(x = inflow, parameters)
-  e_init_cost <- eval_init_cost(x = init_cost, parameters[1, ])
-  
-  if (any(is.na(e_init)) || any(is.na(e_inflow))) {
-    stop("Missing values not allowed in 'init' or 'inflow'.")
-  }
-  
-  if (! any(e_init > 0)) {
-    stop("At least one init count must be > 0.")
-  }
+  uneval_states <- expanded$uneval_states
+  uneval_transition <- expanded$uneval_transition
+  init <- expanded$init
+  inflow <- expanded$inflow
+  starting_values <- expanded$starting_values
+  n_indiv <- expanded$n_indiv
+  parameters <- expanded$parameters
+  actually_expanded_something <- expanded$actually_expanded_something
   
   states <- eval_state_list(uneval_states, parameters)
   
@@ -149,36 +67,35 @@ eval_strategy <- function(strategy, parameters, cycles,
   
   count_table <- compute_counts(
     x = transition,
-    init = e_init,
-    inflow = e_inflow
+    init = init,
+    inflow = inflow
   ) %>% 
     correct_counts(method = method)
   
   values <- compute_values(states, count_table)
-
-  if (expand) {
-    for (st in to_expand) {
-      exp_cols <- sprintf(".%s_%i", st, seq_len(expand_limit[st] + 1))
-      
-      count_table[[st]] <- rowSums(count_table[exp_cols])
-      count_table <- count_table[-which(names(count_table) %in% exp_cols)]
+  values[1, names(starting_values)] <- values[1, names(starting_values)] +
+    starting_values * n_indiv
+  
+  if (actually_expanded_something) {
+    for (st in expanded$expanded_states) {
+      count_table[[st]] <- rowSums(count_table[expanded$expansion_cols[[st]]])
+      count_table <- count_table[- which(names(count_table) %in% expanded$expansion_cols[[st]])]
     }
   }
   
   structure(
     list(
       parameters = parameters,
-      complete_parameters = complete_parameters,
+      complete_parameters = expanded$complete_parameters,
       transition = transition,
       states = states,
       counts = count_table,
       values = values,
-      e_init = e_init,
-      e_inflow = e_inflow,
-      n_indiv = sum(e_init, unlist(e_inflow)),
+      e_init = init,
+      e_inflow = inflow,
+      n_indiv = n_indiv,
       cycles = cycles,
-      expand_limit = expand_limit,
-      e_init_cost = e_init_cost
+      expand_limit = expand_limit
     ),
     class = c("eval_strategy")
   )
@@ -235,9 +152,7 @@ compute_counts <- function(x, ...) {
 }
 
 #' @export
-compute_counts.eval_matrix <- function(x, init,
-                                       inflow,
-                                       ...) {
+compute_counts.eval_matrix <- function(x, init, inflow, ...) {
   
   if (! length(init) == get_matrix_order(x)) {
     stop(sprintf(
@@ -295,6 +210,8 @@ compute_counts.eval_matrix <- function(x, init,
 #'   state value and one row per cycle.
 #'   
 #' @keywords internal
+## slightly harder to read than the original version, but much faster
+## identical results to within a little bit of numerical noise
 compute_values <- function(states, counts) {
   states_names <- get_state_names(states)
   state_values_names <- get_state_value_names(states)
@@ -326,4 +243,143 @@ compute_values <- function(states, counts) {
   names(res)[-1] <- state_values_names
 
   res
+}
+
+#' Expand States and Transition
+#' 
+#' @inherit eval_strategy
+#' @keywords internal
+#'   
+#' @return Expanded states, transitions, input and inflow 
+#'   (if they require expansion; otherwise return inputs
+#'   unchanged).
+#'   
+expand_if_necessary <- function(strategy, parameters, 
+                                cycles, init, method,
+                                expand_limit, inflow,
+                                strategy_name) {
+  uneval_transition <- get_transition(strategy)
+  uneval_states <- get_states(strategy)
+  to_expand <- NULL
+  
+  i_parameters <- interpolate(parameters)
+  
+  i_uneval_transition <- interpolate(uneval_transition,
+                                     more = as_expr_list(i_parameters))
+  
+  i_uneval_states <- interpolate(uneval_states,
+                                 more = as_expr_list(i_parameters))
+  
+  
+  td_tm <- has_state_time(i_uneval_transition)
+  
+  td_st <- has_state_time(i_uneval_states)
+  
+  # no expansion if
+  expand <- any(c(td_tm, td_st))
+  
+  # because parameters are deleted if expand
+  old_parameters <- parameters
+  
+  if (expand) {
+    if (inherits(uneval_transition, "part_surv")) {
+      stop("Cannot use 'state_time' with partitionned survival.")
+    }
+    
+    uneval_transition <- i_uneval_transition
+    uneval_states <- i_uneval_states
+    
+    # parameters not needed anymore because of interp
+    parameters <- define_parameters()
+    
+    # from cells to cols
+    td_tm <- td_tm %>%
+      matrix(nrow = get_matrix_order(uneval_transition),
+             byrow = TRUE) %>%
+      apply(1, any)
+    
+    to_expand <- sort(unique(c(
+      get_state_names(uneval_transition)[td_tm],
+      get_state_names(uneval_states)[td_st]
+    )))
+    
+    message(
+      sprintf(
+        "%s: detected use of 'state_time', expanding state%s: %s.",
+        strategy_name,
+        plur(length(to_expand)),
+        paste(to_expand, collapse = ", ")
+      )
+    )
+    
+    for (st in to_expand) {
+      init <- expand_state(init, state_name = st, cycles = expand_limit[st])
+      
+      inflow <- expand_state(inflow, state_name = st, cycles = expand_limit[st])
+    }
+    
+    for (st in to_expand) {
+      uneval_transition <- expand_state(
+        x = uneval_transition,
+        state_pos = which(get_state_names(uneval_transition) == st),
+        state_name = st,
+        cycles = expand_limit[st]
+      )
+      
+      uneval_states <- expand_state(x = uneval_states,
+                                    state_name = st,
+                                    cycles = expand_limit[st])
+    }
+  }
+  
+  parameters <- eval_parameters(parameters,
+                                cycles = cycles,
+                                strategy_name = strategy_name)
+  
+  # to retain values in case of expansion
+  if (expand) {
+    complete_parameters <- eval_parameters(structure(
+      c(lazyeval::lazy_dots(state_time = 1),
+        old_parameters),
+      class = class(old_parameters)
+    ),
+    cycles = 1,
+    strategy_name = strategy_name)
+  } else {
+    complete_parameters <- parameters[1,]
+  }
+  
+  e_init <- unlist(eval_init(x = init, parameters[1,]))
+  e_inflow <- eval_inflow(x = inflow, parameters)
+  e_starting_values <- unlist(
+    eval_starting_values(
+      x = strategy$starting_values,
+      complete_parameters[1, ]))
+  n_indiv <- sum(e_init, unlist(e_inflow))
+  
+  if (any(is.na(e_init)) || any(is.na(e_inflow)) || any(is.na(e_starting_values))) {
+    stop("Missing values not allowed in 'init', 'inflow' or 'starting values'.")
+  }
+  
+  if (!any(e_init > 0)) {
+    stop("At least one init count must be > 0.")
+  }
+  
+  exp_cols <- list()
+  for (st in to_expand) {
+    exp_cols[[st]] <- sprintf(".%s_%i", st, seq_len(expand_limit[st] + 1))
+  }
+  
+  list(
+    uneval_transition = uneval_transition,
+    uneval_states = uneval_states,
+    init = e_init,
+    inflow = e_inflow,
+    starting_values = e_starting_values,
+    n_indiv = n_indiv,
+    parameters = parameters,
+    complete_parameters = complete_parameters,
+    actually_expanded_something = expand,
+    expanded_states = to_expand,
+    expansion_cols = exp_cols)
 }

@@ -138,7 +138,8 @@ reference value that is directly inferior.</p>
   <span class='kw'>arg1</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"A"</span>, <span class='st'>"B"</span>, <span class='st'>"C"</span>, <span class='st'>"B"</span>, <span class='st'>"A"</span>),
   <span class='kw'>arg2</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>3.2</span>, <span class='fl'>3.0</span>, <span class='fl'>5</span>),
   <span class='kw'>arg3</span> <span class='kw'>=</span> <span class='fu'>c</span>(-<span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>)
-)</div><div class='output co'>#&gt; <span class='warning'>Warning: Some values were not found, returning missing data.</span></div><div class='output co'>#&gt; [1] NA  2 NA 20 NA</div><div class='input'>
+)</div><div class='output co'>#&gt; <span class='warning'>Warning: Some values were not found, returning missing data:</span>
+#&gt; <span class='warning'>arguments to look_up: arg1 = A, arg2 = B, arg3 = C, arg1 = B, arg2 = A, arg3 = 1, arg1 = 1, arg2 = 3.2, arg3 = 3, arg1 = 5, arg2 = -1, arg3 = 1, arg1 = 1, arg2 = 2, arg3 = 3, value = value</span></div><div class='output co'>#&gt; [1] NA  2 NA 20 NA</div><div class='input'>
 <span class='co'># binning doesnt catch values lesser than the smaller</span>
 <span class='co'># reference value</span>
 <span class='fu'>look_up</span>(
@@ -148,7 +149,8 @@ reference value that is directly inferior.</p>
   <span class='kw'>arg2</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>3.2</span>, <span class='fl'>3.0</span>, <span class='fl'>5</span>),
   <span class='kw'>arg3</span> <span class='kw'>=</span> <span class='fu'>c</span>(-<span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>),
   <span class='kw'>bin</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)</div><div class='output co'>#&gt; <span class='warning'>Warning: Some values were not found, returning missing data.</span></div><div class='output co'>#&gt; [1] NA  2  9 20 34</div><div class='input'><span class='co'># bin can alos be given as a charater vector</span>
+)</div><div class='output co'>#&gt; <span class='warning'>Warning: Some values were not found, returning missing data:</span>
+#&gt; <span class='warning'>arguments to look_up: arg1 = A, arg2 = B, arg3 = C, arg1 = B, arg2 = A, arg3 = 1, arg1 = 1, arg2 = 3.2, arg3 = 3, arg1 = 5, arg2 = -1, arg3 = 1, arg1 = 1, arg2 = 2, arg3 = 3, value = value</span></div><div class='output co'>#&gt; [1] NA  2  9 20 34</div><div class='input'><span class='co'># bin can alos be given as a charater vector</span>
 <span class='co'># to avoid binning all numeric variables</span>
 <span class='fu'>look_up</span>(
   <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>tempdf</span>,
@@ -157,13 +159,15 @@ reference value that is directly inferior.</p>
   <span class='kw'>arg2</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>3.2</span>, <span class='fl'>3.0</span>, <span class='fl'>5</span>),
   <span class='kw'>arg3</span> <span class='kw'>=</span> <span class='fu'>c</span>(-<span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>),
   <span class='kw'>bin</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"arg2"</span>)
-)</div><div class='output co'>#&gt; <span class='warning'>Warning: Some values were not found, returning missing data.</span></div><div class='output co'>#&gt; [1] NA  2  9 20 34</div><div class='input'>
+)</div><div class='output co'>#&gt; <span class='warning'>Warning: Some values were not found, returning missing data:</span>
+#&gt; <span class='warning'>arguments to look_up: arg1 = A, arg2 = B, arg3 = C, arg1 = B, arg2 = A, arg3 = 1, arg1 = 1, arg2 = 3.2, arg3 = 3, arg1 = 5, arg2 = -1, arg3 = 1, arg1 = 1, arg2 = 2, arg3 = 3, value = value</span></div><div class='output co'>#&gt; [1] NA  2  9 20 34</div><div class='input'>
 <span class='no'>age_related_df</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>age</span> <span class='kw'>=</span> <span class='fl'>10</span> * <span class='fl'>0</span>:<span class='fl'>9</span>, <span class='kw'>decade</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>10</span>)
 
 <span class='fu'>look_up</span>(<span class='no'>age_related_df</span>, <span class='kw'>age</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>0</span>, <span class='fl'>10</span>, <span class='fl'>20</span>), <span class='kw'>value</span> <span class='kw'>=</span> <span class='st'>"decade"</span>)</div><div class='output co'>#&gt; [1] 1 2 3</div><div class='input'>
 <span class='co'># binning might help in the situation</span>
 <span class='fu'>look_up</span>(<span class='no'>age_related_df</span>, <span class='kw'>age</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>5</span>, <span class='fl'>15</span>, <span class='fl'>23.5</span>),
-        <span class='kw'>value</span> <span class='kw'>=</span> <span class='st'>"decade"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Some values were not found, returning missing data.</span></div><div class='output co'>#&gt; [1] NA NA NA</div><div class='input'><span class='fu'>look_up</span>(<span class='no'>age_related_df</span>, <span class='kw'>age</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>5</span>, <span class='fl'>15</span>, <span class='fl'>23.5</span>),
+        <span class='kw'>value</span> <span class='kw'>=</span> <span class='st'>"decade"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Some values were not found, returning missing data:</span>
+#&gt; <span class='warning'>arguments to look_up: age = 5, age = 15, age = 23.5, value = decade</span></div><div class='output co'>#&gt; [1] NA NA NA</div><div class='input'><span class='fu'>look_up</span>(<span class='no'>age_related_df</span>, <span class='kw'>age</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>5</span>, <span class='fl'>15</span>, <span class='fl'>23.5</span>),
         <span class='kw'>value</span> <span class='kw'>=</span> <span class='st'>"decade"</span>, <span class='kw'>bin</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] 1 2 3</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

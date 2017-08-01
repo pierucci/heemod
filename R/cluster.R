@@ -78,7 +78,12 @@ use_cluster <- function(num_cores, cluster = NULL, close = TRUE) {
     if (! is.wholenumber(num_cores))
       stop("'num_cores' is not a whole number.")
     
-    cl <- parallel::makeCluster(num_cores)
+    on_windows <- grepl("Windows", utils::sessionInfo()$running, 
+                        ignore.case = TRUE)
+    cluster_type <- 
+      ifelse(on_windows, "PSOCK", "FORK")
+    
+    cl <- parallel::makeCluster(num_cores, type = cluster_type)
     parallel::clusterEvalQ(cl, library(heemod))
     parallel::clusterEvalQ(cl, library(dplyr))
     
