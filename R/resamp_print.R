@@ -24,7 +24,7 @@
 #' @return A `ggplot2` object.
 #' @export
 #' 
-plot.psa <- function(x, type = c("ce", "ac", "cov", "evpi", "conv"),
+plot.psa <- function(x, type = c("ce", "ac", "cov", "evpi"),
                      max_wtp = 1e5,
                      n = 100, log_scale = TRUE,
                      diff = FALSE, threshold,
@@ -35,13 +35,6 @@ plot.psa <- function(x, type = c("ce", "ac", "cov", "evpi", "conv"),
     type,
     ce = {
       tab <- scale(x)
-      
-      base_model <- x$model$run_model
-      tab <- tab[, c('.cost', '.effect', '.strategy_names', '.index')]
-      tab <- tab %>% rbind(c(diff(as.matrix(base_model[1:2, c('.cost', '.effect')])), 0, 0))
-      tab[nrow(tab), 3] <- 'Base'
-      tab[1:(nrow(tab)-1), 3] <- 'PSA'
-      
       res <- ggplot2::ggplot(data = tab,
                              ggplot2::aes_string(
                                x = ".effect",
@@ -128,18 +121,6 @@ plot.psa <- function(x, type = c("ce", "ac", "cov", "evpi", "conv"),
         ggplot2::ylab("Variance explained (%)") +
         ggplot2::coord_flip()
     },
-    conv = {
-      tab <- scale(x)
-      tab <- tab %>% dplyr::mutate(.icer = cumsum(.cost/.effect) / .index) 
-      ggplot2::ggplot(tab,
-                      ggplot2::aes_string(
-                        x = ".index",
-                        y = ".icer"
-                      )) +
-        ggplot2::geom_line() +
-        ggplot2::xlab(".index") +
-        ggplot2::ylab(".cost/.effect")
-    },
     stop("Unknown plot type."))
 }
 
@@ -164,7 +145,6 @@ scale.psa <- function(x, center = TRUE, scale = TRUE) {
         .cost = ~ (.cost - sum(.cost * (.strategy_names == .bm))),
         .effect = ~ (.effect - sum(.effect * (.strategy_names == .bm)))
       ) %>% 
-      dplyr::filter(.strategy_names != .bm) %>%
       dplyr::ungroup()
   }
   
