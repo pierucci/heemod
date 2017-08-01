@@ -29,14 +29,14 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
 #' 
 #' @keywords internal
 discount <- function(x, r, first = FALSE, period = 1) {
-  if (length(r) > 1) r <- r[1]
+  if (length(r) > 1 & length(unique(r)) == 1) r <- r[1]
   stopifnot(
     r >= 0,
     r <= 1,
     period > 0
   )
   
-  dr <- trunc((seq_along(x) - (1 - isTRUE(first))) / period)
+  dr <- trunc((seq_along(x) - (1 - isTRUE(first)*period)) / period)
   x / (1 + r) ^ dr
 }
 
