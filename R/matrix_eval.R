@@ -118,12 +118,17 @@ eval_transition.uneval_matrix <- function(x, parameters, expand = NULL) {
   
   nrow_param = nrow(parameters)
   
+  eval_trans_probs <- parameters %>%
+    dplyr::group_by_("state_time") %>%
+    dplyr::mutate_(.dots = x) %>%
+    dplyr::ungroup()
+  
   trans_table <- tibble::tibble(
     model_time = rep(parameters$model_time, times = n_state^2),
     state_time = rep(parameters$state_time, times = n_state^2),
     .from = rep(state_names, each = n_state * nrow_param),
     .to = rep(state_names, times = n_state, each = nrow_param),
-    .value = unlist(dplyr::mutate_(parameters, .dots = x)[names(x)])
+    .value = unlist(eval_trans_probs[names(x)])
   ) %>%
     dplyr::left_join(
       dplyr::transmute(

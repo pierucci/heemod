@@ -28,10 +28,11 @@ eval_parameters <- function(x, cycles = 1,
   
   # other datastructure?
   res <- try(
-    dplyr::mutate_(
-      start_tibble,
-      .dots = x
-    ), silent = TRUE
+    start_tibble %>%
+    dplyr::group_by_("state_time") %>%
+    dplyr::mutate_(.dots = x) %>%
+    dplyr::ungroup(),
+    silent = TRUE
   )
   
   if ((use_fn <- options()$heemod.inf_parameter) != "ignore") {
@@ -90,7 +91,9 @@ eval_init <- function(x, parameters, expand) {
   
   to_keep <- names(x)
   
-  init_df <- dplyr::mutate_(.data = parameters %>% dplyr::filter(model_time == 1), .dots = x) %>%
+  init_df <- parameters %>%
+    dplyr::filter(model_time == 1) %>%
+    dplyr::mutate_(.dots = x) %>%
     .[c("state_time", to_keep)] %>%
     reshape2::melt(
       id.vars = c("state_time"),
@@ -124,10 +127,12 @@ eval_starting_values <- function(x, parameters) {
   
   to_keep <- names(x)
   
-  start_df <- dplyr::mutate_(
-    .data = parameters %>% dplyr::filter(state_time == 1),
-    .dots = x
-  )[to_keep]
+  start_df <- parameters %>%
+    dplyr::filter(state_time == 1) %>%
+    dplyr::mutate_(
+      .dots = x
+    ) %>%
+    .[to_keep]
   
   start_df[nrow(start_df), ] <- 0
   
@@ -141,7 +146,10 @@ eval_inflow <- function(x, parameters, expand) {
   .state <- .limit <- state_time <- .value <- NULL
   
   to_keep <- names(x)
-  inflow_df <- dplyr::mutate_(.data = parameters, .dots = x)[c("model_time", "state_time", to_keep)] %>%
+  inflow_df <- parameters %>%
+    dplyr::mutate_(.dots = x) %>%
+    dplyr::ungroup() %>%
+    .[c("model_time", "state_time", to_keep)] %>%
     reshape2::melt(
       id.vars = c("model_time", "state_time"),
       variable.name = ".state",

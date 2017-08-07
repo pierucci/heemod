@@ -45,7 +45,9 @@ eval_state_list <- function(x, parameters, expand = NULL) {
     
     # bottleneck!
     parameters %>%
+      dplyr::group_by_("state_time") %>%
       dplyr::mutate_(.dots = obj) %>%
+      dplyr::ungroup() %>%
       dplyr::mutate(.state = state_names[i]) %>%
       .[c("markov_cycle", "state_time", ".state", var_names)]
     
