@@ -240,10 +240,45 @@ test_that("With state time expansion", {
     )
   )
   
+  strat4 <- define_strategy(
+    transition = trans,
+    define_state_transition(
+      from = NA,
+      to = "B",
+      cost_med = 0,
+      cost_health = discount(10000, 0.035),
+      ly = 0
+    ),
+    "A" = define_state(
+      cost_med = discount(1000, 0.035),
+      cost_health = 0,
+      ly = discount(1, 0.035)
+    ),
+    "B" = define_state(
+      cost_med = 0,
+      cost_health = 0,
+      ly = discount(1, 0.035)
+    ),
+    "C" = define_state(
+      cost_med = 0,
+      cost_health = 0,
+      ly = 0
+    ),
+    define_state_transition(
+      from = "A",
+      to = "C",
+      cost_med = 0,
+      cost_health = discount(10000, 0.035),
+      ly = 0
+    )
+  )
+  
+  
   res_mod <- run_model(
     strat = strat,
     strat2 = strat2,
     strat3 = strat3,
+    strat4 = strat4,
     parameters = par,
     cycles = 10,
     cost = cost_med + cost_health,
@@ -253,7 +288,7 @@ test_that("With state time expansion", {
     state_time_limit = c(A = 3)
   )
   
-  expect_equal(res_mod$run_model$.cost, c(10510.47, 10510.47, 10510.47), tolerance=1e-2)
+  expect_equal(res_mod$run_model$.cost, c(10510.47, 10510.47, 10510.47, 12450.39), tolerance=1e-2)
   
 })
 

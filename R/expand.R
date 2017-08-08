@@ -61,12 +61,6 @@ has_state_time.state_transition <- function(x, ...) {
   any(unlist(lapply(x, function(y) "state_time" %in% all.vars(y$expr))))
 }
 
-substitute_dots <- function(.dots, .values) {
-  lazyeval::as.lazy_dots(
-    lapply(.dots, lazyeval::interp, .values = .values)
-  )
-}
-
 #' Convert Lazy Dots to Expression List
 #' 
 #' This function is used by [interpolate()].

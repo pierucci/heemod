@@ -811,6 +811,48 @@ test_that(
 )
 
 test_that(
+  "Running model from files works with state transitions.", {
+    result <- run_model_tabular(
+      location = system.file("tabular/test/thr_trans", package = "heemod"),
+      run_psa = TRUE, run_demo = TRUE,
+      save = TRUE, overwrite = TRUE
+    )
+    
+    expect_identical(
+      names(result),
+      c("models", "model_runs", "dsa",      
+        "psa","demographics")
+    )
+    
+    expect_output(
+      print(result$model_runs),
+      "-224.3278   0.04426563 -5067.765",
+      fixed = TRUE
+    )
+    
+    expect_output(
+      print(result$dsa),
+      "A sensitivity analysis on 6 parameters.",
+      fixed = TRUE
+    )
+    
+    expect_output(
+      print(result$demographics),
+      "An analysis re-run on 8 parameter sets.",
+      fixed = TRUE
+    )
+    
+    plot(result$demographics, type = "counts")
+    plot(result$demographics, type = "values", value = "cost")
+    plot(result$demographics, type = "values", 
+         value = c("cost", "qaly"), panels = "by_value", free_y = TRUE)
+    
+  }
+)
+
+
+
+test_that(
   "safe conversion works", {
     
     expect_error(
@@ -821,4 +863,6 @@ test_that(
     )
   }
 )
+
+
 
