@@ -2,49 +2,46 @@
 % Please edit documentation in R/survival_eval.R
 \name{eval_surv}
 \alias{eval_surv}
+\alias{eval_surv}
+\alias{compute_surv_}
 \alias{eval_surv.survfit}
 \alias{eval_surv.flexsurvreg}
 \alias{eval_surv.surv_model}
 \alias{eval_surv.surv_projection}
 \alias{eval_surv.surv_pooled}
 \alias{eval_surv.surv_ph}
+\alias{eval_surv.surv_shift}
 \alias{eval_surv.surv_aft}
 \alias{eval_surv.surv_po}
 \alias{eval_surv.surv_add_haz}
 \alias{eval_surv.surv_dist}
 \title{Evaluate Survival Distributions}
 \usage{
-eval_surv(x, time, cycle_length = 1, type = c("prob", "surv"), ...)
+eval_surv(x, time, ...)
 
-\method{eval_surv}{survfit}(x, time, cycle_length = 1, type = c("prob",
-  "surv"), ...)
+compute_surv_(x, time, cycle_length = 1, type = c("prob", "survival"), ...)
 
-\method{eval_surv}{flexsurvreg}(x, time, cycle_length = 1, type = c("prob",
-  "surv"), ...)
+\method{eval_surv}{survfit}(x, time, ...)
 
-\method{eval_surv}{surv_model}(x, time, cycle_length = 1, type = c("prob",
-  "surv"), ...)
+\method{eval_surv}{flexsurvreg}(x, time, ...)
 
-\method{eval_surv}{surv_projection}(x, time, cycle_length = 1,
-  type = c("prob", "surv"), ...)
+\method{eval_surv}{surv_model}(x, time, ...)
 
-\method{eval_surv}{surv_pooled}(x, time, cycle_length = 1, type = c("prob",
-  "surv"), ...)
+\method{eval_surv}{surv_projection}(x, time, ...)
 
-\method{eval_surv}{surv_ph}(x, time, cycle_length = 1, type = c("prob",
-  "surv"), ...)
+\method{eval_surv}{surv_pooled}(x, time, ...)
 
-\method{eval_surv}{surv_aft}(x, time, cycle_length = 1, type = c("prob",
-  "surv"), ...)
+\method{eval_surv}{surv_ph}(x, time, ...)
 
-\method{eval_surv}{surv_po}(x, time, cycle_length = 1, type = c("prob",
-  "surv"), ...)
+\method{eval_surv}{surv_shift}(x, time, ...)
 
-\method{eval_surv}{surv_add_haz}(x, time, cycle_length = 1, type = c("prob",
-  "surv"), ...)
+\method{eval_surv}{surv_aft}(x, time, ...)
 
-\method{eval_surv}{surv_dist}(x, time, cycle_length = 1, type = c("prob",
-  "surv"), ...)
+\method{eval_surv}{surv_po}(x, time, ...)
+
+\method{eval_surv}{surv_add_haz}(x, time, ...)
+
+\method{eval_surv}{surv_dist}(x, time, ...)
 }
 \arguments{
 \item{x}{A survival distribution object}
@@ -52,13 +49,13 @@ eval_surv(x, time, cycle_length = 1, type = c("prob", "surv"), ...)
 \item{time}{The \code{model_time} or \code{state_time} for which
 to predict.}
 
+\item{...}{arguments passed to methods.}
+
 \item{cycle_length}{The value of a Markov cycle in
 absolute time units.}
 
 \item{type}{Either \code{prob}, for transition probabilities,
 or \code{surv}, for survival.}
-
-\item{...}{arguments passed to methods.}
 }
 \value{
 Returns either the survival probalities or

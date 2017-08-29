@@ -5,7 +5,7 @@
 \alias{project}
 \alias{project_}
 \alias{join_}
-\title{Join Beyond a Survival Distribution with Another}
+\title{Project Beyond a Survival Distribution with Another}
 \usage{
 join(..., at)
 
@@ -13,22 +13,22 @@ project(...)
 
 project_(...)
 
-join_(.dots, at)
+join_(dots, at)
 }
 \arguments{
 \item{...}{Survival distributions to be used in the
-junction.}
+projection.}
 
 \item{at}{A vector of times corresponding to the cut
 point(s) to be used.}
 
-\item{.dots}{Used to work around non-standard evaluation.}
+\item{dots}{Used to work around non-standard evaluation.}
 }
 \value{
 A \code{surv_projection} object.
 }
 \description{
-Join survival from a survival distribution using one
+Project survival from a survival distribution using one
 or more survival distributions using the specified cut points.
 }
 \examples{
