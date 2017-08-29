@@ -173,11 +173,18 @@ apply_hr <- function(dist, hr, log_hr = FALSE) {
     is.finite(hr),
     log_hr | hr > 0
   )
+  if(log_hr) hr <- exp(hr)
+  if(hr == 1) return(dist)
+  if(inherits(dist, "surv_ph")){
+    dist$hr <- dist$hr * hr
+    if(dist$hr == 1) return(dist$dist)
+    return(dist)
+  }
   
   structure(
     list(
       dist = dist,
-      hr = ifelse(log_hr, exp(hr), hr)
+      hr = hr
     ),
     class = c("surv_object", "surv_ph")
   )
@@ -208,10 +215,18 @@ apply_af <- function(dist, af, log_af = FALSE) {
     log_af | af > 0
   )
   
+  if(log_af) af <- exp(af)
+  if(af == 1) return(dist)
+  if(inherits(dist, "surv_aft")){
+    dist$af <- dist$af * af
+    if(dist$af == 1) return(dist$dist)
+    return(dist)
+  }
+  
   structure(
     list(
       dist = dist,
-      af = ifelse(log_af, exp(af), af)
+      af = af
     ),
     class = c("surv_object", "surv_aft")
   )
@@ -242,10 +257,18 @@ apply_or = function(dist, or, log_or = FALSE) {
     log_or | or > 0
   )
   
+  if(log_or) or <- exp(or)
+  if(or == 1) return(dist)
+  if(inherits(dist, "surv_po")){
+    dist$or <- dist$or * or
+    if(dist$or == 1) return(dist$dist)
+    return(dist)
+  }
+  
   structure(
     list(
       dist = dist,
-      or = ifelse(log_or, exp(or), or)
+      or = or
     ),
     class = c("surv_object", "surv_po")
   )
@@ -342,6 +365,48 @@ set_covariates_ <- function(dist, covariates, data = NULL) {
     class = c("surv_object", "surv_model")
   )
 }
+
+#' Apply a time shift
+#' 
+#' Shift a survival distribution in time.
+#' 
+#' @param dist A survival distribution.
+#' @param shift A time shift to be applied.
+#'   
+#' @return A `surv_shift` object.
+#' 
+#' @details A positive shift moves the fit backwards in time.   That is,
+#'   a shift of 4 will cause time 5 to be evaluated as time 1, and so on.
+#'   If `shift == 0`, `dist` is returned unchanged.
+#' @export
+#' 
+#' @examples
+#' 
+#' dist1 <- heemod::define_survival(distribution = "gamma", rate = 0.25, shape = 3)
+#' shift_dist <- apply_shift(dist1, 4)
+#' heemod::compute_surv(dist1, 1:10)
+#' heemod::compute_surv(shift_dist, 1:10)
+apply_shift = function(dist, shift) {
+  
+  stopifnot(
+    length(shift) == 1,
+    is.finite(shift)
+  )
+  if(shift == 0) return(dist)
+  if(inherits(dist, "surv_shift")){
+    dist$shift <- dist$shift + shift
+    if(dist$shift == 0) return(dist$dist)
+    else return(dist)
+  }  
+  structure(
+    list(
+      dist = dist,
+      shift = shift
+    ),
+    class = "surv_shift"
+  )
+}
+
 
 #' Plot general survival models
 #' 
