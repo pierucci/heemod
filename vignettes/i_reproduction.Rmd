@@ -179,14 +179,15 @@ param <- define_parameters(
     rrr = .04,
     
     # parameters for calculating primary revision rate
-    cons = -5.49094,
-    ageC = -.0367,
+    cons = -5.490935,
+    ageC = -.0367022,
     maleC = .768536,
     lambda = exp(cons + ageC * age_init + maleC * sex),
-    gamma = 1.45367786,
-    
-    rrNP1 = .260677,
-    
+    lngamma = 0.3740968,
+    gamma = exp(lngamma),
+    lnrrNP1 = -1.344474,
+    rrNP1 = exp(lnrrNP1),
+   
     # revision probability of primary procedure
     standardRR = 1 - exp(lambda * ((markov_cycle - 1) ^ gamma -
                                      markov_cycle ^ gamma)),
