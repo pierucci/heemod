@@ -37,6 +37,7 @@ will then need to be defined like any other).
 
 The input data frame is expected to contain state
 information for all the models you will use in an
-analysis.
+analysis. For more information see the vignette:
+\code{vignette("file-input", package = "heemod")}.
 }
 \keyword{internal}

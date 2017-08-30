@@ -84,8 +84,8 @@ update.run_model <- function(object, newdata, ...) {
     list_res[[n]]$.index <- seq_len(nrow(newdata))
   }
   
-  res <- Reduce(dplyr::bind_rows, list_res)
-  
+  res <- 
+    dplyr::bind_rows(list_res)
   suppressMessages({
     res_total <- res %>% 
       dplyr::rowwise() %>% 
@@ -275,8 +275,8 @@ summary.updated_model <- function(object, ...) {
     )
   }
   
-  tab_res <- Reduce(rbind, list_res)
-  
+  tab_res <- 
+    do.call("rbind", list_res)
   tab_res$Value <- tab_res$Value %>% 
     factor(
       levels = c(".cost", ".effect",

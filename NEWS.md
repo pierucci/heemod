@@ -7,12 +7,14 @@
 ### New features
 
   * Starting values with `define_starting_values()`.
-  * Check for comma as a deciaml separator in tabular data.
+  * Check for comma as a decimal separator in tabular data.
   * Auto-reindent transition matrices with `reindent_transition()`.
+  * Discounting per year with the `period` argument.
 
 ### Bugfixes
 
   * Better error-checking in multinomial parameters definition.
+  * Cleaner `define_psa()` backend code, variables can now be used to define distributin parameters.
   * Handle cases when parameters depend on `state_time` but thoses parameters are not used by a strategy.
   * Empty calls to `modify()` are supported.
   * Fix error in survival vignette.

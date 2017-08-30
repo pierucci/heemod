@@ -143,7 +143,6 @@ test_that(
     )
   }
 )
-
 test_that(
   "we correctly report parameter evaluation errors", {
     par1 <- define_parameters(

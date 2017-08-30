@@ -1,0 +1,6 @@
+treatment,set_name,condition,time_subtract
+A,all,TRUE,
+B,all,TRUE,
+A,GT50,time > 50,50
+B,GT50,time > 50,50
+B,B5,biomarker > 0.5,0

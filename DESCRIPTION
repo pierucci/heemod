@@ -3,7 +3,7 @@ Title: Models for Health Economic Evaluation
 Version: 0.9.1.9004
 Authors@R: c(
     person("Antoine", "Filipovic-Pierucci", email = "pierucci@gmail.com", role = c("aut", "cre")),
-    person("Kevin", "Zarca", role = "ctb"),
+    person("Kevin", "Zarca", role = "aut"),
     person("Matthew", "Wiener", role = "ctb"),
     person("Zdenek", "Kabat", role = "ctb"),
     person("Vojtech", "Filipec", role = "ctb"),
@@ -43,6 +43,7 @@ Suggests:
     Hmisc,
     knitr,
     logitnorm,
+    lpSolve,
     mgcv,
     optimx,
     parallel,
@@ -52,7 +53,8 @@ Suggests:
     stringr,
     survival,
     testthat,
-    triangle
+    triangle,
+    XLConnect
 URL: https://github.com/pierucci/heemod, https://pierucci.org
 BugReports: https://github.com/pierucci/heemod/issues
 Roxygen: list(markdown = TRUE)

@@ -26,9 +26,8 @@
 #' @example inst/examples/example_look_up.R
 look_up <- function(data, ..., bin = FALSE, value = "value") {
   
-  stopifnot(
-    inherits(data, "data.frame")
-  )
+  if(!inherits(data, "data.frame"))
+    stop("'data' must be a data.frame")  
   
   data <- clean_factors(data)
   
@@ -66,7 +65,7 @@ look_up <- function(data, ..., bin = FALSE, value = "value") {
     
     if (any(pb <- ! bin %in% num_vars)) {
       stop(sprintf(
-        "Some variables in 'bin' are not numeric: %s.",
+        "Some variables in 'bin' are not numeric in the selection data: %s.",
         paste(bin[pb], collapse = ", ")
       ))
     }
@@ -83,6 +82,13 @@ look_up <- function(data, ..., bin = FALSE, value = "value") {
         paste(pb_bin_src, collapse = ", ")
       ))
     }
+    with_infinite <- bin[sapply(data[bin], function(x){any(is.infinite(x))})]
+    if(length(with_infinite))
+      stop("infinite values in look_up table element",
+           plur(length(with_infinite)),
+           ": ",
+           paste(with_infinite, collapse = ", ")
+           )
     for (n in bin) {
       bin_values <- c(sort(unique(data[[n]])), +Inf)
       data[[n]] <- cut(data[[n]], bin_values,
