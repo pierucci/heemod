@@ -65,5 +65,5 @@ To get started read the *An Introduction to `heemod`* vignette. Specific analysi
   * [Vojtech Filipec](https://github.com/vojtech-filipec)
   * [Jordan Amdahl](https://github.com/jrdnmdhl)
   * [Yonatan Carranza Alarcon](https://github.com/salmuz)
-  * [Vince Daniels](Vince Daniels)
+  * [Vince Daniels](https://github.com/daniels4321)
   
