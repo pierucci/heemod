@@ -302,7 +302,6 @@ apply_or = function(dist, or, log_or = FALSE) {
 #' compute_surv(dist1, 1:10)
 #' compute_surv(shift_dist, 1:10)
 apply_shift = function(dist, shift) {
-  
   stopifnot(
     length(shift) == 1,
     is.finite(shift)
@@ -321,8 +320,6 @@ apply_shift = function(dist, shift) {
       class = "surv_shift"
     )
 }
-
-
 
 #' Add Hazards
 #' 
@@ -416,46 +413,6 @@ set_covariates_ <- function(dist, covariates, data = NULL) {
   )
 }
 
-#' Apply a time shift
-#' 
-#' Shift a survival distribution in time.
-#' 
-#' @param dist A survival distribution.
-#' @param shift A time shift to be applied.
-#'   
-#' @return A `surv_shift` object.
-#' 
-#' @details A positive shift moves the fit backwards in time.   That is,
-#'   a shift of 4 will cause time 5 to be evaluated as time 1, and so on.
-#'   If `shift == 0`, `dist` is returned unchanged.
-#' @export
-#' 
-#' @examples
-#' 
-#' dist1 <- heemod::define_survival(distribution = "gamma", rate = 0.25, shape = 3)
-#' shift_dist <- apply_shift(dist1, 4)
-#' heemod::compute_surv(dist1, 1:10)
-#' heemod::compute_surv(shift_dist, 1:10)
-apply_shift = function(dist, shift) {
-  
-  stopifnot(
-    length(shift) == 1,
-    is.finite(shift)
-  )
-  if(shift == 0) return(dist)
-  if(inherits(dist, "surv_shift")){
-    dist$shift <- dist$shift + shift
-    if(dist$shift == 0) return(dist$dist)
-    else return(dist)
-  }  
-  structure(
-    list(
-      dist = dist,
-      shift = shift
-    ),
-    class = "surv_shift"
-  )
-}
 
 
 #' Plot general survival models
