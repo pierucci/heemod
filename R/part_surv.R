@@ -328,9 +328,6 @@ guess_part_surv_state_names <- function(state_names) {
 #'   pfs and os.   And those
 #'   elements are survival objects of various kinds, with the
 #'   commonality that they can be used in [compute_surv()].
-#'
-#' @examples
-
 construct_part_surv_tib <-
   function(surv_def, ref,
            state_names,

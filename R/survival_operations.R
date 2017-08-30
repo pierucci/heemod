@@ -180,6 +180,7 @@ apply_hr <- function(dist, hr, log_hr = FALSE) {
     if(dist$hr == 1) return(dist$dist)
     return(dist)
   }
+  
   structure(
     list(
       dist = dist,
@@ -221,6 +222,14 @@ apply_af <- function(dist, af, log_af = FALSE) {
     return(dist)
   }
   
+  if(log_af) af <- exp(af)
+  if(af == 1) return(dist)
+  if(inherits(dist, "surv_aft")){
+    dist$af <- dist$af * af
+    if(dist$af == 1) return(dist$dist)
+    return(dist)
+  }
+  
   structure(
     list(
       dist = dist,
@@ -254,6 +263,7 @@ apply_or = function(dist, or, log_or = FALSE) {
     is.finite(or),
     log_or | or > 0
   )
+  
   if(log_or) or <- exp(or)
   if(or == 1) return(dist)
   if(inherits(dist, "surv_po")){
@@ -261,7 +271,7 @@ apply_or = function(dist, or, log_or = FALSE) {
     if(dist$or == 1) return(dist$dist)
     return(dist)
   }
-    
+  
   structure(
     list(
       dist = dist,
@@ -406,6 +416,48 @@ set_covariates_ <- function(dist, covariates, data = NULL) {
   )
 }
 
+#' Apply a time shift
+#' 
+#' Shift a survival distribution in time.
+#' 
+#' @param dist A survival distribution.
+#' @param shift A time shift to be applied.
+#'   
+#' @return A `surv_shift` object.
+#' 
+#' @details A positive shift moves the fit backwards in time.   That is,
+#'   a shift of 4 will cause time 5 to be evaluated as time 1, and so on.
+#'   If `shift == 0`, `dist` is returned unchanged.
+#' @export
+#' 
+#' @examples
+#' 
+#' dist1 <- heemod::define_survival(distribution = "gamma", rate = 0.25, shape = 3)
+#' shift_dist <- apply_shift(dist1, 4)
+#' heemod::compute_surv(dist1, 1:10)
+#' heemod::compute_surv(shift_dist, 1:10)
+apply_shift = function(dist, shift) {
+  
+  stopifnot(
+    length(shift) == 1,
+    is.finite(shift)
+  )
+  if(shift == 0) return(dist)
+  if(inherits(dist, "surv_shift")){
+    dist$shift <- dist$shift + shift
+    if(dist$shift == 0) return(dist$dist)
+    else return(dist)
+  }  
+  structure(
+    list(
+      dist = dist,
+      shift = shift
+    ),
+    class = "surv_shift"
+  )
+}
+
+
 #' Plot general survival models
 #'
 #' @param x a survival object of class `surv_aft`, `surv_add_haz`,
@@ -468,7 +520,7 @@ plot.surv_shift <- plot.surv_obj
 #'   "plot" for a fuller version
 #' @param ... other arguments
 #' 
-#' @return
+#' @return A summary.
 #' @export
 #'
 summary.surv_shift <- 

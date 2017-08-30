@@ -20,7 +20,7 @@ eval_parameters <- function(x, cycles = 1,
   
   start_tibble <- tibble::tibble(
     model_time = seq_len(cycles),
-    markov_cycle = seq_len(cycles),
+    markov_cycle = model_time,
     strategy = strategy_name
   )
   

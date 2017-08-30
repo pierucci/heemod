@@ -4,7 +4,7 @@
 \alias{discount}
 \title{Discount a Quantity Over Time}
 \usage{
-discount(x, r, first = FALSE)
+discount(x, r, first = FALSE, period = 1)
 }
 \arguments{
 \item{x}{numeric. A quantity to discount.}
@@ -13,6 +13,8 @@ discount(x, r, first = FALSE)
 
 \item{first}{logical. Should discouting start at the
 first value ?}
+
+\item{period}{Number of cycle per unit of discount rate.}
 }
 \value{
 A numeric vector of the same length as \code{x}.

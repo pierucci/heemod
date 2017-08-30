@@ -16,6 +16,9 @@ for the usual summary of a \code{survfit} object,
 
 \item{...}{other arguments}
 }
+\value{
+A summary.
+}
 \description{
 Summarize surv_shift objects
 }

@@ -2,22 +2,37 @@
 % Please edit documentation in R/survival_operations.R
 \name{apply_shift}
 \alias{apply_shift}
+\alias{apply_shift}
 \title{Apply a time shift}
 \usage{
+apply_shift(dist, shift)
+
 apply_shift(dist, shift)
 }
 \arguments{
 \item{dist}{A survival distribution.}
 
 \item{shift}{A time shift to be applied.}
+
+\item{dist}{A survival distribution.}
+
+\item{shift}{A time shift to be applied.}
 }
 \value{
+A \code{surv_shift} object.
+
 A \code{surv_shift} object.
 }
 \description{
 Shift a survival distribution in time.
+
+Shift a survival distribution in time.
 }
 \details{
+A positive shift moves the fit backwards in time.   That is,
+a shift of 4 will cause time 5 to be evaluated as time 1, and so on.
+If \code{shift == 0}, \code{dist} is returned unchanged.
+
 A positive shift moves the fit backwards in time.   That is,
 a shift of 4 will cause time 5 to be evaluated as time 1, and so on.
 If \code{shift == 0}, \code{dist} is returned unchanged.
@@ -28,4 +43,9 @@ dist1 <- define_survival(distribution = "gamma", rate = 0.25, shape = 3)
 shift_dist <- apply_shift(dist1, 4)
 compute_surv(dist1, 1:10)
 compute_surv(shift_dist, 1:10)
+
+dist1 <- heemod::define_survival(distribution = "gamma", rate = 0.25, shape = 3)
+shift_dist <- apply_shift(dist1, 4)
+heemod::compute_surv(dist1, 1:10)
+heemod::compute_surv(shift_dist, 1:10)
 }
