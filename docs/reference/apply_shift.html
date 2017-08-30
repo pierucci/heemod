@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check Cycle and Time Inputs — check_cycle_inputs • heemod</title>
+<title>Apply a time shift — apply_shift • heemod</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -125,38 +125,78 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check Cycle and Time Inputs</h1>
+    <h1>Apply a time shift</h1>
     </div>
 
     
-    <p>Performs checks on the cycle and time inputs to
-<code>eval_surv()</code>.</p>
+    <p>Shift a survival distribution in time.</p>
+<p>Shift a survival distribution in time.</p>
     
 
-    <pre class="usage"><span class='fu'>check_cycle_inputs</span>(<span class='no'>cycle</span>, <span class='no'>cycle_length</span>)</pre>
+    <pre class="usage"><span class='fu'>apply_shift</span>(<span class='no'>dist</span>, <span class='no'>shift</span>)
+
+<span class='fu'>apply_shift</span>(<span class='no'>dist</span>, <span class='no'>shift</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>cycle</th>
-      <td><p>The <code>model_time</code> or <code>state_time</code> for which
-to predict.</p></td>
+      <th>dist</th>
+      <td><p>A survival distribution.</p></td>
     </tr>
     <tr>
-      <th>cycle_length</th>
-      <td><p>The length of a Markov cycle in
-absolute time units.</p></td>
+      <th>shift</th>
+      <td><p>A time shift to be applied.</p></td>
+    </tr>
+    <tr>
+      <th>dist</th>
+      <td><p>A survival distribution.</p></td>
+    </tr>
+    <tr>
+      <th>shift</th>
+      <td><p>A time shift to be applied.</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>A <code>surv_shift</code> object.</p>
+<p>A <code>surv_shift</code> object.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>A positive shift moves the fit backwards in time.   That is,
+a shift of 4 will cause time 5 to be evaluated as time 1, and so on.
+If <code>shift == 0</code>, <code>dist</code> is returned unchanged.</p>
+<p>A positive shift moves the fit backwards in time.   That is,
+a shift of 4 will cause time 5 to be evaluated as time 1, and so on.
+If <code>shift == 0</code>, <code>dist</code> is returned unchanged.</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+<span class='no'>dist1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='define_survival.html'>define_survival</a></span>(<span class='kw'>distribution</span> <span class='kw'>=</span> <span class='st'>"gamma"</span>, <span class='kw'>rate</span> <span class='kw'>=</span> <span class='fl'>0.25</span>, <span class='kw'>shape</span> <span class='kw'>=</span> <span class='fl'>3</span>)
+<span class='no'>shift_dist</span> <span class='kw'>&lt;-</span> <span class='fu'>apply_shift</span>(<span class='no'>dist1</span>, <span class='fl'>4</span>)
+<span class='fu'><a href='compute_surv.html'>compute_surv</a></span>(<span class='no'>dist1</span>, <span class='fl'>1</span>:<span class='fl'>10</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required namespace: flexsurv</span></div><div class='output co'>#&gt;  [1] 0.002161497 0.012252665 0.026499021 0.041475959 0.055704051 0.068650610
+#&gt;  [7] 0.080209420 0.090451640 0.099511595 0.107536400</div><div class='input'><span class='fu'><a href='compute_surv.html'>compute_surv</a></span>(<span class='no'>shift_dist</span>, <span class='fl'>1</span>:<span class='fl'>10</span>)</div><div class='output co'>#&gt;  [1] 0.000000000 0.000000000 0.000000000 0.000000000 0.002161497 0.012252665
+#&gt;  [7] 0.026499021 0.041475959 0.055704051 0.068650610</div><div class='input'>
+<span class='no'>dist1</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>heemod</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/heemod/topics/define_survival'>define_survival</a></span>(<span class='kw'>distribution</span> <span class='kw'>=</span> <span class='st'>"gamma"</span>, <span class='kw'>rate</span> <span class='kw'>=</span> <span class='fl'>0.25</span>, <span class='kw'>shape</span> <span class='kw'>=</span> <span class='fl'>3</span>)
+<span class='no'>shift_dist</span> <span class='kw'>&lt;-</span> <span class='fu'>apply_shift</span>(<span class='no'>dist1</span>, <span class='fl'>4</span>)
+<span class='kw pkg'>heemod</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/heemod/topics/compute_surv'>compute_surv</a></span>(<span class='no'>dist1</span>, <span class='fl'>1</span>:<span class='fl'>10</span>)</div><div class='output co'>#&gt;  [1] 0.002161497 0.012252665 0.026499021 0.041475959 0.055704051 0.068650610
+#&gt;  [7] 0.080209420 0.090451640 0.099511595 0.107536400</div><div class='input'><span class='kw pkg'>heemod</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/heemod/topics/compute_surv'>compute_surv</a></span>(<span class='no'>shift_dist</span>, <span class='fl'>1</span>:<span class='fl'>10</span>)</div><div class='output co'>#&gt;  [1] 0.000000000 0.000000000 0.000000000 0.000000000 0.002161497 0.012252665
+#&gt;  [7] 0.026499021 0.041475959 0.055704051 0.068650610</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

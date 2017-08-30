@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check Cycle and Time Inputs — check_cycle_inputs • heemod</title>
+<title>Summarize surv_shift objects — summary.surv_shift • heemod</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -125,30 +125,39 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check Cycle and Time Inputs</h1>
+    <h1>Summarize surv_shift objects</h1>
     </div>
 
     
-    <p>Performs checks on the cycle and time inputs to
-<code>eval_surv()</code>.</p>
+    <p>Summarize surv_shift objects</p>
     
 
-    <pre class="usage"><span class='fu'>check_cycle_inputs</span>(<span class='no'>cycle</span>, <span class='no'>cycle_length</span>)</pre>
+    <pre class="usage"><span class='co'># S3 method for surv_shift</span>
+<span class='fu'>summary</span>(<span class='no'>object</span>, <span class='kw'>summary_type</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"plot"</span>, <span class='st'>"standard"</span>),
+  <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>cycle</th>
-      <td><p>The <code>model_time</code> or <code>state_time</code> for which
-to predict.</p></td>
+      <th>object</th>
+      <td><p>a <code>surv_shift</code> object</p></td>
     </tr>
     <tr>
-      <th>cycle_length</th>
-      <td><p>The length of a Markov cycle in
-absolute time units.</p></td>
+      <th>summary_type</th>
+      <td><p>"standard" or "plot" - "standard"
+for the usual summary of a <code>survfit</code> object,
+"plot" for a fuller version</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>other arguments</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A summary.</p>
     
 
   </div>
@@ -156,7 +165,9 @@ absolute time units.</p></td>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#value">Value</a></li>
+          </ul>
 
   </div>
 </div>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check Cycle and Time Inputs — check_cycle_inputs • heemod</title>
+<title>Load a set of survival fits — load_surv_models • heemod</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -125,30 +125,42 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check Cycle and Time Inputs</h1>
+    <h1>Load a set of survival fits</h1>
     </div>
 
     
-    <p>Performs checks on the cycle and time inputs to
-<code>eval_surv()</code>.</p>
+    <p>Load a set of survival fits</p>
     
 
-    <pre class="usage"><span class='fu'>check_cycle_inputs</span>(<span class='no'>cycle</span>, <span class='no'>cycle_length</span>)</pre>
+    <pre class="usage"><span class='fu'>load_surv_models</span>(<span class='no'>location</span>, <span class='no'>survival_specs</span>, <span class='no'>use_envir</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>cycle</th>
-      <td><p>The <code>model_time</code> or <code>state_time</code> for which
-to predict.</p></td>
+      <th>location</th>
+      <td><p>base directory</p></td>
     </tr>
     <tr>
-      <th>cycle_length</th>
-      <td><p>The length of a Markov cycle in
-absolute time units.</p></td>
+      <th>survival_specs</th>
+      <td><p>information about fits</p></td>
+    </tr>
+    <tr>
+      <th>use_envir</th>
+      <td><p>an environment</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A list with two elements:</p><ul>
+<li><p><code>best_models</code>,
+a list with the fits for each data file passed in; and</p></li>
+<li><p><code>envir</code>,
+an environment containing the models so they can be referenced to
+get probabilities.</p></li>
+</ul>
+
     
 
   </div>
@@ -156,7 +168,9 @@ absolute time units.</p></td>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#value">Value</a></li>
+          </ul>
 
   </div>
 </div>

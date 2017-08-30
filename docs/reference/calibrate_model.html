@@ -23,7 +23,8 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -51,10 +52,55 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="..//index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
+  <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/a_introduction.html">An Introduction to `heemod`</a>
+    </li>
+    <li>
+      <a href="../articles/b_time_dependency.html">Time-varying values</a>
+    </li>
+    <li>
+      <a href="../articles/c_homogeneous.html">Simple Markov Models (Homogeneous)</a>
+    </li>
+    <li>
+      <a href="../articles/d_non_homogeneous.html">Time-varying Markov Models (Non-Homogeneous)</a>
+    </li>
+    <li>
+      <a href="../articles/e_probabilistic.html">Probabilistic Uncertainty Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/f_sensitivity.html">Deterministic Sensitivity Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/g_heterogeneity.html">Heterogeneity &amp; Demographic Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/h_tabular.html">Tabular Input</a>
+    </li>
+    <li>
+      <a href="../articles/i_reproduction.html">Reproducing Exact Results from DMHEE</a>
+    </li>
+    <li>
+      <a href="../articles/j_survival.html">Survival models</a>
+    </li>
+    <li>
+      <a href="../articles/k_calibration.html">Calibrating `heemod` models</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">News</a>
@@ -88,7 +134,7 @@ obtain specific model results.</p>
     
 
     <pre class="usage"><span class='fu'>calibrate_model</span>(<span class='no'>x</span>, <span class='no'>parameter_names</span>, <span class='no'>fn_values</span>, <span class='no'>target_values</span>,
-  <span class='kw'>initial_values</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"Nelder-Mead"</span>, <span class='st'>"BFGS"</span>), <span class='no'>...</span>)</pre>
+  <span class='kw'>initial_values</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"Nelder-Mead"</span>, <span class='st'>"BFGS"</span>, <span class='st'>"L-BFGS-B"</span>), <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -119,8 +165,8 @@ details.</p></td>
     </tr>
     <tr>
       <th>method</th>
-      <td><p>Optimisation method (<code>Nelder-Mead</code> or
-<code>BFGS</code>).</p></td>
+      <td><p>Optimisation method (<code>Nelder-Mead</code>,
+<code>BFGS</code>, or <code>L-BFGS-B</code>).</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -156,7 +202,7 @@ the same results from different starting points.</p>
 <p>Running <code>calibrate_model()</code> does not change the model
 parameters; the user must create a new model and run it
 if desired.</p>
-<p>See also <code><a href='../articles/k-calibration.html'>vignette("k-calibration")</a></code>.</p>
+<p>See also <code>vignette("k-calibration")</code>.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -183,7 +229,7 @@ if desired.</p>
 )
 
 <span class='no'>f</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>x</span>) {
-  <span class='kw'>dplyr</span><span class='kw'>::</span><span class='fu'>filter</span>(
+  <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='http://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(
     <span class='fu'><a href='get_counts.html'>get_counts</a></span>(<span class='no'>x</span>),
     <span class='no'>state_names</span> <span class='kw'>==</span> <span class='st'>"A"</span> <span class='kw'>&amp;</span> <span class='no'>markov_cycle</span> <span class='kw'>==</span> <span class='fl'>10</span>
   )$<span class='no'>count</span>

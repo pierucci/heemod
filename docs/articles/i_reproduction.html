@@ -29,10 +29,55 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="..//index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
+  <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/a_introduction.html">An Introduction to `heemod`</a>
+    </li>
+    <li>
+      <a href="../articles/b_time_dependency.html">Time-varying values</a>
+    </li>
+    <li>
+      <a href="../articles/c_homogeneous.html">Simple Markov Models (Homogeneous)</a>
+    </li>
+    <li>
+      <a href="../articles/d_non_homogeneous.html">Time-varying Markov Models (Non-Homogeneous)</a>
+    </li>
+    <li>
+      <a href="../articles/e_probabilistic.html">Probabilistic Uncertainty Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/f_sensitivity.html">Deterministic Sensitivity Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/g_heterogeneity.html">Heterogeneity &amp; Demographic Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/h_tabular.html">Tabular Input</a>
+    </li>
+    <li>
+      <a href="../articles/i_reproduction.html">Reproducing Exact Results from DMHEE</a>
+    </li>
+    <li>
+      <a href="../articles/j_survival.html">Survival models</a>
+    </li>
+    <li>
+      <a href="../articles/k_calibration.html">Calibrating `heemod` models</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">News</a>
@@ -59,7 +104,7 @@
     <div class="page-header toc-ignore">
       <h1>Reproducing Exact Results from DMHEE</h1>
             
-            <h4 class="date">2017-06-07</h4>
+            <h4 class="date">2017-08-30</h4>
           </div>
 
     
@@ -259,14 +304,15 @@ death_prob</code></pre></div>
     <span class="dt">rrr =</span> .<span class="dv">04</span>,
     
     <span class="co"># parameters for calculating primary revision rate</span>
-    <span class="dt">cons =</span> -<span class="fl">5.49094</span>,
-    <span class="dt">ageC =</span> -.<span class="dv">0367</span>,
+    <span class="dt">cons =</span> -<span class="fl">5.490935</span>,
+    <span class="dt">ageC =</span> -.<span class="dv">0367022</span>,
     <span class="dt">maleC =</span> .<span class="dv">768536</span>,
     <span class="dt">lambda =</span> <span class="kw">exp</span>(cons +<span class="st"> </span>ageC *<span class="st"> </span>age_init +<span class="st"> </span>maleC *<span class="st"> </span>sex),
-    <span class="dt">gamma =</span> <span class="fl">1.45367786</span>,
-    
-    <span class="dt">rrNP1 =</span> .<span class="dv">260677</span>,
-    
+    <span class="dt">lngamma =</span> <span class="fl">0.3740968</span>,
+    <span class="dt">gamma =</span> <span class="kw">exp</span>(lngamma),
+    <span class="dt">lnrrNP1 =</span> -<span class="fl">1.344474</span>,
+    <span class="dt">rrNP1 =</span> <span class="kw">exp</span>(lnrrNP1),
+   
     <span class="co"># revision probability of primary procedure</span>
     <span class="dt">standardRR =</span> <span class="dv">1</span> -<span class="st"> </span><span class="kw">exp</span>(lambda *<span class="st"> </span>((markov_cycle -<span class="st"> </span><span class="dv">1</span>) ^<span class="st"> </span>gamma -
 <span class="st">                                     </span>markov_cycle ^<span class="st"> </span>gamma)),
@@ -387,8 +433,8 @@ res_mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run
 ## Values:
 ## 
 ##           utility     cost
-## standard 14.65282 512.4474
-## np1      14.69734 610.3152
+## standard 14.65283 512.4327
+## np1      14.69734 610.3112
 ## 
 ## Efficiency frontier:
 ## 
@@ -397,14 +443,15 @@ res_mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run
 ## Differences:
 ## 
 ##     Cost Diff. Effect Diff.     ICER     Ref.
-## np1    97.8678   0.04451644 2198.464 standard</code></pre>
+## np1   97.87858   0.04451095 2198.977 standard</code></pre>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
         <div id="tocnav">
-      <h2>Contents</h2>
+      <h2 class="hasAnchor">
+<a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#hiv-model">HIV model</a></li>
       <li><a href="#thr-model">THR model</a></li>

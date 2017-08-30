@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check Cycle and Time Inputs — check_cycle_inputs • heemod</title>
+<title>Define a survival distribution based on explicit survival probabilities — define_surv_table • heemod</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -125,38 +125,53 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check Cycle and Time Inputs</h1>
+    <h1>Define a survival distribution based on explicit survival probabilities</h1>
     </div>
 
     
-    <p>Performs checks on the cycle and time inputs to
-<code>eval_surv()</code>.</p>
+    <p>Define a survival distribution based on explicit survival probabilities</p>
     
 
-    <pre class="usage"><span class='fu'>check_cycle_inputs</span>(<span class='no'>cycle</span>, <span class='no'>cycle_length</span>)</pre>
+    <pre class="usage"><span class='fu'>define_surv_table</span>(<span class='no'>x</span>)
+
+<span class='co'># S3 method for data.frame</span>
+<span class='fu'>define_surv_table</span>(<span class='no'>x</span>)
+
+<span class='co'># S3 method for character</span>
+<span class='fu'>define_surv_table</span>(<span class='no'>x</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>cycle</th>
-      <td><p>The <code>model_time</code> or <code>state_time</code> for which
-to predict.</p></td>
-    </tr>
-    <tr>
-      <th>cycle_length</th>
-      <td><p>The length of a Markov cycle in
-absolute time units.</p></td>
+      <th>x</th>
+      <td><p>a data frame with columns <code>time</code> and <code>survival</code></p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>a <code>surv_table</code> object, which can be used with <code><a href='compute_surv.html'>compute_surv()</a></code>.</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'> <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>time</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>5</span>, <span class='fl'>10</span>), <span class='kw'>survival</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>0.9</span>, <span class='fl'>0.7</span>, <span class='fl'>0.5</span>))
+ <span class='fu'>define_surv_table</span>(<span class='no'>x</span>)</div><div class='output co'>#&gt;   time survival
+#&gt; 1    0      1.0
+#&gt; 2    1      0.9
+#&gt; 3    5      0.7
+#&gt; 4   10      0.5</div><div class='input'> 
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#value">Value</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>
