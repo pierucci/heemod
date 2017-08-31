@@ -2,7 +2,7 @@
 % Please edit documentation in R/survival_operations.R
 \name{apply_shift}
 \alias{apply_shift}
-\title{Apply a time shift}
+\title{Apply a time shift to a survival distribution}
 \usage{
 apply_shift(dist, shift)
 }
@@ -15,7 +15,7 @@ apply_shift(dist, shift)
 A \code{surv_shift} object.
 }
 \description{
-Shift a survival distribution in time.
+Apply a time shift to a survival distribution
 }
 \details{
 A positive shift moves the fit backwards in time.   That is,

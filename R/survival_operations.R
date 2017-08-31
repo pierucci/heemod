@@ -222,14 +222,6 @@ apply_af <- function(dist, af, log_af = FALSE) {
     return(dist)
   }
   
-  if(log_af) af <- exp(af)
-  if(af == 1) return(dist)
-  if(inherits(dist, "surv_aft")){
-    dist$af <- dist$af * af
-    if(dist$af == 1) return(dist$dist)
-    return(dist)
-  }
-  
   structure(
     list(
       dist = dist,
@@ -281,9 +273,8 @@ apply_or = function(dist, or, log_or = FALSE) {
   )
 }
 
-#' Apply a time shift
+#' Apply a time shift to a survival distribution
 #' 
-#' Shift a survival distribution in time.
 #' 
 #' @param dist A survival distribution.
 #' @param shift A time shift to be applied.
@@ -412,7 +403,6 @@ set_covariates_ <- function(dist, covariates, data = NULL) {
     class = "surv_model"
   )
 }
-
 
 
 #' Plot general survival models
