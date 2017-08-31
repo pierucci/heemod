@@ -1,0 +1,5 @@
+treatments,set_Name,condition,subtract_time
+fake_treatment,all,TRUE,
+not_real,all,TRUE,
+fake_treatment,time.gt.100,time > 100,100
+not_real,time.gt.100,time > 100,100

@@ -49,6 +49,7 @@ test_that("Flexsurvreg",
             expect_equal(heemod_res, fs_res)
           })
 
+
 test_that("Applying treatment effects",
           {
             # Testing apply_hr, apply_af, apply_or against flexsurvreg output to see
@@ -335,6 +336,315 @@ expect_equal(surv1_poor_shift_surv_misaligned1,
 
 
 }
+)
+test_that(
+  "Applying treatment effects",
+  {
+    
+    # Testing apply_hr, apply_af, apply_or and apply_shift
+    # against flexsurvreg output to see that it is consistent.
+    
+    surv1_medium_surv = fs1 %>%
+      set_covariates(group="Medium") %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    
+    surv1_medium_aft_surv = fs1 %>%
+      set_covariates(group="Good") %>%
+      apply_af(fs1$coefficients[3], log_af=T) %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    
+    surv1_poor_surv = fs1 %>%
+      set_covariates(group="Poor") %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    
+    surv1_poor_aft_surv = fs1 %>%
+      set_covariates(group="Good") %>%
+      apply_af(fs1$coefficients[4], log_af=T) %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    
+    surv1_poor_shift_surv = fs1 %>%
+      set_covariates(group = "Poor") %>%
+      apply_shift(shift = 800) %>%
+      compute_surv(time = seq_len(10), cycle_length = 200, type = "surv")
+    
+    surv1_medium_prob = fs1 %>%
+      set_covariates(group="Medium") %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="prob")
+    
+    surv1_medium_aft_prob = fs1 %>%
+      set_covariates(group="Good") %>%
+      apply_af(fs1$coefficients[3], log_af=T) %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="prob")
+    
+    surv1_poor_prob = fs1 %>%
+      set_covariates(group="Poor") %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="prob")
+    
+    surv1_poor_aft_prob = fs1 %>%
+      set_covariates(group="Good") %>%
+      apply_af(fs1$coefficients[4], log_af=T) %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="prob")
+    
+    
+    
+    surv2_medium_surv = fs2 %>%
+      set_covariates(group="Medium") %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    
+    surv2_medium_hr_surv = fs2 %>%
+      set_covariates(group="Good") %>%
+      apply_hr(fs2$coefficients[3], log_hr=T) %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    
+    surv2_poor_surv = fs2 %>%
+      set_covariates(group="Poor") %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    
+    surv2_poor_hr_surv = fs2 %>%
+      set_covariates(group="Good") %>%
+      apply_hr(fs2$coefficients[4], log_hr=T) %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    
+    surv2_medium_prob = fs2 %>%
+      set_covariates(group="Medium") %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="prob")
+    
+    surv2_medium_hr_prob = fs2 %>%
+      set_covariates(group="Good") %>%
+      apply_hr(fs2$coefficients[3], log_hr=T) %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="prob")
+    
+    surv2_poor_prob = fs2 %>%
+      set_covariates(group="Poor") %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="prob")
+    
+    surv2_poor_hr_prob = fs2 %>%
+      set_covariates(group="Good") %>%
+      apply_hr(fs2$coefficients[4], log_hr=T) %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="prob")
+    
+    
+    
+    surv3_medium_surv = fs3 %>%
+      set_covariates(group="Medium") %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    
+    surv3_medium_or_surv = fs3 %>%
+      set_covariates(group="Good") %>%
+      apply_or(fs3$coefficients[5], log_or=T) %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    
+    surv3_poor_surv = fs3 %>%
+      set_covariates(group="Poor") %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    
+    surv3_poor_or_surv = fs3 %>%
+      set_covariates(group="Good") %>%
+      apply_or(fs3$coefficients[6], log_or=T) %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    
+    surv3_medium_prob = fs3 %>%
+      set_covariates(group="Medium") %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="prob")
+    
+    surv3_medium_or_prob = fs3 %>%
+      set_covariates(group="Good") %>%
+      apply_or(fs3$coefficients[5], log_or=T) %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="prob")
+    
+    surv3_poor_prob = fs3 %>%
+      set_covariates(group="Poor") %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="prob")
+    
+    surv3_poor_or_prob = fs3 %>%
+      set_covariates(group="Good") %>%
+      apply_or(fs3$coefficients[6], log_or=T) %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="prob")
+    
+    # Test acceleration
+    # expect_equal(surv1_medium_surv,surv1_medium_aft_surv)
+    # expect_equal(surv1_poor_surv, surv1_poor_aft_surv)
+    # expect_equal(surv1_medium_prob,surv1_medium_aft_prob)
+    # expect_equal(surv1_poor_prob, surv1_poor_aft_prob)
+    
+    expect_identical(surv1_poor_surv, 
+                     apply_af(apply_af(surv1_poor_surv, 2),
+                              1/2)
+    )
+    expect_identical(surv1_poor_surv, 
+                     apply_af(apply_af(surv1_poor_surv, 1/2),
+                              2)
+    )
+    expect_identical(apply_af(surv1_poor_surv, 2),
+                     apply_af(apply_af(surv1_poor_surv, 4),
+                              1/2)
+    )
+    
+    # Test Proportional Hazards
+    expect_equal(surv2_medium_surv,surv2_medium_hr_surv)
+    expect_equal(surv2_poor_surv, surv2_poor_hr_surv)
+    expect_equal(surv2_medium_prob,surv2_medium_hr_prob)
+    expect_equal(surv2_poor_prob, surv2_poor_hr_prob)
+    
+    expect_identical(fs1, 
+                     apply_hr(apply_hr(fs1, 2),
+                              1/2)
+    )
+    expect_identical(fs1, 
+                     apply_hr(apply_hr(fs1, 1/2),
+                              2)
+    )
+    expect_identical(apply_hr(fs1, 2),
+                     apply_hr(apply_hr(fs1, 4),
+                              1/2)
+    )
+    
+    # Test Proportional Odds
+    expect_equal(surv3_medium_surv,surv3_medium_or_surv)
+    expect_equal(surv3_poor_surv, surv3_poor_or_surv)
+    expect_equal(surv3_medium_prob,surv3_medium_or_prob)
+    expect_equal(surv3_poor_prob, surv3_poor_or_prob)
+    
+    expect_identical(fs1, 
+                     apply_or(apply_or(fs1, 2),
+                              1/2)
+    )
+    expect_identical(fs1, 
+                     apply_or(apply_or(fs1, 1/2),
+                              2)
+    )
+    expect_identical(apply_or(fs1, 2),
+                     apply_or(apply_or(fs1, 4),
+                              1/2)
+    )
+    
+    
+    # Test shifts
+    expect_equal(surv1_poor_surv[1:6], surv1_poor_shift_surv[5:10])
+    expect_equal(length(surv1_poor_surv), length(surv1_poor_shift_surv))
+    expect_identical(surv1_poor_surv, 
+                     apply_shift(apply_shift(surv1_poor_surv, 5),
+                                 -5)
+    )
+    expect_identical(fs1, 
+                     apply_shift(apply_shift(fs1, -3),
+                                 3)
+    )
+    expect_identical(apply_shift(fs1, 2),
+                     apply_shift(apply_shift(fs1, 5),
+                                 -3)
+    )
+    expect_identical(surv1_poor_shift_surv[1:3], 
+                     rep(1, 3))
+    
+    ## Test combinations
+    fsm = fs5 %>% set_covariates(group = "Medium")
+    fsm_changes = fsm %>%
+      apply_shift(5) %>% apply_hr(0.5) %>% apply_shift(-5) %>% apply_hr(2) 
+    
+    fsm_survs <- fsm %>%
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    fsm_changes_survs = fsm_changes %>% 
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    expect_equal(fsm_survs, fsm_changes_survs)
+    
+    fsm_changes = fsm %>% 
+      apply_shift(5) %>% apply_hr(0.5) %>% apply_af(0.5) %>% 
+      apply_af(2) %>% apply_shift(-5) %>% apply_hr(2)    
+    fsm_changes_survs = fsm_changes %>% 
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    expect_equal(fsm_survs, fsm_changes_survs)
+    
+    fsm_changes = fsm %>%
+      apply_shift(5) %>% apply_or(0.5) %>% apply_shift(-5) %>% apply_or(2) 
+    fsm_changes_survs = fsm_changes %>% 
+      compute_surv(time=seq_len(10),cycle_length=200, type="surv")
+    expect_equal(fsm_survs, fsm_changes_survs)
+    
+    ## misaligned shifts
+    surv1_poor_shift_surv_misaligned1 = fs1 %>%
+      set_covariates(group = "Poor") %>%
+      apply_shift(shift = 100) %>%
+      compute_surv(time = seq_len(10), 
+                   cycle_length = 300, type = "surv")
+    
+    surv1_poor_shift_surv_misaligned2 = fs1 %>%
+      set_covariates(group = "Poor") %>%
+      compute_surv(time = seq_len(30), 
+                   cycle_length = 100, type = "surv") %>%
+      .[seq_len(10)*3 - 1]
+    
+    expect_equal(surv1_poor_shift_surv_misaligned1, 
+                 surv1_poor_shift_surv_misaligned2)
+    
+    
+    
+    
+    # Test shifts
+    expect_equal(surv1_poor_surv[1:6], surv1_poor_shift_surv[5:10])
+    expect_equal(length(surv1_poor_surv), length(surv1_poor_shift_surv))
+    expect_identical(surv1_poor_surv,
+                     apply_shift(apply_shift(surv1_poor_surv, 5),-5))
+    expect_identical(fs1,
+                     apply_shift(apply_shift(fs1,-3),
+                                 3))
+    expect_identical(apply_shift(fs1, 2),
+                     apply_shift(apply_shift(fs1, 5),-3))
+    expect_identical(surv1_poor_shift_surv[1:3],
+                     rep(1, 3))
+    
+    ## Test combinations
+    fsm = fs5 %>% set_covariates(group = "Medium")
+    fsm_changes = fsm %>%
+      apply_shift(5) %>% apply_hr(0.5) %>% apply_shift(-5) %>% apply_hr(2)
+    
+    fsm_survs <- fsm %>%
+      compute_surv(time = seq_len(10),
+                   cycle_length = 200,
+                   type = "surv")
+    fsm_changes_survs = fsm_changes %>%
+      compute_surv(time = seq_len(10),
+                   cycle_length = 200,
+                   type = "surv")
+    expect_equal(fsm_survs, fsm_changes_survs)
+    
+    fsm_changes = fsm %>%
+      apply_shift(5) %>% apply_hr(0.5) %>% apply_af(0.5) %>%
+      apply_af(2) %>% apply_shift(-5) %>% apply_hr(2)
+    fsm_changes_survs = fsm_changes %>%
+      compute_surv(time = seq_len(10),
+                   cycle_length = 200,
+                   type = "surv")
+    expect_equal(fsm_survs, fsm_changes_survs)
+    
+    fsm_changes = fsm %>%
+      apply_shift(5) %>% apply_or(0.5) %>% apply_shift(-5) %>% apply_or(2)
+    fsm_changes_survs = fsm_changes %>%
+      compute_surv(time = seq_len(10),
+                   cycle_length = 200,
+                   type = "surv")
+    expect_equal(fsm_survs, fsm_changes_survs)
+    
+    ## misaligned shifts
+    surv1_poor_shift_surv_misaligned1 = fs1 %>%
+      set_covariates(group = "Poor") %>%
+      apply_shift(shift = 100) %>%
+      compute_surv(time = seq_len(10),
+                   cycle_length = 300,
+                   type = "surv")
+    
+    surv1_poor_shift_surv_misaligned2 = fs1 %>%
+      set_covariates(group = "Poor") %>%
+      compute_surv(time = seq_len(30),
+                   cycle_length = 100,
+                   type = "surv") %>%
+      .[seq_len(10) * 3 - 1]
+    
+    expect_equal(surv1_poor_shift_surv_misaligned1,
+                 surv1_poor_shift_surv_misaligned2)
+    
+    
+  }
 )
 
 test_that("Defining Survival Distributions",

@@ -17,9 +17,9 @@ pool_(...)
 }
 \arguments{
 \item{...}{Survival distributions to be used in the
-mixing.}
+projection.}
 
-\item{weights}{A vector of weights used in mixing.}
+\item{weights}{A vector of weights used in pooling.}
 
 \item{dots}{Used to work around non-standard evaluation.}
 }

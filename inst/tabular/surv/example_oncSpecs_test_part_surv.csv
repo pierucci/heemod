@@ -1,0 +1,8 @@
+data,file
+state,example_oncStates.csv
+parameters,example_oncParams_nomatrix.csv
+tm,fake_fit_tib.csv
+,
+output,output-nomatrix
+options,example_oncOptions.csv
+use_fits,use_fits.csv

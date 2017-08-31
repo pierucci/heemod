@@ -418,7 +418,6 @@ eval_surv.surv_model <- function(x, time,  ...) {
 #' @rdname eval_surv
 #' @export
 eval_surv.surv_projection <- function(x, time, ...) {
-  
   ret <- numeric(length(time))
   
   surv1 <- eval_surv(
@@ -467,7 +466,7 @@ eval_surv.surv_pooled <- function(x, time, ...) {
     surv_mat[ ,i] <- x$weights[i] / sum(x$weights) *
       eval_surv(
         x$dists[[i]],
-        time = time, 
+        time = time,
         type = "surv",
         ...
       )
@@ -571,7 +570,6 @@ eval_surv.surv_add_haz <- function(x, time, ...) {
 #' @rdname eval_surv
 #' @export
 eval_surv.surv_dist <- function(x, time, ...) {
-  
   if (! requireNamespace("flexsurv")) {
     stop("'flexsurv' package required.")
   }
