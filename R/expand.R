@@ -14,41 +14,7 @@ has_state_time.part_surv <- function(x, ...) {
 
 #' @export
 has_state_time.uneval_state_list <- function(x, ...) {
-  state_names <- get_state_names(x)
-  s_expand <- unlist(lapply(x, function(y) has_state_time(y)))
-  
-  # Figure out state expansion based on state transitions
-  # References to state_time in state transitions are based
-  # on the from state.  If the from state is NA, then use
-  # of state_time will expand ALL states.
-  state_trans <- attr(x, "transitions")
-  if(!is.null(state_trans)) {
-    st_to_expand <- has_state_time(state_trans)
-    st_from <- lapply(state_trans, function(y) attr(y, "from"))
-    st_expand <- st_from[st_to_expand]
-    st_from_expanded <- unlist(st_expand)
-    if(!is.null(st_from_expanded)){
-      if(any(is.na(st_from_expanded))) {
-        # Expand all states if from state is NA in a value referencing
-        # state_time
-        s_expand <- rep(T, length(s_expand))
-      } else {
-        for(i in seq_len(length(state_names))) {
-          # Expand states where state transitions from reference
-          # state_time
-          if(state_names[i] %in% st_from_expanded) {
-            s_expand[i] <- T
-          }
-        }
-      }
-    }
-  }
-  s_expand
-}
-
-#' @export
-has_state_time.uneval_state_transition_list <- function(x, ...) {
-  unlist(lapply(x, function(y) any(has_state_time(y))))
+  unlist(lapply(x, has_state_time))
 }
 
 #' @export
@@ -56,9 +22,118 @@ has_state_time.state <- function(x, ...) {
   any(unlist(lapply(x, function(y) "state_time" %in% all.vars(y$expr))))
 }
 
+substitute_dots <- function(.dots, .values) {
+  lazyeval::as.lazy_dots(
+    lapply(.dots, lazyeval::interp, .values = .values)
+  )
+}
+
+#' Expand Time-Dependant States into Tunnel States
+#' 
+#' This function for transition matrices and state values 
+#' expands states relying on `state_time` in a serie
+#' of tunnels states.
+#' 
+#' @param x A transition matrix or a state list.
+#' @param state_pos Position of the state to expand.
+#' @param state_name Original name of the sate to expand.
+#' @param cycles Number of cycle of the model.
+#' @param n Postition in the expansion process.
+#' @param ... Addition parameters passed to methods.
+#'   
+#' @return The same object type as the input.
+#' @keywords internal
+expand_state <- function(x, ...) {
+  UseMethod("expand_state")
+}
+
 #' @export
-has_state_time.state_transition <- function(x, ...) {
-  any(unlist(lapply(x, function(y) "state_time" %in% all.vars(y$expr))))
+#' @rdname expand_state
+expand_state.uneval_matrix <- function(x, state_pos,
+                                       state_name, cycles, n = 1) {
+  L <- length(x)
+  N <- sqrt(L)
+  
+  if (n <= cycles) {
+    # positions to insert 0
+    i <- seq(0, L - 1, N) + state_pos
+    i[state_pos] <- i[state_pos] - 1
+    res <- insert(x, i, list(lazyeval::lazy(0)))
+    
+    # row to duplicate
+    new <- res[seq(
+      from = get_tm_pos(state_pos, 1, N+1),
+      to = get_tm_pos(state_pos, N+1, N+1))]
+    
+    # edit state_time
+    new <- substitute_dots(new, list(state_time = n))
+    
+    # and reinsert
+    res <- insert(res, (N+1)*(state_pos-1),
+                  new)
+    
+    sn <- get_state_names(x)
+    sn[state_pos] <- sprintf(".%s_%i", state_name, n)
+    sn <- insert(sn, state_pos, sprintf(".%s_%i", state_name, n + 1))
+    
+    tm_ext <- define_transition_(res, sn)
+    
+    expand_state(
+      x = tm_ext,
+      state_pos = state_pos + 1,
+      state_name = state_name,
+      n = n + 1,
+      cycles = cycles
+    )
+  } else {
+    x[get_tm_pos(state_pos, 1, N):get_tm_pos(state_pos, N, N)] <-
+      substitute_dots(
+        x[get_tm_pos(state_pos, 1, N):get_tm_pos(state_pos, N, N)],
+        list(state_time = n)
+      )
+    x
+  }
+}
+
+#' @export
+#' @rdname expand_state
+expand_state.uneval_state_list <- function(x, state_name, cycles) {
+  
+  st <- x[[state_name]]
+  x[state_name] <- NULL
+  
+  id <- seq_len(cycles + 1)
+  res <- lapply(
+    id,
+    function(x) substitute_dots(st, list(state_time = x))
+  )
+  names(res) <- sprintf(".%s_%i", state_name, id)
+  
+  structure(
+    c(x, res),
+    class = class(x)
+  )
+}
+
+#' @export
+#' @rdname expand_state
+expand_state.uneval_inflow <- function(x, ...) {
+  expand_state.uneval_init(x, ...)
+}
+
+#' @export
+#' @rdname expand_state
+expand_state.uneval_init <- function(x, state_name, cycles) {
+  res <- insert(
+    x,
+    which(names(x) == state_name),
+    stats::setNames(
+      rep(list(lazyeval::lazy(0)), cycles),
+      sprintf(".%s_%i", state_name, seq_len(cycles) + 1))
+  )
+  
+  names(res)[which(names(res) == state_name)] <- sprintf(".%s_1", state_name)
+  structure(res, class = class(x))
 }
 
 #' Convert Lazy Dots to Expression List
@@ -142,15 +217,6 @@ interpolate.state <- function(x, ...) {
 
 #' @export
 #' @rdname interpolate
-interpolate.state_transition <- function(x, ...) {
-  from <- attr(x, "from")
-  to <- attr(x, "to")
-  res <- interpolate.default(x, ...)
-  define_state_transition_(from = from, to = to, res)
-}
-
-#' @export
-#' @rdname interpolate
 interpolate.part_surv <- function(x, ...) {
   x
 }
@@ -158,19 +224,6 @@ interpolate.part_surv <- function(x, ...) {
 #' @export
 #' @rdname interpolate
 interpolate.uneval_state_list <- function(x, ...) {
-  for (i in seq_along(x)) {
-    x[[i]] <- interpolate(x[[i]], ...)
-  }
-  state_trans <- attr(x, "transitions")
-  if(!is.null(state_trans)) {
-    attr(x, "transitions") <- interpolate(state_trans)
-  }
-  x
-}
-
-#' @export
-#' @rdname interpolate
-interpolate.uneval_state_transition_list <- function(x, ...) {
   for (i in seq_along(x)) {
     x[[i]] <- interpolate(x[[i]], ...)
   }
@@ -190,16 +243,10 @@ all.funs <- function(expr) {
 complete_stl <- function(scl, state_names,
                          strategy_names, cycles) {
   uni <- FALSE
-  
-  
-  if(is.null(scl)) {
-    scl <- cycles + 1
-  }
-  
   if (is.numeric(scl) && length(scl) == 1 && is.null(names(scl))) {
     uni <- TRUE
     stopifnot(
-      scl <= (cycles + 1),
+      scl <= cycles,
       scl > 0,
       ! is.na(scl),
       is.wholenumber(scl)
@@ -235,7 +282,7 @@ complete_stl <- function(scl, state_names,
     stopifnot(
       ! is.na(scl),
       scl > 0,
-      scl <= cycles + 1,
+      scl <= cycles,
       is.wholenumber(scl)
     )
   }

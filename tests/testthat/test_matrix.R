@@ -150,57 +150,25 @@ test_that(
     e_par1 <- heemod:::eval_parameters(
       par1, 10
     )
-    e_mat <- heemod:::eval_transition.uneval_matrix(
+    e_mat <- heemod:::eval_transition(
       mat1, e_par1
     )
     e_matC <- heemod:::eval_transition(
       matC, e_par1
     )
-    
-    # Evaluated matrices should have dim names
     expect_output(
       str(e_mat),
       'List of 10
- $ 1 : num [1:2, 1:2] 0.9 0.5 0.1 0.5
-  ..- attr(*, "dimnames")=List of 2
-  .. ..$ : chr [1:2] "X1" "X2"
-  .. ..$ : chr [1:2] "X1" "X2"
- $ 2 : num [1:2, 1:2] 0.9 0.667 0.1 0.333
-  ..- attr(*, "dimnames")=List of 2
-  .. ..$ : chr [1:2] "X1" "X2"
-  .. ..$ : chr [1:2] "X1" "X2"
- $ 3 : num [1:2, 1:2] 0.9 0.75 0.1 0.25
-  ..- attr(*, "dimnames")=List of 2
-  .. ..$ : chr [1:2] "X1" "X2"
-  .. ..$ : chr [1:2] "X1" "X2"
- $ 4 : num [1:2, 1:2] 0.9 0.8 0.1 0.2
-  ..- attr(*, "dimnames")=List of 2
-  .. ..$ : chr [1:2] "X1" "X2"
-  .. ..$ : chr [1:2] "X1" "X2"
- $ 5 : num [1:2, 1:2] 0.9 0.833 0.1 0.167
-  ..- attr(*, "dimnames")=List of 2
-  .. ..$ : chr [1:2] "X1" "X2"
-  .. ..$ : chr [1:2] "X1" "X2"
- $ 6 : num [1:2, 1:2] 0.9 0.857 0.1 0.143
-  ..- attr(*, "dimnames")=List of 2
-  .. ..$ : chr [1:2] "X1" "X2"
-  .. ..$ : chr [1:2] "X1" "X2"
- $ 7 : num [1:2, 1:2] 0.9 0.875 0.1 0.125
-  ..- attr(*, "dimnames")=List of 2
-  .. ..$ : chr [1:2] "X1" "X2"
-  .. ..$ : chr [1:2] "X1" "X2"
- $ 8 : num [1:2, 1:2] 0.9 0.889 0.1 0.111
-  ..- attr(*, "dimnames")=List of 2
-  .. ..$ : chr [1:2] "X1" "X2"
-  .. ..$ : chr [1:2] "X1" "X2"
- $ 9 : num [1:2, 1:2] 0.9 0.9 0.1 0.1
-  ..- attr(*, "dimnames")=List of 2
-  .. ..$ : chr [1:2] "X1" "X2"
-  .. ..$ : chr [1:2] "X1" "X2"
- $ 10: num [1:2, 1:2] 0.9 0.9091 0.1 0.0909
-  ..- attr(*, "dimnames")=List of 2
-  .. ..$ : chr [1:2] "X1" "X2"
-  .. ..$ : chr [1:2] "X1" "X2"
+ $ : num [1:2, 1:2] 0.9 0.5 0.1 0.5
+ $ : num [1:2, 1:2] 0.9 0.667 0.1 0.333
+ $ : num [1:2, 1:2] 0.9 0.75 0.1 0.25
+ $ : num [1:2, 1:2] 0.9 0.8 0.1 0.2
+ $ : num [1:2, 1:2] 0.9 0.833 0.1 0.167
+ $ : num [1:2, 1:2] 0.9 0.857 0.1 0.143
+ $ : num [1:2, 1:2] 0.9 0.875 0.1 0.125
+ $ : num [1:2, 1:2] 0.9 0.889 0.1 0.111
+ $ : num [1:2, 1:2] 0.9 0.9 0.1 0.1
+ $ : num [1:2, 1:2] 0.9 0.9091 0.1 0.0909
  - attr(*, "class")= chr [1:2] "eval_matrix" "list"
  - attr(*, "state_names")= chr [1:2] "X1" "X2"',
       fixed = TRUE
@@ -214,10 +182,10 @@ State names:
 X1
 X2
 
-$`1`
-    X1  X2
-X1 0.9 0.1
-X2 0.5 0.5',
+[[1]]
+     [,1] [,2]
+[1,]  0.9  0.1
+[2,]  0.5  0.5',
       fixed = TRUE
     )
     expect_equal(

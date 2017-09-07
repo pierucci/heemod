@@ -286,15 +286,6 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
     state_file_info,
     group_vars = ".state"
   )
-  if(any(ref$data == "state_trans")){
-    state_trans_info <- parse_multi_spec(
-      read_file(ref$full_file[ref$data == "state_trans"]),
-      group_vars = c(".transition")
-    )
-  } else {
-    state_trans_info <- NULL
-  }
-
   state_names <- state_info[[1]]$.state
   ## to accomodate partitioned survival models, we will allow for
   ##   the possibility that there is no transition matrix ...
@@ -368,16 +359,9 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
           ~ .strategy == names(state_info)[i])$part_surv[[1]]
       else
         this_tm <- tm_info[[i]]
-        if(is.null(state_trans_info)) {
-          this_state_trans <- NULL
-        } else{
-          this_state_trans <- state_trans_info[[i]]
-        }
-        create_model_from_tabular(state_info[[i]], 
-                                  this_tm,
-                                  df_env = df_env,
-                                  state_trans_info = this_state_trans)
-      }
+      create_model_from_tabular(state_info[[i]], 
+                                this_tm,
+                                df_env = df_env)
     })  
   
   names(models) <- names(state_info)
@@ -413,31 +397,12 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
 #' @param state_info Result for one model of 
 #'   [parse_multi_spec()].
 #' @param df_env An environment containing external data.
-#' @param state_trans_info Optional result for one model of 
-#'   [parse_multi_spec()] with state transitions.
 #'   
 #' @return A state list.
 #'   
 #' @keywords internal
 create_states_from_tabular <- function(state_info,
-                                       df_env = globalenv(),
-                                       state_trans_info = NULL) {
-  
-
-  state_list <- parse_state_info(state_info, df_env)
-  if(!is.null(state_trans_info)) {
-    state_list <- append(
-      state_list,
-      parse_state_trans_info(state_trans_info, df_env)
-    )
-  }
-  res <- define_state_list_(state_list)
-  if (options()$heemod.verbose) print(res)
-  res
-}
-
-
-parse_state_info <- function(state_info, df_env) {
+                                       df_env = globalenv()) {
   
   if(! inherits(state_info, "data.frame")) {
     stop("'state_info' must be a data frame.")
@@ -511,108 +476,27 @@ parse_state_info <- function(state_info, df_env) {
     )
   }
   
-  stats::setNames(lapply(
-    state_info$.state,
-    function(state) {
-      define_state_(
-        lazyeval::as.lazy_dots(
-          stats::setNames(as.character(lapply(
-            values,
-            function(value) {
-              state_info[[value]][state_info$.state == state]
-            }
-          )), values),
-          env = df_env
+  res <- define_state_list_(
+    stats::setNames(lapply(
+      state_info$.state,
+      function(state) {
+        define_state_(
+          lazyeval::as.lazy_dots(
+            stats::setNames(as.character(lapply(
+              values,
+              function(value) {
+                state_info[[value]][state_info$.state == state]
+              }
+            )), values),
+            env = df_env
+          )
         )
-      )
-    }
-  ), state_info$.state)
-  
+      }
+    ), state_info$.state)
+  )
+  if (options()$heemod.verbose) print(res)
+  res
 }
-
-parse_state_trans_info <- function(x, df_env) {
-  
-  if(! inherits(x, "data.frame")) {
-    stop("'x' must be a data frame.")
-  }
-  if(!(".transition" %in% names(x))) {
-    stop("'.transition' should be a column name.")
-  }
-  if(!("from" %in% names(x))) {
-    stop("'from' should be a column name.")
-  }
-  if(!("to" %in% names(x))) {
-    stop("'to' should be a column name.")
-  }
-  if (any(duplicated(x$.transition))) {
-    stop(sprintf(
-      "Duplicated state transition names: %s.",
-      paste(unique(x$.transition[duplicated(x$.transition)]),
-            sep = ", ")
-    ))
-  }
-  
-  trans_names <- x$.transition
-  values <- setdiff(names(x), c(".model", ".transition", "from", "to"))
-  discounts <- values[grep("^\\.discount", values)]
-  values <- setdiff(values, discounts)
-  discounts_clean <- gsub("^\\.discount\\.(.+)", "\\1", discounts)
-  
-  if (! all(discounts_clean %in% values)) {
-    stop(sprintf(
-      "Discounting rates defined for non-existing values: %s.",
-      paste(discounts[! discounts %in% values], collapse = ", ")
-    ))
-  }
-  
-  for (n in discounts) {
-    if (all(is.na(x[[n]]))) {
-      stop(sprintf(
-        "No discount values found for '%s'.", n
-      ))
-      
-    } else if (length(unique(stats::na.omit(x[[n]]))) > 1) {
-      stop(sprintf(
-        "Multiple discount values for '%s'.", n
-      ))
-      
-    } else {
-      x[[n]] <- stats::na.omit(x[[n]])[1]
-    }
-  }
-  
-  for (n in discounts_clean) {
-    x[[n]] <- sprintf(
-      "discount(%s, %s)",
-      x[[n]],
-      x[[paste0(".discount.", n)]]
-    )
-  }
-  
-  lapply(
-    x$.transition,
-    function(state_trans) {
-      state_vals <- lapply(
-        values,
-        function(value) {
-          x[[value]][x$.transition == state_trans]
-        }
-      ) %>%
-        as.character %>%
-        stats::setNames(values) %>%
-        lazyeval::as.lazy_dots(env = df_env)
-      
-      define_state_transition_(
-        from = x$from[x$.transition == state_trans],
-        to = x$to[x$.transition == state_trans],
-        .dots = state_vals
-      )
-    }
-  ) %>%
-    stats::setNames(x$.transition)
-  
-}
-
 
 #' Create a Transition Matrix From Tabular Input
 #' 
@@ -904,8 +788,7 @@ create_options_from_tabular <- function(opt) {
 #' @keywords internal
 create_model_from_tabular <- function(state_info,
                                       tm_info,
-                                      df_env = globalenv(),
-                                      state_trans_info = NULL) {
+                                      df_env = globalenv()) {
   if (length(tm_info) == 0) {
     stop("A transition object must be defined.")
   }
@@ -923,8 +806,7 @@ create_model_from_tabular <- function(state_info,
   
   if (options()$heemod.verbose) message("**** Defining state list...")
   states <- create_states_from_tabular(state_info,
-                                       df_env = df_env,
-                                       state_trans_info = state_trans_info)
+                                       df_env = df_env)
   if (options()$heemod.verbose) message("**** Defining TM...")
   
   if (inherits(tm_info, "data.frame")) {

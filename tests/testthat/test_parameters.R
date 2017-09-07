@@ -80,7 +80,7 @@ test_that(
     )
     expect_output(
       str(e_par1),
-      "100 obs\\. of  6 variables"
+      "10 obs\\. of  5 variables"
     )
     expect_equal(
       get_parameter_names(e_par1),
@@ -127,7 +127,7 @@ test_that(
     )
     expect_equal(
       as.numeric(unlist(e_par1[,"b"])),
-      rep(1/(-2:2),5)
+      1/(-2:2)
     )
     options(heemod.inf_parameter = "warning")
     expect_warning(

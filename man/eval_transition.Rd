@@ -10,9 +10,6 @@ eval_transition(x, ...)
 \item{x}{an \code{uneval_matrix} object.}
 
 \item{parameters}{an \code{eval_parameters} object.}
-
-\item{expand}{A tibble identifying which states
-should be expanded.}
 }
 \value{
 An \code{eval_matrix} object (actually a list of

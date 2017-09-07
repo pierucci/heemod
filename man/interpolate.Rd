@@ -5,10 +5,8 @@
 \alias{interpolate.default}
 \alias{interpolate.uneval_matrix}
 \alias{interpolate.state}
-\alias{interpolate.state_transition}
 \alias{interpolate.part_surv}
 \alias{interpolate.uneval_state_list}
-\alias{interpolate.uneval_state_transition_list}
 \title{Interpolate Lazy Dots}
 \usage{
 interpolate(x, ...)
@@ -19,13 +17,9 @@ interpolate(x, ...)
 
 \method{interpolate}{state}(x, ...)
 
-\method{interpolate}{state_transition}(x, ...)
-
 \method{interpolate}{part_surv}(x, ...)
 
 \method{interpolate}{uneval_state_list}(x, ...)
-
-\method{interpolate}{uneval_state_transition_list}(x, ...)
 }
 \arguments{
 \item{x}{A parameter, transition matrix or state list

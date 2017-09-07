@@ -485,7 +485,7 @@ get_parameter_values.run_model <- function(x, parameter_names,
       seq_along(parameter_names),
       function(i) {
         as.vector(unlist(
-          get_eval_strategy_list(x)[[strategy]]$parameters[cycles[i], parameter_names[i]]
+          get_eval_strategy_list(x)[[strategy]]$complete_parameters[cycles[i], parameter_names[i]]
         ))
       }),
     parameter_names)

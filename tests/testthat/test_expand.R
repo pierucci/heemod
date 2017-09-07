@@ -10,14 +10,14 @@ test_that(
     expect_identical(
       heemod:::complete_stl(NULL, sn, mn, 10),
       structure(list(I = structure(
-        c(11, 11, 11, 11, 11),
+        c(10, 10, 10, 10, 10),
         .Names = c("A",  "B", "C", "D", "E")),
         II = structure(
-          c(11, 11, 11, 11, 11),
+          c(10, 10, 10, 10, 10),
           .Names = c("A", 
                      "B", "C", "D", "E")),
         III = structure(
-          c(11, 11, 11, 11, 11),
+          c(10, 10, 10, 10, 10),
           .Names = c("A",  "B", "C", "D", "E"))),
         .Names = c("I", "II", "III"))
     )
@@ -99,7 +99,7 @@ test_that(
       heemod:::complete_stl(NA, sn, mn, 10)
     )
     expect_error(
-      heemod:::complete_stl(12, sn, mn, 10)
+      heemod:::complete_stl(11, sn, mn, 10)
     )
     expect_error(
       heemod:::complete_stl(5.5, sn, mn, 10)
@@ -112,7 +112,7 @@ test_that(
       heemod:::complete_stl(c(A = 1, B = NA), sn, mn, 10)
     )
     expect_error(
-      heemod:::complete_stl(c(A = 1, B = 12), sn, mn, 10)
+      heemod:::complete_stl(c(A = 1, B = 11), sn, mn, 10)
     )
     expect_error(
       heemod:::complete_stl(c(A = 1, B = 5.5), sn, mn, 10)
@@ -142,7 +142,7 @@ test_that(
       heemod:::complete_stl(
         list(
           I = c(A = 5, E = 8),
-          III = c(B = 2, C = 12)
+          III = c(B = 2, C = 11)
         ),
         sn, mn, 10)
     )
@@ -248,7 +248,6 @@ test_that(
       c(21488.12, 82302.96)
     )
     
-    # Changed expected result to reflect solution to issue #307
     
     res <- run_model(
       define_strategy(
@@ -261,7 +260,7 @@ test_that(
     )
     expect_equivalent(
       round(unlist(res$run_model[c(".cost", ".effect")]), 2),
-      c(21364.69, 82307.89)
+      c(21487.09, 82302.96)
     )
     
     res1 <- run_model(

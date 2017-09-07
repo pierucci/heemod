@@ -4,8 +4,7 @@
 \alias{create_model_from_tabular}
 \title{Create a \code{heemod} Model From Tabular Files Info}
 \usage{
-create_model_from_tabular(state_info, tm_info, df_env = globalenv(),
-  state_trans_info = NULL)
+create_model_from_tabular(state_info, tm_info, df_env = globalenv())
 }
 \arguments{
 \item{state_info}{A state tabular file (file path or
