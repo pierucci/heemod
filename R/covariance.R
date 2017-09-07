@@ -18,7 +18,7 @@ compute_cov <- function(psa, diff = FALSE, k, k_default = 10, threshold) {
   max_k <- tab_psa %>% 
     dplyr::select_(.dots = c(psa$resamp_par), ".strategy_names") %>% 
     dplyr::group_by_(".strategy_names") %>% 
-    dplyr::summarise_all(dplyr::n_distinct) %>% 
+    dplyr::summarise_all(dplyr::funs(dplyr::n_distinct)) %>% 
     dplyr::summarise_all(min) %>% 
     dplyr::select_(~ - .strategy_names) %>% 
     unlist()
