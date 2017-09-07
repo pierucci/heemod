@@ -10,6 +10,7 @@
   * Check for comma as a decimal separator in tabular data.
   * Auto-reindent transition matrices with `reindent_transition()`.
   * Discounting per year with the `period` argument.
+  * [BCEA](https://sites.google.com/a/statistica.it/gianluca/bcea) interface with `run_bcea()`.
 
 ### Bugfixes
 

@@ -47,6 +47,7 @@ Other features:
   * Heterogeneity analysis.
   * Parallel computing support.
   * Features for budget impact analysis.
+  * Interface with [SAVI](http://savi.shef.ac.uk/SAVI/) and [BCEA](https://sites.google.com/a/statistica.it/gianluca/bcea).
 
 Most of the analyses presented in [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do) can be performed with `heemod`. See the *Reproducing Exact Results from DMHEE* vignette for an exact reproduction of the analyses from the book.
 
