@@ -24,7 +24,7 @@ Imports:
     graphics,
     grDevices,
     lazyeval,
-    memoise,
+    memoise (>= 1.1.0),
     mvnfast,
     plyr,
     pryr,
