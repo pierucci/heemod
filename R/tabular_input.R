@@ -294,7 +294,7 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   } else {
     state_trans_info <- NULL
   }
-
+  
   state_names <- state_info[[1]]$.state
   ## to accomodate partitioned survival models, we will allow for
   ##   the possibility that there is no transition matrix ...
@@ -325,12 +325,12 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
     use_fits_file <- ref[ref$data == "use_fits", "full_file"]
     use_fits <- read_file(use_fits_file)
     tm_info <- construct_part_surv_tib(use_fits, ref, env = df_env,
-                                    state_names = state_names)
+                                       state_names = state_names)
     one_way <- setdiff(names(state_info), unique(tm_info$.strategy))
     other_way <- setdiff(unique(tm_info$.strategy), names(state_info))
   }
-
-
+  
+  
   one_way <- setdiff(names(state_info), names(tm_info))
   other_way <- setdiff(names(tm_info), names(state_info))
   if (length(c(one_way, other_way))){
@@ -353,11 +353,11 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   
   if(trans_type == "part_surv")
     tm_info <- 
-      dplyr::filter_(tm_info, ~ .strategy %in% names(state_info))
+    dplyr::filter_(tm_info, ~ .strategy %in% names(state_info))
   else
     tm_info <- tm_info[names(state_info)]
-
-
+  
+  
   if (options()$heemod.verbose) message("*** Defining models...")
   models <- lapply(
     seq_along(state_info),
@@ -368,21 +368,20 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
           ~ .strategy == names(state_info)[i])$part_surv[[1]]
       else
         this_tm <- tm_info[[i]]
-        if(is.null(state_trans_info)) {
-          this_state_trans <- NULL
-        } else{
-          this_state_trans <- state_trans_info[[i]]
-        }
-        create_model_from_tabular(state_info[[i]], 
-                                  this_tm,
-                                  df_env = df_env,
-                                  state_trans_info = this_state_trans)
+      if(is.null(state_trans_info)) {
+        this_state_trans <- NULL
+      } else{
+        this_state_trans <- state_trans_info[[i]]
       }
-    })  
-  
-  names(models) <- names(state_info)
-  
-  models
+      create_model_from_tabular(state_info[[i]], 
+                                this_tm,
+                                df_env = df_env,
+                                state_trans_info = this_state_trans)
+    })
+    
+    names(models) <- names(state_info)
+    
+    models
 }
 
 #' Create State Definitions From Tabular Input
@@ -423,7 +422,7 @@ create_states_from_tabular <- function(state_info,
                                        df_env = globalenv(),
                                        state_trans_info = NULL) {
   
-
+  
   state_list <- parse_state_info(state_info, df_env)
   if(!is.null(state_trans_info)) {
     state_list <- append(
@@ -460,7 +459,7 @@ parse_state_info <- function(state_info, df_env) {
   discounts <- values[grep("^\\.discount", values)]
   values <- setdiff(values, discounts)
   discounts_clean <- gsub("^\\.discount\\.(.+)", "\\1", discounts)
-
+  
   num_missing_per_column <- colSums(sapply(state_info, is.na))
   missing_col_names <- names(num_missing_per_column)[num_missing_per_column > 0]
   ## missing names are allowed for discount columns
@@ -992,7 +991,7 @@ create_df_from_tabular <- function(df_dir, df_envir) {
       which(sapply(sapply(this_val, function(x){grep(",", x)}),
                    any)
       )
-
+    
     for(this_comma_col in comma_cols){
       try_numeric <- try(as.numeric(gsub(",", "", this_val[, this_comma_col])), 
                          silent = TRUE)
@@ -1003,9 +1002,9 @@ create_df_from_tabular <- function(df_dir, df_envir) {
                       "from file",
                       basename(all_files[i]),
                       "to numeric despite it having commas"
-                      )
-                )
-    }
+        )
+        )
+      }
     }
     assign(obj_names[i], this_val, envir = df_envir)
   }
@@ -1473,12 +1472,12 @@ check_survival_specs <-
       warning("censor_code not defined in surv_specs; setting to 0 for all rows")
       surv_specs$censor_code <- 0
     }
-      
+    
     surv_spec_col_names <- c("type", "treatment", "data_directory", "data_file",
                              "fit_directory", "fit_name", "fit_file",
                              "time_col", "treatment_col", "censor_col",
                              "event_code", "censor_code"
-                             )
+    )
     if(! identical(sort(names(surv_specs)), sort(surv_spec_col_names))){
       extra_names <- setdiff(names(surv_specs), surv_spec_col_names)
       missing_names <- setdiff(surv_spec_col_names, names(surv_specs))
