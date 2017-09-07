@@ -23,7 +23,8 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -51,10 +52,55 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="..//index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
+  <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/a_introduction.html">An Introduction to `heemod`</a>
+    </li>
+    <li>
+      <a href="../articles/b_time_dependency.html">Time-varying values</a>
+    </li>
+    <li>
+      <a href="../articles/c_homogeneous.html">Simple Markov Models (Homogeneous)</a>
+    </li>
+    <li>
+      <a href="../articles/d_non_homogeneous.html">Time-varying Markov Models (Non-Homogeneous)</a>
+    </li>
+    <li>
+      <a href="../articles/e_probabilistic.html">Probabilistic Uncertainty Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/f_sensitivity.html">Deterministic Sensitivity Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/g_heterogeneity.html">Heterogeneity &amp; Demographic Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/h_tabular.html">Tabular Input</a>
+    </li>
+    <li>
+      <a href="../articles/i_reproduction.html">Reproducing Exact Results from DMHEE</a>
+    </li>
+    <li>
+      <a href="../articles/j_survival.html">Survival models</a>
+    </li>
+    <li>
+      <a href="../articles/k_calibration.html">Calibrating `heemod` models</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">News</a>
@@ -84,9 +130,9 @@
     </div>
 
     <div class="contents">
-    <div id="heemod-0-9-1-9004" class="section level2">
+    <div id="heemod-0-9-1-9005" class="section level2">
 <h2 class="hasAnchor">
-<a href="#heemod-0-9-1-9004" class="anchor"></a>heemod 0.9.1.9004</h2>
+<a href="#heemod-0-9-1-9005" class="anchor"></a>heemod 0.9.1.9005</h2>
 <div id="breaking-changes" class="section level3">
 <h3 class="hasAnchor">
 <a href="#breaking-changes" class="anchor"></a>Breaking changes</h3>
@@ -99,8 +145,9 @@
 <a href="#new-features" class="anchor"></a>New features</h3>
 <ul>
 <li>Starting values with <code><a href="../reference/define_starting_values.html">define_starting_values()</a></code>.</li>
-<li>Check for comma as a deciaml separator in tabular data.</li>
+<li>Check for comma as a decimal separator in tabular data.</li>
 <li>Auto-reindent transition matrices with <code><a href="../reference/reindent_transition.html">reindent_transition()</a></code>.</li>
+<li>Discounting per year with the <code>period</code> argument.</li>
 </ul>
 </div>
 <div id="bugfixes" class="section level3">
@@ -108,6 +155,7 @@
 <a href="#bugfixes" class="anchor"></a>Bugfixes</h3>
 <ul>
 <li>Better error-checking in multinomial parameters definition.</li>
+<li>Cleaner <code><a href="../reference/define_psa.html">define_psa()</a></code> backend code, variables can now be used to define distributin parameters.</li>
 <li>Handle cases when parameters depend on <code>state_time</code> but thoses parameters are not used by a strategy.</li>
 <li>Empty calls to <code><a href="../reference/modify.html">modify()</a></code> are supported.</li>
 <li>Fix error in survival vignette.</li>
@@ -181,7 +229,7 @@
 <h3 class="hasAnchor">
 <a href="#new-features-2" class="anchor"></a>New features</h3>
 <ul>
-<li>Operations on survival functions, see <code><a href="../articles/j-survival.html">vignette("j-survival")</a></code>. Thanks to <a href="https://github.com/jrdnmdhl">Jordan Amdahl</a>.</li>
+<li>Operations on survival functions, see <code>vignette("j-survival")</code>. Thanks to <a href="https://github.com/jrdnmdhl">Jordan Amdahl</a>.</li>
 <li>Model calibration with <code><a href="../reference/calibrate_model.html">calibrate_model()</a></code>. Thanks to <a href="https://github.com/MattWiener">Matthew Wiener</a>.</li>
 <li>State membership correction works for partitioned survival model.</li>
 <li>Custom state membership correction functions can be passed to the <code>method</code> argument of <code><a href="../reference/run_model.html">run_model()</a></code>.</li>
@@ -195,7 +243,7 @@
 <a href="#bugfixes-2" class="anchor"></a>Bugfixes</h3>
 <ul>
 <li>
-<code>heemod::discount()</code> now produces restults similar to <code><a href="../reference/discount.html">discount()</a></code>.</li>
+<code><a href="http://www.rdocumentation.org/packages/heemod/topics/discount">heemod::discount()</a></code> now produces restults similar to <code><a href="../reference/discount.html">discount()</a></code>.</li>
 </ul>
 </div>
 <div id="backend-changes-2" class="section level3">
@@ -605,7 +653,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#heemod-0-9-1-9004">0.9.1.9004</a></li>
+        <li><a href="#heemod-0-9-1-9005">0.9.1.9005</a></li>
         <li><a href="#heemod-0-9-1">0.9.1</a></li>
         <li><a href="#heemod-0-9-0">0.9.0</a></li>
         <li><a href="#heemod-0-8-0">0.8.0</a></li>

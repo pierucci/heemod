@@ -1,6 +1,6 @@
 Package: heemod
-Title: Models for Health Economic Evaluation
-Version: 0.9.1.9004
+Title: Markov Models for Health Economic Evaluations
+Version: 0.9.1.9005
 Authors@R: c(
     person("Antoine", "Filipovic-Pierucci", email = "pierucci@gmail.com", role = c("aut", "cre")),
     person("Kevin", "Zarca", role = "aut"),
@@ -8,15 +8,15 @@ Authors@R: c(
     person("Zdenek", "Kabat", role = "ctb"),
     person("Vojtech", "Filipec", role = "ctb"),
 	  person("Jordan", "Amdahl", role=c("ctb")),
-	  person("Yonatan", "Carranza Alarcon", role=c("ctb"))
+	  person("Yonatan", "Carranza Alarcon", role=c("ctb")),
+	  person("Vince", "Daniels", role=c("ctb"))
     )
-Description: Health Economic Evaluation Modelling:
-    decision trees and cohort simulations. Provides a simple
-    and consistent interface for Markov models specification,
-    comparison, sensitivity and probabilistic analysis, input of
-    survival models, etc. Models with time varying properties
-    (non-homogeneous Markov models and semi-Markov models)
-    are supported.
+Description: An implementation of the modelling and
+    reporting features described in reference textbooks
+    and guidelines: deterministic and probabilistic
+    sensitivity analysis, heterogeneity analysis, time
+    dependency on state-time and model-time (semi-Markov
+    and non-homogeneous Markov models), etc.
 Depends: R (>= 3.2.2)
 Imports:
     reshape2,
@@ -25,7 +25,7 @@ Imports:
     graphics,
     grDevices,
     lazyeval,
-    memoise,
+    memoise (>= 1.1.0),
     mvnfast,
     plyr,
     pryr,
@@ -44,6 +44,7 @@ Suggests:
     Hmisc,
     knitr,
     logitnorm,
+    lpSolve,
     mgcv,
     optimx,
     parallel,
@@ -53,7 +54,8 @@ Suggests:
     stringr,
     survival,
     testthat,
-    triangle
+    triangle,
+    XLConnect
 URL: https://github.com/pierucci/heemod, https://pierucci.org
 BugReports: https://github.com/pierucci/heemod/issues
 Roxygen: list(markdown = TRUE)

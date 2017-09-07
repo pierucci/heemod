@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Models for Health Economic Evaluation • heemod</title>
+<title>Markov Models for Health Economic Evaluations • heemod</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
@@ -29,10 +29,55 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="reference/index.html">Reference</a>
+  <a href="/index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
 </li>
 <li>
-  <a href="articles/index.html">Articles</a>
+  <a href="reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="articles/a_introduction.html">An Introduction to `heemod`</a>
+    </li>
+    <li>
+      <a href="articles/b_time_dependency.html">Time-varying values</a>
+    </li>
+    <li>
+      <a href="articles/c_homogeneous.html">Simple Markov Models (Homogeneous)</a>
+    </li>
+    <li>
+      <a href="articles/d_non_homogeneous.html">Time-varying Markov Models (Non-Homogeneous)</a>
+    </li>
+    <li>
+      <a href="articles/e_probabilistic.html">Probabilistic Uncertainty Analysis</a>
+    </li>
+    <li>
+      <a href="articles/f_sensitivity.html">Deterministic Sensitivity Analysis</a>
+    </li>
+    <li>
+      <a href="articles/g_heterogeneity.html">Heterogeneity &amp; Demographic Analysis</a>
+    </li>
+    <li>
+      <a href="articles/h_tabular.html">Tabular Input</a>
+    </li>
+    <li>
+      <a href="articles/i_reproduction.html">Reproducing Exact Results from DMHEE</a>
+    </li>
+    <li>
+      <a href="articles/j_survival.html">Survival models</a>
+    </li>
+    <li>
+      <a href="articles/k_calibration.html">Calibrating `heemod` models</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="news/index.html">News</a>
@@ -60,7 +105,7 @@
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#heemod---health-economic-evaluation-modelling" class="anchor"></a>heemod - Health Economic Evaluation MODelling</h1></div>
 
-<p>Health Economic Evaluation Modelling: decision trees and cohort simulations. Provides a simple and consistent interface for Markov models specification, comparison, sensitivity and probabilistic analysis, input of survival models, etc. Models with time varying properties (non-homogeneous Markov models and semi-Markov models) are supported.</p>
+<p>Markov Models for Health Economic Evaluations. An implementation of the modelling and reporting features described in reference textbooks and guidelines: deterministic and probabilistic sensitivity analysis, heterogeneity analysis, time dependency on state-time and model-time (semi-Markov and non-homogeneous Markov models), etc.</p>
 <p>You can install:</p>
 <ul>
 <li>the latest released version from CRAN with:</li>
@@ -74,7 +119,7 @@
 <li>
 <code>heemod</code> can be cited with:</li>
 </ul>
-<p>Filipović-Pierucci A, Zarca K and Durand-Zaleski I (2017). “Markov Models for Health Economic Evaluation: The R Package heemod.” <em>ArXiv e-prints</em>. R package version 0.8.0, 1702.03252, &lt;URL: <a href="https://pierucci.org/heemod" class="uri">https://pierucci.org/heemod</a>&gt;.</p>
+<p>Filipović-Pierucci A, Zarca K and Durand-Zaleski I (2017). <a href="https://arxiv.org/abs/1702.03252">“Markov Models for Health Economic Evaluation: The R Package heemod.”</a> <em>ArXiv e-prints</em>. R package version 0.8.0, 1702.03252, &lt;URL: <a href="https://pierucci.org/heemod" class="uri">https://pierucci.org/heemod</a>&gt;.</p>
 <div id="features" class="section level2">
 <h2 class="hasAnchor">
 <a href="#features" class="anchor"></a>Features</h2>
@@ -99,7 +144,7 @@
 </ul>
 <p>Other features:</p>
 <ul>
-<li>Multiple state membership correction methods (life-table, half-cycle, etc.).</li>
+<li>Multiple state membership correction methods (life-table, custom method, etc.).</li>
 <li>Demographic analysis to compute population-level results.</li>
 <li>Heterogeneity analysis.</li>
 <li>Parallel computing support.</li>
@@ -124,6 +169,9 @@
 <li><a href="https://github.com/MattWiener">Matthew Wiener</a></li>
 <li><a href="https://github.com/zkabat">Zdenek Kabat</a></li>
 <li><a href="https://github.com/vojtech-filipec">Vojtech Filipec</a></li>
+<li><a href="https://github.com/jrdnmdhl">Jordan Amdahl</a></li>
+<li><a href="https://github.com/salmuz">Yonatan Carranza Alarcon</a></li>
+<li><a href="Vince%20Daniels">Vince Daniels</a></li>
 </ul>
 </div>
 </div>
@@ -141,6 +189,10 @@
 </ul>
 <h2>License</h2>
 <p>GPL (&gt;= 3)</p>
+<h2>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html">Citing heemod</a></li>
+</ul>
 <h2>Developers</h2>
 <ul class="list-unstyled">
 <li>Antoine Filipovic-Pierucci <br><small class="roles"> Author, maintainer </small> </li>

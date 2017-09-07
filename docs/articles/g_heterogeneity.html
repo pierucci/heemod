@@ -29,10 +29,55 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="..//index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
+  <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/a_introduction.html">An Introduction to `heemod`</a>
+    </li>
+    <li>
+      <a href="../articles/b_time_dependency.html">Time-varying values</a>
+    </li>
+    <li>
+      <a href="../articles/c_homogeneous.html">Simple Markov Models (Homogeneous)</a>
+    </li>
+    <li>
+      <a href="../articles/d_non_homogeneous.html">Time-varying Markov Models (Non-Homogeneous)</a>
+    </li>
+    <li>
+      <a href="../articles/e_probabilistic.html">Probabilistic Uncertainty Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/f_sensitivity.html">Deterministic Sensitivity Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/g_heterogeneity.html">Heterogeneity &amp; Demographic Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/h_tabular.html">Tabular Input</a>
+    </li>
+    <li>
+      <a href="../articles/i_reproduction.html">Reproducing Exact Results from DMHEE</a>
+    </li>
+    <li>
+      <a href="../articles/j_survival.html">Survival models</a>
+    </li>
+    <li>
+      <a href="../articles/k_calibration.html">Calibrating `heemod` models</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">News</a>
@@ -59,7 +104,7 @@
     <div class="page-header toc-ignore">
       <h1>Heterogeneity &amp; Demographic Analysis</h1>
             
-            <h4 class="date">2017-06-07</h4>
+            <h4 class="date">2017-08-30</h4>
           </div>
 
     
@@ -81,20 +126,20 @@
 <pre><code>## # A tibble: 100 x 2
 ##      age   sex
 ##    &lt;dbl&gt; &lt;int&gt;
-##  1    35     1
-##  2    73     1
-##  3    67     1
-##  4    69     1
-##  5    44     0
-##  6    53     1
-##  7    57     1
-##  8    37     0
-##  9    51     1
-## 10    61     0
+##  1    45     1
+##  2    60     1
+##  3    52     0
+##  4    65     1
+##  5    49     0
+##  6    58     0
+##  7    64     1
+##  8    42     1
+##  9    56     1
+## 10    56     0
 ## # ... with 90 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
-<span class="kw">ggplot</span>(tab_indiv, <span class="kw">aes</span>(<span class="dt">x =</span> age)) +
-<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">2</span>)</code></pre></div>
+<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(tab_indiv, <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x =</span> age)) +
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_histogram">geom_histogram</a></span>(<span class="dt">binwidth =</span> <span class="dv">2</span>)</code></pre></div>
 <p><img src="g_heterogeneity_files/figure-html/unnamed-chunk-4-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div id="running-the-analysis" class="section level2">
@@ -118,28 +163,28 @@
 ## 
 ## * Values distribution:
 ## 
-##                                  Min.      1st Qu.      Median        Mean
-## standard - Cost          450.15881156  605.0062810 630.4692714 699.5059081
-## standard - Effect          7.47256790   25.5696426  27.3769142  26.4674988
-## standard - Cost Diff.               -            -           -           -
-## standard - Effect Diff.             -            -           -           -
-## standard - Icer                     -            -           -           -
-## np1 - Cost               593.80297968  635.5509751 642.4744757 662.4795257
-## np1 - Effect               7.49009703   25.8299343  27.7656911  26.7395201
-## np1 - Cost Diff.        -164.88137326 -129.4829089  12.0052043 -37.0263824
-## np1 - Effect Diff.         0.01752913    0.1948185   0.2334634   0.2720213
-## np1 - Icer              -354.32431375 -333.0519971  51.0908895  73.1330456
-##                             3rd Qu.         Max.
-## standard - Cost         828.5434528  878.0433890
-## standard - Effect        29.2971568   31.5986556
-## standard - Cost Diff.             -            -
-## standard - Effect Diff.           -            -
-## standard - Icer                   -            -
-## np1 - Cost              699.0605439  713.1620157
-## np1 - Effect             29.7280141   31.8353665
-## np1 - Cost Diff.         30.5446941  143.6441681
-## np1 - Effect Diff.        0.3887769    0.4653403
-## np1 - Icer              156.7853582 8194.5991768
+##                                  Min.     1st Qu.       Median
+## standard - Cost          530.94590166  619.951158  761.4317051
+## standard - Effect         14.30828698   24.875483   27.3769142
+## standard - Cost Diff.               -           -            -
+## standard - Effect Diff.             -           -            -
+## standard - Icer                     -           -            -
+## np1 - Cost               615.48340627  639.613463  680.0145801
+## np1 - Effect              14.43982318   25.143659   27.7656911
+## np1 - Cost Diff.        -164.88137326 -129.482909  -81.4171250
+## np1 - Effect Diff.         0.09203743    0.208543    0.2918287
+## np1 - Icer              -354.32431375 -333.051997 -278.9894047
+##                                 Mean     3rd Qu.        Max.
+## standard - Cost          726.6637884 828.5434528 878.0433890
+## standard - Effect         26.4210207  29.0749005  31.3071020
+## standard - Cost Diff.              -           -           -
+## standard - Effect Diff.            -           -           -
+## standard - Icer                    -           -           -
+## np1 - Cost               670.1388559 699.0605439 713.1620157
+## np1 - Effect              26.7136002  29.5008365  31.5405654
+## np1 - Cost Diff.         -56.5249325  19.6623047  84.5375046
+## np1 - Effect Diff.         0.2925794   0.3887769   0.4653403
+## np1 - Icer              -113.6458265 103.6025070 918.5122572
 ## 
 ## * Combined result:
 ## 
@@ -158,8 +203,8 @@
 ## Values:
 ## 
 ##           utility     cost
-## standard 26467.50 699505.9
-## np1      26739.52 662479.5
+## standard 26421.02 726663.8
+## np1      26713.60 670138.9
 ## 
 ## Efficiency frontier:
 ## 
@@ -168,7 +213,7 @@
 ## Differences:
 ## 
 ##     Cost Diff. Effect Diff.      ICER     Ref.
-## np1  -37.02638    0.2720213 -136.1158 standard</code></pre>
+## np1  -56.52493    0.2925794 -193.1952 standard</code></pre>
 <p>The variation of cost or effect can then be plotted.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(res_h, <span class="dt">result =</span> <span class="st">"effect"</span>, <span class="dt">binwidth =</span> <span class="dv">5</span>)</code></pre></div>
 <p><img src="g_heterogeneity_files/figure-html/unnamed-chunk-7-1.png" width="576" style="display: block; margin: auto;"></p>
@@ -193,18 +238,18 @@
 <p>Weights can be used in the analysis by including an optional column <code>.weights</code> in the new data to specify the respective weights of each strata in the target population.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tab_indiv_w</code></pre></div>
 <pre><code>## # A tibble: 100 x 3
-##      age   sex  .weights
-##    &lt;dbl&gt; &lt;int&gt;     &lt;dbl&gt;
-##  1    73     0 0.5700823
-##  2    69     1 0.9149494
-##  3    47     1 0.5937281
-##  4    61     0 0.3806231
-##  5    45     1 0.9258920
-##  6    43     1 0.5500597
-##  7    58     1 0.4333086
-##  8    56     0 0.5971116
-##  9    56     1 0.8927109
-## 10    61     1 0.3063004
+##      age   sex   .weights
+##    &lt;dbl&gt; &lt;int&gt;      &lt;dbl&gt;
+##  1    58     0 0.09917673
+##  2    61     0 0.70227973
+##  3    41     1 0.68687040
+##  4    46     0 0.05017594
+##  5    45     1 0.54560267
+##  6    39     1 0.73663312
+##  7    65     1 0.98367276
+##  8    58     1 0.94881531
+##  9    72     1 0.01622519
+## 10    63     1 0.13596055
 ## # ... with 90 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res_w &lt;-<span class="st"> </span><span class="kw">update</span>(res_mod, <span class="dt">newdata =</span> tab_indiv_w)</code></pre></div>
 <pre><code>## Updating strategy 'standard'...</code></pre>
@@ -215,34 +260,34 @@
 ## * Weigths distribution:
 ## 
 ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-## 0.005958 0.343885 0.545415 0.530120 0.743688 0.938902 
+## 0.002729 0.162712 0.465914 0.449754 0.706190 0.983673 
 ## 
-## Total weight: 53.01202
+## Total weight: 44.97544
 ## 
 ## * Values distribution:
 ## 
-##                                 Min.      1st Qu.      Median        Mean
-## standard - Cost          565.3706618  605.0062810 626.9720129 689.5618486
-## standard - Effect         14.3082870   25.6577436  27.7806580  26.9085168
-## standard - Cost Diff.              -            -           -           -
-## standard - Effect Diff.            -            -           -           -
-## standard - Icer                    -            -           -           -
-## np1 - Cost               624.7960167  635.5509751 641.5229814 659.5898633
-## np1 - Effect              14.4398232   25.9195630  27.9754765  27.1720659
-## np1 - Cost Diff.        -160.4798588 -110.7286273  14.5727707 -29.9719852
-## np1 - Effect Diff.         0.1315362    0.1948185   0.2214442   0.2635492
-## np1 - Icer              -352.2348902 -316.4394659  82.0897023 -23.2613404
-##                             3rd Qu.        Max.
-## standard - Cost         802.5788988 871.8854128
-## standard - Effect        29.9662522  31.5986556
-## standard - Cost Diff.             -           -
-## standard - Effect Diff.           -           -
-## standard - Icer                   -           -
-## np1 - Cost              691.6811866 711.4055539
-## np1 - Effect             30.4098525  31.8353665
-## np1 - Cost Diff.         30.5446941  84.5375046
-## np1 - Effect Diff.        0.3502707   0.4556047
-## np1 - Icer              156.7853582 918.5122572
+##                                  Min.      1st Qu.       Median
+## standard - Cost          530.94590166  605.0062810  761.4317051
+## standard - Effect          9.32287610   22.7930050   27.3769142
+## standard - Cost Diff.               -            -            -
+## standard - Effect Diff.             -            -            -
+## standard - Icer                     -            -            -
+## np1 - Cost               615.48340627  635.5509751  680.0145801
+## np1 - Effect               9.38064927   23.0848338   27.7656911
+## np1 - Cost Diff.        -164.88137326 -129.4829089  -81.4171250
+## np1 - Effect Diff.         0.05777317    0.1948185    0.2918287
+## np1 - Icer              -354.32431375 -333.0519971 -278.9894047
+##                                Mean     3rd Qu.         Max.
+## standard - Cost         713.5015922 828.5434528  882.0737265
+## standard - Effect        25.9480956  29.0749005   31.5914939
+## standard - Cost Diff.             -           -            -
+## standard - Effect Diff.           -           -            -
+## standard - Icer                   -           -            -
+## np1 - Cost              666.4532467 699.0605439  714.3119243
+## np1 - Effect             26.2281884  29.5008365   31.8281250
+## np1 - Cost Diff.        -47.0483455  30.5446941  116.6802254
+## np1 - Effect Diff.        0.2800928   0.3887769    0.4717434
+## np1 - Icer              -10.3005168 156.7853582 4565.6532041
 ## 
 ## * Combined result:
 ## 
@@ -261,8 +306,8 @@
 ## Values:
 ## 
 ##           utility     cost
-## standard 26908.52 689561.8
-## np1      27172.07 659589.9
+## standard 25948.10 713501.6
+## np1      26228.19 666453.2
 ## 
 ## Efficiency frontier:
 ## 
@@ -271,7 +316,7 @@
 ## Differences:
 ## 
 ##     Cost Diff. Effect Diff.      ICER     Ref.
-## np1  -29.97199    0.2635492 -113.7245 standard</code></pre>
+## np1  -47.04835    0.2800928 -167.9742 standard</code></pre>
 </div>
 <div id="parallel-computing" class="section level2">
 <h2 class="hasAnchor">
@@ -289,7 +334,8 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
         <div id="tocnav">
-      <h2>Contents</h2>
+      <h2 class="hasAnchor">
+<a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#introduction">Introduction</a></li>
       <li><a href="#population-characteristics">Population characteristics</a></li>

@@ -320,6 +320,17 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
     other_way <- setdiff(names(tm_info), names(state_info))
   }
   
+  
+  if(trans_type == "part_surv"){
+    use_fits_file <- ref[ref$data == "use_fits", "full_file"]
+    use_fits <- read_file(use_fits_file)
+    tm_info <- construct_part_surv_tib(use_fits, ref, env = df_env,
+                                    state_names = state_names)
+    one_way <- setdiff(names(state_info), unique(tm_info$.strategy))
+    other_way <- setdiff(unique(tm_info$.strategy), names(state_info))
+  }
+
+
   one_way <- setdiff(names(state_info), names(tm_info))
   other_way <- setdiff(names(tm_info), names(state_info))
   if (length(c(one_way, other_way))){
@@ -337,23 +348,25 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
               paste(other_way, collapse = ", "),
               "\n")
     stop(err_string)
-    }
-  
-  if (trans_type == "part_surv") {
-    tm_info <- dplyr::filter_(tm_info, ~.strategy %in% names(state_info))
-  } else {
-    tm_info <- tm_info[names(state_info)]
   }
+  
+  
+  if(trans_type == "part_surv")
+    tm_info <- 
+      dplyr::filter_(tm_info, ~ .strategy %in% names(state_info))
+  else
+    tm_info <- tm_info[names(state_info)]
+
 
   if (options()$heemod.verbose) message("*** Defining models...")
   models <- lapply(
     seq_along(state_info),
     function(i) {
-      if (inherits(tm_info, "tbl_df")) {
+      if(inherits(tm_info, "tbl_df"))
         this_tm <- dplyr::filter_(
           tm_info,
           ~ .strategy == names(state_info)[i])$part_surv[[1]]
-      } else {
+      else
         this_tm <- tm_info[[i]]
         if(is.null(state_trans_info)) {
           this_state_trans <- NULL
@@ -394,7 +407,8 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
 #' 
 #' The input data frame is expected to contain state 
 #' information for all the models you will use in an 
-#' analysis.
+#' analysis. For more information see the vignette: 
+#' `vignette("file-input", package = "heemod")`.
 #' 
 #' @param state_info Result for one model of 
 #'   [parse_multi_spec()].
@@ -923,11 +937,10 @@ create_model_from_tabular <- function(state_info,
     TM <- tm_info
   }
   
-  define_strategy_(
-    transition = TM, states = states,
-    starting_values = check_starting_values(
-      define_starting_values(),
-      get_state_value_names(states)))
+  define_strategy_(transition = TM, states = states,
+                   starting_values = check_starting_values(
+                     define_starting_values(),
+                     get_state_value_names(states)))
 }
 
 #' Load Data From a Folder Into an Environment
@@ -973,8 +986,8 @@ create_df_from_tabular <- function(df_dir, df_envir) {
   ## do the assignments
   for(i in seq(along = all_files)){
     this_val <- read_file(all_files[i])
-      
-    ## check for accidential commas in numbers
+    
+    ## check for accidental commas in numbers
     comma_cols <- 
       which(sapply(sapply(this_val, function(x){grep(",", x)}),
                    any)
@@ -994,7 +1007,6 @@ create_df_from_tabular <- function(df_dir, df_envir) {
                 )
     }
     }
-
     assign(obj_names[i], this_val, envir = df_envir)
   }
   df_envir
@@ -1205,19 +1217,19 @@ filter_blanks <- function(x) {
 #' @param x A file name.
 #' @return Whether the file is (respectively)
 #'  csv, xlsx, or xls.
-#' @rdname file_checkers
+#' @rdname file-checkers
 #'   
 #' @keywords internal
 is_csv <- function(x) {
   tolower(tools::file_ext(x)) == "csv"
 }
 
-#' @rdname file_checkers
+#' @rdname file-checkers
 is_xlsx <- function(x) {
   tolower(tools::file_ext(x)) == "xlsx"
 }
 
-#' @rdname file_checkers
+#' @rdname file-checkers
 is_xls <- function(x) {
   tolower(tools::file_ext(x)) == "xls"
 }
@@ -1443,165 +1455,112 @@ modify_param_defs_for_multinomials <- function(param_defs, psa) {
   param_defs
 }
 
-#' Construct a survival object from tabular specification
-#'
-#' @param surv_def a data frame with the specification.  See details.
-#' @param fit_tibble the name of the tibble from which to take fits.
-#   Typically produced by [survival_fits_from_tabular()].
-#' @param env an environment
-#' @param state_names names of the model states
-#' @details  This function is meant to be used only from within
-#'   tabular_input.R.   It won't work well otherwise, in that
-#'   the environment is unlikely to have what you need.
-#' @keywords internal
-#' columns of surv_def:  .strategy, .type, .subset, dist, until
-#'   where dist can be either the name of a distribution
-#'   along with parameters, or a reference to a fit
-#'   for example:  fit('exp') or exp(rate = 0.5)
-#' @return a list with one element for each strategy.   Each element
-#'   is in turn a `part_surv` object, a list with two elements, 
-#'   pfs and os.   And those
-#'   elements are survival objects of various kinds, with the
-#'   commonality that they can be used in [compute_surv()].
-#'
 
-construct_part_surv_tib <- function(surv_def, fit_tibble,
-                                    state_names,
-                                    env = new.env()) {
-  
-  surv_def_names <- c(".strategy", ".type", "dist")
-  fit_tibble_names <- c("treatment", "type", "dist", "set_name", "fit")
-  if (!all(present_names <- surv_def_names %in% names(surv_def))) {
-    stop("missing required names in 'surv_def': ",
-         paste(surv_def_names[!present_names], collapse = ", "))
-  }
-  if (!all(present_names <- fit_tibble_names %in% names(fit_tibble))) {
-    stop("missing required names in 'fit_tibble': ",
-         paste(fit_tibble_names[!present_names], collapse = ", "))
-  }
-  
-  if (!(".subset" %in% names(surv_def))) {
-    surv_def$.subset <- "all"
-    message("no '.subset' column; defaulting to subset 'all'")
-  }
-  surv_def <- tibble::as_tibble(surv_def)
-  fit_tibble <- dplyr::mutate_(fit_tibble, type = ~ toupper(type)) 
-  
-  ## we handle directly defined distributions
-  ##   (those defined with define_survival())
-  ##   separately from fits
-  with_direct_dist <- dplyr::filter_(
-    surv_def, ~ grepl("^define_survival", dist))
-  should_be_fits <- dplyr::filter_(
-    surv_def, ~ !grepl("^define_survival", dist))
-  
-  ## reduce fit expressions to distribution names
-  should_be_fits_2 <- should_be_fits %>% 
-    dplyr::mutate_(
-      dist = ~ gsub("fit\\((.*)\\)", "\\1", dist) %>% 
-        gsub("'", "", .) %>% 
-        gsub('"', '', .),
-      .type = ~ toupper(.type))
-  ## and join in the fits and subset definitions
-  should_be_fits_3 <- should_be_fits_2 %>%
-    dplyr::left_join(
-      fit_tibble,
-      by = c(".strategy" = "treatment",
-             ".type" = "type",
-             "dist" = "dist",
-             ".subset" = "set_name")
-    )
-  if (any(problem <- sapply(should_be_fits_3$fit, is.na))) {
-    print(surv_def[problem,])
-    stop("fit not found for lines ",
-         paste(which(problem), collapse = ", "),
-         "(shown above)")
-  }
-  ## for directly defined distributions, join to make the
-  ##   extra columns, then move the defined distributions 
-  ##   over to the fits column
-  direct_dist_def_3 <- with_direct_dist %>%
-    dplyr::left_join(
-      fit_tibble,
-      by = c(".strategy" = "treatment",
-             ".type" = "type",
-             "dist" = "dist",
-             ".subset" = "set_name")
-    )
-  direct_dist_def_3$fit <- direct_dist_def_3$dist
-  
-  ## and now we can rejoin them and continue
-  surv_def_4 <- rbind(
-    should_be_fits_3,
-    direct_dist_def_3) %>% 
-    dplyr::group_by_(~ .strategy, ~ .type, ~ .subset) %>%
-    dplyr::do_(fit = ~ join_fits_across_time(.)) %>%
-    dplyr::ungroup()
-  surv_def_5 <- surv_def_4 %>%
-    dplyr::group_by_(~ .strategy, ~ .subset) %>%
-    dplyr::rename_(type = ~ .type) %>%
-    dplyr::do_(
-      part_surv = ~ make_part_surv_from_small_tibble(
-        ., state_names = state_names))
-  surv_def_5
-}
-
-join_fits_across_time <- function(this_part) {
-  if ("until" %in% names(this_part)) {
-    this_part <- dplyr::arrange_(this_part, ~ until)
-    
-    join_(.dots = this_part$fit, 
-          at= this_part$until[!is.na(this_part$until)])
-    
-  } else {
-    if (nrow(this_part) > 1) {
-      print(this_part)
-      stop(
-        "can't have more than one distribution for a single ",
-        "strategy and type unless 'until' is also specified"
-      )
+## make sure that survival fit specifications are 
+##   properly formatted and have reasonable data
+check_survival_specs <- 
+  function(surv_specs){
+    ## if there are troubles with absolute file paths, 
+    ##   might want to add an "absolute" column to surv_specs
+    ##   to be explicit (if, possibly, a little redundant)
+    if(!is.data.frame(surv_specs) || nrow(surv_specs) == 0)
+      stop("surv_specs must be a data frame with at least one row")
+    if(!("event_code" %in% names(surv_specs))){
+      warning("event_code not defined in surv_specs; setting to 1 for all rows")
+      surv_specs$event_code <- 1
     }
-    this_part$fit[[1]]
+    if(!("censor_code" %in% names(surv_specs))){
+      warning("censor_code not defined in surv_specs; setting to 0 for all rows")
+      surv_specs$censor_code <- 0
+    }
+      
+    surv_spec_col_names <- c("type", "treatment", "data_directory", "data_file",
+                             "fit_directory", "fit_name", "fit_file",
+                             "time_col", "treatment_col", "censor_col",
+                             "event_code", "censor_code"
+                             )
+    if(! identical(sort(names(surv_specs)), sort(surv_spec_col_names))){
+      extra_names <- setdiff(names(surv_specs), surv_spec_col_names)
+      missing_names <- setdiff(surv_spec_col_names, names(surv_specs))
+      names_message <- paste("surv_ref must have column names:\n",
+                             paste(surv_spec_col_names, collapse = ", "), 
+                             sep = "")
+      if(length(extra_names) > 0)
+        names_message <- paste(names_message, "\n", "extra names: ",
+                               paste(extra_names, collapse = ", "),
+                               sep = "")
+      if(length(missing_names) > 0)
+        names_message <- paste(names_message, "\n", "missing names: ",
+                               paste(missing_names, collapse = ", "),
+                               sep = "")
+      stop(names_message)
+    }
+    
+    if(any(is.na(surv_specs) | surv_specs == ""))
+      stop("all elements of surv_specs must be filled in")
+    
+    ## sort survival specs by treatment, then PFS and OS
+    ## our checks will make sure that we have the right entries,
+    ##   and that they are in the right order
+    surv_specs <- 
+      surv_specs %>% dplyr::arrange_(~ treatment, ~ desc(type))
+    
+    os_ind <- grep("os", surv_specs$type, ignore.case = TRUE)
+    pfs_ind <- grep("pfs", surv_specs$type, ignore.case = TRUE)
+    all_even_os <- identical(as.numeric(os_ind), 
+                             seq(from = 2, 
+                                 to = nrow(surv_specs),
+                                 by = 2))
+    all_odd_pfs <- identical(as.numeric(pfs_ind), 
+                             seq(from = 1, 
+                                 to = nrow(surv_specs),
+                                 by = 2))
+    same_treatments <- 
+      identical(surv_specs$treatment[os_ind],
+                surv_specs$treatment[pfs_ind])
+    if(!all_even_os | !all_odd_pfs | !same_treatments)
+      stop("each treatment must have exactly one PFS and one OS entry")
+    
+    if(any(dups <- duplicated(surv_specs[, c("type", "treatment")]))){
+      print(surv_specs[dups,])
+      stop("survival fit specification can only have one row for fitting ",
+           "OS or PFS for a given treatment\n")
+    }
+    if(any(dups <- duplicated(surv_specs[, c("fit_directory", "fit_file", 
+                                             "time_col", "censor_col")]))){
+      print(surv_specs[dups,])
+      stop("can only specify a given data file in a given directory with ",
+           "the same time column and censoring column for one fit")
+    }
+    surv_specs
   }
-}
 
-make_part_surv_from_small_tibble <- function(st, state_names) {
-  pfs_row <- grep("pfs", st$type, ignore.case = TRUE)
-  os_row <- grep("os", st$type, ignore.case = TRUE)
-  stopifnot(
-    length(pfs_row) == 1,
-    length(os_row) == 1
-  )
-  define_part_surv(pfs = st[[pfs_row, "fit"]],
-                   os = st[[os_row, "fit"]],
-                   state_names = state_names)
-}
-
-#' Convert saved fits to partitioned survival objects
-#' 
-#' @param surv_inputs a list of matrices of `flexsurvreg`
-#'   objects, for example the first element of the output of
-#'   `survival_from_data`.
-#' @param state_names names of states of the model
-#'   
-#' @details  surv_inputs is a tibble with columns type (PFS
-#'   or OS, not case sensitive), treatment, set_name (for
-#'   data subsets), dist (for survival distribution
-#'   assumptions), fit (for the fitted survival object) and
-#'   set_def (how the subset of data was defined, just to
-#'   keep it around)
-#' @keywords internal
-#' @return a tibble of partitioned survival objects, similar to the
-#'   original tibble of survival fits, with all the columns
-#'   except type and fit, and a new column part_surv.
+#' Load a set of survival fits
+#'
+#' @param location base directory
+#' @param survival_specs information about fits
+#' @param use_envir an environment
+#'
+#' @return A list with two elements:  \itemize{
+#'    \item{`best_models`, 
+#'    a list with the fits for each data file passed in; and} 
+#'    \item{`envir`, 
+#'    an environment containing the models so they can be referenced to 
+#'    get probabilities.}
+#'    }
 #' @export
 #'
-part_survs_from_surv_inputs <- function(surv_inputs, state_names) {
-  
-  surv_inputs %>%
-    dplyr::group_by_(
-      ~ treatment, ~ set_name, ~ dist, ~ set_def) %>%
-    dplyr::do_(
-      part_surv = ~ make_part_surv_from_small_tibble(
-        ., state_names = state_names))
+load_surv_models <- function(location, survival_specs, use_envir){
+  fit_files <- file.path(location,
+                         survival_specs$fit_directory,
+                         survival_specs$fit_file)
+  for(index in seq(along = fit_files)){
+    this_fit_file <- fit_files[index]
+    this_fit_name <- survival_specs$fit_name[index]
+    load(paste(this_fit_file, ".RData", sep = ""))
+  }
+  surv_models <- mget(survival_specs$fit_name)
+  names(surv_models) <- survival_specs$fit_name
+  list(do.call("rbind", mget(survival_specs$fit_name)),
+       env = use_envir)
 }

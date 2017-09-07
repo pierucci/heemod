@@ -28,7 +28,7 @@ define_survival <- function(distribution = c("exp", "weibull",
   list_arg <- list(...)
   
   if (distribution %in% c("exp", "weibull",
-                          "lnorm", "gamma")) {
+                          "llogis", "lnorm", "gamma")) {
     env_f <- asNamespace("stats")
   } else {
     if (! requireNamespace("flexsurv")) {
