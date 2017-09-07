@@ -33,8 +33,8 @@ test_that(
       print(mod1),
       "A Markov model strategy:
 
-    2 states,
-    2 state values",
+      2 states,
+      2 state values",
       fixed = TRUE
     )
     expect_output(
@@ -64,7 +64,7 @@ test_that(
       )
     )
   }
-)
+    )
 
 test_that(
   "Model evaluation, 1 model", {
@@ -241,6 +241,8 @@ test_that(
   "eval_matrix works", {
     par <- tibble::tibble(
       markov_cycle = 2:3,
+      model_time = 2:3,
+      state_time = 1,
       a = c(.1, .2)
     )
     mat <- define_transition(
@@ -251,11 +253,11 @@ test_that(
     res <- heemod:::eval_transition(mat, par)
     
     expect_identical(
-      round(res[[1]], 2),
+      unname(round(res[[1]], 2)),
       structure(c(0.5, 0.1, 0.5, 0.9), .Dim = c(2L, 2L))
     )
     expect_identical(
-      round(res[[2]], 2),
+      unname(round(res[[2]], 2)),
       structure(c(0.67, 0.2, 0.33, 0.8), .Dim = c(2L, 2L))
     )
     
@@ -302,7 +304,8 @@ test_that(
       structure(c(0.67, 0.2, 0.33, 0.8),
                 .Dim = c(2L, 2L))),
       class = c("eval_matrix", "list"),
-      state_names = c("A", "B"))
+      state_names = c("A", "B"),
+      entry = c(T,T))
     infw <- data.frame(c(0, 0), c(0, 0))
     
     expect_identical(

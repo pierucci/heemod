@@ -19,6 +19,7 @@ Description: An implementation of the modelling and
     and non-homogeneous Markov models), etc.
 Depends: R (>= 3.2.2)
 Imports:
+    reshape2,
     dplyr,
     ggplot2 (>= 2.2.0),
     graphics,

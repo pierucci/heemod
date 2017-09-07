@@ -24,7 +24,7 @@ check_matrix <- function(x) {
     problem_rows <- which(rowSums(x, dims = 2) != 1, arr.ind = TRUE)
     problem_rows <- data.frame(
       cycle = problem_rows[,1], 
-                               state = get_state_names(x)[problem_rows[,2]])
+      state = get_state_names(x)[problem_rows[,2]])
     problem_rows <- format.data.frame(problem_rows, justify = "left")
     
     stop(sprintf(
@@ -41,7 +41,9 @@ check_matrix <- function(x) {
   
   if (! all(x >= 0 & x <= 1)) {
     problem <- which(x < 0 | x > 1, arr.ind = TRUE)
-    problem <- data.frame(problem)
+    # Use tibble here to avoid potentially confusing warnings about
+    # Duplicate rownames
+    problem <- tibble::as.tibble(problem)
     names(problem) <- c("cycle", "from", "to")
     states <- get_state_names(x)
     problem$from <- states[problem$from]
@@ -70,6 +72,8 @@ check_matrix <- function(x) {
 #' 
 #' @param x an `uneval_matrix` object.
 #' @param parameters an `eval_parameters` object.
+#' @param expand A tibble identifying which states
+#'   should be expanded.
 #'   
 #' @return An `eval_matrix` object (actually a list of 
 #'   transition matrices, one per cycle).
@@ -79,36 +83,100 @@ eval_transition <- function(x, ...) {
   UseMethod("eval_transition")
 }
 
-eval_transition.uneval_matrix <- function(x, parameters) {
+eval_transition.uneval_matrix <- function(x, parameters, expand = NULL) {
+  
+  # Assinging NULLS to avoid CMD Check issues
+  .from <- .to <- .limit <- .from_lim <- .to_state_time <- NULL
+  .to_state_time <- .value <- .state <- state_time <- .full_state <- NULL
   
   # update calls to dispatch_strategy()
   x <- dispatch_strategy_hack(x)
   
-  tab_res <- dplyr::mutate_(
-    parameters,
-    .dots = c(
-      lazyeval::lazy_dots(C = -pi),
-      x))[names(x)]
+  # Set up time values for which transition probabilities
+  # will be evaluated
+  time_values <- tibble::tibble(
+    model_time = parameters$model_time
+  )
   
-  n <- get_matrix_order(x)
+  # Replace complement with negative pi
+  parameters$C <- -pi
   
-  array_res <- array(unlist(tab_res), dim = c(nrow(tab_res), n, n))
-  # possible optimisation
-  # dont transpose
-  # but tweak dimensions in replace_C
-  for(i in 1:nrow(tab_res)){
-    array_res[i,,] <- t(array_res[i,,])
+  # Get number of states + state names
+  n_state <- sqrt(length(x))
+  state_names <- attr(x, "state_names")
+  
+  # Fill in expansion table if empty
+  if(is.null(expand)) {
+    expand <- tibble::tibble(
+      .state = state_names,
+      .full_state = state_names,
+      state_time = 1,
+      .expand = F,
+      .limit = 1
+    )
   }
   
-  array_res <- structure(replace_C(array_res),
-                         state_names = get_state_names(x))
+  nrow_param = nrow(parameters)
+  
+  eval_trans_probs <- parameters %>%
+    dplyr::group_by_("state_time") %>%
+    dplyr::mutate_(.dots = x) %>%
+    dplyr::ungroup()
+  
+  trans_table <- tibble::tibble(
+    model_time = rep(parameters$model_time, times = n_state^2),
+    state_time = rep(parameters$state_time, times = n_state^2),
+    .from = rep(state_names, each = n_state * nrow_param),
+    .to = rep(state_names, times = n_state, each = nrow_param),
+    .value = unlist(eval_trans_probs[names(x)])
+  ) %>%
+    dplyr::left_join(
+      dplyr::transmute(
+        expand,
+        .state = .state,
+        state_time = state_time,
+        .from_e = .full_state,
+        .from_lim = .limit
+      ),
+      by = c(".from" = ".state", "state_time" = "state_time")
+    ) %>%
+    dplyr::filter(.from_lim >= state_time) %>%
+    dplyr::mutate(
+      .to_state_time = ifelse(.from == .to, pmin(state_time + 1, .from_lim), 1)
+    ) %>%
+    dplyr::left_join(
+      dplyr::transmute(
+        expand,
+        .state = .state,
+        state_time = state_time,
+        .to_e = .full_state
+      ),
+      by = c(".to" = ".state", ".to_state_time" = "state_time")
+    )
+  
+  # Reshape into 3d matrix and calculate complements
+  trans_matrix <- trans_table %>%
+    reshape2::acast(
+      model_time ~
+        factor(.from_e, levels = expand$.full_state) ~
+        factor(.to_e, levels = expand$.full_state),
+      value.var = ".value",
+      fill = 0
+    ) %>%
+    replace_C
+  
+  array_res <- structure(
+    trans_matrix,
+    state_names = expand$.full_state
+  )
   
   check_matrix(array_res)
   
   structure(
     split_along_dim(array_res, 1),
     class = c("eval_matrix", "list"),
-    state_names = get_state_names(x)
+    state_names = colnames(trans_matrix[1,,]),
+    entry = expand$state_time == 1
   )
 }
 

@@ -27,6 +27,10 @@
 #' 
 #' @importFrom plyr ldply
 #' @importFrom plyr ddply
+#' 
+#' @importFrom reshape2 dcast
+#' @importFrom reshape2 acast
+#' @importFrom reshape2 melt
 #'   
 #' @importFrom lazyeval lazy
 #' @importFrom lazyeval lazy_dots
@@ -97,3 +101,6 @@ NULL
 
 #' @export
 dplyr::`%>%`
+
+## quiets concerns of R CMD check re: the .'s that appear in pipelines
+if(getRversion() >= "2.15.1")  utils::globalVariables(c("."))

@@ -4,6 +4,7 @@
 \alias{define_state_list}
 \alias{define_state_list_}
 \alias{modify.uneval_state_list}
+\alias{modify.uneval_state_transition_list}
 \title{Define Markov Model State List}
 \usage{
 define_state_list(...)
@@ -11,10 +12,12 @@ define_state_list(...)
 define_state_list_(.dots)
 
 \method{modify}{uneval_state_list}(.OBJECT, ...)
+
+\method{modify}{uneval_state_transition_list}(.OBJECT, ...)
 }
 \arguments{
 \item{...}{Name-value pairs of expressions defining model
-states.}
+states and state transtiions.}
 
 \item{.dots}{List of states, only used by
 \code{define_state_list_} to avoid using \code{...}.}
@@ -27,16 +30,17 @@ list of \code{state} objects).
 }
 \description{
 Define the states of a Markov model by combining
-\code{state} objects.
+\code{state} and \code{state_transition} objects.
 }
 \details{
 State names have to correspond to those specified through
-\code{\link[=define_transition]{define_transition()}}.
+\code{\link[=define_transition]{define_transition()}}.  State transitions do not need to
+be named.
 
 All states should have the same value names.
 
-The \code{modify} function can modify existing states or
-add new ones.
+The \code{modify} function can modify existing states and state
+transitions or add new ones.
 }
 \examples{
 \dontrun{
