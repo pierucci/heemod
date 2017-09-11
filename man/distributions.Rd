@@ -14,6 +14,7 @@
 \alias{define_distribution}
 \alias{beta}
 \alias{triangle}
+\alias{use_distribution}
 \title{Probability Density Functions for Probabilistic
 Uncertainty Analysis}
 \usage{
@@ -40,6 +41,8 @@ define_distribution(x)
 beta(shape1, shape2)
 
 triangle(lower, upper, peak = (lower + upper)/2)
+
+use_distribution(distribution, smooth = TRUE)
 }
 \arguments{
 \item{mean}{Distribution mean.}
@@ -52,7 +55,8 @@ triangle(lower, upper, peak = (lower + upper)/2)
 
 \item{prob}{Proportion.}
 
-\item{size}{Size of sample used to estimate proportion.}
+\item{size}{Size of sample used to estimate
+proportion.}
 
 \item{...}{Dirichlet distribution parameters.}
 
@@ -64,30 +68,50 @@ triangle(lower, upper, peak = (lower + upper)/2)
 
 \item{shape2}{for beta distribution}
 
-\item{lower}{lower bound of triangular distribution.}
+\item{lower}{lower bound of triangular
+distribution.}
 
-\item{upper}{upper bound of triangular distribution.}
+\item{upper}{upper bound of triangular
+distribution.}
 
 \item{peak}{peak of triangular distribution.}
 
 \item{x}{A distribution function, see details.}
+
+\item{distribution}{A numeric vector of
+observations defining a distribution, usually
+the output from an MCMC fit.}
+
+\item{smooth}{Use gaussian kernel smoothing?}
 }
 \description{
 Define a distribution for PSA parameters.
 }
 \details{
-These functions are not exported, but only used in
-\code{\link[=define_psa]{define_psa()}}. To specify a user-made function
-use \code{\link[=define_distribution]{define_distribution()}}.
+These functions are not exported, but only used
+in \code{\link[=define_psa]{define_psa()}}. To specify a user-made
+function use \code{\link[=define_distribution]{define_distribution()}}.
 
-\code{\link[=define_distribution]{define_distribution()}} takes as argument a function
-with a single argument, \code{x}, corresponding to a
-vector of quantiles. It returns the distribution values
-for the given quantiles. See examples
+\code{\link[=use_distribution]{use_distribution()}} uses gaussian kernel
+smoothing with a bandwith parameter calculated
+by \code{\link[stats:density]{stats::density()}}. Values for unobserved
+quantiles are calculated by linear
+interpolation.
+
+\code{\link[=define_distribution]{define_distribution()}} takes as argument a
+function with a single argument, \code{x},
+corresponding to a vector of quantiles. It
+returns the distribution values for the given
+quantiles. See examples.
 }
 \examples{
 define_distribution(
   function(x) stats::qexp(p = x, rate = 0.5)
 )
 
+# a mixture of 2 gaussians
+x <- c(rnorm(100), rnorm(100, 6))
+plot(density(x))
+
+use_distribution(x)
 }

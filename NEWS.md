@@ -1,4 +1,4 @@
-## heemod 0.9.1.9005
+## heemod 0.9.1.9006
 
 ### Breaking changes
 
@@ -11,6 +11,7 @@
   * Auto-reindent transition matrices with `reindent_transition()`.
   * Discounting per year with the `period` argument.
   * [BCEA](https://sites.google.com/a/statistica.it/gianluca/bcea) interface with `run_bcea()`.
+  * `use_distribution()` to resample from empirical data (e.g. MCMC fit posterior distribution).
 
 ### Bugfixes
 
