@@ -446,3 +446,17 @@ make_call <- function(x, collapse) {
     as.name(x)
   }
 }
+
+gather_heemod <- function(data, key_col, val_col, var_col) {
+  suppressWarnings(res <- stats::reshape(
+    data = data,
+    varying = list(var_col),
+    direction = "long",
+    times = var_col,
+    v.names = val_col,
+    timevar = key_col,
+    idvar = "garbage"
+  ))
+  row.names(res) <- NULL
+  res[- length(res)]
+}
