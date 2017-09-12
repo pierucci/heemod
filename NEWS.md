@@ -27,6 +27,7 @@
   * Survival operation are wrapped in a common class.
   * Expansion code moved to own function.
   * Faster computation of expanded states.
+  * Stricter dependency version management (to avoid install failures on an outdated system).
 
 ## heemod 0.9.1
 

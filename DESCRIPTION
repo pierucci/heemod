@@ -17,22 +17,17 @@ Description: An implementation of the modelling and
     sensitivity analysis, heterogeneity analysis, time
     dependency on state-time and model-time (semi-Markov
     and non-homogeneous Markov models), etc.
-Depends: R (>= 3.2.2)
+Depends: R (>= 3.3.0)
 Imports:
-    dplyr,
+    dplyr (>= 0.7.2),
     ggplot2 (>= 2.2.0),
-    graphics,
-    grDevices,
-    lazyeval,
+    lazyeval (>= 0.2.0),
     memoise (>= 1.1.0),
-    mvnfast,
-    plyr,
-    pryr,
-    stats,
-    tibble,
-    tidyr,
-    tools,
-    utils
+    mvnfast (>= 0.2.2),
+    plyr (>= 1.8.0),
+    pryr (>= 0.1.2),
+    tibble (>= 1.3.0),
+    tidyr (>= 0.7.1)
 License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr
