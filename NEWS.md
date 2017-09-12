@@ -1,4 +1,4 @@
-## heemod 0.9.1.9006
+## heemod 0.9.2
 
 ### Breaking changes
 
