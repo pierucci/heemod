@@ -38,7 +38,7 @@
 
 ### New features
 
-  * NMB is now reportd as relative values.
+  * NMB is now reported as relative values.
 
 ### Bugfixes
 
