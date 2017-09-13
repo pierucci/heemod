@@ -74,8 +74,6 @@
 #' @importFrom ggplot2 xlim
 #' @importFrom ggplot2 "%+replace%"
 #'   
-#' @importFrom tidyr gather_
-#'   
 #' @importFrom memoise memoise
 #' @importFrom memoise timeout
 #'   

@@ -28,6 +28,7 @@
   * Expansion code moved to own function.
   * Faster computation of expanded states.
   * Stricter dependency version management (to avoid install failures on an outdated system).
+  * Removed dependency to `tidyr`.
 
 ## heemod 0.9.1
 

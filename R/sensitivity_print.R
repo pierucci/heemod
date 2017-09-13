@@ -289,8 +289,11 @@ summary.dsa <- function(object, ...) {
 
 tidy_dsa <- function(x) {
   tab <- summary(x)$res_comp
-  tab %>% 
-    tidyr::gather()
+  reshape_long(
+    data = tab,
+    key_col = "key",
+    value_col = "value",
+    gather_col = names(res))
 }
 
 digits_at_diff <- function(x, y, addl_digits = 1){

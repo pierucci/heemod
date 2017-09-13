@@ -62,9 +62,9 @@ run_dsa <- function(model, dsa) {
   
   res <- 
     dplyr::bind_rows(list_res) %>%
-    tidyr::gather_(
-      ".par_names", ".par_value",
-      dsa$variables, na.rm = TRUE) %>% 
+    reshape_long(
+      key_col = ".par_names", value_col = ".par_value",
+      gather_cols = dsa$variables, na.rm = TRUE) %>% 
     dplyr::rowwise()
   
   res <- res %>% 

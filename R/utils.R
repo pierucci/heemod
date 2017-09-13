@@ -447,16 +447,54 @@ make_call <- function(x, collapse) {
   }
 }
 
-gather_heemod <- function(data, key_col, val_col, var_col) {
-  suppressWarnings(res <- stats::reshape(
-    data = data,
-    varying = list(var_col),
-    direction = "long",
-    times = var_col,
-    v.names = val_col,
-    timevar = key_col,
-    idvar = "garbage"
-  ))
-  row.names(res) <- NULL
-  res[- length(res)]
+reshape_long <- function(data, key_col, value_col,
+                         gather_cols, na.rm = FALSE) {
+  idvar <- names(data)[! names(data) %in% gather_cols]
+  
+  if (length(idvar)) {
+    tab_id <- data[idvar]
+    atomic_id <- unlist(lapply(tab_id, is.atomic))
+    for (id in idvar[! atomic_id]) {
+      tab_id[id] <- seq_len(nrow(data))
+    }
+    if (length(idvar > 1L)) {
+      ids <- interaction(tab_id[, idvar], drop = TRUE)
+    } else {
+      ids <- tab_id[, idvar]
+    }
+    
+  } else {
+    ids <- seq_len(nrow(data))
+  }
+  
+  d <- data
+  d <- d[, ! (names(data) %in% gather_cols), drop = FALSE]
+  res <- do.call(
+    rbind,
+    lapply(gather_cols,
+           function(col) {
+    d[, key_col] <- col
+    d[, value_col] <- data[, col]
+    d
+  }))
+  
+  if (na.rm) {
+    res <- res[! is.na(res[[value_col]]), ]
+  }
+  
+  return(res)
+}
+
+spread <- function(data, key_col, value_col) {
+  stats::setNames(
+    object = stats::reshape(
+      data = data,
+      timevar = key_col,
+      direction = "wide",
+      idvar = names(data)[! names(data) %in% c(key_col, value_col)]
+    ),
+    nm = c(
+      names(data)[! names(data) %in% c(key_col, value_col)],
+      sort(unique(data[[key_col]]))
+    ))
 }

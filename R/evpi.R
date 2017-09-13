@@ -67,14 +67,14 @@ export_savi <- function(x, folder = ".") {
 
 export_psa <- function(x) {
   res <- x$psa[c(x$resamp_par, ".cost", ".effect", ".strategy_names")] %>% 
-    tidyr::gather_(
+    reshape_long(
       key_col = ".key",
       value_col = ".value",
       gather_cols = c(".cost", ".effect")) %>% 
     dplyr::mutate_(
       .var_name = ~ paste(.key, .strategy_names, sep = "_")) %>% 
     dplyr::select_(~ - .key, ~ - .strategy_names) %>% 
-    tidyr::spread_(key_col = ".var_name", value_col = ".value")
+    spread(key_col = ".var_name", value_col = ".value")
   
   list(
     par = res[x$resamp_par],
