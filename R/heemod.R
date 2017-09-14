@@ -59,8 +59,6 @@
 #' @importFrom stats formula
 #' @importFrom stats stepfun
 #'   
-#' @importFrom graphics par
-#'   
 #' @importFrom mvnfast rmvn
 #'   
 #' @importFrom ggplot2 ggplot
@@ -88,6 +86,7 @@
 #' @importFrom grDevices png
 #' 
 #' @importFrom graphics plot
+#' @importFrom graphics par
 #'   
 #' @importFrom tibble tibble
 #' @importFrom tibble tibble_
