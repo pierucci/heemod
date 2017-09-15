@@ -105,7 +105,7 @@ compute_cov <- function(psa, diff = FALSE, k, k_default = 10, threshold) {
   
   res %>% 
     dplyr::ungroup() %>% 
-    tidyr::gather_(
+    reshape_long(
       key_col = ".par_names",
       value_col = ".prop",
       gather_cols = psa$resamp_par

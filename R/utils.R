@@ -457,3 +457,86 @@ make_call <- function(x, collapse) {
     as.name(x)
   }
 }
+
+reshape_long <- function(data, key_col, value_col,
+                         gather_cols, na.rm = FALSE) {
+  idvar <- names(data)[! names(data) %in% gather_cols]
+  
+  ids <- return_ids(data, idvar)
+  
+  stopifnot(
+    all(! duplicated(ids))
+  )
+  
+  d <- data
+  d <- d[, ! (names(data) %in% gather_cols), drop = FALSE]
+  res <- do.call(
+    rbind,
+    lapply(gather_cols,
+           function(col) {
+    d[, key_col] <- col
+    d[, value_col] <- data[, col]
+    d
+  }))
+  
+  if (na.rm) {
+    res <- res[! is.na(res[[value_col]]), ]
+  }
+  
+  return(res)
+}
+
+return_ids <- function(data, idvar) {
+  if (length(idvar)) {
+    tab_id <- data[idvar]
+    atomic_id <- unlist(lapply(tab_id, is.atomic))
+    for (id in idvar[! atomic_id]) {
+      tab_id[id] <- seq_len(nrow(data))
+    }
+    if (length(idvar) > 1L) {
+      ids <- interaction(tab_id[, idvar], drop = TRUE)
+    } else {
+      ids <- tab_id[[idvar]]
+    }
+  } else {
+    ids <- seq_len(nrow(data))
+  }
+  ids
+}
+
+reshape_wide <- function(data, key_col, value_col, fill = NA) {
+  idvar <- names(data)[! names(data) %in% c(key_col, value_col)]
+  
+  ids <- return_ids(data, idvar)
+  
+  unique_ids <- ids[! duplicated(ids)]
+  
+  stopifnot(
+    all(! is.na(data[[key_col]]))
+  )
+  
+  res <- data[! duplicated(ids), idvar, drop = FALSE]
+  
+  cbind(
+    res,
+    do.call(
+      cbind,
+      stats::setNames(
+        object = lapply(
+          unique(data[[key_col]]),
+          function(x) {
+            ret <- vector(
+              mode = class(data[[value_col]]),
+              length = nrow(res))
+            ret <- fill
+            index_key <- data[[key_col]] == x
+            ret[unique_ids %in% ids[index_key]] <-
+              data[index_key, ][[value_col]]
+            ret
+          }
+        ),
+        nm = unique(data[[key_col]])
+      )
+    )
+  )
+}

@@ -1,4 +1,10 @@
-## heemod 0.9.1.9006
+## heemod 0.9.2.9001
+
+### Backend changes
+
+  * Remove `Hmisc` dependency for weighted summaries.
+
+## heemod 0.9.2
 
 ### Breaking changes
 
@@ -28,7 +34,7 @@
   * Expansion code moved to own function.
   * Faster computation of expanded states.
   * Stricter dependency version management (to avoid install failures on an outdated system).
-  * Remove `Hmisc` dependency for weighted summaries.
+  * Removed dependency to `tidyr`.
 
 ## heemod 0.9.1
 
@@ -39,7 +45,7 @@
 
 ### New features
 
-  * NMB is now reportd as relative values.
+  * NMB is now reported as relative values.
 
 ### Bugfixes
 
