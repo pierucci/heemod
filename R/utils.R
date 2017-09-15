@@ -191,16 +191,27 @@ wtd_summary <- function(x, weights = NULL) {
     res <- rep(NA, 6)
     
   } else {
-    if (! requireNamespace("Hmisc")) {
-      stop("'Hmisc' package required to produce weighted summary.")
-    }
-    w_mean <- Hmisc::wtd.mean(x, weights = weights)
-    w_q <- Hmisc::wtd.quantile(x, weights = weights,
-                               probs = c(0, .25, .5, .75, 1))
+    w_mean <- wtd_mean(x, weights = weights)
+    w_q <- wtd_quantile(x, weights = weights,
+                        probs = c(0, .25, .5, .75, 1))
     res <- c(w_q[1], w_q[2], w_q[3], w_mean, w_q[4], w_q[5])
   }
   
   setNames(res, c("Min.", "1st Qu.", "Median", "Mean", "3rd Qu.", "Max."))
+}
+
+wtd_quantile <- function(x, weights = rep(1L, length(x)),
+                         probs = seq(0, 1, .25)) {
+  i <- order(x)
+  quant <- cumsum(weights[i]) - weights[i] / 2
+  quant <- (quant - quant[1]) / (quant[length(quant)] - quant[1])
+  
+  stats::approx(x = quant, y = x[i], xout = probs,
+                method = "linear")$y
+}
+
+wtd_mean <- function(x, weights = rep(1L, length(x))) {
+  sum(x * weights) / sum(weights)
 }
 
 #' Safely Convert From Characters to Numbers
