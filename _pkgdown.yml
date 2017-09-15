@@ -31,6 +31,7 @@ reference:
     - define_correlation
     - run_psa
     - export_savi
+    - run_bcea
     - plot.dsa
     - plot.psa
   - title: Heterogeneity

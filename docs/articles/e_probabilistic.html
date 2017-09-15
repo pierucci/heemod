@@ -104,7 +104,7 @@
     <div class="page-header toc-ignore">
       <h1>Probabilistic Uncertainty Analysis</h1>
             
-            <h4 class="date">2017-08-30</h4>
+            <h4 class="date">2017-09-15</h4>
           </div>
 
     
@@ -271,8 +271,9 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 <pre><code>## Resampling strategy 'mono'...</code></pre>
 <pre><code>## Resampling strategy 'comb'...</code></pre>
 <p>The average results are computed. In theory these values are more accurate than simple estimates because of non-linearities. An optional <code>threshold</code> can be passed to <code>summary()</code> to compute net monetary benefit.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(pm, 
-        <span class="dt">threshold =</span> <span class="kw">c</span>(<span class="dv">1000</span>, <span class="dv">5000</span>, <span class="dv">6000</span>, <span class="fl">1e4</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(
+  pm, 
+  <span class="dt">threshold =</span> <span class="kw">c</span>(<span class="dv">1000</span>, <span class="dv">5000</span>, <span class="dv">6000</span>, <span class="fl">1e4</span>))</code></pre></div>
 <pre><code>## 2 strategies run for 50 cycles.
 ## 
 ## Initial state counts:
@@ -287,14 +288,14 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 ## Values:
 ## 
 ##      cost_health cost_drugs cost_total life_year
-## comb    96909958   76339871   92940164 17493.096
-## mono    50032545   20144148   49961809  8842.909
+## comb   100854080   79550650   94790403  18228.84
+## mono    50409748   20228093   50036619   8879.76
 ## 
 ## Net monetary benefit difference:
 ## 
-##       1000     5000     6000    10000
-## 1 34328.17   0.0000    0.000     0.00
-## 2     0.00 272.5776 8922.764 43523.51
+##          1000     5000     6000 10000
+## mono 35404.71    0.000     0.00     0
+## comb     0.00 1991.608 11340.69 48737
 ## 
 ## Efficiency frontier:
 ## 
@@ -303,7 +304,7 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 ## Differences:
 ## 
 ##      Cost Diff. Effect Diff.     ICER Ref.
-## comb   42978.35     8.650187 4968.489 mono</code></pre>
+## comb   44753.78     9.349078 4786.973 mono</code></pre>
 </div>
 <div id="result-interpretation" class="section level2">
 <h2 class="hasAnchor">
@@ -316,21 +317,12 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 <p><img src="e_probabilistic_files/figure-html/unnamed-chunk-10-1.png" width="576" style="display: block; margin: auto;"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(pm, <span class="dt">type =</span> <span class="st">"evpi"</span>, <span class="dt">max_wtp =</span> <span class="dv">10000</span>, <span class="dt">log_scale =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <p><img src="e_probabilistic_files/figure-html/unnamed-chunk-10-2.png" width="576" style="display: block; margin: auto;"></p>
-<p>To compute EVPPI the results can also be exported with <code><a href="../reference/export_savi.html">export_savi()</a></code> in a format compatible with the <a href="http://savi.shef.ac.uk/SAVI/">SAVI</a> software (Sheffield Accelerated Value of Information).</p>
 <p>A covariance analysis can be performed on strategy results:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(pm, <span class="dt">type =</span> <span class="st">"cov"</span>)</code></pre></div>
 <pre><code>## Loading required namespace: mgcv</code></pre>
 <p><img src="e_probabilistic_files/figure-html/unnamed-chunk-11-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>Or on the difference between strategies:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(pm, <span class="dt">type =</span> <span class="st">"cov"</span>, <span class="dt">diff =</span> <span class="ot">TRUE</span>, <span class="dt">threshold =</span> <span class="dv">5000</span>)</code></pre></div>
-<pre><code>## Warning in compute_prop_var(mgcv::gam(formula = form_cost, data = .)):
-## Parameter excluded because of perfect collinearity: p_AD_mono.</code></pre>
-<pre><code>## Warning in compute_prop_var(mgcv::gam(formula = form_effect, data = .)):
-## Parameter excluded because of perfect collinearity: p_AD_mono.</code></pre>
-<pre><code>## Warning in compute_prop_var(mgcv::gam(formula = form_nmb, data = .)):
-## Parameter excluded because of perfect collinearity: p_AD_mono.</code></pre>
-<pre><code>## Warning in compute_prop_var(mgcv::gam(formula = form_nmb, data = .)): Only
-## 99% of variance explained, results may be inaccurate.</code></pre>
 <p><img src="e_probabilistic_files/figure-html/unnamed-chunk-12-1.png" width="384" style="display: block; margin: auto;"></p>
 <p>As usual plots can be modified with the standard <code>ggplot2</code> syntax.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
@@ -356,6 +348,38 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 </ul>
 <p>Results may vary depending on the machine, but we found speed gains to be quite limited beyond 4 cores.</p>
 </div>
+<div id="interface-with-beca-and-savi" class="section level2">
+<h2 class="hasAnchor">
+<a href="#interface-with-beca-and-savi" class="anchor"></a>Interface with BECA and SAVI</h2>
+<p>To compute EVPPI the results can also be exported with <code><a href="../reference/export_savi.html">export_savi()</a></code> in a format compatible with the <a href="http://savi.shef.ac.uk/SAVI/">SAVI</a> software (Sheffield Accelerated Value of Information).</p>
+<p>The results can be post-processed by the <code>BCEA</code> package with the <code><a href="../reference/run_bcea.html">run_bcea()</a></code> function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bcea &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_bcea.html">run_bcea</a></span>(pm, <span class="dt">plot =</span> <span class="ot">TRUE</span>, <span class="dt">Kmax =</span> <span class="dv">10000</span>)</code></pre></div>
+<pre><code>## Loading required namespace: BCEA</code></pre>
+<p><img src="e_probabilistic_files/figure-html/unnamed-chunk-14-1.png" width="576"></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(bcea)</code></pre></div>
+<pre><code>## NB: k (wtp) is defined in the interval [0 - 10000]
+## 
+## Cost-effectiveness analysis summary 
+## 
+## Reference intervention:  comb
+## Comparator intervention: mono
+## 
+## Optimal decision: choose mono for k&lt;4800 and comb for k&gt;=4800
+## 
+## 
+## Analysis for willingness to pay parameter k = 10000
+## 
+##      Expected utility
+## comb         87497979
+## mono         38760978
+## 
+##                   EIB CEAC ICER
+## comb vs mono 48737001 0.99 4787
+## 
+## Optimal intervention (max expected utility) for k=10000: comb
+##           
+## EVPI 20393</code></pre>
+</div>
 </div>
   </div>
 
@@ -369,6 +393,7 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
       <li><a href="#run-probabilistic-model">Run probabilistic model</a></li>
       <li><a href="#result-interpretation">Result interpretation</a></li>
       <li><a href="#parallel-computing">Parallel computing</a></li>
+      <li><a href="#interface-with-beca-and-savi">Interface with BECA and SAVI</a></li>
       </ul>
 </div>
       </div>
