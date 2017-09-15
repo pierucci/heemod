@@ -287,12 +287,6 @@ summary.dsa <- function(object, ...) {
   )
 }
 
-tidy_dsa <- function(x) {
-  tab <- summary(x)$res_comp
-  tab %>% 
-    tidyr::gather()
-}
-
 digits_at_diff <- function(x, y, addl_digits = 1){
   stopifnot(length(x) == length(y))
   diff <- abs(x - y)

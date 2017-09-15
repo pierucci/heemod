@@ -5,16 +5,15 @@ r:
   - oldrel
   - release
   - devel
-
+  
+dist: trusty
+      
 branches:
   only:
     - master
-    - devel
+    - cran
     - /^hotfix\/.*$/
     - /^release\/.*$/
-
-r_github_packages:		
-  - hadley/devtools@1302fef
 
 r_packages:
   - covr

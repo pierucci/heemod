@@ -15,8 +15,9 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
 #' 
 #' @param x numeric. A quantity to discount.
 #' @param r discount rate.
-#' @param first logical. Should discouting start at the 
+#' @param first logical. Should discouting start at the
 #'   first value ?
+#' @param period Number of cycle per unit of discount rate.
 #'   
 #' @return A numeric vector of the same length as `x`.
 #' @export
@@ -27,14 +28,16 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
 #' discount(rep(10, 5), .02, first = FALSE)
 #' 
 #' @keywords internal
-discount <- function(x, r, first = FALSE) {
+discount <- function(x, r, first = FALSE, period = 1) {
   if (length(r) > 1) r <- r[1]
   stopifnot(
     r >= 0,
-    r <= 1
+    r <= 1,
+    period > 0
   )
   
-  x / (1 + r) ^ (seq_along(x) - (1 - isTRUE(first)))
+  dr <- trunc((seq_along(x) - (1 - isTRUE(first))) / period)
+  x / (1 + r) ^ dr
 }
 
 #' Check if All the Elements of a List Are the Same
@@ -204,7 +207,7 @@ wtd_summary <- function(x, weights = NULL) {
 #' 
 #' These function return an error if a conversion fails.
 #' 
-#' @name safe-conversion
+#' @name safe_conversion
 #' @param x A character vector.
 #' @param f A conversion function.
 #'   
@@ -226,12 +229,12 @@ safe_convert <- function(x, f) {
   res
 }
 
-#' @rdname safe-conversion
+#' @rdname safe_conversion
 as_numeric_safe <- function(x) {
   safe_convert(x, as.numeric)
 }
 
-#' @rdname safe-conversion
+#' @rdname safe_conversion
 as_integer_safe <- function(x) {
   res_int <- safe_convert(x, as.integer)
   res_num <- safe_convert(x, as.numeric)
@@ -398,6 +401,7 @@ to_dots.list <- function(x) {
   )
 }
 
+# transforms factors to characters in a df
 clean_factors <- function(x) {
   for (n in names(x)) {
     if (inherits(x[[n]], "factor")) {
@@ -405,4 +409,123 @@ clean_factors <- function(x) {
     }
   }
   x
+}
+
+# formula operations
+
+is_one_sided <- function(x) {
+  length(x) == 2
+}
+
+lhs <- function(x) {
+  if (is_one_sided(x)) {
+    stop("Cannont extract left hand side of a one-sided formula.")
+  } else {
+    x[[2]]
+  }
+}
+
+rhs <- function(x) {
+  if (is_one_sided(x)) {
+    x[[2]]
+  } else {
+    x[[3]]
+  }
+}
+
+make_call <- function(x, collapse) {
+  if (length(x) > 1) {
+    as.call(
+      list(
+        as.name(collapse),
+        as.name(x[1]),
+        make_call(x[-1], collapse = collapse)
+      )
+    )
+  } else {
+    as.name(x)
+  }
+}
+
+reshape_long <- function(data, key_col, value_col,
+                         gather_cols, na.rm = FALSE) {
+  idvar <- names(data)[! names(data) %in% gather_cols]
+  
+  ids <- return_ids(data, idvar)
+  
+  stopifnot(
+    all(! duplicated(ids))
+  )
+  
+  d <- data
+  d <- d[, ! (names(data) %in% gather_cols), drop = FALSE]
+  res <- do.call(
+    rbind,
+    lapply(gather_cols,
+           function(col) {
+    d[, key_col] <- col
+    d[, value_col] <- data[, col]
+    d
+  }))
+  
+  if (na.rm) {
+    res <- res[! is.na(res[[value_col]]), ]
+  }
+  
+  return(res)
+}
+
+return_ids <- function(data, idvar) {
+  if (length(idvar)) {
+    tab_id <- data[idvar]
+    atomic_id <- unlist(lapply(tab_id, is.atomic))
+    for (id in idvar[! atomic_id]) {
+      tab_id[id] <- seq_len(nrow(data))
+    }
+    if (length(idvar) > 1L) {
+      ids <- interaction(tab_id[, idvar], drop = TRUE)
+    } else {
+      ids <- tab_id[[idvar]]
+    }
+  } else {
+    ids <- seq_len(nrow(data))
+  }
+  ids
+}
+
+reshape_wide <- function(data, key_col, value_col, fill = NA) {
+  idvar <- names(data)[! names(data) %in% c(key_col, value_col)]
+  
+  ids <- return_ids(data, idvar)
+  
+  unique_ids <- ids[! duplicated(ids)]
+  
+  stopifnot(
+    all(! is.na(data[[key_col]]))
+  )
+  
+  res <- data[! duplicated(ids), idvar, drop = FALSE]
+  
+  cbind(
+    res,
+    do.call(
+      cbind,
+      stats::setNames(
+        object = lapply(
+          unique(data[[key_col]]),
+          function(x) {
+            ret <- vector(
+              mode = class(data[[value_col]]),
+              length = nrow(res))
+            ret <- fill
+            index_key <- data[[key_col]] == x
+            ret[unique_ids %in% ids[index_key]] <-
+              data[index_key, ][[value_col]]
+            ret
+          }
+        ),
+        nm = unique(data[[key_col]])
+      )
+    )
+  )
 }

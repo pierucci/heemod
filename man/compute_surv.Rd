@@ -4,7 +4,7 @@
 \alias{compute_surv}
 \title{Evaluate Survival Distributions}
 \usage{
-compute_surv(x, time, cycle_length = 1, type = c("prob", "surv"), ...)
+compute_surv(x, time, cycle_length = 1, type = c("prob", "survival"), ...)
 }
 \arguments{
 \item{x}{A survival distribution object}
@@ -15,8 +15,8 @@ to predict.}
 \item{cycle_length}{The value of a Markov cycle in
 absolute time units.}
 
-\item{type}{either \code{prob}, for transition probabilities,
-or \code{surv}, for survival}
+\item{type}{Either \code{prob}, for transition probabilities,
+or \code{surv}, for survival.}
 
 \item{...}{arguments passed to methods.}
 }

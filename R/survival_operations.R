@@ -89,9 +89,9 @@ project_fn <- function(dist1, dist2_list) {
   )
 }
 
-#' Pool Two or More Survival Distributions
+#' Mix Two or More Survival Distributions
 #' 
-#' Pool a set of survival distributions using the specified
+#' Mix a set of survival distributions using the specified
 #' weights.
 #' 
 #' @param ... Survival distributions to be used in the
@@ -106,18 +106,18 @@ project_fn <- function(dist1, dist2_list) {
 #' 
 #' dist1 <- define_survival(distribution = "exp", rate = .5)
 #' dist2 <- define_survival(distribution = "gompertz", rate = .5, shape = 1)
-#' pooled_dist <- pool(dist1, dist2, weights = c(0.25, 0.75))
+#' pooled_dist <- mix(dist1, dist2, weights = c(0.25, 0.75))
 #' 
-pool <- function(..., weights = 1) {
+mix <- function(..., weights = 1) {
   
   dots <- list(...)
   
-  pool_(dots, weights)
+  mix_(dots, weights)
 }
 
 #' @export
-#' @rdname pool
-pool_ <- function(dots, weights = 1) {
+#' @rdname mix
+mix_ <- function(dots, weights = 1) {
   
   stopifnot(
     all(weights > 0),
@@ -132,6 +132,20 @@ pool_ <- function(dots, weights = 1) {
     ),
     class = "surv_pooled"
   )
+}
+
+#' @export
+#' @rdname mix
+pool <- function(...) {
+  warning("'pool() is deprecated, use 'mix()' instead.")
+  mix(...)
+}
+
+#' @export
+#' @rdname mix
+pool_ <- function(...) {
+  warning("'pool_() is deprecated, use 'mix_()' instead.")
+  mix_(...)
 }
 
 #' Apply a Hazard Ratio
@@ -159,11 +173,18 @@ apply_hr <- function(dist, hr, log_hr = FALSE) {
     is.finite(hr),
     log_hr | hr > 0
   )
+  if(log_hr) hr <- exp(hr)
+  if(hr == 1) return(dist)
+  if(inherits(dist, "surv_ph")){
+    dist$hr <- dist$hr * hr
+    if(dist$hr == 1) return(dist$dist)
+    return(dist)
+  }
   
   structure(
     list(
       dist = dist,
-      hr = ifelse(log_hr, exp(hr), hr)
+      hr = hr
     ),
     class = "surv_ph"
   )
@@ -193,11 +214,18 @@ apply_af <- function(dist, af, log_af = FALSE) {
     is.finite(af),
     log_af | af > 0
   )
+  if(log_af) af <- exp(af)
+  if(af == 1) return(dist)
+  if(inherits(dist, "surv_aft")){
+    dist$af <- dist$af * af
+    if(dist$af == 1) return(dist$dist)
+    return(dist)
+  }
   
   structure(
     list(
       dist = dist,
-      af = ifelse(log_af, exp(af), af)
+      af = af
     ),
     class = "surv_aft"
   )
@@ -228,13 +256,60 @@ apply_or = function(dist, or, log_or = FALSE) {
     log_or | or > 0
   )
   
+  if(log_or) or <- exp(or)
+  if(or == 1) return(dist)
+  if(inherits(dist, "surv_po")){
+    dist$or <- dist$or * or
+    if(dist$or == 1) return(dist$dist)
+    return(dist)
+  }
+  
   structure(
     list(
       dist = dist,
-      or = ifelse(log_or, exp(or), or)
+      or = or
     ),
     class = "surv_po"
   )
+}
+
+#' Apply a time shift to a survival distribution
+#' 
+#' 
+#' @param dist A survival distribution.
+#' @param shift A time shift to be applied.
+#'   
+#' @return A `surv_shift` object.
+#' 
+#' @details A positive shift moves the fit backwards in time.   That is,
+#'   a shift of 4 will cause time 5 to be evaluated as time 1, and so on.
+#'   If `shift == 0`, `dist` is returned unchanged.
+#' @export
+#' 
+#' @examples
+#' 
+#' dist1 <- define_survival(distribution = "gamma", rate = 0.25, shape = 3)
+#' shift_dist <- apply_shift(dist1, 4)
+#' compute_surv(dist1, 1:10)
+#' compute_surv(shift_dist, 1:10)
+apply_shift = function(dist, shift) {
+  stopifnot(
+    length(shift) == 1,
+    is.finite(shift)
+  )
+  if(shift == 0) return(dist)
+  if(inherits(dist, "surv_shift")){
+      dist$shift <- dist$shift + shift
+      if(dist$shift == 0) return(dist$dist)
+      else return(dist)
+  }  
+  structure(
+      list(
+        dist = dist,
+        shift = shift
+      ),
+      class = "surv_shift"
+    )
 }
 
 #' Add Hazards
@@ -329,6 +404,7 @@ set_covariates_ <- function(dist, covariates, data = NULL) {
   )
 }
 
+
 #' Plot general survival models
 #'
 #' @param x a survival object of class `surv_aft`, `surv_add_haz`,
@@ -380,4 +456,31 @@ plot.surv_model <- plot.surv_obj
 plot.surv_po <- plot.surv_obj
 plot.surv_aft <- plot.surv_obj
 plot.surv_pooled <- plot.surv_obj
+plot.surv_shift <- plot.surv_obj
 
+
+#' Summarize surv_shift objects
+#'
+#' @param object a `surv_shift` object 
+#' @param summary_type "standard" or "plot" - "standard"
+#'   for the usual summary of a `survfit` object,
+#'   "plot" for a fuller version
+#' @param ... other arguments
+#' 
+#' @return A summary.
+#' @export
+#'
+summary.surv_shift <- 
+  function(object, summary_type = c("plot", "standard"), ...){
+    summary_type <- match.arg(summary_type)
+    res <- summary(object$dist, ...)
+    if(inherits(res, "summary.survfit")){
+      if(summary_type == "plot"){
+        res <- data.frame(res[c("time", "surv", "upper", "lower")])
+        names(res) <- c("time", "est", "lcl", "ucl")
+      }
+    }
+    if(length(res) == 1) res <- res[[1]]
+    res$time <- res$time + object$shift
+    res
+    }

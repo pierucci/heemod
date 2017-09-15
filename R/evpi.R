@@ -45,34 +45,71 @@ compute_evpi <- function(x, wtp_thresholds) {
 #' @return Nothing. Creates 3 files.
 #' @export
 export_savi <- function(x, folder = ".") {
+  res <- export_psa(x)
+  
+  write.csv(
+    x = res$par,
+    file = file.path(folder, "param.csv"),
+    row.names = FALSE)
+  
+  write.csv(
+    x = res$c,
+    file = file.path(folder, "cost.csv"),
+    row.names = FALSE
+  )
+  
+  write.csv(
+    x = res$e,
+    file = file.path(folder, "effect.csv"),
+    row.names = FALSE
+  )
+}
+
+export_psa <- function(x) {
   res <- x$psa[c(x$resamp_par, ".cost", ".effect", ".strategy_names")] %>% 
-    tidyr::gather_(
+    reshape_long(
       key_col = ".key",
       value_col = ".value",
       gather_cols = c(".cost", ".effect")) %>% 
     dplyr::mutate_(
       .var_name = ~ paste(.key, .strategy_names, sep = "_")) %>% 
     dplyr::select_(~ - .key, ~ - .strategy_names) %>% 
-    tidyr::spread_(key_col = ".var_name", value_col = ".value")
+    reshape_wide(key_col = ".var_name", value_col = ".value")
   
-  write.csv(
-    x = res[x$resamp_par],
-    file = file.path(folder, "param.csv"),
-    row.names = FALSE)
-  
-  write.csv(
-    x = res %>% 
+  list(
+    par = res[x$resamp_par],
+    c = res %>% 
       dplyr::select(dplyr::starts_with(".cost")) %>% 
       stats::setNames(get_strategy_names(x)),
-    file = file.path(folder, "cost.csv"),
-    row.names = FALSE
-  )
-  
-  write.csv(
-    x = res %>% 
+    e = res %>% 
       dplyr::select(dplyr::starts_with(".effect")) %>% 
-      stats::setNames(get_strategy_names(x)),
-    file = file.path(folder, "effect.csv"),
-    row.names = FALSE
+      stats::setNames(get_strategy_names(x))
+  )
+}
+
+#' Use the BCEA package
+#' 
+#' Interfaces the output of [run_psa()] into the BCEA package.
+#' 
+#' The BCEA package is needed for this function to work.
+#' 
+#' @param x Output from [run_psa()].
+#' @param ... Additional arguemnts passed to [BCEA::bcea()].
+#'   
+#' @return A BCEA analysis.
+#' @export
+#' 
+run_bcea <- function(x, ...) {
+  if (! requireNamespace("BCEA")) {
+    stop("'BCEA' package required for BCEA analysis.")
+  }
+  
+  res <- export_psa(x)
+  
+  BCEA::bcea(
+    e = as.matrix(res$e),
+    c = as.matrix(res$c),
+    interventions = get_strategy_names(x),
+    ...
   )
 }

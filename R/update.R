@@ -20,7 +20,7 @@
 #' `"count"` can produce from the combined model plots
 #' similar to those of [run_model()].
 #' 
-#' @name update-model
+#' @name update_model
 #' @param object The result of [run_model()].
 #' @param newdata A `data.frame` of new parameter sets,
 #'   one column per parameter and one row per parameter set.
@@ -84,8 +84,8 @@ update.run_model <- function(object, newdata, ...) {
     list_res[[n]]$.index <- seq_len(nrow(newdata))
   }
   
-  res <- Reduce(dplyr::bind_rows, list_res)
-  
+  res <- 
+    dplyr::bind_rows(list_res)
   suppressMessages({
     res_total <- res %>% 
       dplyr::rowwise() %>% 
@@ -127,7 +127,7 @@ print.updated_model <- function(x, ...) {
 }
 
 #' @export
-#' @rdname update-model
+#' @rdname update_model
 plot.updated_model <- function(x, type = c("simple", "difference",
                                            "counts", "ce", "values"),
                                result = c("cost", "effect", "icer"),
@@ -275,8 +275,8 @@ summary.updated_model <- function(object, ...) {
     )
   }
   
-  tab_res <- Reduce(rbind, list_res)
-  
+  tab_res <- 
+    do.call("rbind", list_res)
   tab_res$Value <- tab_res$Value %>% 
     factor(
       levels = c(".cost", ".effect",

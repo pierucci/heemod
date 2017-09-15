@@ -60,10 +60,11 @@ run_dsa <- function(model, dsa) {
     list_res[[i]]$.strategy_names <- strategy_names[i]
   }
   
-  res <- Reduce(dplyr::bind_rows, list_res) %>% 
-    tidyr::gather_(
-      ".par_names", ".par_value",
-      dsa$variables, na.rm = TRUE) %>% 
+  res <- 
+    dplyr::bind_rows(list_res) %>%
+    reshape_long(
+      key_col = ".par_names", value_col = ".par_value",
+      gather_cols = dsa$variables, na.rm = TRUE) %>% 
     dplyr::rowwise()
   
   res <- res %>% 

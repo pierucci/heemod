@@ -14,10 +14,13 @@ plot(mat_1)
 # rr must be present in a parameter object
 # that must later be linked with define_strategy
 
-define_transition(
+mat_2 <- define_transition(
   .5 - rr, rr,
   .4, .6
 )
+mat_2
+
+reindent_transition(mat_2)
 
 # can also use C
 

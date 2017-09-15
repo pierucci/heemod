@@ -62,8 +62,8 @@ run_model <- function(...,
   
   uneval_strategy_list <- list(...)
   
-  init <- check_init(init, uneval_strategy_list[[1]])
-  inflow <- check_inflow(inflow, uneval_strategy_list[[1]])
+  init <- check_init(init, get_state_names(uneval_strategy_list[[1]]))
+  inflow <- check_inflow(inflow, get_state_names(uneval_strategy_list[[1]]))
   
   run_model_(
     uneval_strategy_list = uneval_strategy_list,
@@ -175,8 +175,9 @@ run_model_ <- function(uneval_strategy_list,
     list_res[[n]]$.strategy_names <- n
   }
   
-  res <- Reduce(dplyr::bind_rows, list_res) %>% 
-    dplyr::mutate_(.dots = ce)
+  res <- 
+    dplyr::bind_rows(list_res) %>%
+      dplyr::mutate_(.dots = ce)
   
   root_strategy <- get_root_strategy(res)
   noncomparable_strategy <- get_noncomparable_strategy(res)
@@ -325,7 +326,7 @@ get_values.run_model <- function(x, ...) {
     )
   )
   
-  tidyr::gather_(
+  reshape_long(
     data = res,
     key_col = "value_names",
     value_col = "value",
@@ -378,7 +379,7 @@ get_counts.run_model <- function(x, ...) {
     )
   )
   
-  tidyr::gather_(
+  reshape_long(
     data = res,
     key_col = "state_names",
     value_col = "count",
@@ -448,7 +449,7 @@ get_method.run_model <- function(x) {
 }
 
 get_state_names.run_model <- function(x, ...) {
-  get_state_names(x$uneval_strategy_list[[1]])
+  get_state_names(get_states(x$uneval_strategy_list[[1]]))
 }
 
 get_expand_limit <- function(x, strategy) {
@@ -484,7 +485,7 @@ get_parameter_values.run_model <- function(x, parameter_names,
       seq_along(parameter_names),
       function(i) {
         as.vector(unlist(
-          get_eval_strategy_list(x)[[strategy]]$parameters[cycles[i], parameter_names[i]]
+          get_eval_strategy_list(x)[[strategy]]$complete_parameters[cycles[i], parameter_names[i]]
         ))
       }),
     parameter_names)

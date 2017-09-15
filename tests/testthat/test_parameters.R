@@ -61,6 +61,11 @@ b = a + 543',
       "0 unevaluated parameter.",
       fixed = TRUE
     )
+    
+    expect_identical(
+      to_text_dots(par1),
+      to_text_dots(modify(par1))
+    )
   }
 )
 
@@ -138,7 +143,6 @@ test_that(
     )
   }
 )
-
 test_that(
   "we correctly report parameter evaluation errors", {
     par1 <- define_parameters(
