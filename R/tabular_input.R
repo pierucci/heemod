@@ -292,63 +292,11 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   if (options()$heemod.verbose) message("*** Reading TM...")
   
   tm_info <- read_file(ref$full_file[ref$data == "tm"])
-  trans_type <- transition_type(tm_info)
+  typed_tm_info <- add_transition_type(tm_info)
   
-  if (trans_type == "matrix") {
-    tm_info <- parse_multi_spec(
-      tm_info,
-      group_vars = c("from", "to"))
-    tab_undefined <- 
-      dplyr::bind_rows(tm_info) %>%
-      dplyr::filter_(~ is.na(prob))
-    
-    if (nrow(tab_undefined) > 0) {
-      rownames(tab_undefined) <- NULL
-      print(tab_undefined)
-      stop("Undefined probabilities in the transition matrix (see above).")
-    }
-    one_way <- setdiff(names(state_info), names(tm_info))
-    other_way <- setdiff(names(tm_info), names(state_info))
-  }
+  tm_info <- transform_tm_info(typed_tm_info, names(state_info), 
+                               ref = ref, df_env = df_env)
   
-  
-  if(trans_type == "part_surv"){
-    use_fits_file <- ref[ref$data == "use_fits", "full_file"]
-    use_fits <- read_file(use_fits_file)
-    tm_info <- construct_part_surv_tib(use_fits, ref, env = df_env,
-                                    state_names = state_names)
-    one_way <- setdiff(names(state_info), unique(tm_info$.strategy))
-    other_way <- setdiff(unique(tm_info$.strategy), names(state_info))
-  }
-
-
-  one_way <- setdiff(names(state_info), names(tm_info))
-  other_way <- setdiff(names(tm_info), names(state_info))
-  if (length(c(one_way, other_way))){
-    err_string <- "Mismatching model names between transition (TM) file and state file.\n"
-    if(length(one_way))
-      err_string <-
-        paste(err_string,
-              "In state file but not TM file:", 
-              paste(one_way, collapse = ", "),
-              "\n")
-    if(length(other_way))
-      err_string <-
-        paste(err_string,
-              "In TM but not state file:", 
-              paste(other_way, collapse = ", "),
-              "\n")
-    stop(err_string)
-  }
-  
-  
-  if(trans_type == "part_surv")
-    tm_info <- 
-      dplyr::filter_(tm_info, ~ .strategy %in% names(state_info))
-  else
-    tm_info <- tm_info[names(state_info)]
-
-
   if (options()$heemod.verbose) message("*** Defining models...")
   models <- lapply(
     seq_along(state_info),
@@ -1238,23 +1186,26 @@ save_graph <- function(plot, path, file_name) {
 }
 
 
-transition_type <- function(tm_info){
+add_transition_type <- function(tm_info){
   which_defines <- NULL
   if(all(names(tm_info)[1:4] == c(".model", "from", "to", "prob"))){
     which_defines <- "matrix"
+    class(tm_info) <- c("matrix_tm_info", class(tm_info))
   }
   else{
     if(all(sort(names(tm_info)[1:10]) == 
            sort(c("type", "treatment",	"data_directory",
                   "data_file",	"fit_directory",	"fit_name",
                   "fit_file",	"time_col",	"treatment_col",
-                  "censor_col"))))
+                  "censor_col")))){
       which_defines <- "part_surv"
+      class(tm_info) <- c("part_surv_tm_info", class(tm_info))
+    }
   }
   if(is.null(which_defines))
     stop("the data frame tm_info must define ",
          "either a transition matrix or a partitioned survival object")
-  which_defines
+  tm_info
 }
 
 modify_param_defs_for_multinomials <- function(param_defs, psa) {
@@ -1339,111 +1290,71 @@ modify_param_defs_for_multinomials <- function(param_defs, psa) {
 }
 
 
-## make sure that survival fit specifications are 
-##   properly formatted and have reasonable data
-check_survival_specs <- 
-  function(surv_specs){
-    ## if there are troubles with absolute file paths, 
-    ##   might want to add an "absolute" column to surv_specs
-    ##   to be explicit (if, possibly, a little redundant)
-    if(!is.data.frame(surv_specs) || nrow(surv_specs) == 0)
-      stop("surv_specs must be a data frame with at least one row")
-    if(!("event_code" %in% names(surv_specs))){
-      warning("event_code not defined in surv_specs; setting to 1 for all rows")
-      surv_specs$event_code <- 1
-    }
-    if(!("censor_code" %in% names(surv_specs))){
-      warning("censor_code not defined in surv_specs; setting to 0 for all rows")
-      surv_specs$censor_code <- 0
-    }
-      
-    surv_spec_col_names <- c("type", "treatment", "data_directory", "data_file",
-                             "fit_directory", "fit_name", "fit_file",
-                             "time_col", "treatment_col", "censor_col",
-                             "event_code", "censor_code"
-                             )
-    if(! identical(sort(names(surv_specs)), sort(surv_spec_col_names))){
-      extra_names <- setdiff(names(surv_specs), surv_spec_col_names)
-      missing_names <- setdiff(surv_spec_col_names, names(surv_specs))
-      names_message <- paste("surv_ref must have column names:\n",
-                             paste(surv_spec_col_names, collapse = ", "), 
-                             sep = "")
-      if(length(extra_names) > 0)
-        names_message <- paste(names_message, "\n", "extra names: ",
-                               paste(extra_names, collapse = ", "),
-                               sep = "")
-      if(length(missing_names) > 0)
-        names_message <- paste(names_message, "\n", "missing names: ",
-                               paste(missing_names, collapse = ", "),
-                               sep = "")
-      stop(names_message)
-    }
-    
-    if(any(is.na(surv_specs) | surv_specs == ""))
-      stop("all elements of surv_specs must be filled in")
-    
-    ## sort survival specs by treatment, then PFS and OS
-    ## our checks will make sure that we have the right entries,
-    ##   and that they are in the right order
-    surv_specs <- 
-      surv_specs %>% dplyr::arrange_(~ treatment, ~ desc(type))
-    
-    os_ind <- grep("os", surv_specs$type, ignore.case = TRUE)
-    pfs_ind <- grep("pfs", surv_specs$type, ignore.case = TRUE)
-    all_even_os <- identical(as.numeric(os_ind), 
-                             seq(from = 2, 
-                                 to = nrow(surv_specs),
-                                 by = 2))
-    all_odd_pfs <- identical(as.numeric(pfs_ind), 
-                             seq(from = 1, 
-                                 to = nrow(surv_specs),
-                                 by = 2))
-    same_treatments <- 
-      identical(surv_specs$treatment[os_ind],
-                surv_specs$treatment[pfs_ind])
-    if(!all_even_os | !all_odd_pfs | !same_treatments)
-      stop("each treatment must have exactly one PFS and one OS entry")
-    
-    if(any(dups <- duplicated(surv_specs[, c("type", "treatment")]))){
-      print(surv_specs[dups,])
-      stop("survival fit specification can only have one row for fitting ",
-           "OS or PFS for a given treatment\n")
-    }
-    if(any(dups <- duplicated(surv_specs[, c("fit_directory", "fit_file", 
-                                             "time_col", "censor_col")]))){
-      print(surv_specs[dups,])
-      stop("can only specify a given data file in a given directory with ",
-           "the same time column and censoring column for one fit")
-    }
-    surv_specs
-  }
-
-#' Load a set of survival fits
+#' Transform a transition object specification into a transition object
 #'
-#' @param location base directory
-#' @param survival_specs information about fits
-#' @param use_envir an environment
+#' @param tm_info specification of a transition object; either a matrix
+#'   (defined in this package) or a partial survival object
+#'   (defined in the package `heemodFits`)
+#' @param state_names names of the states the model is to be used with
+#' @param ... additional arguments; ignored for matrix, used for partial
+#'   survival object
 #'
-#' @return A list with two elements:  \itemize{
-#'    \item{`best_models`, 
-#'    a list with the fits for each data file passed in; and} 
-#'    \item{`envir`, 
-#'    an environment containing the models so they can be referenced to 
-#'    get probabilities.}
-#'    }
+#' @return either a transition matrix or a partial survivval object
 #' @export
 #'
-load_surv_models <- function(location, survival_specs, use_envir){
-  fit_files <- file.path(location,
-                         survival_specs$fit_directory,
-                         survival_specs$fit_file)
-  for(index in seq(along = fit_files)){
-    this_fit_file <- fit_files[index]
-    this_fit_name <- survival_specs$fit_name[index]
-    load(paste(this_fit_file, ".RData", sep = ""))
+transform_tm_info <- function(tm_info, state_names, ...){
+  UseMethod("transform_tm_info")
+}
+
+#' @rdname transform_tm_info
+#' @export
+transform_tm_info.matrix_tm_info <- function(tm_info, state_names, ...){
+  tm_info <- parse_multi_spec(
+    tm_info,
+    group_vars = c("from", "to"))
+  tab_undefined <- 
+    dplyr::bind_rows(tm_info) %>%
+    dplyr::filter_(~ is.na(prob))
+  
+  if (nrow(tab_undefined) > 0) {
+    rownames(tab_undefined) <- NULL
+    print(tab_undefined)
+    stop("Undefined probabilities in the transition matrix (see above).")
   }
-  surv_models <- mget(survival_specs$fit_name)
-  names(surv_models) <- survival_specs$fit_name
-  list(do.call("rbind", mget(survival_specs$fit_name)),
-       env = use_envir)
+  
+  test_model_name_match(state_names, names(tm_info))
+  return(tm_info)
+}
+
+#' Throw an error if state names and model names don't match
+#'
+#' @param state_model_names names of models defined in state specification
+#' @param transition_model_names names of models defined in transition specification
+#'
+#' @return an error with an informative message if the two inputs are
+#'   different; otherwise nothing
+#' @export
+#'
+test_model_name_match <- function(state_model_names, transition_model_names){
+
+  one_way <- setdiff(state_model_names, transition_model_names)
+  other_way <- setdiff(transition_model_names, state_model_names)
+  
+    if(length(c(one_way, other_way))){
+    err_string <- "Mismatching model names between transition (TM) file and state file.\n"
+    if(length(one_way))
+      err_string <-
+        paste(err_string,
+              "In state file but not TM file:", 
+              paste(one_way, collapse = ", "),
+              "\n")
+    if(length(other_way))
+      err_string <-
+        paste(err_string,
+              "In TM but not state file:", 
+              paste(other_way, collapse = ", "),
+              "\n")
+    stop(err_string)
+    }
+  return(NULL)
 }

@@ -204,28 +204,28 @@ resTM <- run_model(
 plot(resTM)
 ```
 
-### Partitioned survival model
+<!-- ### Partitioned survival model -->
 
-A partitioned survival model can also be computed:
+<!-- A partitioned survival model can also be computed: -->
 
-```{r fig.width=6, fig.height=4}
-ps <- define_part_surv(
-  pfs = surv_dist_1,
-  os  = km_1 %>%
-    join(fit_w, at = 730),
-  cycle_length = c(1, 365) # 1 for pfs, 365 for os
-)
+<!-- ```{r fig.width=6, fig.height=4} -->
+<!-- ps <- define_part_surv( -->
+<!--   pfs = surv_dist_1, -->
+<!--   os  = km_1 %>% -->
+<!--     join(fit_w, at = 730), -->
+<!--   cycle_length = c(1, 365) # 1 for pfs, 365 for os -->
+<!-- ) -->
 
-stratPS <- define_strategy(
-  transition = ps,
-  A = sA, B = sB, C = sC
-)
+<!-- stratPS <- define_strategy( -->
+<!--   transition = ps, -->
+<!--   A = sA, B = sB, C = sC -->
+<!-- ) -->
 
-resPS <- run_model(
-  stratPS,
-  cycles = 15,
-  cost = cost, effect = ut
-)
+<!-- resPS <- run_model( -->
+<!--   stratPS, -->
+<!--   cycles = 15, -->
+<!--   cost = cost, effect = ut -->
+<!-- ) -->
 
-plot(resPS)
-```
+<!-- plot(resPS) -->
+<!-- ``` -->
