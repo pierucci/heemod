@@ -156,7 +156,9 @@ Uncertainty Analysis</h1>
 
 <span class='fu'>beta</span>(<span class='no'>shape1</span>, <span class='no'>shape2</span>)
 
-<span class='fu'>triangle</span>(<span class='no'>lower</span>, <span class='no'>upper</span>, <span class='kw'>peak</span> <span class='kw'>=</span> (<span class='no'>lower</span> + <span class='no'>upper</span>)/<span class='fl'>2</span>)</pre>
+<span class='fu'>triangle</span>(<span class='no'>lower</span>, <span class='no'>upper</span>, <span class='kw'>peak</span> <span class='kw'>=</span> (<span class='no'>lower</span> + <span class='no'>upper</span>)/<span class='fl'>2</span>)
+
+<span class='fu'>use_distribution</span>(<span class='no'>distribution</span>, <span class='kw'>smooth</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -183,7 +185,8 @@ Uncertainty Analysis</h1>
     </tr>
     <tr>
       <th>size</th>
-      <td><p>Size of sample used to estimate proportion.</p></td>
+      <td><p>Size of sample used to estimate
+proportion.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -207,11 +210,13 @@ Uncertainty Analysis</h1>
     </tr>
     <tr>
       <th>lower</th>
-      <td><p>lower bound of triangular distribution.</p></td>
+      <td><p>lower bound of triangular
+distribution.</p></td>
     </tr>
     <tr>
       <th>upper</th>
-      <td><p>upper bound of triangular distribution.</p></td>
+      <td><p>upper bound of triangular
+distribution.</p></td>
     </tr>
     <tr>
       <th>peak</th>
@@ -221,17 +226,33 @@ Uncertainty Analysis</h1>
       <th>x</th>
       <td><p>A distribution function, see details.</p></td>
     </tr>
+    <tr>
+      <th>distribution</th>
+      <td><p>A numeric vector of
+observations defining a distribution, usually
+the output from an MCMC fit.</p></td>
+    </tr>
+    <tr>
+      <th>smooth</th>
+      <td><p>Use gaussian kernel smoothing?</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>These functions are not exported, but only used in
-<code><a href='define_psa.html'>define_psa()</a></code>. To specify a user-made function
-use <code>define_distribution()</code>.
-    <code>define_distribution()</code> takes as argument a function
-with a single argument, <code>x</code>, corresponding to a
-vector of quantiles. It returns the distribution values
-for the given quantiles. See examples</p>
+    <p>These functions are not exported, but only used
+in <code><a href='define_psa.html'>define_psa()</a></code>. To specify a user-made
+function use <code>define_distribution()</code>.
+    <code>use_distribution()</code> uses gaussian kernel
+smoothing with a bandwith parameter calculated
+by <code><a href='http://www.rdocumentation.org/packages/stats/topics/density'>stats::density()</a></code>. Values for unobserved
+quantiles are calculated by linear
+interpolation.
+    <code>define_distribution()</code> takes as argument a
+function with a single argument, <code>x</code>,
+corresponding to a vector of quantiles. It
+returns the distribution values for the given
+quantiles. See examples.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -240,9 +261,25 @@ for the given quantiles. See examples</p>
 )</div><div class='output co'>#&gt; [[1]]
 #&gt; function (x) 
 #&gt; stats::qexp(p = x, rate = 0.5)
-#&gt; &lt;environment: 0xc805060&gt;
+#&gt; &lt;environment: 0xa8968a8&gt;
 #&gt; </div><div class='input'>
-</div></pre>
+<span class='co'># a mixture of 2 gaussians</span>
+<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='fu'>rnorm</span>(<span class='fl'>100</span>), <span class='fu'>rnorm</span>(<span class='fl'>100</span>, <span class='fl'>6</span>))
+<span class='fu'>plot</span>(<span class='fu'>density</span>(<span class='no'>x</span>))</div><div class='img'><img src='distributions-1.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+<span class='fu'>use_distribution</span>(<span class='no'>x</span>)</div><div class='output co'>#&gt; [[1]]
+#&gt; function (x) 
+#&gt; {
+#&gt;     if (smooth) {
+#&gt;         noise &lt;- stats::rnorm(n = length(x), mean = 0, sd = stats::density(distribution)$bw)
+#&gt;     }
+#&gt;     else {
+#&gt;         noise &lt;- 0
+#&gt;     }
+#&gt;     (stats::approxfun(x = seq(0, 1, length = length(distribution)), 
+#&gt;         y = distribution))(x) + noise
+#&gt; }
+#&gt; &lt;environment: 0xa0f9a30&gt;
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

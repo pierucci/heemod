@@ -206,8 +206,9 @@ pm <- run_psa(
 The average results are computed. In theory these values are more accurate than simple estimates because of non-linearities. An optional `threshold` can be passed to `summary()` to compute net monetary benefit.
 
 ```{r}
-summary(pm, 
-        threshold = c(1000, 5000, 6000, 1e4))
+summary(
+  pm, 
+  threshold = c(1000, 5000, 6000, 1e4))
 ```
 
 ## Result interpretation
@@ -224,8 +225,6 @@ And as cost-effectiveness acceptability curves or EVPI:
 plot(pm, type = "ac", max_wtp = 10000, log_scale = FALSE)
 plot(pm, type = "evpi", max_wtp = 10000, log_scale = FALSE)
 ```
-
-To compute EVPPI the results can also be exported with `export_savi()` in a format compatible with the [SAVI](http://savi.shef.ac.uk/SAVI/) software (Sheffield Accelerated Value of Information).
 
 A covariance analysis can be performed on strategy results:
 
@@ -263,3 +262,15 @@ Resampling can be significantly sped up by using parallel computing. This can be
   * To stop using parallel computing use the `close_cluster()` function.
   
 Results may vary depending on the machine, but we found speed gains to be quite limited beyond 4 cores.
+
+## Interface with BECA and SAVI
+
+To compute EVPPI the results can also be exported with `export_savi()` in a format compatible with the [SAVI](http://savi.shef.ac.uk/SAVI/) software (Sheffield Accelerated Value of Information).
+
+The results can be post-processed by the `BCEA` package with the `run_bcea()` function.
+
+```{r, fig.height=6, fig.width=6}
+bcea <- run_bcea(pm, plot = TRUE, Kmax = 10000)
+summary(bcea)
+```
+

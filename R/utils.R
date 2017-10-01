@@ -191,16 +191,27 @@ wtd_summary <- function(x, weights = NULL) {
     res <- rep(NA, 6)
     
   } else {
-    if (! requireNamespace("Hmisc")) {
-      stop("'Hmisc' package required to produce weighted summary.")
-    }
-    w_mean <- Hmisc::wtd.mean(x, weights = weights)
-    w_q <- Hmisc::wtd.quantile(x, weights = weights,
-                               probs = c(0, .25, .5, .75, 1))
+    w_mean <- wtd_mean(x, weights = weights)
+    w_q <- wtd_quantile(x, weights = weights,
+                        probs = c(0, .25, .5, .75, 1))
     res <- c(w_q[1], w_q[2], w_q[3], w_mean, w_q[4], w_q[5])
   }
   
   setNames(res, c("Min.", "1st Qu.", "Median", "Mean", "3rd Qu.", "Max."))
+}
+
+wtd_quantile <- function(x, weights = rep(1L, length(x)),
+                         probs = seq(0, 1, .25)) {
+  i <- order(x)
+  quant <- cumsum(weights[i]) - weights[i] / 2
+  quant <- (quant - quant[1]) / (quant[length(quant)] - quant[1])
+  
+  stats::approx(x = quant, y = x[i], xout = probs,
+                method = "linear")$y
+}
+
+wtd_mean <- function(x, weights = rep(1L, length(x))) {
+  sum(x * weights) / sum(weights)
 }
 
 #' Safely Convert From Characters to Numbers
@@ -445,4 +456,87 @@ make_call <- function(x, collapse) {
   } else {
     as.name(x)
   }
+}
+
+reshape_long <- function(data, key_col, value_col,
+                         gather_cols, na.rm = FALSE) {
+  idvar <- names(data)[! names(data) %in% gather_cols]
+  
+  ids <- return_ids(data, idvar)
+  
+  stopifnot(
+    all(! duplicated(ids))
+  )
+  
+  d <- data
+  d <- d[, ! (names(data) %in% gather_cols), drop = FALSE]
+  res <- do.call(
+    rbind,
+    lapply(gather_cols,
+           function(col) {
+    d[, key_col] <- col
+    d[, value_col] <- data[, col]
+    d
+  }))
+  
+  if (na.rm) {
+    res <- res[! is.na(res[[value_col]]), ]
+  }
+  
+  return(res)
+}
+
+return_ids <- function(data, idvar) {
+  if (length(idvar)) {
+    tab_id <- data[idvar]
+    atomic_id <- unlist(lapply(tab_id, is.atomic))
+    for (id in idvar[! atomic_id]) {
+      tab_id[id] <- seq_len(nrow(data))
+    }
+    if (length(idvar) > 1L) {
+      ids <- interaction(tab_id[, idvar], drop = TRUE)
+    } else {
+      ids <- tab_id[[idvar]]
+    }
+  } else {
+    ids <- seq_len(nrow(data))
+  }
+  ids
+}
+
+reshape_wide <- function(data, key_col, value_col, fill = NA) {
+  idvar <- names(data)[! names(data) %in% c(key_col, value_col)]
+  
+  ids <- return_ids(data, idvar)
+  
+  unique_ids <- ids[! duplicated(ids)]
+  
+  stopifnot(
+    all(! is.na(data[[key_col]]))
+  )
+  
+  res <- data[! duplicated(ids), idvar, drop = FALSE]
+  
+  cbind(
+    res,
+    do.call(
+      cbind,
+      stats::setNames(
+        object = lapply(
+          unique(data[[key_col]]),
+          function(x) {
+            ret <- vector(
+              mode = class(data[[value_col]]),
+              length = nrow(res))
+            ret <- fill
+            index_key <- data[[key_col]] == x
+            ret[unique_ids %in% ids[index_key]] <-
+              data[index_key, ][[value_col]]
+            ret
+          }
+        ),
+        nm = unique(data[[key_col]])
+      )
+    )
+  )
 }

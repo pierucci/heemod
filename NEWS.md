@@ -1,4 +1,10 @@
-## heemod 0.9.1.9005
+## heemod 0.9.2.9001
+
+### Backend changes
+
+  * Remove `Hmisc` dependency for weighted summaries.
+
+## heemod 0.9.2
 
 ### Breaking changes
 
@@ -10,6 +16,8 @@
   * Check for comma as a decimal separator in tabular data.
   * Auto-reindent transition matrices with `reindent_transition()`.
   * Discounting per year with the `period` argument.
+  * [BCEA](https://sites.google.com/a/statistica.it/gianluca/bcea) interface with `run_bcea()`.
+  * `use_distribution()` to resample from empirical data (e.g. MCMC fit posterior distribution).
 
 ### Bugfixes
 
@@ -25,6 +33,8 @@
   * Survival operation are wrapped in a common class.
   * Expansion code moved to own function.
   * Faster computation of expanded states.
+  * Stricter dependency version management (to avoid install failures on an outdated system).
+  * Removed dependency to `tidyr`.
 
 ## heemod 0.9.1
 
@@ -35,7 +45,7 @@
 
 ### New features
 
-  * NMB is now reportd as relative values.
+  * NMB is now reported as relative values.
 
 ### Bugfixes
 

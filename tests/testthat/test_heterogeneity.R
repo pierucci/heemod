@@ -63,7 +63,7 @@ test_that(
     expect_message(update(res, newdata = new_tab))
     
     expect_equal(
-      round(summary_update$summary_results$Min.[1]), 25104
+      round(summary_update$summary_results$Min.[1]), 24044
     )
     
     expect_equal(

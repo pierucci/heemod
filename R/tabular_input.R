@@ -1308,7 +1308,8 @@ modify_param_defs_for_multinomials <- function(param_defs, psa) {
     function(x) {
       zz <- data.frame(
         parameter = names(x),
-        value = x)
+        value = x,
+        stringsAsFactors = FALSE)
       rownames(zz) <- NULL
       zz
     })

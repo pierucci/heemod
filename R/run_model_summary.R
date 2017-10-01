@@ -226,14 +226,17 @@ print_results <- function(res_values, res_comp, res_nmb) {
   
   if (! is.null(res_nmb)) {
     cat("\nNet monetary benefit difference:\n\n")
-    rownames(res_nmb) <- res_nmb$.strategy_names
+    .strategy_names <- res_nmb$.strategy_names
+    f <- function(x) x - min(x)
     res_nmb <- res_nmb %>% 
       dplyr::select_(
         ~ - .strategy_names,
         ~ - .cost,
         ~ - .effect
       ) %>% 
-      dplyr::mutate_all(function(x) x - min(x))
+      dplyr::mutate_all(dplyr::funs(f))
+    
+    rownames(res_nmb) <- .strategy_names
     print(res_nmb)
   }
   
