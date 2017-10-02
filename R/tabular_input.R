@@ -294,7 +294,8 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   tm_info <- read_file(ref$full_file[ref$data == "tm"])
   typed_tm_info <- add_transition_type(tm_info)
   
-  tm_info <- transform_tm_info(typed_tm_info, names(state_info), 
+  tm_info <- transform_tm_info(typed_tm_info, state_model_names = names(state_info), 
+                               state_names = state_names,
                                ref = ref, df_env = df_env)
   
   if (options()$heemod.verbose) message("*** Defining models...")
@@ -1295,20 +1296,20 @@ modify_param_defs_for_multinomials <- function(param_defs, psa) {
 #' @param tm_info specification of a transition object; either a matrix
 #'   (defined in this package) or a partial survival object
 #'   (defined in the package `heemodFits`)
-#' @param state_names names of the states the model is to be used with
+#' @param state_model_names names of the models defined for the states
 #' @param ... additional arguments; ignored for matrix, used for partial
 #'   survival object
 #'
 #' @return either a transition matrix or a partial survivval object
 #' @export
 #'
-transform_tm_info <- function(tm_info, state_names, ...){
+transform_tm_info <- function(tm_info, state_model_names, ...){
   UseMethod("transform_tm_info")
 }
 
 #' @rdname transform_tm_info
 #' @export
-transform_tm_info.matrix_tm_info <- function(tm_info, state_names, ...){
+transform_tm_info.matrix_tm_info <- function(tm_info, state_model_names, ...){
   tm_info <- parse_multi_spec(
     tm_info,
     group_vars = c("from", "to"))
@@ -1322,7 +1323,7 @@ transform_tm_info.matrix_tm_info <- function(tm_info, state_names, ...){
     stop("Undefined probabilities in the transition matrix (see above).")
   }
   
-  test_model_name_match(state_names, names(tm_info))
+  test_model_name_match(state_model_names, names(tm_info))
   return(tm_info)
 }
 

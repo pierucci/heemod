@@ -5,16 +5,16 @@
 \alias{transform_tm_info.matrix_tm_info}
 \title{Transform a transition object specification into a transition object}
 \usage{
-transform_tm_info(tm_info, state_names, ...)
+transform_tm_info(tm_info, state_model_names, ...)
 
-\method{transform_tm_info}{matrix_tm_info}(tm_info, state_names, ...)
+\method{transform_tm_info}{matrix_tm_info}(tm_info, state_model_names, ...)
 }
 \arguments{
 \item{tm_info}{specification of a transition object; either a matrix
 (defined in this package) or a partial survival object
 (defined in the package \code{heemodFits})}
 
-\item{state_names}{names of the states the model is to be used with}
+\item{state_model_names}{names of the models defined for the states}
 
 \item{...}{additional arguments; ignored for matrix, used for partial
 survival object}
