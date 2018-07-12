@@ -263,7 +263,7 @@ Resampling can be significantly sped up by using parallel computing. This can be
   
 Results may vary depending on the machine, but we found speed gains to be quite limited beyond 4 cores.
 
-## Interface with BECA and SAVI
+## Interface with BCEA and SAVI
 
 To compute EVPPI the results can also be exported with `export_savi()` in a format compatible with the [SAVI](http://savi.shef.ac.uk/SAVI/) software (Sheffield Accelerated Value of Information).
 
