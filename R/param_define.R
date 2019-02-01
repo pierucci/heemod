@@ -38,6 +38,7 @@
 #'   (actually a named list of `lazy` expressions).
 #' @export
 #' 
+#' @importFrom dplyr n row_number
 #' @example inst/examples/example_define_parameters.R
 #'   
 define_parameters <- function(...) {
