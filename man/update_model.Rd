@@ -8,9 +8,9 @@
 \usage{
 \method{update}{run_model}(object, newdata, ...)
 
-\method{plot}{updated_model}(x, type = c("simple", "difference", "counts",
-  "ce", "values"), result = c("cost", "effect", "icer"), strategy = NULL,
-  ...)
+\method{plot}{updated_model}(x, type = c("simple", "difference",
+  "counts", "ce", "values"), result = c("cost", "effect", "icer"),
+  strategy = NULL, ...)
 }
 \arguments{
 \item{object}{The result of \code{\link[=run_model]{run_model()}}.}

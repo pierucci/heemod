@@ -5,7 +5,8 @@
 \title{Calibrate Model Parameters}
 \usage{
 calibrate_model(x, parameter_names, fn_values, target_values,
-  initial_values = NULL, method = c("Nelder-Mead", "BFGS", "L-BFGS-B"), ...)
+  initial_values = NULL, method = c("Nelder-Mead", "BFGS", "L-BFGS-B"),
+  ...)
 }
 \arguments{
 \item{x}{Result from \code{\link[=run_model]{run_model()}} or \code{\link[=update]{update()}}.}

@@ -10,7 +10,8 @@
 \usage{
 expand_state(x, ...)
 
-\method{expand_state}{uneval_matrix}(x, state_pos, state_name, cycles, n = 1)
+\method{expand_state}{uneval_matrix}(x, state_pos, state_name, cycles,
+  n = 1)
 
 \method{expand_state}{uneval_state_list}(x, state_name, cycles)
 

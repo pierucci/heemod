@@ -1,4 +1,4 @@
-## heemod 0.9.2.9001
+## heemod 0.9.3
 
 ### Backend changes
 
@@ -14,16 +14,16 @@
 
   * Starting values with `define_starting_values()`.
   * Check for comma as a decimal separator in tabular data.
-  * Auto-reindent transition matrices with `reindent_transition()`.
+  * Auto-re-indent transition matrices with `reindent_transition()`.
   * Discounting per year with the `period` argument.
-  * [BCEA](https://sites.google.com/a/statistica.it/gianluca/bcea) interface with `run_bcea()`.
-  * `use_distribution()` to resample from empirical data (e.g. MCMC fit posterior distribution).
+  * [BCEA](https://sites.Google.com/a/statistica.it/gianluca/bcea) interface with `run_bcea()`.
+  * `use_distribution()` to re-sample from empirical data (e.g. MCMC fit posterior distribution).
 
 ### Bugfixes
 
   * Better error-checking in multinomial parameters definition.
-  * Cleaner `define_psa()` backend code, variables can now be used to define distributin parameters.
-  * Handle cases when parameters depend on `state_time` but thoses parameters are not used by a strategy.
+  * Cleaner `define_psa()` back-end code, variables can now be used to define distribution parameters.
+  * Handle cases when parameters depend on `state_time` but those parameters are not used by a strategy.
   * Empty calls to `modify()` are supported.
   * Fix error in survival vignette.
 
@@ -59,13 +59,13 @@
 
 `heemod` can now be cited with:
 
-Filipović-Pierucci A, Zarca K and Durand-Zaleski I (2017).
+Filipovic-Pierucci A, Zarca K and Durand-Zaleski I (2017).
 “Markov Models for Health Economic Evaluations: The R
 Package heemod.” _ArXiv e-prints_. R package version
 0.8.0, 1702.03252, <URL: https://pierucci.org/heemod>.
 
   * Model calibration with `calibrate_model()`.
-  * `init` and `inflow` can refer to values from `define_parameters()`, and are thus accesible to PSA / DSA.
+  * `init` and `inflow` can refer to values from `define_parameters()`, and are thus accessible to PSA / DSA.
   * `inflow` can be time-varying.
 
 ### Breaking changes
@@ -83,7 +83,7 @@ Package heemod.” _ArXiv e-prints_. R package version
   
 ### Bugfixes
 
-  * `heemod::discount()` now produces restults similar to `discount()`.
+  * `heemod::discount()` now produces results similar to `discount()`.
 
 ### Backend changes
 
@@ -96,7 +96,7 @@ Package heemod.” _ArXiv e-prints_. R package version
 
   * `strategy` becomes a reserved parameter name.
   * Counting method `"half-cycle"` is deprecated.
-  * `resample` arguement in `run_psa()` renamed to `psa`.
+  * `resample` argument in `run_psa()` renamed to `psa`.
   * Probability distributions for PSA were renamed, see `?distributions`.
   * `state_cycle` renamed to `state_time`, added a `model_time` alias to `markov_cycle`.
   * The `inflow` argument for budget impact analysis is specified with `define_inflow()`.
@@ -109,12 +109,12 @@ Package heemod.” _ArXiv e-prints_. R package version
     * Or fitted on data by the `flexsurv` package.
   * Support for partitioned survival models with `define_part_surv()`.
   * Plot EVPI.
-  * Export PSA files for Sheffield Accelerated Value of Information sofware.
+  * Export PSA files for Sheffield Accelerated Value of Information software.
   * Individuals can enter the model after the beginning with the `inflow` argument in `run_model()` (mainly for budget impact analysis).
   * Strategy name can be used to define values with `dispatch_strategy()` or using the `strategy` name (vignettes *homogeneous* and *probabilistic* have been updated to use this feature).
   * Beta and triangle distributions for PSA.
   * Custom distributions can be defined.
-  * Covariance analysis on strategy differences, more options for `gam()` fitting.
+  * Co-variance analysis on strategy differences, more options for `gam()` fitting.
 
 ### Other features
 
@@ -132,14 +132,14 @@ Package heemod.” _ArXiv e-prints_. R package version
   
 ### Bugfixes
 
-  * Fixed sevral bugs that would return incorrect efficiency frontiers in some situations, or would return duplicated strategy names in some edge cases (thanks to [Vince Daniels](https://github.com/daniels4321)).
+  * Fixed several bugs that would return incorrect efficiency frontiers in some situations, or would return duplicated strategy names in some edge cases (thanks to [Vince Daniels](https://github.com/daniels4321)).
   * Fixed a failure of tabular input when a column could be read as all numeric.
   * Character variables from `newdata` were mistakenly parsed as lazy expressions.
   * `newdata` now handles factor variables.
   * `state_cycle_limit` was not passed to PSA, DSA, or updating.
   * PSA and DSA tabular files were not saved.
   
-### Acknowledments
+### Acknowledgments
 
   * Thanks to [Matthew Wiener](https://github.com/MattWiener), especially for the survival analysis code.
   
@@ -147,7 +147,7 @@ Package heemod.” _ArXiv e-prints_. R package version
 
 ### Bugfixes
 
-  * Fixed an error resulting in incorrect covariance analysis results when relations between values and parameters were negative.
+  * Fixed an error resulting in incorrect co-variance analysis results when relations between values and parameters were negative.
 
 ## heemod 0.7.0
 
@@ -157,7 +157,7 @@ Package heemod.” _ArXiv e-prints_. R package version
 
 ### New features
 
-  * Added covariance analysis for PSA with `type = "cov"` plot.
+  * Added co-variance analysis for PSA with `type = "cov"` plot.
   * All plotting functions can now represent multiple strategies with facets.
   * CECA plotted on a log scale by default.
   * Black & white plots for publications with the `bw` plot option.
@@ -167,9 +167,9 @@ Package heemod.” _ArXiv e-prints_. R package version
 
   * Important object structure change (from attributes to lists).
   * More systematic use of getter functions.
-  * More standarized processing of model objects.
+  * More standardized processing of model objects.
   * Unit tests rely less on printed results.
-  * Using new nomenclature in backend functions (`model`=>`strategy`).
+  * Using new nomenclature in back-end functions (`model`=>`strategy`).
   * `base_strategy` divided in 3 concepts: `central_strategy`, `root_strategy`, `noncomparable_strategy`.
   * Non-heemod versions of `discount()` throw warnings.
 
@@ -178,7 +178,7 @@ Package heemod.” _ArXiv e-prints_. R package version
 ### Breaking changes
 
   * Base model cannot be specified anymore: it is always the least costly model.
-  * Renamed arguement `transition_matrix` => `transition` in `define_strategy()`.
+  * Renamed argument `transition_matrix` => `transition` in `define_strategy()`.
 
 ### New features
 
@@ -216,8 +216,8 @@ Package heemod.” _ArXiv e-prints_. R package version
 
 ### New features
 
-  * Values and probabilities can depend on state time with `state_cycle`, allowing to reproduce the results of microsimulations.
-  * `define_sensitivity()` now accepts any expression as input, and can call references to model parameteres.
+  * Values and probabilities can depend on state time with `state_cycle`, allowing to reproduce the results of micro-simulations.
+  * `define_sensitivity()` now accepts any expression as input, and can call references to model parameters.
   * Discount rates can now be specified as parameters (allows for rates to be modified in DSA & PSA).
   * Any state value can be plotted.
   * Additional output: csv files for many of the tabular results.
@@ -243,7 +243,7 @@ Package heemod.” _ArXiv e-prints_. R package version
   * Objects can be converted to the `R` code to generate them (same idea as `dput()`, but easier to read).
   * New options `heemod.verbose` and `heemod.memotime`.
   * More informative messages, especially in verbose mode.
-  * Use WHO data cached localy in case of connection problems.
+  * Use WHO data cached locally in case of connection problems.
   * New functions: `get_counts()` and `get_init()` to get state membership counts.
   * Smart sex code conversion for `get_who_mr()`.
 
@@ -253,7 +253,7 @@ Package heemod.” _ArXiv e-prints_. R package version
   
 ### Backend changes
 
-  * `eval_model_newdata()`, the function behind resampling and sensitivity analysis now returns list-variables.
+  * `eval_model_newdata()`, the function behind re-sampling and sensitivity analysis now returns list-variables.
   
 ### Acknowledments
 
@@ -320,4 +320,4 @@ Package heemod.” _ArXiv e-prints_. R package version
 
 ## heemod 0.1.0
 
-  * Intial CRAN submission.
+  * Initial CRAN submission.

@@ -4,8 +4,8 @@
 \alias{expand_if_necessary}
 \title{Expand States and Transition}
 \usage{
-expand_if_necessary(strategy, parameters, cycles, init, method, expand_limit,
-  inflow, strategy_name)
+expand_if_necessary(strategy, parameters, cycles, init, method,
+  expand_limit, inflow, strategy_name)
 }
 \arguments{
 \item{strategy}{An \code{uneval_strategy} object.}
@@ -36,9 +36,39 @@ Expanded states, transitions, input and inflow
 unchanged).
 }
 \description{
-Expand States and Transition
+Given an unevaluated strategy, an initial number of
+individual and a number of cycle to compute, returns the
+evaluated version of the objects and the count of
+individual per state per model cycle.
 }
 \details{
 \code{init} need not be integer. E.g. \code{c(A = 1, B = 0.5, C = 0.1, ...)}.
+}
+\examples{
+param <- define_parameters(
+  a = markov_cycle + 1 * 2
+)
+
+mat <- define_transition(
+  1-1/a, 1/a,
+  .1,    .9
+)
+
+mod <- define_strategy(
+  transition = mat,
+  A = define_state(cost = 10),
+  B = define_state(cost = 2)
+)
+
+heemod:::eval_strategy(
+  strategy = mod,
+  parameters = param,
+  init = define_init(A = 10, B = 5),
+  cycles = 5,
+  method = "end",
+  inflow = define_inflow(A = 0, B = 0),
+  strategy_name = "A",
+  expand_limit = c(A = 5, B = 5)
+)
 }
 \keyword{internal}

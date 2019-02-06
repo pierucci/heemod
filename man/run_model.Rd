@@ -5,14 +5,14 @@
 \alias{run_model_}
 \title{Run Markov Model}
 \usage{
-run_model(..., parameters = define_parameters(), init = c(1000L, rep(0L,
-  get_state_number(get_states(list(...)[[1]])) - 1)), cycles = 1,
+run_model(..., parameters = define_parameters(), init = c(1000L,
+  rep(0L, get_state_number(get_states(list(...)[[1]])) - 1)), cycles = 1,
   method = "life-table", cost = NULL, effect = NULL,
   state_time_limit = NULL, central_strategy = NULL, inflow = rep(0L,
   get_state_number(get_states(list(...)[[1]]))))
 
-run_model_(uneval_strategy_list, parameters, init, cycles, method, cost, effect,
-  state_time_limit, central_strategy, inflow)
+run_model_(uneval_strategy_list, parameters, init, cycles, method, cost,
+  effect, state_time_limit, central_strategy, inflow)
 }
 \arguments{
 \item{...}{One or more \code{uneval_model} object.}

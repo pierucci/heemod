@@ -1,9 +1,9 @@
 Package: heemod
 Title: Markov Models for Health Economic Evaluations
-Version: 0.9.2.9001
+Version: 0.9.3
 Authors@R: c(
-    person("Antoine", "Filipovic-Pierucci", email = "pierucci@gmail.com", role = c("aut", "cre")),
-    person("Kevin", "Zarca", role = "aut"),
+    person("Kevin", "Zarca", email = "kevin.zarca@gmail.com", role = c("aut", "cre")),
+    person("Antoine", "Filipovic-Pierucci", role = "aut"),
     person("Matthew", "Wiener", role = "ctb"),
     person("Zdenek", "Kabat", role = "ctb"),
     person("Vojtech", "Filipec", role = "ctb"),
@@ -30,7 +30,7 @@ Imports:
 License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 Suggests:
     BCEA,
     diagram,

@@ -12,8 +12,6 @@
 \alias{triangle}
 \alias{poisson}
 \alias{define_distribution}
-\alias{beta}
-\alias{triangle}
 \alias{use_distribution}
 \title{Probability Density Functions for Probabilistic
 Uncertainty Analysis}

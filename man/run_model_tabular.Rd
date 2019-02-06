@@ -4,8 +4,9 @@
 \alias{run_model_tabular}
 \title{Run Analyses From Files}
 \usage{
-run_model_tabular(location, reference = "REFERENCE.csv", run_dsa = TRUE,
-  run_psa = TRUE, run_demo = TRUE, save = FALSE, overwrite = FALSE)
+run_model_tabular(location, reference = "REFERENCE.csv",
+  run_dsa = TRUE, run_psa = TRUE, run_demo = TRUE, save = FALSE,
+  overwrite = FALSE)
 }
 \arguments{
 \item{location}{Directory where the files are located.}

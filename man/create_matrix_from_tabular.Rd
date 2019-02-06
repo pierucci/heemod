@@ -4,7 +4,8 @@
 \alias{create_matrix_from_tabular}
 \title{Create a Transition Matrix From Tabular Input}
 \usage{
-create_matrix_from_tabular(trans_probs, state_names, df_env = globalenv())
+create_matrix_from_tabular(trans_probs, state_names,
+  df_env = globalenv())
 }
 \arguments{
 \item{trans_probs}{Result for one model of

@@ -4,8 +4,8 @@
 \alias{summary.surv_shift}
 \title{Summarize surv_shift objects}
 \usage{
-\method{summary}{surv_shift}(object, summary_type = c("plot", "standard"),
-  ...)
+\method{summary}{surv_shift}(object, summary_type = c("plot",
+  "standard"), ...)
 }
 \arguments{
 \item{object}{a \code{surv_shift} object}
