@@ -500,8 +500,8 @@ test_that(
     
     write.csv(
       ref_edit,
-      paste(system.file("tabular/test", package = "heemod"),
-            "edited_ref.csv", sep = "/"),
+      file.path(system.file("tabular/test", package = "heemod"),
+            "edited_ref.csv"),
       row.names = FALSE
     )
     

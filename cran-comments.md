@@ -1,3 +1,11 @@
+## Resubmission
+This is a resubmission. In this version I have:
+
+* Corrected the previous errors found in Check Results
+
+* Added citations in DESCRIPTION
+
+
 ## Test environments
 * local OS X install, R 3.5.2
 * ubuntu 14.04 (on travis-ci), R 3.5.2

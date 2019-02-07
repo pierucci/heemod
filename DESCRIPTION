@@ -11,12 +11,13 @@ Authors@R: c(
 	  person("Yonatan", "Carranza Alarcon", role=c("ctb")),
 	  person("Vince", "Daniels", role=c("ctb"))
     )
-Description: An implementation of the modelling and
-    reporting features described in reference textbooks
-    and guidelines: deterministic and probabilistic
-    sensitivity analysis, heterogeneity analysis, time
-    dependency on state-time and model-time (semi-Markov
-    and non-homogeneous Markov models), etc.
+Description: An implementation of the modelling and reporting features described 
+    in reference textbook and guidelines (Briggs, Andrew, et al. Decision 
+    Modelling for Health Economic Evaluation. Oxford Univ. Press, 2011;
+    Siebert, U. et al. State-Transition Modeling. Medical Decision Making 
+    32, 690-700 (2012).): deterministic and probabilistic sensitivity analysis, 
+    heterogeneity analysis, time dependency on state-time and model-time 
+    (semi-Markov and non-homogeneous Markov models), etc.
 Depends: R (>= 3.3.0)
 Imports:
     dplyr (>= 0.7.2),
