@@ -22,6 +22,11 @@ eval_state_list <- function(x, parameters) {
     dplyr::mutate_(parameters, .dots = x)[c("markov_cycle",
                                             names(x))]
   }
+  e_starting_values <- unlist(
+    eval_starting_values(
+      x = strategy$starting_values,
+      parameters[1, ])
+  )
   
   res <- lapply(x, f)
   
@@ -39,7 +44,7 @@ get_state_value_names.eval_state_list <- function(x){
 #' discounting when the argument is a constant.
 #' 
 #' The hack consists in replacing calls to
-#' `discount(x)` by `discount(x * rep(1, n()))` to
+#' `discount(x)` by `discount(x * rep(1, dplyr::n()))` to
 #' ensure `x` is recycled to the correct length.
 #' 
 #' @param .dots A state object.
@@ -54,7 +59,7 @@ discount_hack <- function(.dots) {
     } else if (is.call(x)) {
       if (discount_check(x[[1]], env)) {
         x <- pryr::standardise_call(x)
-        x$x <- substitute((.x * rep(x = 1, times = n())), list(.x = x$x))
+        x$x <- substitute((.x * rep(x = 1, times = dplyr::n())), list(.x = x$x))
       }
       as.call(lapply(x, f, env = env))
     } else if (is.pairlist(x)) {

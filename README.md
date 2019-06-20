@@ -28,8 +28,6 @@ Package heemod.”](https://arxiv.org/abs/1702.03252) _ArXiv e-prints_. R packag
 ## Features
 
 Main features:
-
-  * Graphical user interface with `shiny`.
   * Accounting for time-dependency:
     * For both model time and state time.
     * Time-varying transition probabilities.

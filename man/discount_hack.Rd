@@ -18,7 +18,7 @@ discounting when the argument is a constant.
 }
 \details{
 The hack consists in replacing calls to
-\code{discount(x)} by \code{discount(x * rep(1, n()))} to
+\code{discount(x)} by \code{discount(x * rep(1, dplyr::n()))} to
 ensure \code{x} is recycled to the correct length.
 }
 \keyword{internal}

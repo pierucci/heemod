@@ -55,7 +55,7 @@ eval_strategy <- function(strategy, parameters, cycles,
   uneval_transition <- expanded$uneval_transition
   init <- expanded$init
   inflow <- expanded$inflow
-  starting_values <- expanded$starting_values
+  #starting_values <- expanded$starting_values
   n_indiv <- expanded$n_indiv
   parameters <- expanded$parameters
   actually_expanded_something <- expanded$actually_expanded_something

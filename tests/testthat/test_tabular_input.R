@@ -1,9 +1,10 @@
 context("Test tabular input")
 
-state_spec_file <- system.file(
-  "tabular/test",
-  "THR_test_states.csv",
-  package = "heemod"
+testdir <- file.path(tempdir(), "tabular", "test")
+
+state_spec_file <- file.path(
+  testdir,
+  "THR_test_states.csv"
 ) %>% 
   heemod:::read_file()
 
@@ -107,10 +108,8 @@ test_that(
       define_psa(p_AA ~binomial(.7, 1000), 
                  p_AB + p_AC + p_AD ~ multinomial(202, 67, 10))
     from_file <-
-      create_parameters_from_tabular(read_file(system.file(
-        "tabular/test",
-        "example_multinom_params.csv",
-        package = "heemod"
+      create_parameters_from_tabular(read_file(file.path(testdir, 
+        "example_multinom_params.csv"
       )))
     
     expect_identical(
@@ -123,10 +122,8 @@ test_that(
     )
     
     expect_error(
-      create_parameters_from_tabular(read_file(system.file(
-        "tabular/test",
-        "example_multinom_params_dup_name.csv",
-        package = "heemod"
+      create_parameters_from_tabular(read_file(file.path(testdir, 
+        "example_multinom_params_dup_name.csv"
       ))),
       "Some variables appear as individual parameters and in a multinomial"
     )
@@ -146,27 +143,27 @@ test_that(
   "Bad spec file input is caught.", {
     expect_error(
       heemod:::gather_model_info(
-        system.file("tabular/test", package = "heemod"),
+        testdir,
         "bad_REFERENCE.csv"),
       "Duplicated values in reference file 'data' column: state."
     )
     expect_error(
       heemod:::gather_model_info(
-        system.file("tabular/test/test_diff_mod_name", package = "heemod"),
+        file.path(testdir, "test_diff_mod_name"),
         "REFERENCE.csv"),
       "newzzz"
     )
     expect_error(
       capture.output(
         heemod:::gather_model_info(
-          system.file("tabular/test", package = "heemod"),
+          testdir,
           "REFERENCE_1probmissing.csv")
       ),
       "Undefined probabilities"
     )
     expect_error(
       heemod:::gather_model_info(
-        system.file("tabular/test", package = "heemod"),
+        testdir,
         "REFERENCE_missingfunctions.csv"),
       "'source' directory missing: ",
       fixed = TRUE
@@ -456,7 +453,7 @@ test_that(
     
     expect_error(
       heemod:::read_file(
-        system.file("tabular/test/wrong_ext.tab", package = "heemod")
+        file.path(testdir, "wrong_ext.tab")
       ),
       "file names must be for csv, xls, or xlsx"
     )
@@ -472,13 +469,13 @@ test_that(
     
     expect_warning(
       run_model_tabular(
-        system.file("tabular/test/test_no_overwrite", package = "heemod"),
+        file.path(testdir, "test_no_overwrite"),
         save = TRUE, overwrite = FALSE, run_psa = FALSE, run_demo = FALSE
       )
     )
     expect_warning(
       run_model_tabular(
-        system.file("tabular/test/test_no_output_dir", package = "heemod"),
+        file.path(testdir, "test_no_output_dir"),
         save = TRUE, overwrite = TRUE, run_psa = FALSE, run_demo = FALSE
       )
     )
@@ -489,26 +486,26 @@ test_that(
   "absolute path works", {
     
     ref_edit <- heemod:::read_file(
-      system.file("tabular/thr/REFERENCE.csv", package = "heemod")
+      file.path(
+        tempdir(), "tabular", "thr", "REFERENCE.csv")
     )
     ref_edit$absolute_path <- c(rep(1, nrow(ref_edit) - 1), NA)
     for (i in seq_len(nrow(ref_edit) - 1))
       ref_edit$file[i] <-
-      system.file(sprintf(
-        "tabular/thr/%s", ref_edit$file[i]),
-        package = "heemod")
+      file.path(tempdir(),
+        "tabular", "thr",
+        ref_edit$file[i])
     
     write.csv(
       ref_edit,
-      file.path(system.file("tabular/test", package = "heemod"),
+      file.path(testdir,
             "edited_ref.csv"),
       row.names = FALSE
     )
-    
     op <- options(heemod.verbose = TRUE)
     expect_message(
       capture.output(heemod:::gather_model_info(
-        system.file("tabular/test", package = "heemod"),
+        testdir,
         "edited_ref.csv"
       )),
       "Using absolute path for state, tm, parameters, demographics, data, output"
@@ -581,9 +578,9 @@ test_that(
   }
 )
 
-THRmulti_prob_file_1 <- system.file("tabular/test", "THR_test_transition_probs.csv", package = "heemod")
-THRmulti_prob_file_2 <- system.file("tabular/test", "THR_test_transition_probs_2.csv", package = "heemod")
-THRmulti_prob_file_bad <- system.file("tabular/test", "THR_test_transition_probs_bad.csv", package = "heemod")
+THRmulti_prob_file_1 <- file.path(testdir, "THR_test_transition_probs.csv")
+THRmulti_prob_file_2 <- file.path(testdir, "THR_test_transition_probs_2.csv")
+THRmulti_prob_file_bad <- file.path(testdir, "THR_test_transition_probs_bad.csv")
 
 
 THRmulti_prob <- structure(list(
@@ -745,15 +742,15 @@ test_that(
   }
 )
 
-tCSV <- heemod:::read_file(system.file(
-  "tabular/test", "testing_CSV_file_with_comment_col.csv",
-  package = "heemod"))
-tXLS <- heemod:::read_file(system.file(
-  "tabular/test", "testing_XLS_file_with_comment_col.xls",
-  package = "heemod"))
-tXLSX <- heemod:::read_file(system.file(
-  "tabular/test", "testing_XLSX_file_with_comment_col.xlsx",
-  package = "heemod"))
+tCSV <- heemod:::read_file(file.path(testdir, 
+  "testing_CSV_file_with_comment_col.csv"
+  ))
+tXLS <- heemod:::read_file(file.path(testdir, 
+  "testing_XLS_file_with_comment_col.xls"
+  ))
+tXLSX <- heemod:::read_file(file.path(testdir, 
+"testing_XLSX_file_with_comment_col.xlsx"
+  ))
 
 test_that(
   "Columns that start with '.comment' in their header are ignored.", {
@@ -773,7 +770,7 @@ test_that(
 test_that(
   "Running model from files works.", {
     result <- run_model_tabular(
-      location = system.file("tabular/thr", package = "heemod"),
+      location = file.path(tempdir(), "tabular", "thr"),
       run_psa = TRUE, run_demo = TRUE,
       save = TRUE, overwrite = TRUE
     )

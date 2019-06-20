@@ -7,5 +7,4 @@ library(heemod)
 ##   https://github.com/hadley/testthat/issues/144
 
 Sys.setenv("R_TESTS" = "")
-
 test_check("heemod")
