@@ -30,7 +30,7 @@ define_state <- function(...) {
 
 #' @export
 #' @rdname define_state
-define_state_ <- function(.dots, starting_values) {
+define_state_ <- function(.dots) {
   check_names(names(.dots))
   structure(.dots, 
             class = c("state", class(.dots)))

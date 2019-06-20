@@ -8,7 +8,7 @@
 \usage{
 define_state(...)
 
-define_state_(.dots)
+define_state_(.dots, starting_values)
 
 \method{modify}{state}(.OBJECT, ...)
 }
