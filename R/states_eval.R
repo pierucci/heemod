@@ -22,12 +22,7 @@ eval_state_list <- function(x, parameters) {
     dplyr::mutate_(parameters, .dots = x)[c("markov_cycle",
                                             names(x))]
   }
-  e_starting_values <- unlist(
-    eval_starting_values(
-      x = strategy$starting_values,
-      parameters[1, ])
-  )
-  
+
   res <- lapply(x, f)
   
   structure(res,
