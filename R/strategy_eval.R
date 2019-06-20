@@ -72,9 +72,7 @@ eval_strategy <- function(strategy, parameters, cycles,
   ) %>% 
     correct_counts(method = method)
   
-  values <- compute_values(states, count_table)
-  values[1, names(starting_values)] <- values[1, names(starting_values)] +
-    starting_values * n_indiv
+  values <- compute_values(states, count_table, starting_values)
   
   if (actually_expanded_something) {
     for (st in expanded$expanded_states) {
@@ -212,7 +210,7 @@ compute_counts.eval_matrix <- function(x, init, inflow, ...) {
 #' @keywords internal
 ## slightly harder to read than the original version, but much faster
 ## identical results to within a little bit of numerical noise
-compute_values <- function(states, counts) {
+compute_values <- function(states, counts, starting_values) {
   states_names <- get_state_names(states)
   state_values_names <- get_state_value_names(states)
   num_cycles <- nrow(counts)
@@ -240,9 +238,15 @@ compute_values <- function(states, counts) {
   vals_x_counts <- state_val_array * counts_mat
   wtd_sums <- rowSums(vals_x_counts, dims = 2)
   res <- data.frame(markov_cycle = states[[1]]$markov_cycle, wtd_sums)
-  names(res)[-1] <- state_values_names
 
+  names(res)[-1] <- state_values_names
+  
+  n_indiv <- sum(counts)
+
+  res[1, names(starting_values)] <- res[1, names(starting_values)] +
+    starting_values * n_indiv
   res
+  
 }
 
 #' Expand States and Transition

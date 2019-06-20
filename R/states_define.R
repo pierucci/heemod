@@ -23,14 +23,14 @@
 #' 
 #' @example inst/examples/example_define_state.R
 #'   
-define_state <- function(...) {
+define_state <- function(..., starting_values = define_starting_values()) {
   .dots <- lazyeval::lazy_dots(...)
-  define_state_(.dots)
+  define_state_(.dots, starting_values = starting_values)
 }
 
 #' @export
 #' @rdname define_state
-define_state_ <- function(.dots) {
+define_state_ <- function(.dots, starting_values) {
   check_names(names(.dots))
   structure(.dots, 
             class = c("state", class(.dots)))
