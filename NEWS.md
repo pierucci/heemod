@@ -1,4 +1,8 @@
-## heemod 0.9.4.9000
+## heemod 0.10.0
+
+### New features
+
+  * `define_state()` gains the `starting_values` argument (same as `define_strategy()`).
 
 ## heemod 0.9.4
 

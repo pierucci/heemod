@@ -10,8 +10,10 @@ test_that(
       x = 987,
       y = 1726
     )
+    expect_equal(names(s1), c(".dots", "starting_values"))
+    expect_equal(names(s1), names(s2))
     expect_output(
-      str(s1),
+      str(s1$.dots),
       'List of 2
  $ x:List of 2
   ..$ expr: num 234',
@@ -61,6 +63,16 @@ y = 123',
       get_state_value_names(s1),
       c("x", "y")
     )
+    expect_output(print(s2 %>%
+                          modify(starting_values = define_starting_values(x = 100))),
+                  "A state with 2 values and 1 starting value.
+
+x = 987
+y = 1726
+Start
+x = 100", fixed = TRUE)
+    expect_error(s2 %>%
+                   modify(starting_values = list(x = 100)), "Incorrect length", fixed = TRUE)
   }
 )
 
@@ -87,8 +99,9 @@ test_that(
       str(sl1),
       "List of 2
  $ X1:List of 2
-  ..$ x:List of 2
-  .. ..$ expr: num 234",
+  ..$ .dots          :List of 2
+  .. ..$ x:List of 2
+  .. .. ..$ expr: num 234",
       fixed = TRUE
     )
     expect_output(
@@ -109,8 +122,9 @@ y"
       str(sl2),
       "List of 2
  $ A:List of 2
-  ..$ x:List of 2
-  .. ..$ expr: num 234",
+  ..$ .dots          :List of 2
+  .. ..$ x:List of 2
+  .. .. ..$ expr: num 234",
       fixed = TRUE
     )
     expect_output(
@@ -122,8 +136,9 @@ y"
       ),
       "List of 2
  $ X1:List of 2
-  ..$ x:List of 2
-  .. ..$ expr: num 987",
+  ..$ .dots          :List of 2
+  .. ..$ x:List of 2
+  .. .. ..$ expr: num 987",
       fixed = TRUE
     )
     
@@ -136,8 +151,9 @@ y"
       ),
       "List of 3
  $ X1:List of 2
-  ..$ x:List of 2
-  .. ..$ expr: num 234",
+  ..$ .dots          :List of 2
+  .. ..$ x:List of 2
+  .. .. ..$ expr: num 234",
       fixed = TRUE
     )
     expect_error(

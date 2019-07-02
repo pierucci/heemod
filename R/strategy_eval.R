@@ -235,16 +235,12 @@ compute_values <- function(states, counts, starting_values) {
   counts_mat <- aperm(counts_mat, c(1, 3, 2))
 
   # multiply, sum, and add markov_cycle back in
-  vals_x_counts <- state_val_array * counts_mat
+  vals_x_counts <- (state_val_array +  array(unlist(starting_values), dim = dims_array_1) )* counts_mat 
   wtd_sums <- rowSums(vals_x_counts, dims = 2)
   res <- data.frame(markov_cycle = states[[1]]$markov_cycle, wtd_sums)
 
   names(res)[-1] <- state_values_names
   
-  n_indiv <- sum(counts)
-
-  res[1, names(starting_values)] <- res[1, names(starting_values)] +
-    starting_values * n_indiv
   res
   
 }
@@ -318,7 +314,6 @@ expand_if_necessary <- function(strategy, parameters,
     
     for (st in to_expand) {
       init <- expand_state(init, state_name = st, cycles = expand_limit[st])
-      
       inflow <- expand_state(inflow, state_name = st, cycles = expand_limit[st])
     }
     
@@ -355,10 +350,20 @@ expand_if_necessary <- function(strategy, parameters,
   
   e_init <- unlist(eval_init(x = init, parameters[1,]))
   e_inflow <- eval_inflow(x = inflow, parameters)
-  e_starting_values <- unlist(
+  
+  e_starting_values_strat <- unlist(
     eval_starting_values(
       x = strategy$starting_values,
-      parameters[1, ]))
+      parameters[1, ])
+  )
+  e_starting_values <- 
+    lapply(i_uneval_states, function(x){
+      unlist(eval_starting_values(
+        x = x$starting_values,
+        parameters[1, ]
+      )) + e_starting_values_strat
+    })
+
   n_indiv <- sum(e_init, unlist(e_inflow))
   
   if (any(is.na(e_init)) || any(is.na(e_inflow)) || any(is.na(e_starting_values))) {

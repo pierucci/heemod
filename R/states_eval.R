@@ -13,7 +13,7 @@
 eval_state_list <- function(x, parameters) {
   
   f <- function(x) {
-    x <- discount_hack(x)
+    x <- discount_hack(x$.dots)
     
     # update calls to dispatch_strategy()
     x <- dispatch_strategy_hack(x)

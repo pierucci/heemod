@@ -6,9 +6,9 @@
 \alias{modify.state}
 \title{Define a Markov Model State}
 \usage{
-define_state(...)
+define_state(..., starting_values = define_starting_values())
 
-define_state_(.dots)
+define_state_(x)
 
 \method{modify}{state}(.OBJECT, ...)
 }
@@ -16,7 +16,10 @@ define_state_(.dots)
 \item{...}{Name-value pairs of expressions defining state
 values.}
 
-\item{.dots}{Used to work around non-standard evaluation.}
+\item{starting_values}{Optional starting values defined
+with \code{\link[=define_starting_values]{define_starting_values()}}.}
+
+\item{x}{Used to work around non-standard evaluation.}
 
 \item{.OBJECT}{An object of class \code{state}.}
 }

@@ -1,13 +1,30 @@
 #' @export
 print.state <- function(x, ...) {
+  val <- x$.dots
+  start <- x$starting_values
+  nb_sv <- lapply(start, function(x){
+    x$expr != 0
+  }) %>% 
+    unlist() %>%
+    sum()
+  
+  phrase_start <- ifelse(nb_sv > 0, sprintf(" and %i starting value%s", nb_sv, plur(nb_sv)), "")
   cat(sprintf(
-    "A state with %i value%s.\n\n",
-    length(x), plur(length(x))))
+    "A state with %i value%s%s.\n\n",
+    length(val), plur(length(val)),
+    phrase_start))
   
-  nv <- names(x)
-  ex <- lapply(x, function(y) paste(deparse(y$expr), collapse = "\n"))
+  nv <- names(val)
+  ex <- lapply(val, function(y) paste(deparse(y$expr), collapse = "\n"))
   
-  cat(paste(nv, ex, sep = " = "), sep = "\n") 
+  cat(paste(nv, ex, sep = " = "), sep = "\n")
+  if (nb_sv > 0){
+    nv <- names(start)
+    ex <- lapply(seq_along(start), function(i) {
+      if (start[[i]]$expr > 0) paste(names(start)[i], deparse(start[[i]]$expr), collapse = "\n", sep = " = ")
+    })
+    cat("Start", paste(ex[lengths(ex) != 0]), sep = "\n")
+  }
 }
 
 #' @export

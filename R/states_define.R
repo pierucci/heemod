@@ -14,8 +14,10 @@
 #' 
 #' @param ... Name-value pairs of expressions defining state
 #'   values.
+#' @param starting_values Optional starting values defined
+#'   with [define_starting_values()].
 #' @param .OBJECT An object of class `state`.
-#' @param .dots Used to work around non-standard evaluation.
+#' @param x Used to work around non-standard evaluation.
 #'   
 #' @return An object of class `state` (actually a named
 #'   list of `lazy` expressions).
@@ -25,14 +27,21 @@
 #'   
 define_state <- function(..., starting_values = define_starting_values()) {
   .dots <- lazyeval::lazy_dots(...)
-  define_state_(.dots, starting_values = starting_values)
+  define_state_(list(.dots = .dots, starting_values = starting_values))
 }
 
 #' @export
 #' @rdname define_state
-define_state_ <- function(.dots, starting_values) {
+define_state_ <- function(x) {
+  .dots <- x$.dots
   check_names(names(.dots))
-  structure(.dots, 
+  starting_values <- check_starting_values(
+    x = x$starting_values,
+    ref = names(.dots)
+  )
+  structure(list(
+            .dots = .dots, 
+            starting_values = starting_values),
             class = c("state", class(.dots)))
 }
 
@@ -50,14 +59,26 @@ modify_.state <- function(.OBJECT, .dots) {
   # message d'erreur informatif quand valeurs pas dans
   # bon ordre
   
-  if (! all(names(.dots) %in% names(.OBJECT))) {
+  if ("starting_values" %in% names(.dots)) {
+    starting_values <- check_starting_values(
+      x = lazyeval::lazy_eval(.dots$starting_values),
+      ref = names(.OBJECT$.dots)
+    )
+    .OBJECT <- utils::modifyList(.OBJECT, list(starting_values = starting_values))
+    .dots <- utils::modifyList(.dots, list(starting_values = NULL))
+  }
+  
+  if (!length(.dots)){
+    return(.OBJECT)
+  }
+  if (! all(names(.dots) %in% names(.OBJECT$.dots))) {
     stop(sprintf(
       "The following state values are not defined: %s.",
-      names(.dots)[names(.dots) %in% names(.OBJECT)]
+      names(.dots)[names(.dots) %in% names(.OBJECT$.dots)]
     ))
   }
   
-  utils::modifyList(.OBJECT, .dots)
+  utils::modifyList(.OBJECT$.dots, .dots)
 }
 
 #' Define Markov Model State List
@@ -107,36 +128,41 @@ modify_.state <- function(.OBJECT, .dots) {
 #' @keywords internal
 define_state_list <- function(...) {
   .dots <- list(...)
-  
   define_state_list_(.dots)
 }
 
 #' @rdname define_state_list
 define_state_list_ <- function(.dots) {
-  
-  state_names <- names(.dots)
+  # states <- lapply(.dots, function(x){
+  #   structure(
+  #     x$.dots,
+  #     class = class(x)
+  #   )
+  # })
+  states <- .dots
+  state_names <- names(states)
   
   if (is.null(state_names)) {
     message("No named state -> generating names.")
-    state_names <- LETTERS[seq_along(.dots)]
-    names(.dots) <- state_names
+    state_names <- LETTERS[seq_along(states)]
+    names(states) <- state_names
   }
   
   if (any(state_names == "")) {
     warning("Not all states are named -> generating names.")
-    state_names <- LETTERS[seq_along(.dots)]
-    names(.dots) <- state_names
+    state_names <- LETTERS[seq_along(states)]
+    names(states) <- state_names
   }
   
-  if (any(duplicated(names(.dots)))) {
+  if (any(duplicated(names(states)))) {
     stop("Some state names are duplicated.")
   }
   
-  if (! all(unlist(lapply(.dots,
+  if (! all(unlist(lapply(states,
                           function(x) "state" %in% class(x))))) {
     
-    .x <- names(.dots)[! unlist(lapply(
-      .dots,
+    .x <- names(states)[! unlist(lapply(
+      states,
       function(x) "state" %in% class(x)))]
     
     stop(sprintf(
@@ -146,11 +172,10 @@ define_state_list_ <- function(.dots) {
     ))
   }
   
-  check_states(.dots)
-  
+  check_states(states)
   structure(
-    .dots,
-    class = c("uneval_state_list", class(.dots))
+    states,
+    class = c("uneval_state_list", class(states))
   )
 }
 
@@ -180,11 +205,11 @@ modify_.uneval_state_list <- function(.OBJECT, .dots) {
 #'   
 #' @keywords internal
 check_states <- function(x){
-  if (! list_all_same(lapply(x, length))) {
+  if (! list_all_same(lapply(x, function(y) length(y$.dots)))) {
     stop("Number of state values differ between states.")
   }
   
-  if (! list_all_same(lapply(x, function(y) sort(names(y))))) {
+  if (! list_all_same(lapply(x, function(y) sort(names(y$.dots))))) {
     stop("State value names differ between states.")
   }
   NULL
@@ -221,11 +246,11 @@ get_state_value_names <- function(x){
 }
 
 get_state_value_names.uneval_state_list <- function(x) {
-  names(x[[1]])
+  names(x[[1]][[1]])
 }
 
 get_state_value_names.state <- function(x){
-  names(x)
+  names(x[[1]])
 }
 
 #' Get State Names

@@ -19,7 +19,7 @@ has_state_time.uneval_state_list <- function(x, ...) {
 
 #' @export
 has_state_time.state <- function(x, ...) {
-  any(unlist(lapply(x, function(y) "state_time" %in% all.vars(y$expr))))
+  any(unlist(lapply(x$.dots, function(y) "state_time" %in% all.vars(y$expr))))
 }
 
 substitute_dots <- function(.dots, .values) {
@@ -105,7 +105,16 @@ expand_state.uneval_state_list <- function(x, state_name, cycles) {
   id <- seq_len(cycles + 1)
   res <- lapply(
     id,
-    function(x) substitute_dots(st, list(state_time = x))
+    function(x) {
+      list(
+        .dots = substitute_dots(st$.dots, list(state_time = x)),
+        starting_values <- if (x == 1) {
+          substitute_dots(st$starting_values, list(state_time = x))
+        } else {
+          list()
+        }
+      )
+    }
   )
   names(res) <- sprintf(".%s_%i", state_name, id)
   
@@ -174,7 +183,6 @@ interpolate <- function(x, ...) {
 #' @export
 #' @rdname interpolate
 interpolate.default <- function(x, more = NULL, ...) {
-  
   res <- NULL
   
   for (i in seq_along(x)) {
@@ -211,7 +219,12 @@ interpolate.uneval_matrix <- function(x, ...) {
 #' @export
 #' @rdname interpolate
 interpolate.state <- function(x, ...) {
-  res <- interpolate.default(x, ...)
+  res <- structure(
+    list(
+    .dots = interpolate.default(x$.dots, ...),
+    starting_values = x$starting_values
+    )
+  )
   define_state_(res)
 }
 
@@ -225,6 +238,9 @@ interpolate.part_surv <- function(x, ...) {
 #' @rdname interpolate
 interpolate.uneval_state_list <- function(x, ...) {
   for (i in seq_along(x)) {
+    # y <- structure(x[[i]]$.dots,
+    #                class = class(x[[i]]))
+    #x[[i]] <- interpolate(y, ...)
     x[[i]] <- interpolate(x[[i]], ...)
   }
   x

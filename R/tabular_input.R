@@ -481,14 +481,17 @@ create_states_from_tabular <- function(state_info,
       state_info$.state,
       function(state) {
         define_state_(
-          lazyeval::as.lazy_dots(
-            stats::setNames(as.character(lapply(
-              values,
-              function(value) {
-                state_info[[value]][state_info$.state == state]
-              }
-            )), values),
-            env = df_env
+          list(
+            .dots = lazyeval::as.lazy_dots(
+              stats::setNames(as.character(lapply(
+                values,
+                function(value) {
+                  state_info[[value]][state_info$.state == state]
+                }
+              )), values),
+              env = df_env
+          ), 
+          starting_values = define_starting_values()
           )
         )
       }

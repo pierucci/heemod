@@ -41,7 +41,6 @@ define_strategy <- function(...,
 #' @rdname define_strategy
 #' @export
 define_strategy_ <- function(transition, states, starting_values) {
-  
   starting_values <- check_starting_values(
     x = starting_values,
     ref = get_state_value_names(states)
