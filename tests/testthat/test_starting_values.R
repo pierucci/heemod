@@ -10,6 +10,7 @@ mat1 <- define_transition(
   1-a, a,
   1-b, b
 )
+
 s1 <- define_state(
   x = 234,
   y = 123,
@@ -20,6 +21,8 @@ s2 <- define_state(
   y = 1726,
   z = 963
 )
+
+
 
 mod1 <- define_strategy(
   transition = mat1,
@@ -36,8 +39,6 @@ mod2 <- define_strategy(
     y = 20
   )
 )
-
-
 
 test_that("define_strategy works as expected without starting_values", {
   expect_equal(class(mod1), "uneval_model")
@@ -78,6 +79,15 @@ test_that("define_strategy works as expected with starting_values", {
   expect_equal(sv$x$expr, 10)
   expect_equal(sv$y$expr, 20)
 })
+
+test_that("starting_values only adds values at first cycle", {
+  ru <- run_model(mod1, mod2, parameters = par1, cost = x, effect = y, cycles = 10)
+  val1 <- ru$eval_strategy_list[[1]]$values
+  val2 <- ru$eval_strategy_list[[2]]$values
+  expect_equal(val2$x - val1$x, c(10 * 1000, rep(0,9)))
+  expect_equal(val2$y - val1$y, c(20 * 1000, rep(0,9)))
+})
+
 
 test_that("starting_values is consistant", {
   ru <- run_model(mod1, mod2, parameters = par1, cost = x, effect = y)
@@ -145,5 +155,3 @@ test_that("starting_values works with parameters", {
   expect_equal(ru1$eval_strategy_list[[1]]$values, ru0$eval_strategy_list[[1]]$values + c(0,0,50 * 10), 0)
   expect_equal(ru2$eval_strategy_list[[1]]$values, ru0$eval_strategy_list[[1]]$values + c(0, 1000 * 10, 1000* 20) + c(0, 0, 50 * 10))
 })
-
-  

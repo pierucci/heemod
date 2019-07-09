@@ -235,7 +235,11 @@ compute_values <- function(states, counts, starting_values) {
   counts_mat <- aperm(counts_mat, c(1, 3, 2))
 
   # multiply, sum, and add markov_cycle back in
-  vals_x_counts <- (state_val_array +  array(unlist(starting_values), dim = dims_array_1) )* counts_mat 
+  starting_fill_zero <- lapply(starting_values, function(x){
+    matrix(c(x, rep(0, (num_cycles - 1) * length(x))), nrow = num_cycles, byrow = TRUE)
+  })
+  
+  vals_x_counts <- (state_val_array + unlist(starting_fill_zero)) * counts_mat 
   wtd_sums <- rowSums(vals_x_counts, dims = 2)
   res <- data.frame(markov_cycle = states[[1]]$markov_cycle, wtd_sums)
 
