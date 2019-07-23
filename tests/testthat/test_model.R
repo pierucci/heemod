@@ -305,41 +305,49 @@ test_that(
       state_names = c("A", "B"))
     infw <- data.frame(c(0, 0), c(0, 0))
     
+    expect_equal(names(heemod:::compute_counts(
+      lm, init = c(10, 0), method = "beginning", inflow = infw)), c("counts", "diff"))
     expect_identical(
       dim(heemod:::compute_counts(
         lm, init = c(10, 0), method = "end", inflow = infw) %>% 
-          heemod:::correct_counts(method = "end")),
+          heemod:::correct_counts(method = "end") %>%
+          magrittr::extract2("counts")),
       c(2L, 2L)
     )
     expect_identical(
       dim(heemod:::compute_counts(
         lm, init = c(10, 0), method = "beginning", inflow = infw) %>% 
-          heemod:::correct_counts(method = "beginning")),
+          heemod:::correct_counts(method = "beginning") %>%
+          magrittr::extract2("counts")) ,
       c(2L, 2L)
     )
     expect_identical(
       dim(heemod:::compute_counts(
         lm, init = c(10, 0), method = "life-table", inflow = infw) %>% 
-          heemod:::correct_counts(method = "life-table")),
+          heemod:::correct_counts(method = "life-table") %>%
+          magrittr::extract2("counts")),
       c(2L, 2L)
     )
     
     expect_equivalent(
       unlist(heemod:::compute_counts(
         lm, init = c(10, 0), method = "end", inflow = infw) %>% 
-          heemod:::correct_counts(method = "end")),
+          heemod:::correct_counts(method = "end") %>%
+          magrittr::extract2("counts")),
       c(10, 5, 0, 5)
     )
     expect_equivalent(
       unlist(heemod:::compute_counts(
         lm, init = c(10, 0), method = "beginning", inflow = infw) %>% 
-          heemod:::correct_counts(method = "beginning")),
+          heemod:::correct_counts(method = "beginning") %>%
+          magrittr::extract2("counts")),
       c(5.00, 4.35, 5.00, 5.65)
     )
     expect_equivalent(
       unlist(heemod:::compute_counts(
         lm, init = c(10, 0), method = "life-table", inflow = infw) %>% 
-          heemod:::correct_counts(method = "life-table")),
+          heemod:::correct_counts(method = "life-table") %>%
+          magrittr::extract2("counts")),
       c(7.500, 4.675, 2.500, 5.325)
     )
   }

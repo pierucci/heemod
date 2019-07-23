@@ -240,6 +240,7 @@ compute_counts.eval_part_surv <- function(x, init,
   res <- res[x$state_names]
   
   structure(res, class = c("cycle_counts", class(res)))
+  list(counts = res) #cannot compute count diff matrix in partitionned survival
 }
 
 guess_part_surv_state_names <- function(state_names) {

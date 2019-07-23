@@ -219,8 +219,9 @@ test_that(
       "2 evaluated states, 10 Markov cycles.",
       fixed = TRUE
     )
+    expect_equal(names(e_st), c(".dots", "starting_values"))
     expect_output(
-      str(e_st),
+      str(e_st$.dots),
       "..$ markov_cycle: int [1:10] 1 2 3 4 5 6 7 8 9 10
   ..$ A           :",
       fixed = TRUE
@@ -286,7 +287,6 @@ test_that(
       mod1, mod2,
       parameters = par1, cost = x, effect = y
     )
-    
     expect_equal(
       summary(res)$res_comp$.icer, c(NA, NaN)
     )

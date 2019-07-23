@@ -48,6 +48,7 @@ print.uneval_state_list <- function(x, ...) {
 
 #' @export
 print.eval_state_list <- function(x, ...) {
+  x <- x$.dots
   cat(sprintf(
     "%i evaluated state%s, %i Markov cycle%s.\n",
     length(x),

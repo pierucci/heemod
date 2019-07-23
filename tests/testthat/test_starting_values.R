@@ -21,8 +21,14 @@ s2 <- define_state(
   y = 1726,
   z = 963
 )
-
-
+s3 <- define_state(
+  x = 987,
+  y = 1726,
+  z = 963,
+  starting_values = define_starting_values(
+    y = 10
+  )
+)
 
 mod1 <- define_strategy(
   transition = mat1,
@@ -39,6 +45,21 @@ mod2 <- define_strategy(
     y = 20
   )
 )
+
+mod3 = define_strategy(
+  transition = mat1,
+  X1 = s1,
+  X2 = s3
+)
+
+mod4 = define_strategy(
+  transition = mat1,
+  X1 = s1,
+  X2 = s3,
+  starting_values = define_starting_values(
+    x = 10,
+    y = 20
+  ))
 
 test_that("define_strategy works as expected without starting_values", {
   expect_equal(class(mod1), "uneval_model")
@@ -97,36 +118,6 @@ test_that("starting_values is consistant", {
   expect_equal(val2$y - val1$y, 20 * 1000)
 })
 
-test_that("starting_values works with define_state and define_strategy", {
-  
-  s3 <- define_state(
-    x = 987,
-    y = 1726,
-    z = 963,
-    starting_values = define_starting_values(
-      y = 10
-    )
-  )
-  mod3 = define_strategy(
-    transition = mat1,
-    X1 = s1,
-    X2 = s3
-  )
-  mod4 = define_strategy(
-    transition = mat1,
-    X1 = s1,
-    X2 = s3,
-    starting_values = define_starting_values(
-    x = 10,
-    y = 20
-  ))
-  ru0 <- run_model(mod1, parameters = par1, cost = x, effect = y)
-  ru1 <- run_model(mod3, parameters = par1, cost = x, effect = y)
-  ru2 <- run_model(mod4, parameters = par1, cost = x, effect = y)
-  expect_equal(ru1$eval_strategy_list[[1]]$values, ru0$eval_strategy_list[[1]]$values + c(0,0,50 * 10), 0)
-  expect_equal(ru2$eval_strategy_list[[1]]$values, ru0$eval_strategy_list[[1]]$values + c(0, 1000 * 10, 1000* 20) + c(0, 0, 50 * 10))
-})
-
 test_that("starting_values works with parameters", {
   s3 <- define_state(
     x = 987,
@@ -155,3 +146,60 @@ test_that("starting_values works with parameters", {
   expect_equal(ru1$eval_strategy_list[[1]]$values, ru0$eval_strategy_list[[1]]$values + c(0,0,50 * 10), 0)
   expect_equal(ru2$eval_strategy_list[[1]]$values, ru0$eval_strategy_list[[1]]$values + c(0, 1000 * 10, 1000* 20) + c(0, 0, 50 * 10))
 })
+
+
+test_that("starting_values uses patient flows", {
+  mat2 <- define_transition(
+    state_names = c("E1", "E2", "E3"),
+    0.5, 0.2, C,
+    0.4, 0.5, C,
+    1  , 0  , 0
+  )
+  
+  s3 <- define_state(
+    x = 0,
+    y = 0,
+    z = 0
+  )
+  
+  modx <- define_strategy(
+    transition = mat2,
+    E1 = s1,
+    E2 = s2,
+    E3 = s3
+  )
+  
+  rux <- run_model(modx, parameters = par1, cost = x, effect = y, cycles = 10)
+})
+
+test_that("starting_values works with define_state and define_strategy at the same time", {
+  ru0 <- run_model(mod4, mod3, mod1, parameters = par1, cost = x, effect = y, cycles = 5)
+  new <- c(50, 95, 88.8333333333333, 87.9083333333333, 88.4825)
+  expect_equal(ru0$eval_strategy_list[[1]]$values, ru0$eval_strategy_list[[2]]$values + 
+                  data.frame(rep(0,5), c(1000 * 10, rep(0,4)), c(1000 * 20, rep(0,4)), rep(0,5)))
+  expect_equal(ru0$eval_strategy_list[[2]]$values$y, ru0$eval_strategy_list[[3]]$values$y + new * 10)
+})
+
+test_that("starting_values works with discount_hack", {
+  s5 <- define_state(
+    x = 987,
+    y = 1726,
+    z = 963,
+    starting_values = define_starting_values(
+       y = discount(10, 0.06)
+    )
+  )
+  mod5 = define_strategy(
+    transition = mat1,
+    X1 = s1,
+    X2 = s5
+  )
+  ru0 <- run_model(mod5, mod1, parameters = par1, cost = x, effect = y, cycles = 5)
+  
+  expect_equal(ru0$eval_strategy_list[[1]]$states$starting_values$X2$y, 10/(1+0.06)^seq(0,4))
+  new <- c(50, 95, 88.8333333333333, 87.9083333333333, 88.4825)
+  expect_equal(ru0$eval_strategy_list[[1]]$values$y, 
+               ru0$eval_strategy_list[[2]]$values$y + new * 10/(1+0.06)^seq(0,4))
+})
+
+

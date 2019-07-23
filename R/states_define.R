@@ -267,6 +267,10 @@ get_state_names <- function(x, ...){
   UseMethod("get_state_names")
 }
 
+get_state_names.eval_state_list <- function(x, ...){
+  names(x$.dots)
+}
+
 get_state_names.default <- function(x, ...){
   names(x)
 }

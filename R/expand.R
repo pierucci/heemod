@@ -108,11 +108,7 @@ expand_state.uneval_state_list <- function(x, state_name, cycles) {
     function(x) {
       list(
         .dots = substitute_dots(st$.dots, list(state_time = x)),
-        starting_values <- if (x == 1) {
-          substitute_dots(st$starting_values, list(state_time = x))
-        } else {
-          list()
-        }
+        starting_values = substitute_dots(st$starting_values, list(state_time = x))
       )
     }
   )
