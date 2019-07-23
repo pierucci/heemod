@@ -55,7 +55,7 @@ eval_strategy <- function(strategy, parameters, cycles,
   uneval_transition <- expanded$uneval_transition
   init <- expanded$init
   inflow <- expanded$inflow
-  starting_values <- expanded$starting_values
+  strategy_starting_values <- expanded$starting_values
   n_indiv <- expanded$n_indiv
   parameters <- expanded$parameters
   actually_expanded_something <- expanded$actually_expanded_something
@@ -72,7 +72,7 @@ eval_strategy <- function(strategy, parameters, cycles,
   ) %>% 
     correct_counts(method = method)
   
-  values <- compute_values(states, count_list, starting_values)
+  values <- compute_values(states, count_list, strategy_starting_values)
   
   count_table <- count_list$counts
   
@@ -237,7 +237,7 @@ compute_counts.eval_matrix <- function(x, init, inflow, ...) {
 #' @keywords internal
 ## slightly harder to read than the original version, but much faster
 ## identical results to within a little bit of numerical noise
-compute_values <- function(states, count_list, starting_values) {
+compute_values <- function(states, count_list, strategy_starting_values) {
   
   counts <- count_list$counts
   diff <- count_list$diff
@@ -274,7 +274,7 @@ compute_values <- function(states, count_list, starting_values) {
 
   
   
-  starting_fill_zero <- c(starting_values$starting_strategy, 
+  starting_fill_zero <- c(strategy_starting_values, 
                           rep(0, num_state_values * (num_cycles - 1))) %>%
     matrix(nrow = num_cycles, byrow = TRUE) %>%
     array(dim = dims_array_1)
@@ -414,19 +414,19 @@ expand_if_necessary <- function(strategy, parameters,
   e_init <- unlist(eval_init(x = init, parameters[1,]))
   e_inflow <- eval_inflow(x = inflow, parameters)
   
-  e_starting_values_strat <- unlist(
+  e_starting_values <- unlist(
     eval_starting_values(
       x = strategy$starting_values,
       parameters[1, ])
   )
-  e_starting_values <- 
-    list(starting_strategy = e_starting_values_strat,
-         starting_state = lapply(i_uneval_states, function(x){
-      unlist(eval_starting_values(
-        x = x$starting_values,
-        parameters[1, ]
-      ))
-    }))
+  # e_starting_values <- 
+  #   list(starting_strategy = e_starting_values_strat,
+  #        starting_state = lapply(i_uneval_states, function(x){
+  #     unlist(eval_starting_values(
+  #       x = x$starting_values,
+  #       parameters[1, ]
+  #     ))
+  #   }))
 
   n_indiv <- sum(e_init, unlist(e_inflow))
   

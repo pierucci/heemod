@@ -202,4 +202,24 @@ test_that("starting_values works with discount_hack", {
                ru0$eval_strategy_list[[2]]$values$y + new * 10/(1+0.06)^seq(0,4))
 })
 
+test_that("starting_values works with expanded states", {
+  par2 <- define_parameters(
+    a = 1 / (markov_cycle + 1),
+    b = exp(-state_time * 0.2)
+  )
+
+  mod3 = define_strategy(
+    transition = mat1,
+    X1 = s1,
+    X2 = s3
+  )
+  
+  ru <- run_model(mod1, mod3, parameters = par2, cost = x, effect = y, cycles = 10)
+  val1 <- ru$eval_strategy_list[[1]]$values
+  val2 <- ru$eval_strategy_list[[2]]$values
+  expect_equal(val2$x, val1$x)
+  expect_equal(floor(val2$y - val1$y), c(2500, 3333, 1363, 1013, 961, 942, 898, 838, 775, 719))
+})
+
+
 
