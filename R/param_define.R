@@ -171,11 +171,22 @@ define_init_ <- function(.dots) {
 }
 
 #' Define Starting State Values
-#'
+#' 
+#' This function is meant to be used inside [define_strategy()] and 
+#' [define_state()]. 
+#' 
 #' @param ... Name-value pairs of expressions defining
-#'   starting values.
+#'   starting values. The names must correspond to an existing state value.
 #' @param .dots Used to work around non-standard evaluation.
 #'
+#' @details The behaviour is different following the function using [define_starting_values()]
+#' as an argument.
+#' \itemize{
+#' \item When used inside [define_strategy()], the state values are modified for the 
+#' first cycle in each state
+#' \item When used inside [define_state()], the state values are modified for counts
+#' entering the state
+#' }
 #' @return An object similar to the return value of
 #'   [define_parameters()].
 #' @export

@@ -209,6 +209,7 @@ compute_values <- function(states, count_list, strategy_starting_values) {
   
   counts <- count_list$counts
   diff <- count_list$diff
+
   states_values <- structure(
     states$.dots, class = class(states)
   )
@@ -246,6 +247,11 @@ compute_values <- function(states, count_list, strategy_starting_values) {
                           rep(0, num_state_values * (num_cycles - 1))) %>%
     matrix(nrow = num_cycles, byrow = TRUE) %>%
     array(dim = dims_array_1)
+  
+  if(is.null(diff) & sum(start_val_array) > 0){
+    warning("Partitioned survival models cannot take into account the starting 
+    values in define_state()")
+  }
   
   new_starting_states <- lapply(diff, function(x){
     diag(x) <- 0

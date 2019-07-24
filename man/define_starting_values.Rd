@@ -11,7 +11,7 @@ define_starting_values_(.dots)
 }
 \arguments{
 \item{...}{Name-value pairs of expressions defining
-starting values.}
+starting values. The names must correspond to an existing state value.}
 
 \item{.dots}{Used to work around non-standard evaluation.}
 }
@@ -20,5 +20,16 @@ An object similar to the return value of
 \code{\link[=define_parameters]{define_parameters()}}.
 }
 \description{
-Define Starting State Values
+This function is meant to be used inside \code{\link[=define_strategy]{define_strategy()}} and
+\code{\link[=define_state]{define_state()}}.
+}
+\details{
+The behaviour is different following the function using \code{\link[=define_starting_values]{define_starting_values()}}
+as an argument.
+\itemize{
+\item When used inside \code{\link[=define_strategy]{define_strategy()}}, the state values are modified for the
+first cycle in each state
+\item When used inside \code{\link[=define_state]{define_state()}}, the state values are modified for counts
+entering the state
+}
 }
