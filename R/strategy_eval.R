@@ -170,42 +170,9 @@ compute_counts.eval_matrix <- function(x, init, inflow, ...) {
     ))
   }
   
-  dim_x <- dim(x[[1]])[1]
-  get_mat_total <- function(x, init) {
-    mod1 <- x * init
-    diag(mod1) <- diag(mod1) - init
-    return(mod1)
-  }
-  get_new <- function(x){
-    diag(x) <- rep(0, dim_x)
-    added <- colSums(x)
-  }
-  
-  counts_and_diff <- lapply(seq_along(x), function(i){
-    init <- init + unlist(inflow[i, ])
-    new_mat <-  inflow[i, ]
-    mat <- get_mat_total(x[[i]], init)
-    res <- list(init, mat)
-    init <<- colSums(mat) + init
-    return(res)
-  })
-  
+  counts_and_diff <- get_counts_diff(x, init, inflow)
+
   list_counts <- lapply(counts_and_diff, `[[`, 1) 
-  list_counts[[length(list_counts) + 1]] <- init
-  # mat <- get_mat_total(x[[1]], init)
-  # init2 <- colSums(mat) + init
-  # mat2 <- get_mat_total(x[[2]], init2)
-  # init3 <- colSums(mat2) + init2
-  
-  # trans <- x[[1]]
-  # dim_x <- dim(trans(x))[1]
-  # mod1 <- trans * init
-  # supp <- diag(mod1) - init
-  # diag(mod1) <- supp
-  # mat_total <- mod1
-  #total_init <- colSums(mod1)
-  # diag(mod1) <- rep(0, dim_x)
-  # added <- colSums(mod1)
 
   res <- dplyr::as.tbl(
     as.data.frame(
@@ -220,7 +187,8 @@ compute_counts.eval_matrix <- function(x, init, inflow, ...) {
   colnames(res) <- get_state_names(x)
   
   structure(res, class = c("cycle_counts", class(res)))
-  list(counts = res, diff = lapply(counts_and_diff, `[[`, 2))
+  list(counts = res, diff = lapply(counts_and_diff[-(length(x) + 1)], `[[`, 2))
+  
 }
 
 #' Compute State Values per Cycle

@@ -1,3 +1,43 @@
+#' Get count number
+#' 
+#' @param x transition matrix
+#' @param init numeric vector, same length as number of 
+#'   model states. Number of individuals in each model state
+#'   at the beginning.
+#' @return A count matrix
+#'   
+#' @keywords internal
+get_mat_total <- function(x, init) {
+  mod1 <- x * init
+  diag(mod1) <- diag(mod1) - init
+  return(mod1)
+}
+
+
+#' Get count matrix and difference between two cycles
+#' 
+#' @param x transition matrix
+#' @param init numeric vector, same length as number of 
+#'   model states. Number of individuals in each model state
+#'   at the beginning.
+#' @param inflow numeric vector, similar to `init`.
+#'   Number of new individuals in each state per cycle.
+#'   
+#' @return A length 2 list of matrix : the count matrix for each cycle and the diff matrix 
+#'   showing the difference of counts between two cycles.
+#'   
+#' @keywords internal
+get_counts_diff <- function(x, init, inflow) {
+  lapply(seq(1, length(x) + 1), function(i){
+    if (i == length(x) + 1) return(list(init, NULL))
+    init <- init + unlist(inflow[i, ])
+    mat <- get_mat_total(x[[i]], init)
+    res <- list(init, mat)
+    init <<- colSums(mat) + init
+    return(res)
+  })
+}
+
 #' Check Wholenumbers
 #' 
 #' @param x numeric.

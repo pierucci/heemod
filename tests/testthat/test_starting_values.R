@@ -220,6 +220,3 @@ test_that("starting_values works with expanded states", {
   expect_equal(val2$x, val1$x)
   expect_equal(floor(val2$y - val1$y), c(2500, 3333, 1363, 1013, 961, 942, 898, 838, 775, 719))
 })
-
-
-

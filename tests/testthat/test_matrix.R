@@ -217,3 +217,30 @@ test_that(
     )
   }
 )
+
+test_that("get_counts_diff works correctly", {
+  sampleTM <- define_transition(0.1, 0.1, C, 
+                                C  , 0.3, 0.25, 
+                                C  , 0  , 0.5)
+  A <- define_state(cost = 1, utility = 2)
+  B <- define_state(cost = 5, utility = 7)
+  C <- define_state(cost = 4, utility = 4)
+  sample_mod <- define_strategy(transition = sampleTM, A = A,
+                                B = B, C = C)
+  res <- run_model(sample_mod, cost = cost, effect = utility,
+                   cycles = 3)
+  count_diff <- get_counts_diff(res$eval_strategy_list$I$transition, 
+                                init = res$eval_strategy_list$I$e_init, inflow = res$eval_strategy_list$I$e_inflow)
+  expected_count <-list(c(A = 1000, B = 0, C = 0),
+                        c(A = 100, B = 100, C = 800),
+                        c(A = 455, B = 40, C = 505),
+                        c(A = 316, B = 57.5, C = 626.5))
+  expected_diff <- list(matrix(c(-900, 100, 800, rep(0,6)), ncol = 3, byrow = TRUE),
+                        matrix(c(-90, 10, 80, 45, -70, 25, 400, 0, -400), ncol = 3, byrow = TRUE),
+                        matrix(c(-409.5, 45.5, 364, 18, -28, 10, 252.5, 0, -252.5), ncol = 3, byrow = TRUE),
+                        NULL
+  )
+  expect_equal(lapply(count_diff, `[[`, 1), expected_count)
+  expect_equal(lapply(count_diff, `[[`, 2), expected_diff)  
+})
+
