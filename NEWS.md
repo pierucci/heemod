@@ -1,3 +1,11 @@
+## heemod 0.10.9000
+
+### Backend changes
+
+  * States are now length 2 lists: 
+    * .dots: the state values
+    * starting_values: the state values when entering the state
+
 ## heemod 0.10.0
 
 ### New features
