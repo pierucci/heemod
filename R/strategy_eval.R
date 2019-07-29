@@ -368,7 +368,7 @@ expand_if_necessary <- function(strategy, parameters,
     }
   }
   
-  parameters <- eval_parameters(parameters,
+  parameters <- eval_parameters(old_parameters,
                                 cycles = cycles,
                                 strategy_name = strategy_name)
   

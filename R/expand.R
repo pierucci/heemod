@@ -7,6 +7,10 @@ has_state_time.uneval_matrix <- function(x, ...) {
   unlist(lapply(x, function(y) "state_time" %in% all.vars(y$expr)))
 }
 
+has_state_time.uneval_parameters <- function(x, ...) {
+  unlist(lapply(x, function(y) "state_time" %in% all.vars(y$expr)))
+}
+
 #' @export
 has_state_time.part_surv <- function(x, ...) {
   FALSE

@@ -16,7 +16,10 @@
 eval_parameters <- function(x, cycles = 1,
                             strategy_name = NA) {
   # update calls to dispatch_strategy()
-  x <- dispatch_strategy_hack(x)
+  x <- dispatch_strategy_hack(x) 
+  old_classes <- class(x)
+  if (length(x)) x <- structure(x[!has_state_time(x)],
+                           class = old_classes)
   
   start_tibble <- tibble::tibble(
     model_time = seq_len(cycles),
