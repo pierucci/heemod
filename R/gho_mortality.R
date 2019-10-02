@@ -174,7 +174,7 @@ pool_data <- function(mr_data, sex, region, country, year) {
 
   suppressMessages({
     pop_weight <- pop_data %>% 
-      dplyr::select_(
+      dplyr::select(
         .dots = c(cols, weight = "Numeric")
       ) %>% 
       dplyr::left_join(mr_data)

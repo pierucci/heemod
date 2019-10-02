@@ -62,7 +62,7 @@ run_psa <- function(model, psa, N, resample) {
   res <- dplyr::mutate_(res, .dots = get_ce(model))
   
   run_model <- res %>% 
-    dplyr::select_(~ - .index) %>% 
+    dplyr::select(-.index) %>% 
     dplyr::group_by_(".strategy_names") %>%
     dplyr::summarise_all(mean) %>% 
     as.data.frame()
@@ -170,7 +170,7 @@ eval_resample <- function(psa, N) {
           function(x) as.call(list(as.name("/"), as.name(x), as.name(".denom")))),
         m)))
     res <- dplyr::mutate_(res, .dots = list_expr) %>% 
-      dplyr::select_(~ - .denom)
+      dplyr::select(-.denom)
   }
   res
 }

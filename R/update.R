@@ -54,7 +54,7 @@ update.run_model <- function(object, newdata, ...) {
   
   if (has_weights) {
     weights <- newdata$.weights
-    newdata <- dplyr::select_(newdata, ~ - .weights)
+    newdata <- dplyr::select(newdata, -.weights)
     
   } else {
     message("No weights specified in update, using equal weights.")
@@ -90,7 +90,7 @@ update.run_model <- function(object, newdata, ...) {
     res_total <- res %>% 
       dplyr::rowwise() %>% 
       dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
-      dplyr::bind_cols(res %>% dplyr::select_(~ - .mod)) %>% 
+      dplyr::bind_cols(res %>% dplyr::select(-.mod)) %>% 
       dplyr::ungroup() %>% 
       dplyr::mutate_(.dots = ce) %>% 
       dplyr::left_join(
@@ -287,10 +287,10 @@ summary.updated_model <- function(object, ...) {
                  "Icer")
     )
   
-  mat_res <- dplyr::select_(
+  mat_res <- dplyr::select(
     tab_res,
-    ~ - Model,
-    ~ - Value
+    -Model,
+    -Value
   ) %>% 
     as.matrix()
   

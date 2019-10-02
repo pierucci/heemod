@@ -964,7 +964,7 @@ parse_multi_spec <- function(multi_spec,
   just_once <- multi_spec %>% 
     dplyr::group_by_(.dots = group_vars) %>% 
     dplyr::filter_(~ n() == 1) %>%
-    dplyr::select_(~ - dplyr::one_of(split_on))
+    dplyr::select(-dplyr::one_of(split_on))
   
   just_once <- data.frame(
     temp = rep(unique_splits, nrow(just_once)),

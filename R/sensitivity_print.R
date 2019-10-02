@@ -105,7 +105,7 @@ plot.dsa <- function(x, type = c("simple", "difference"),
   tab <- summary(x, center = FALSE)$res_comp %>% 
     dplyr::left_join(
       summary(model_ref, center = FALSE)$res_comp %>%
-        dplyr::select_(
+        dplyr::select(
           ".strategy_names",
           .cost_ref = ".cost",
           .effect_ref = ".effect",
@@ -222,9 +222,9 @@ print.summary_dsa <- function(x, ...) {
     x$res_comp$.par_value
   )
   
-  x <- dplyr::select_(x$res_comp, ~ - .par_names,
-                      ~ - .par_value,
-                      ~ - .strategy_names)
+  x <- dplyr::select(x$res_comp, -.par_names,
+                      -.par_value,
+                      -.strategy_names)
   x <- pretty_names(x)
   
   res <- as.matrix(x)

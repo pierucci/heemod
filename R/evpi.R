@@ -73,7 +73,7 @@ export_psa <- function(x) {
       gather_cols = c(".cost", ".effect")) %>% 
     dplyr::mutate_(
       .var_name = ~ paste(.key, .strategy_names, sep = "_")) %>% 
-    dplyr::select_(~ - .key, ~ - .strategy_names) %>% 
+    dplyr::select(-.key, -.strategy_names) %>% 
     reshape_wide(key_col = ".var_name", value_col = ".value")
   
   list(
