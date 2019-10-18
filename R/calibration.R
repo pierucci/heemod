@@ -322,14 +322,14 @@ define_calibration_fn <- function(type, strategy_names,
         state <- element_names[i]
         cycle <- cycles[i]
         strat <- strategy_names[i]
-        quo(state_names == state & markov_cycle == cycle &
-              .strategy_names == strat)
+        quo(.data$state_names == state & .data$markov_cycle == cycle &
+              .data$.strategy_names == strat)
       } else {
         value <- element_names[i]
         cycle <- cycles[i]
         strat <- strategy_names[i]
-        quo(value_names == value & markov_cycle == cycle &
-              .strategy_names == strat)
+        quo(.data$value_names == value & .data$markov_cycle == cycle &
+              .data$.strategy_names == strat)
       }
     })
   

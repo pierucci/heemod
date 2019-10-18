@@ -315,7 +315,7 @@ eval_surv.survfit <- function(x, time,  ...) {
     agg_df <- surv_df %>%
       tibble::as_tibble() %>% 
       dplyr::group_by(t) %>%
-      dplyr::summarize(value = sum(value * n) / sum(n))
+      dplyr::summarize(value = sum(.data$value * n) / sum(n))
   } else {
     
     # If covariates are provided, join the predictions to them and then
@@ -324,7 +324,7 @@ eval_surv.survfit <- function(x, time,  ...) {
     agg_df <- clean_factors(dots$covar) %>% 
       dplyr::left_join(surv_df, by = terms) %>%
       dplyr::group_by(t) %>%
-      dplyr::summarize(value = mean(value))
+      dplyr::summarize(value = mean(.data$value))
   }
   
   # Get the vector of predictions
@@ -393,7 +393,7 @@ eval_surv.flexsurvreg <- function(x, time,  ...) {
     surv_df <- surv_df %>%
       dplyr::left_join(data_full, by = colnames(data)) %>%
       dplyr::group_by(t) %>%
-      dplyr::summarize(value = mean(value))
+      dplyr::summarize(value = mean(.data$value))
   }
   
   

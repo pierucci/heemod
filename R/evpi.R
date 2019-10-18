@@ -14,7 +14,7 @@ compute_evpi <- function(x, wtp_thresholds) {
     dplyr::mutate(
       .nmb = .data$.effect * .data$.ceac - .data$.cost,
       .top_strategy = .data$.nmb == max(.data$.nmb),
-      .top_strategy = .top_strategy & cumsum(.top_strategy) == 1,
+      .top_strategy = .data$.top_strategy & cumsum(.data$.top_strategy) == 1,
       .top_choice = .data$.strategy_names == .data$.strategy_choice
       # in case 2 nmb are identical, pick first
     ) %>% 
@@ -72,8 +72,8 @@ export_psa <- function(x) {
       value_col = ".value",
       gather_cols = c(".cost", ".effect")) %>% 
     dplyr::mutate(
-      .var_name = paste(.key, .strategy_names, sep = "_")) %>% 
-    dplyr::select(-.key, -.strategy_names) %>% 
+      .var_name = paste(.data$.key, .data$.strategy_names, sep = "_")) %>% 
+    dplyr::select(-.data$.key, -.data$.strategy_names) %>% 
     reshape_wide(key_col = ".var_name", value_col = ".value")
   
   list(

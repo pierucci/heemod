@@ -54,7 +54,7 @@ update.run_model <- function(object, newdata, ...) {
   
   if (has_weights) {
     weights <- newdata$.weights
-    newdata <- dplyr::select(newdata, -.weights)
+    newdata <- dplyr::select(newdata, -.data$.weights)
     
   } else {
     message("No weights specified in update, using equal weights.")
@@ -90,8 +90,8 @@ update.run_model <- function(object, newdata, ...) {
   suppressMessages({
     res_total <- res %>% 
       dplyr::rowwise() %>% 
-      dplyr::do(get_total_state_values(.$.mod)) %>% 
-      dplyr::bind_cols(res %>% dplyr::select(-.mod)) %>% 
+      dplyr::do(get_total_state_values(.data$.mod)) %>% 
+      dplyr::bind_cols(res %>% dplyr::select(-.data$.mod)) %>% 
       dplyr::ungroup() %>% 
       dplyr::mutate(!!!ce) %>% 
       dplyr::left_join(
@@ -192,7 +192,7 @@ plot.updated_model <- function(x, type = c("simple", "difference",
   )
   summary(x)$scaled_results %>% 
     dplyr::filter(
-      .strategy_names %in% strategy
+      .data$.strategy_names %in% strategy
     ) %>% 
     ggplot2::ggplot(ggplot2::aes_string(x = x_var)) +
     ggplot2::geom_histogram(...) +
@@ -241,15 +241,15 @@ summary.updated_model <- function(object, ...) {
   
   tab_scaled <- object %>% 
     scale(center = FALSE) %>% 
-    dplyr::group_by(.index) %>% 
+    dplyr::group_by(.data$.index) %>% 
     dplyr::do(compute_icer(
-      ., strategy_order = ord_eff)
+      .data, strategy_order = ord_eff)
     )
   
   for (.n in strategy_names) {
     
     tmp <- tab_scaled %>%
-      dplyr::filter(.strategy_names == .n)
+      dplyr::filter(.data$.strategy_names == .n)
     
     list_res <- c(
       list_res,
@@ -290,8 +290,8 @@ summary.updated_model <- function(object, ...) {
   
   mat_res <- dplyr::select(
     tab_res,
-    -Model,
-    -Value
+    -.data$Model,
+    -.data$Value
   ) %>% 
     as.matrix()
   

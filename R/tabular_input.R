@@ -300,7 +300,7 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
       group_vars = c("from", "to"))
     tab_undefined <- 
       dplyr::bind_rows(tm_info) %>%
-      dplyr::filter(is.na(prob))
+      dplyr::filter(is.na(.data$prob))
     
     if (nrow(tab_undefined) > 0) {
       rownames(tab_undefined) <- NULL
@@ -344,7 +344,7 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   
   if(trans_type == "part_surv")
     tm_info <- 
-      dplyr::filter(tm_info, .strategy %in% names(state_info))
+      dplyr::filter(tm_info, .data$.strategy %in% names(state_info))
   else
     tm_info <- tm_info[names(state_info)]
 
@@ -356,7 +356,7 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
       if(inherits(tm_info, "tbl_df"))
         this_tm <- dplyr::filter(
           tm_info,
-          .strategy == names(state_info)[i])$part_surv[[1]]
+          .data$.strategy == names(state_info)[i])$part_surv[[1]]
       else
         this_tm <- tm_info[[i]]
       create_model_from_tabular(state_info[[i]], 
@@ -1389,7 +1389,7 @@ check_survival_specs <-
     ## our checks will make sure that we have the right entries,
     ##   and that they are in the right order
     surv_specs <- 
-      surv_specs %>% dplyr::arrange(treatment, desc(type))
+      surv_specs %>% dplyr::arrange(.data$treatment, desc(.data$type))
     
     os_ind <- grep("os", surv_specs$type, ignore.case = TRUE)
     pfs_ind <- grep("pfs", surv_specs$type, ignore.case = TRUE)

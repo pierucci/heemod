@@ -6,10 +6,10 @@ compute_cov <- function(psa, diff = FALSE, k, k_default = 10, threshold) {
   if (diff) {
     tab_psa <- psa$psa %>%
       dplyr::group_by(.data$.index) %>%
-      dplyr::do(compute_icer(
+      dplyr::do(compute_icer(.data,
         strategy_order = order(get_effect(get_model(psa))),
         threshold = threshold)) %>%
-      dplyr::filter(!is.na(.dref)) %>% 
+      dplyr::filter(!is.na(.data$.dref)) %>% 
       dplyr::ungroup()
   } else {
     tab_psa <- psa$psa
@@ -73,7 +73,7 @@ compute_cov <- function(psa, diff = FALSE, k, k_default = 10, threshold) {
   res <- tab_psa %>% 
     dplyr::group_by(.data$.strategy_names) %>% 
     dplyr::do(
-      compute_prop_var(mgcv::gam(formula = form_cost, data = .))
+      compute_prop_var(mgcv::gam(formula = form_cost, data = .data))
     ) %>% 
     dplyr::mutate(
       .result = "Cost"
@@ -82,7 +82,7 @@ compute_cov <- function(psa, diff = FALSE, k, k_default = 10, threshold) {
       tab_psa %>% 
         dplyr::group_by(.data$.strategy_names) %>% 
         dplyr::do(
-          compute_prop_var(mgcv::gam(formula = form_effect, data = .))
+          compute_prop_var(mgcv::gam(formula = form_effect, data = .data))
         ) %>% 
         dplyr::mutate(
           .result = "Effect"
@@ -95,7 +95,7 @@ compute_cov <- function(psa, diff = FALSE, k, k_default = 10, threshold) {
         tab_psa %>% 
           dplyr::group_by(.data$.strategy_names) %>% 
           dplyr::do(
-            compute_prop_var(mgcv::gam(formula = form_nmb, data = .))
+            compute_prop_var(mgcv::gam(formula = form_nmb, data = .data))
           ) %>% 
           dplyr::mutate(
             .result = "NMB"

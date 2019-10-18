@@ -152,10 +152,10 @@ part_survs_from_surv_inputs <- function(surv_inputs, state_names) {
   
   surv_inputs %>%
     dplyr::group_by(
-      treatment, set_name, dist, set_def) %>%
+      .data$treatment, .data$set_name, .data$dist, .data$set_def) %>%
     dplyr::do(
       part_surv = make_part_surv_from_small_tibble(
-        ., state_names = state_names))
+        .data, state_names = state_names))
 }
 
 get_state_names.part_surv <- function(x) {
@@ -380,14 +380,14 @@ construct_part_surv_tib <-
     ## and now we can rejoin them and continue
     surv_def_4 <-
       rbind(should_be_fits_3, direct_dist_def_3) %>%
-      dplyr::group_by(.strategy, .type) %>%
-      dplyr::do(fit = join_fits_across_time(.)) %>%
+      dplyr::group_by(.data$.strategy, .data$.type) %>%
+      dplyr::do(fit = join_fits_across_time(.data)) %>%
       dplyr::ungroup()
     surv_def_5 <-
       surv_def_4 %>%
-      dplyr::group_by(.strategy) %>%
-      dplyr::rename(type = .type) %>%
-      dplyr::do(part_surv = make_part_surv_from_small_tibble(.,
+      dplyr::group_by(.data$.strategy) %>%
+      dplyr::rename(type = .data$.type) %>%
+      dplyr::do(part_surv = make_part_surv_from_small_tibble(.data,
                                                                 state_names = state_names))
     surv_def_5
   }
@@ -396,7 +396,7 @@ join_fits_across_time <- function(this_part){
 if(nrow(this_part) == 1) return(this_part$fit[[1]])
   if ("until" %in% names(this_part)) {
     this_part <-
-      dplyr::arrange(this_part, until)
+      dplyr::arrange(this_part, .data$until)
     
     join_(dots = this_part$fit, 
              at= this_part$until[!is.na(this_part$until)])
@@ -424,6 +424,7 @@ make_part_surv_from_small_tibble <- function(st, state_names){
 
 
 join_fits_to_def <- function(surv_def, fit_tibble) {
+  . <- NULL #avoids NOTE in CRAN Check
   surv_def_names <- c(".strategy", ".type", "dist")
   if (!all(present_names <- surv_def_names %in% names(surv_def))) {
     stop("missing required names in 'surv_def': ",

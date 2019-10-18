@@ -42,7 +42,7 @@ run_psa <- function(model, psa, N, resample) {
           newdata = newdata
         ) %>% 
           dplyr::rowwise() %>% 
-          dplyr::do(get_total_state_values(.$.mod)) %>% 
+          dplyr::do(get_total_state_values(.data$.mod)) %>% 
           dplyr::bind_cols(newdata) %>% 
           dplyr::ungroup()
       )

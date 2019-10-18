@@ -262,7 +262,7 @@ get_noncomparable_strategy.default <- function(x, ...) {
     return(invisible(NULL))
   }
   (x %>% 
-      dplyr::arrange(.effect) %>% 
+      dplyr::arrange(.data$.effect) %>% 
       dplyr::slice(1))$.strategy_names
 }
 

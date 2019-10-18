@@ -109,7 +109,7 @@ plot.psa <- function(x, type = c("ce", "ac", "cov", "evpi"),
     cov = {
       tab <- compute_cov(x, diff = diff, threshold = threshold, ...) %>% 
         dplyr::mutate(
-          .prop = .prop * 100
+          .prop = .data$.prop * 100
         )
       
       ggplot2::ggplot(
@@ -140,7 +140,7 @@ scale.psa <- function(x, center = TRUE, scale = TRUE) {
   
   if (center) {
     res <- res %>% 
-      dplyr::group_by(.index) %>% 
+      dplyr::group_by(.data$.index) %>% 
       dplyr::mutate(
         .cost = (.data$.cost - sum(.data$.cost * (.data$.strategy_names == .bm))),
         .effect = (.data$.effect - sum(.data$.effect * (.data$.strategy_names == .bm)))

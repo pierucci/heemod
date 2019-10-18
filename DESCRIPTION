@@ -50,7 +50,7 @@ Suggests:
     survival,
     testthat,
     triangle,
-    XLConnect
-URL: https://github.com/pierucci/heemod, https://pierucci.org
+    XLConnect,
+    magrittr
 BugReports: https://github.com/pierucci/heemod/issues
 Roxygen: list(markdown = TRUE)

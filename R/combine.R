@@ -34,7 +34,7 @@ combine_models <- function(newmodels, weights, oldmodel) {
     # collapse total values
     collapsed_total_values <- (newmodels[[i]]) %>% 
       dplyr::rowwise() %>% 
-      dplyr::do(get_total_state_values(.$.mod)) %>% 
+      dplyr::do(get_total_state_values(.data$.mod)) %>% 
       dplyr::ungroup() %>% 
       dplyr::summarise_all(apply_weights)
     

@@ -220,8 +220,8 @@ print_results <- function(res_values, res_comp, res_nmb) {
   cat("Values:\n\n")
   rownames(res_values) <- res_values$.strategy_names
   res_values <- dplyr::select(res_values,
-                              -.strategy_names,
-                              -.n_indiv)
+                              -.data$.strategy_names,
+                              -.data$.n_indiv)
   print(res_values)
   
   if (! is.null(res_nmb)) {
@@ -247,8 +247,8 @@ print_results <- function(res_values, res_comp, res_nmb) {
     
     rownames(res_comp) <- res_comp$.strategy_names
     res_comp <- res_comp %>% 
-      dplyr::select(.dcost, .deffect,
-                     .icer, .dref)
+      dplyr::select(.data$.dcost, .data$.deffect,
+                    .data$.icer, .data$.dref)
     res_comp$.icer <- format(res_comp$.icer)
     res_comp$.icer[res_comp$.icer == "NA"] <- "-"
     res_comp <- res_comp[-1, ]

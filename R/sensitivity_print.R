@@ -98,7 +98,7 @@ plot.dsa <- function(x, type = c("simple", "difference"),
   if (resolve_labels) {
     x$dsa <- x$dsa %>%
       dplyr::mutate(
-        .par_value = .par_value_eval
+        .par_value = .data$.par_value_eval
       )
   }
   
@@ -222,9 +222,9 @@ print.summary_dsa <- function(x, ...) {
     x$res_comp$.par_value
   )
   
-  x <- dplyr::select(x$res_comp, -.par_names,
-                      -.par_value,
-                      -.strategy_names)
+  x <- dplyr::select(x$res_comp, -.data$.par_names,
+                      -.data$.par_value,
+                      -.data$.strategy_names)
   x <- pretty_names(x)
   
   res <- as.matrix(x)
@@ -258,7 +258,7 @@ scale.dsa <- function(x, center = TRUE, scale = TRUE) {
   
   if (center) {
     res <- res %>% 
-      dplyr::group_by(.par_names, .par_value) %>% 
+      dplyr::group_by(.data$.par_names, .data$.par_value) %>% 
       dplyr::mutate(
         .cost = .data$.cost - sum(.data$.cost * (.data$.strategy_names == .bm)),
         .effect = .data$.effect - sum(.data$.effect * (.data$.strategy_names == .bm))
@@ -272,9 +272,9 @@ scale.dsa <- function(x, center = TRUE, scale = TRUE) {
 summary.dsa <- function(object, ...) {
   res <- object %>% 
     scale(...) %>% 
-    dplyr::group_by(.par_names, .par_value)  %>% 
+    dplyr::group_by(.data$.par_names, .data$.par_value)  %>% 
     dplyr::do(compute_icer(
-      ., strategy_order = order(get_effect(get_model(object)))
+      .data, strategy_order = order(get_effect(get_model(object)))
     )) %>% 
     dplyr::ungroup()
   
