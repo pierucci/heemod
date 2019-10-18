@@ -5,6 +5,8 @@
   * States are now length 2 lists: 
     * .dots: the state values
     * starting_values: the state values when entering the state
+    
+  * Compatibility with dplyr 0.8: replaced all underscored (SE) versions of all verbs
 
 ## heemod 0.10.0
 

@@ -11,13 +11,9 @@
 #' @docType package
 #' @name heemod
 #'   
-#' @importFrom dplyr filter_
 #' @importFrom dplyr mutate_
-#' @importFrom dplyr do_
 #' @importFrom dplyr n
 #' @importFrom dplyr group_by
-#' @importFrom dplyr group_by_
-#' @importFrom dplyr summarise_
 #' @importFrom dplyr as.tbl
 #' @importFrom dplyr tibble
 #' @importFrom dplyr as_data_frame
@@ -46,6 +42,7 @@
 #' @importFrom utils as.roman
 #'   
 #' @importFrom stats pnorm
+#' @importFrom stats dist
 #' @importFrom stats qbeta
 #' @importFrom stats qbinom
 #' @importFrom stats qgamma
@@ -93,9 +90,8 @@
 #' @importFrom graphics par
 #'   
 #' @importFrom tibble tibble
-#' @importFrom tibble tibble_
 #' 
-#' @import rlang
+#' @importFrom rlang sym syms quo .data
 NULL
 
 #' @export
