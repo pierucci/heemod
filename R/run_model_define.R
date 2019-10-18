@@ -245,7 +245,7 @@ get_root_strategy.default <- function(x, ...) {
     return(invisible(NULL))
   }
   (x %>% 
-      dplyr::arrange(.cost, desc(.effect)))$.strategy_names[1]
+      dplyr::arrange(.data$.cost, desc(.data$.effect)))$.strategy_names[1]
 }
 
 get_root_strategy.run_model <- function(x, ...) {

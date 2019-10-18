@@ -40,11 +40,11 @@ combine_models <- function(newmodels, weights, oldmodel) {
     
     tab_counts <- (newmodels[[i]]) %>% 
       dplyr::rowwise() %>% 
-      dplyr::do(.counts = get_counts(.$.mod))
+      dplyr::do(.counts = get_counts(.data$.mod))
     
     tab_values <- (newmodels[[i]]) %>% 
       dplyr::rowwise() %>% 
-      dplyr::do(.values = get_values(.$.mod))
+      dplyr::do(.values = get_values(.data$.mod))
     
     collapsed_counts <- tab_counts$.counts %>% 
       mapply(

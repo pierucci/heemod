@@ -65,8 +65,8 @@ run_psa <- function(model, psa, N, resample) {
   res <- dplyr::mutate(res, !!!x_tidy)
   
   run_model <- res %>% 
-    dplyr::select(-.index) %>% 
-    dplyr::group_by(.strategy_names) %>%
+    dplyr::select(-.data$.index) %>% 
+    dplyr::group_by(.data$.strategy_names) %>%
     dplyr::summarise_all(mean) %>% 
     as.data.frame()
   
@@ -174,7 +174,7 @@ eval_resample <- function(psa, N) {
         m))) %>%
       compat_lazy_dots()
     res <- dplyr::mutate(res, !!!list_expr) %>% 
-      dplyr::select(-.denom)
+      dplyr::select(-.data$.denom)
   }
   res
 }

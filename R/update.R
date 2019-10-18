@@ -208,17 +208,17 @@ scale.updated_model <- function(x, scale = TRUE, center = TRUE) {
   if (scale) {
     res <- res %>% 
       dplyr::mutate(
-        .cost = .cost / .n_indiv,
-        .effect = .effect / .n_indiv
+        .cost = .data$.cost / .data$.n_indiv,
+        .effect = .data$.effect / .data$.n_indiv
       )
   }
   
   if (center) {
     res <- res %>% 
-      dplyr::group_by(.index) %>% 
+      dplyr::group_by(.data$.index) %>% 
       dplyr::mutate(
-        .cost = (.cost - sum(.cost * (.strategy_names == .bm))),
-        .effect = (.effect - sum(.effect * (.strategy_names == .bm)))
+        .cost = (.data$.cost - sum(.data$.cost * (.data$.strategy_names == .bm))),
+        .effect = (.data$.effect - sum(.data$.effect * (.data$.strategy_names == .bm)))
       ) %>% 
       dplyr::ungroup()
   }

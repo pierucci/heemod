@@ -21,8 +21,8 @@ summary.run_model <- function(object, threshold = NULL, ...) {
   
   res_values <- get_model_results(object) %>% 
     dplyr::select(
-      -.cost,
-      -.effect
+      -.data$.cost,
+      -.data$.effect
     ) %>% 
     as.data.frame()
   
@@ -34,7 +34,7 @@ summary.run_model <- function(object, threshold = NULL, ...) {
     
     res_nmb <- object %>% 
       scale.run_model(center = FALSE) %>% 
-      dplyr::select(".strategy_names", ".cost", ".effect") %>% 
+      dplyr::select(.data$.strategy_names, .data$.cost, .data$.effect) %>% 
       as.data.frame()
     
     res_nmb_strat <- character()
@@ -230,9 +230,9 @@ print_results <- function(res_values, res_comp, res_nmb) {
     f <- function(x) x - min(x)
     res_nmb <- res_nmb %>% 
       dplyr::select(
-        -.strategy_names,
-        -.cost,
-        -.effect
+        -.data$.strategy_names,
+        -.data$.cost,
+        -.data$.effect
       ) %>% 
       dplyr::mutate_all(f)
     
@@ -247,8 +247,8 @@ print_results <- function(res_values, res_comp, res_nmb) {
     
     rownames(res_comp) <- res_comp$.strategy_names
     res_comp <- res_comp %>% 
-      dplyr::select(".dcost", ".deffect",
-                     ".icer", ".dref")
+      dplyr::select(.dcost, .deffect,
+                     .icer, .dref)
     res_comp$.icer <- format(res_comp$.icer)
     res_comp$.icer[res_comp$.icer == "NA"] <- "-"
     res_comp <- res_comp[-1, ]

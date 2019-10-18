@@ -437,7 +437,7 @@ join_fits_to_def <- function(surv_def, fit_tibble) {
   }
   
     fit_tibble <-
-    dplyr::mutate(fit_tibble, type = toupper(type))
+    dplyr::mutate(fit_tibble, type = toupper(.data$type))
   
   ## reduce fit expressions to distribution names
   should_be_fits_2 <- surv_def %>%
@@ -445,7 +445,7 @@ join_fits_to_def <- function(surv_def, fit_tibble) {
       dist = gsub("fit\\((.*)\\)", "\\1", dist) %>%
         gsub("'", "", .) %>%
         gsub('"', '', .),
-      .type = toupper(.type)
+      .type = toupper(.data$.type)
     )
   ok_dist_names <-
     should_be_fits_2$dist %in% c(allowed_fit_distributions, "km")

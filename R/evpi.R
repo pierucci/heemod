@@ -10,19 +10,19 @@ compute_evpi <- function(x, wtp_thresholds) {
       ),
       by = ".key"
     ) %>% 
-    dplyr::group_by(.ceac, .index) %>% 
+    dplyr::group_by(.data$.ceac, .data$.index) %>% 
     dplyr::mutate(
-      .nmb = .effect * .ceac - .cost,
-      .top_strategy = .nmb == max(.nmb),
+      .nmb = .data$.effect * .data$.ceac - .data$.cost,
+      .top_strategy = .data$.nmb == max(.data$.nmb),
       .top_strategy = .top_strategy & cumsum(.top_strategy) == 1,
-      .top_choice = .strategy_names == .strategy_choice
+      .top_choice = .data$.strategy_names == .data$.strategy_choice
       # in case 2 nmb are identical, pick first
     ) %>% 
     dplyr::summarise(
-      .evpi = .nmb[.top_strategy] - .nmb[.top_choice]
+      .evpi = .data$.nmb[.data$.top_strategy] - .data$.nmb[.data$.top_choice]
     ) %>% 
     dplyr::summarise(
-      .evpi = mean(.evpi)
+      .evpi = mean(.data$.evpi)
     )
 }
 

@@ -5,9 +5,9 @@ compute_cov <- function(psa, diff = FALSE, k, k_default = 10, threshold) {
   
   if (diff) {
     tab_psa <- psa$psa %>%
-      dplyr::group_by(.index) %>%
+      dplyr::group_by(.data$.index) %>%
       dplyr::do(compute_icer(
-        ., strategy_order = order(get_effect(get_model(psa))),
+        strategy_order = order(get_effect(get_model(psa))),
         threshold = threshold)) %>%
       dplyr::filter(!is.na(.dref)) %>% 
       dplyr::ungroup()
@@ -16,11 +16,11 @@ compute_cov <- function(psa, diff = FALSE, k, k_default = 10, threshold) {
   }
   
   max_k <- tab_psa %>% 
-    dplyr::select(.dots = c(psa$resamp_par), ".strategy_names") %>% 
-    dplyr::group_by(".strategy_names") %>% 
+    dplyr::select(psa$resamp_par, .data$.strategy_names) %>% 
+    dplyr::group_by(.data$.strategy_names) %>% 
     dplyr::summarise_all(dplyr::n_distinct) %>% 
     dplyr::summarise_all(min) %>% 
-    dplyr::select(-.strategy_names) %>% 
+    dplyr::select(-.data$.strategy_names) %>% 
     unlist()
   
   default_k <- ifelse(
@@ -71,7 +71,7 @@ compute_cov <- function(psa, diff = FALSE, k, k_default = 10, threshold) {
   }
   
   res <- tab_psa %>% 
-    dplyr::group_by(.strategy_names) %>% 
+    dplyr::group_by(.data$.strategy_names) %>% 
     dplyr::do(
       compute_prop_var(mgcv::gam(formula = form_cost, data = .))
     ) %>% 
@@ -80,7 +80,7 @@ compute_cov <- function(psa, diff = FALSE, k, k_default = 10, threshold) {
     ) %>% 
     dplyr::bind_rows(
       tab_psa %>% 
-        dplyr::group_by(.strategy_names) %>% 
+        dplyr::group_by(.data$.strategy_names) %>% 
         dplyr::do(
           compute_prop_var(mgcv::gam(formula = form_effect, data = .))
         ) %>% 
@@ -93,7 +93,7 @@ compute_cov <- function(psa, diff = FALSE, k, k_default = 10, threshold) {
     res <- res %>% 
       dplyr::bind_rows(
         tab_psa %>% 
-          dplyr::group_by(.strategy_names) %>% 
+          dplyr::group_by(.data$.strategy_names) %>% 
           dplyr::do(
             compute_prop_var(mgcv::gam(formula = form_nmb, data = .))
           ) %>% 

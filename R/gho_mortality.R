@@ -180,23 +180,23 @@ pool_data <- function(mr_data, sex, region, country, year) {
       dplyr::left_join(mr_data)
     
     if (exists_col_country && length(unique(pop_weight$COUNTRY)) > 1){
-      pop_weight <- dplyr::filter(pop_weight, !is.na(COUNTRY))
+      pop_weight <- dplyr::filter(pop_weight, !is.na(.data$COUNTRY))
     }
     
     
     pop_group <- if ((is.null(country) || !exists_col_country) && is.null(sex)) {
-      dplyr::group_by(pop_weight, AGEGROUP)
+      dplyr::group_by(pop_weight, .data$AGEGROUP)
       
     } else if (is.null(sex)){
-      dplyr::group_by(pop_weight, AGEGROUP, COUNTRY)
+      dplyr::group_by(pop_weight, .data$AGEGROUP, .data$COUNTRY)
       
     } else if (is.null(country) | !exists_col_country){
-      dplyr::group_by(pop_weight, AGEGROUP, SEX)
+      dplyr::group_by(pop_weight, .data$AGEGROUP, .data$SEX)
     }
     
     dplyr::summarise(
         pop_group,
-        Numeric = sum(Numeric * weight) / sum(weight)
+        Numeric = sum(.data$Numeric * .data$weight) / sum(.data$weight)
       )
   })
 }
