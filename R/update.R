@@ -95,7 +95,7 @@ update.run_model <- function(object, newdata, ...) {
       dplyr::ungroup() %>% 
       dplyr::mutate(!!!ce) %>% 
       dplyr::left_join(
-        dplyr::data_frame(
+        dplyr::tibble(
           .index = seq_len(nrow(newdata)),
           .weights = weights
         )

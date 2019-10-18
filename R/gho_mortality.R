@@ -74,7 +74,7 @@ get_who_mr_memo <- function(age, sex = NULL, region = NULL, country = NULL,
     )
   }
   
-  ref_data <- dplyr::data_frame(
+  ref_data <- tibble(
     AGEGROUP =  trans_age_gho(age)
   )
   
@@ -194,9 +194,9 @@ pool_data <- function(mr_data, sex, region, country, year) {
       dplyr::group_by_(pop_weight, "AGEGROUP", "SEX")
     }
     
-    dplyr::summarise_(
+    dplyr::summarise(
         pop_group,
-        Numeric = ~ sum(Numeric * weight) / sum(weight)
+        Numeric = sum(Numeric * weight) / sum(weight)
       )
   })
 }

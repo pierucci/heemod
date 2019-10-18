@@ -175,7 +175,7 @@ define_correlation_ <- function(.dots) {
   
   list_res <- lapply(seq_along(.dots), f)
   
-  res <- dplyr::data_frame(
+  res <- dplyr::tibble(
     v1 = unlist(list_res[seq(from = 1, to = length(list_res), by = 3)]),
     v2 = unlist(list_res[seq(from = 2, to = length(list_res), by = 3)]),
     cor = unlist(list_res[seq(from = 3, to = length(list_res), by = 3)])

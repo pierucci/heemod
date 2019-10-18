@@ -950,7 +950,7 @@ parse_multi_spec <- function(multi_spec,
   
   occurences <- multi_spec %>% 
     dplyr::group_by_(.dots = group_vars) %>% 
-    dplyr::summarize_(count = ~ n())
+    dplyr::summarize(count = n())
   
   orig_order <- unique(multi_spec[, group_vars, drop = FALSE])
   

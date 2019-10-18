@@ -18,11 +18,11 @@ compute_evpi <- function(x, wtp_thresholds) {
       .top_choice = .strategy_names == .strategy_choice
       # in case 2 nmb are identical, pick first
     ) %>% 
-    dplyr::summarise_(
-      .evpi = ~ .nmb[.top_strategy] - .nmb[.top_choice]
+    dplyr::summarise(
+      .evpi = .nmb[.top_strategy] - .nmb[.top_choice]
     ) %>% 
-    dplyr::summarise_(
-      .evpi = ~ mean(.evpi)
+    dplyr::summarise(
+      .evpi = mean(.evpi)
     )
 }
 
