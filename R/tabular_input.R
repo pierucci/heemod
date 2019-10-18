@@ -949,7 +949,7 @@ parse_multi_spec <- function(multi_spec,
   num_splits <- length(unique_splits)
   
   occurences <- multi_spec %>% 
-    dplyr::group_by_(.dots = group_vars) %>% 
+    dplyr::group_by(!!!syms(as.list(group_vars))) %>% 
     dplyr::summarize(count = n())
   
   orig_order <- unique(multi_spec[, group_vars, drop = FALSE])
@@ -962,7 +962,7 @@ parse_multi_spec <- function(multi_spec,
   }
   
   just_once <- multi_spec %>% 
-    dplyr::group_by_(.dots = group_vars) %>% 
+    dplyr::group_by(!!!syms(as.list(group_vars))) %>% 
     dplyr::filter( n() == 1) %>%
     dplyr::select(-dplyr::one_of(split_on))
   
@@ -975,7 +975,7 @@ parse_multi_spec <- function(multi_spec,
   names(just_once)[1] <- split_on
   
   more_than_once <- multi_spec %>% 
-    dplyr::group_by_(.dots = group_vars) %>%
+    dplyr::group_by(!!! syms(as.list(group_vars))) %>%
     dplyr::filter(n() > 1)
   
   multi_spec <- 

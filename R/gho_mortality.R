@@ -185,13 +185,13 @@ pool_data <- function(mr_data, sex, region, country, year) {
     
     
     pop_group <- if ((is.null(country) || !exists_col_country) && is.null(sex)) {
-      dplyr::group_by_(pop_weight, "AGEGROUP")
+      dplyr::group_by(pop_weight, AGEGROUP)
       
     } else if (is.null(sex)){
-      dplyr::group_by_(pop_weight, "AGEGROUP", "COUNTRY")
+      dplyr::group_by(pop_weight, AGEGROUP, COUNTRY)
       
     } else if (is.null(country) | !exists_col_country){
-      dplyr::group_by_(pop_weight, "AGEGROUP", "SEX")
+      dplyr::group_by(pop_weight, AGEGROUP, SEX)
     }
     
     dplyr::summarise(

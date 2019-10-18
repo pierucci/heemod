@@ -90,7 +90,7 @@ update.run_model <- function(object, newdata, ...) {
   suppressMessages({
     res_total <- res %>% 
       dplyr::rowwise() %>% 
-      dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
+      dplyr::do(get_total_state_values(.$.mod)) %>% 
       dplyr::bind_cols(res %>% dplyr::select(-.mod)) %>% 
       dplyr::ungroup() %>% 
       dplyr::mutate(!!!ce) %>% 
@@ -215,7 +215,7 @@ scale.updated_model <- function(x, scale = TRUE, center = TRUE) {
   
   if (center) {
     res <- res %>% 
-      dplyr::group_by_(".index") %>% 
+      dplyr::group_by(.index) %>% 
       dplyr::mutate(
         .cost = (.cost - sum(.cost * (.strategy_names == .bm))),
         .effect = (.effect - sum(.effect * (.strategy_names == .bm)))
@@ -241,8 +241,8 @@ summary.updated_model <- function(object, ...) {
   
   tab_scaled <- object %>% 
     scale(center = FALSE) %>% 
-    dplyr::group_by_(".index") %>% 
-    dplyr::do_(~ compute_icer(
+    dplyr::group_by(.index) %>% 
+    dplyr::do(compute_icer(
       ., strategy_order = ord_eff)
     )
   

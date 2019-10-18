@@ -34,17 +34,17 @@ combine_models <- function(newmodels, weights, oldmodel) {
     # collapse total values
     collapsed_total_values <- (newmodels[[i]]) %>% 
       dplyr::rowwise() %>% 
-      dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
+      dplyr::do(get_total_state_values(.$.mod)) %>% 
       dplyr::ungroup() %>% 
       dplyr::summarise_all(apply_weights)
     
     tab_counts <- (newmodels[[i]]) %>% 
       dplyr::rowwise() %>% 
-      dplyr::do_(.counts = ~ get_counts(.$.mod))
+      dplyr::do(.counts = get_counts(.$.mod))
     
     tab_values <- (newmodels[[i]]) %>% 
       dplyr::rowwise() %>% 
-      dplyr::do_(.values = ~ get_values(.$.mod))
+      dplyr::do(.values = get_values(.$.mod))
     
     collapsed_counts <- tab_counts$.counts %>% 
       mapply(

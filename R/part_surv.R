@@ -151,10 +151,10 @@ define_part_surv_ <- function(pfs, os, state_names,
 part_survs_from_surv_inputs <- function(surv_inputs, state_names) {
   
   surv_inputs %>%
-    dplyr::group_by_(
-      ~ treatment, ~ set_name, ~ dist, ~ set_def) %>%
-    dplyr::do_(
-      part_surv = ~ make_part_surv_from_small_tibble(
+    dplyr::group_by(
+      treatment, set_name, dist, set_def) %>%
+    dplyr::do(
+      part_surv = make_part_surv_from_small_tibble(
         ., state_names = state_names))
 }
 
@@ -380,8 +380,8 @@ construct_part_surv_tib <-
     ## and now we can rejoin them and continue
     surv_def_4 <-
       rbind(should_be_fits_3, direct_dist_def_3) %>%
-      dplyr::group_by_(~ .strategy, ~ .type) %>%
-      dplyr::do_(fit = ~ join_fits_across_time(.)) %>%
+      dplyr::group_by(.strategy, .type) %>%
+      dplyr::do(fit = join_fits_across_time(.)) %>%
       dplyr::ungroup()
     surv_def_5 <-
       surv_def_4 %>%

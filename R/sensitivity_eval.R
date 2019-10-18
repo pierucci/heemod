@@ -68,13 +68,13 @@ run_dsa <- function(model, dsa) {
     dplyr::rowwise()
   
   res <- res %>% 
-    dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
+    dplyr::do(get_total_state_values(.$.mod)) %>% 
     dplyr::bind_cols(res %>% dplyr::select(-.mod)) %>% 
     dplyr::ungroup() %>% 
     dplyr::mutate(
       .par_value_eval = unlist(e_newdata)) %>% 
     dplyr::mutate(
-      !!!compat_lazy_dots(get_ce(model)))
+      !!! compat_lazy_dots(get_ce(model)))
   
   structure(
     list(

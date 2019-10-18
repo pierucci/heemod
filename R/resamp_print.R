@@ -140,7 +140,7 @@ scale.psa <- function(x, center = TRUE, scale = TRUE) {
   
   if (center) {
     res <- res %>% 
-      dplyr::group_by_(".index") %>% 
+      dplyr::group_by(.index) %>% 
       dplyr::mutate(
         .cost = (.cost - sum(.cost * (.strategy_names == .bm))),
         .effect = (.effect - sum(.effect * (.strategy_names == .bm)))

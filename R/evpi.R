@@ -10,7 +10,7 @@ compute_evpi <- function(x, wtp_thresholds) {
       ),
       by = ".key"
     ) %>% 
-    dplyr::group_by_(~ .ceac, ~ .index) %>% 
+    dplyr::group_by(.ceac, .index) %>% 
     dplyr::mutate(
       .nmb = .effect * .ceac - .cost,
       .top_strategy = .nmb == max(.nmb),

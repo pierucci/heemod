@@ -130,12 +130,12 @@ plot.dsa <- function(x, type = c("simple", "difference"),
     dplyr::filter(.strategy_names %in% strategy) %>%
     dplyr::arrange(
       .par_names, !!sym(var_plot)) %>%
-    dplyr::group_by_(~ .par_names, ~ .strategy_names) %>%
+    dplyr::group_by(.par_names, .strategy_names) %>%
     dplyr::mutate(.hjust = 1 - (row_number() - 1))
   
   if (remove_ns) {
     tab <- tab %>% 
-      dplyr::group_by_(".par_names") %>% 
+      dplyr::group_by(.par_names) %>% 
       dplyr::filter(
         ! all(var_col == "=")
       )
@@ -150,7 +150,7 @@ plot.dsa <- function(x, type = c("simple", "difference"),
   if (widest_on_top) {
     tab$.par_names <- stats::reorder(
       tab$.par_names,
-      (tab %>% dplyr::group_by_(~ .par_names) %>% 
+      (tab %>% dplyr::group_by(.par_names) %>% 
          dplyr::mutate(!!!x_tidy))$d
     )
   }
@@ -258,7 +258,7 @@ scale.dsa <- function(x, center = TRUE, scale = TRUE) {
   
   if (center) {
     res <- res %>% 
-      dplyr::group_by_(~ .par_names, ~ .par_value) %>% 
+      dplyr::group_by(.par_names, .par_value) %>% 
       dplyr::mutate(
         .cost = .cost - sum(.cost * (.strategy_names == .bm)),
         .effect = .effect - sum(.effect * (.strategy_names == .bm))
@@ -272,8 +272,8 @@ scale.dsa <- function(x, center = TRUE, scale = TRUE) {
 summary.dsa <- function(object, ...) {
   res <- object %>% 
     scale(...) %>% 
-    dplyr::group_by_(~ .par_names, ~ .par_value)  %>% 
-    dplyr::do_(~ compute_icer(
+    dplyr::group_by(.par_names, .par_value)  %>% 
+    dplyr::do(compute_icer(
       ., strategy_order = order(get_effect(get_model(object)))
     )) %>% 
     dplyr::ungroup()

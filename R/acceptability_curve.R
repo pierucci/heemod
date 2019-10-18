@@ -21,7 +21,7 @@ acceptability_curve <- function(x, wtp_thresholds) {
       ),
       by = ".key"
     ) %>% 
-    dplyr::group_by_(~ .index, ~ .ceac) %>% 
+    dplyr::group_by(.index, .ceac) %>% 
     dplyr::mutate(
       .nmb = .effect * .ceac - .cost,
       .top_strategy = .nmb == max(.nmb),

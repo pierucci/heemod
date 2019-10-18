@@ -42,7 +42,7 @@ run_psa <- function(model, psa, N, resample) {
           newdata = newdata
         ) %>% 
           dplyr::rowwise() %>% 
-          dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
+          dplyr::do(get_total_state_values(.$.mod)) %>% 
           dplyr::bind_cols(newdata) %>% 
           dplyr::ungroup()
       )
@@ -66,7 +66,7 @@ run_psa <- function(model, psa, N, resample) {
   
   run_model <- res %>% 
     dplyr::select(-.index) %>% 
-    dplyr::group_by_(".strategy_names") %>%
+    dplyr::group_by(.strategy_names) %>%
     dplyr::summarise_all(mean) %>% 
     as.data.frame()
   
