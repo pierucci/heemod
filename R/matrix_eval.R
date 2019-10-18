@@ -84,11 +84,13 @@ eval_transition.uneval_matrix <- function(x, parameters) {
   # update calls to dispatch_strategy()
   x <- dispatch_strategy_hack(x)
   
-  tab_res <- dplyr::mutate_(
+  x_tidy <- compat_lazy_dots(x, caller_env)
+  
+  tab_res <- dplyr::mutate(
     parameters,
-    .dots = c(
-      lazyeval::lazy_dots(C = -pi),
-      x))[names(x)]
+    C = -pi,
+    !!!x_tidy
+  )[names(x)]
   
   n <- get_matrix_order(x)
   

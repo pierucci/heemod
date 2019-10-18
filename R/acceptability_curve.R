@@ -22,16 +22,16 @@ acceptability_curve <- function(x, wtp_thresholds) {
       by = ".key"
     ) %>% 
     dplyr::group_by_(~ .index, ~ .ceac) %>% 
-    dplyr::mutate_(
-      .nmb = ~ .effect * .ceac - .cost,
-      .top_strategy = ~ .nmb == max(.nmb),
-      .top_strategy = ~ .top_strategy & cumsum(.top_strategy) == 1
+    dplyr::mutate(
+      .nmb = .effect * .ceac - .cost,
+      .top_strategy = .nmb == max(.nmb),
+      .top_strategy = .top_strategy & cumsum(.top_strategy) == 1
       # in case 2 nmb are identical, pick first
     ) %>% 
-    dplyr::group_by_(~ .ceac, ~ .strategy_names) %>% 
-    dplyr::summarise_(.n = ~ sum(.top_strategy)) %>% 
-    dplyr::group_by_(~ .ceac) %>% 
-    dplyr::mutate_(.p = ~ .n / sum(.n))
+    dplyr::group_by(.ceac, .strategy_names) %>% 
+    dplyr::summarise(.n = sum(.top_strategy)) %>% 
+    dplyr::group_by(.ceac) %>% 
+    dplyr::mutate(.p = .n / sum(.n))
 }
 
 generate_wtp <- function(max_wtp,

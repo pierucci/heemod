@@ -57,9 +57,12 @@ run_psa <- function(model, psa, N, resample) {
     list_res[[n]]$.index <- index
   }
   
+  x_tidy <- get_ce(model) %>%
+    compat_lazy_dots()
+  
   res <- 
     dplyr::bind_rows(list_res)
-  res <- dplyr::mutate_(res, .dots = get_ce(model))
+  res <- dplyr::mutate(res, !!!x_tidy)
   
   run_model <- res %>% 
     dplyr::select(-.index) %>% 
@@ -168,8 +171,9 @@ eval_resample <- function(psa, N) {
         lapply(
           m,
           function(x) as.call(list(as.name("/"), as.name(x), as.name(".denom")))),
-        m)))
-    res <- dplyr::mutate_(res, .dots = list_expr) %>% 
+        m))) %>%
+      compat_lazy_dots()
+    res <- dplyr::mutate(res, !!!list_expr) %>% 
       dplyr::select(-.denom)
   }
   res

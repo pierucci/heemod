@@ -40,11 +40,11 @@ get_frontier.default <- function(x) {
     x$.cost <- x$.cost - cbm
     
     x <- x %>% 
-      dplyr::filter_(~ .effect >= 0) %>% # not needed in theory
-      dplyr::mutate_(
-        .icer = ~ .cost / .effect
+      dplyr::filter(.effect >= 0) %>% # not needed in theory
+      dplyr::mutate(
+        .icer = .cost / .effect
       ) %>% 
-      dplyr::arrange_(~.icer, ~ .effect)
+      dplyr::arrange(.icer, .effect)
     
     enext <- dplyr::slice(x, 1)$.effect # relies on NaN last sorting
     

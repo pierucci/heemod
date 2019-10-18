@@ -73,8 +73,8 @@ run_dsa <- function(model, dsa) {
     dplyr::ungroup() %>% 
     dplyr::mutate(
       .par_value_eval = unlist(e_newdata)) %>% 
-    dplyr::mutate_(
-      .dots = get_ce(model))
+    dplyr::mutate(
+      !!!compat_lazy_dots(get_ce(model)))
   
   structure(
     list(

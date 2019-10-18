@@ -80,7 +80,7 @@ combine_models <- function(newmodels, weights, oldmodel) {
   
   res <- 
     dplyr::bind_rows(list_res) %>%
-    dplyr::mutate_(.dots = get_ce(oldmodel))
+    dplyr::mutate(!!!compat_lazy_dots(get_ce(oldmodel)))
   
   root_strategy <- get_root_strategy(res)
   noncomparable_strategy <- get_noncomparable_strategy(res)

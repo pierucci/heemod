@@ -61,7 +61,8 @@ update.run_model <- function(object, newdata, ...) {
     weights <- rep(1, nrow(newdata))
   }
   
-  ce <- get_ce(object)
+  ce <- get_ce(object) %>%
+    compat_lazy_dots()
   list_res <- list()
   
   for (n in get_strategy_names(object)) {
@@ -92,7 +93,7 @@ update.run_model <- function(object, newdata, ...) {
       dplyr::do_(~ get_total_state_values(.$.mod)) %>% 
       dplyr::bind_cols(res %>% dplyr::select(-.mod)) %>% 
       dplyr::ungroup() %>% 
-      dplyr::mutate_(.dots = ce) %>% 
+      dplyr::mutate(!!!ce) %>% 
       dplyr::left_join(
         dplyr::data_frame(
           .index = seq_len(nrow(newdata)),
@@ -206,18 +207,18 @@ scale.updated_model <- function(x, scale = TRUE, center = TRUE) {
   
   if (scale) {
     res <- res %>% 
-      dplyr::mutate_(
-        .cost = ~ .cost / .n_indiv,
-        .effect = ~ .effect / .n_indiv
+      dplyr::mutate(
+        .cost = .cost / .n_indiv,
+        .effect = .effect / .n_indiv
       )
   }
   
   if (center) {
     res <- res %>% 
       dplyr::group_by_(".index") %>% 
-      dplyr::mutate_(
-        .cost = ~ (.cost - sum(.cost * (.strategy_names == .bm))),
-        .effect = ~ (.effect - sum(.effect * (.strategy_names == .bm)))
+      dplyr::mutate(
+        .cost = (.cost - sum(.cost * (.strategy_names == .bm))),
+        .effect = (.effect - sum(.effect * (.strategy_names == .bm)))
       ) %>% 
       dplyr::ungroup()
   }

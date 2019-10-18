@@ -17,6 +17,7 @@ eval_parameters <- function(x, cycles = 1,
                             strategy_name = NA) {
   # update calls to dispatch_strategy()
   x <- dispatch_strategy_hack(x) 
+  
   old_classes <- class(x)
   if (length(x)) x <- structure(x[!has_state_time(x)],
                            class = old_classes)
@@ -27,11 +28,13 @@ eval_parameters <- function(x, cycles = 1,
     strategy = strategy_name
   )
   
+  x_tidy <- compat_lazy_dots(x)
+  
   # other datastructure?
   res <- try(
-    dplyr::mutate_(
+    dplyr::mutate(
       start_tibble,
-      .dots = x
+      !!!x_tidy
     ), silent = TRUE
   )
   
@@ -58,9 +61,9 @@ eval_parameters <- function(x, cycles = 1,
     long_res <- lapply(
       seq_along(x),
       function(i) {
-        try(dplyr::mutate_(
+        try(dplyr::mutate(
           start_tibble,
-          .dots = x[seq_len(i)]
+          !!!x_tidy[seq_len(i)]
         ), silent = TRUE)
       }
     )
@@ -86,8 +89,9 @@ eval_parameters <- function(x, cycles = 1,
 
 eval_init <- function(x, parameters) {
   to_keep <- names(x)
+  x_tidy <- compat_lazy_dots(x)
   if (length(to_keep)) {
-    dplyr::mutate_(.data = parameters, .dots = x)[to_keep]
+    dplyr::mutate(.data = parameters, !!!x_tidy)[to_keep]
   } else {
     tibble::tibble()
   }

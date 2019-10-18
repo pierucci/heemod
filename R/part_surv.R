@@ -396,7 +396,7 @@ join_fits_across_time <- function(this_part){
 if(nrow(this_part) == 1) return(this_part$fit[[1]])
   if ("until" %in% names(this_part)) {
     this_part <-
-      dplyr::arrange_(this_part, ~ until)
+      dplyr::arrange(this_part, until)
     
     join_(dots = this_part$fit, 
              at= this_part$until[!is.na(this_part$until)])
@@ -437,15 +437,15 @@ join_fits_to_def <- function(surv_def, fit_tibble) {
   }
   
     fit_tibble <-
-    dplyr::mutate_(fit_tibble, type = ~ toupper(type))
+    dplyr::mutate(fit_tibble, type = toupper(type))
   
   ## reduce fit expressions to distribution names
   should_be_fits_2 <- surv_def %>%
-    dplyr::mutate_(
-      dist = ~ gsub("fit\\((.*)\\)", "\\1", dist) %>%
+    dplyr::mutate(
+      dist = gsub("fit\\((.*)\\)", "\\1", dist) %>%
         gsub("'", "", .) %>%
         gsub('"', '', .),
-      .type = ~ toupper(.type)
+      .type = toupper(.type)
     )
   ok_dist_names <-
     should_be_fits_2$dist %in% c(allowed_fit_distributions, "km")

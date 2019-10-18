@@ -1389,7 +1389,7 @@ check_survival_specs <-
     ## our checks will make sure that we have the right entries,
     ##   and that they are in the right order
     surv_specs <- 
-      surv_specs %>% dplyr::arrange_(~ treatment, ~ desc(type))
+      surv_specs %>% dplyr::arrange(treatment, desc(type))
     
     os_ind <- grep("os", surv_specs$type, ignore.case = TRUE)
     pfs_ind <- grep("pfs", surv_specs$type, ignore.case = TRUE)

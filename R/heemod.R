@@ -94,6 +94,8 @@
 #'   
 #' @importFrom tibble tibble
 #' @importFrom tibble tibble_
+#' 
+#' @import rlang
 NULL
 
 #' @export

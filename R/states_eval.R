@@ -16,8 +16,10 @@ eval_state_list <- function(x, parameters) {
     # update calls to dispatch_strategy()
     x <- dispatch_strategy_hack(x)
     
+    x_tidy <- compat_lazy_dots(x)
+    
     # bottleneck!
-    dplyr::mutate_(parameters, .dots = x)[c("markov_cycle",
+    dplyr::mutate(parameters, !!!x_tidy)[c("markov_cycle",
                                             names(x))]
   }
   

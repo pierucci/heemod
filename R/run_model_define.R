@@ -118,10 +118,7 @@ run_model_ <- function(uneval_strategy_list,
     .effect = effect
   )
   
-  ce <- c(
-    lazyeval::lazy_dots(),
-    list_ce
-  )
+  ce <- compat_lazy_dots(list_ce)
   
   strategy_names <- names(uneval_strategy_list)
   
@@ -177,7 +174,7 @@ run_model_ <- function(uneval_strategy_list,
   
   res <- 
     dplyr::bind_rows(list_res) %>%
-      dplyr::mutate_(.dots = ce)
+      dplyr::mutate(!!!ce)
   
   root_strategy <- get_root_strategy(res)
   noncomparable_strategy <- get_noncomparable_strategy(res)
@@ -248,7 +245,7 @@ get_root_strategy.default <- function(x, ...) {
     return(invisible(NULL))
   }
   (x %>% 
-      dplyr::arrange_(~ .cost, ~ desc(.effect)))$.strategy_names[1]
+      dplyr::arrange(.cost, desc(.effect)))$.strategy_names[1]
 }
 
 get_root_strategy.run_model <- function(x, ...) {
@@ -265,7 +262,7 @@ get_noncomparable_strategy.default <- function(x, ...) {
     return(invisible(NULL))
   }
   (x %>% 
-      dplyr::arrange_(.dots = list(~ .effect)) %>% 
+      dplyr::arrange(.effect) %>% 
       dplyr::slice(1))$.strategy_names
 }
 
@@ -321,7 +318,7 @@ get_values.run_model <- function(x, ...) {
       get_strategy_names(x),
       function(.n) {
         get_values(x$eval_strategy_list[[.n]]) %>% 
-          dplyr::mutate_(.strategy_names = ~ .n)
+          dplyr::mutate(.strategy_names = .n)
       }
     )
   )
@@ -372,9 +369,9 @@ get_counts.run_model <- function(x, ...) {
       get_strategy_names(x),
       function(.n) {
         get_counts(x$eval_strategy_list[[.n]]) %>% 
-          dplyr::mutate_(
-            .strategy_names = ~ .n,
-            markov_cycle = ~ row_number())
+          dplyr::mutate(
+            .strategy_names = .n,
+            markov_cycle = row_number())
       }
     )
   )
