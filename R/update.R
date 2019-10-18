@@ -191,8 +191,8 @@ plot.updated_model <- function(x, type = c("simple", "difference",
     }
   )
   summary(x)$scaled_results %>% 
-    dplyr::filter_(
-      substitute(.strategy_names %in% .x, list(.x = strategy))
+    dplyr::filter(
+      .strategy_names %in% strategy
     ) %>% 
     ggplot2::ggplot(ggplot2::aes_string(x = x_var)) +
     ggplot2::geom_histogram(...) +
@@ -249,7 +249,7 @@ summary.updated_model <- function(object, ...) {
   for (.n in strategy_names) {
     
     tmp <- tab_scaled %>%
-      dplyr::filter_(~ .strategy_names == .n)
+      dplyr::filter(.strategy_names == .n)
     
     list_res <- c(
       list_res,

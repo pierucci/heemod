@@ -30,7 +30,7 @@ get_frontier.default <- function(x) {
   if (stop_frontier(x)) {
     sort(
       (x %>% 
-         dplyr::filter_(~ .cost == min(.cost)))$.strategy_names)
+         dplyr::filter(.cost == min(.cost)))$.strategy_names)
   } else {
     bm <- get_root_strategy(x)
     ebm <- x$.effect[x$.strategy_names == bm]
@@ -48,13 +48,11 @@ get_frontier.default <- function(x) {
     
     enext <- dplyr::slice(x, 1)$.effect # relies on NaN last sorting
     
-    x_res <- x %>% dplyr::filter_(
-      substitute(.effect >= enext,
-                 list(enext = enext)))
+    x_res <- x %>% dplyr::filter(.effect >= enext)
     # 0/0 = NaN = NA
     # x/0 = Inf != NA
     # is.na(.icer) excludes same effect more cost
-    c(sort((dplyr::filter_(x, ~ is.na(.icer)))$.strategy_names),
+    c(sort((dplyr::filter(x, is.na(.icer)))$.strategy_names),
       get_frontier(x_res))
   }
 }
@@ -66,5 +64,5 @@ get_frontier.run_model <- function(x) {
 stop_frontier <- function(x) {
   length(unique(x$.effect)) == 1 ||
     get_root_strategy(x) %in% 
-    (dplyr::filter_(x, ~ .effect == max(.effect)))$.strategy_names
+    (dplyr::filter(x, .effect == max(.effect)))$.strategy_names
 }

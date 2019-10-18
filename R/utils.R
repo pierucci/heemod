@@ -409,7 +409,7 @@ pretty_names <- function(x) {
            "ICER", "Ref.",
            "Strategy")
   ) %>% 
-    dplyr::filter_(~ from %in% n)
+    dplyr::filter(from %in% n)
   
   n[ref$from] <- ref$to
   

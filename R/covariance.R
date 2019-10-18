@@ -9,7 +9,7 @@ compute_cov <- function(psa, diff = FALSE, k, k_default = 10, threshold) {
       dplyr::do_(~ compute_icer(
         ., strategy_order = order(get_effect(get_model(psa))),
         threshold = threshold)) %>%
-      dplyr::filter_(~ ! is.na(.dref)) %>% 
+      dplyr::filter(!is.na(.dref)) %>% 
       dplyr::ungroup()
   } else {
     tab_psa <- psa$psa

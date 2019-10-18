@@ -300,7 +300,7 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
       group_vars = c("from", "to"))
     tab_undefined <- 
       dplyr::bind_rows(tm_info) %>%
-      dplyr::filter_(~ is.na(prob))
+      dplyr::filter(is.na(prob))
     
     if (nrow(tab_undefined) > 0) {
       rownames(tab_undefined) <- NULL
@@ -344,7 +344,7 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
   
   if(trans_type == "part_surv")
     tm_info <- 
-      dplyr::filter_(tm_info, ~ .strategy %in% names(state_info))
+      dplyr::filter(tm_info, .strategy %in% names(state_info))
   else
     tm_info <- tm_info[names(state_info)]
 
@@ -354,9 +354,9 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
     seq_along(state_info),
     function(i) {
       if(inherits(tm_info, "tbl_df"))
-        this_tm <- dplyr::filter_(
+        this_tm <- dplyr::filter(
           tm_info,
-          ~ .strategy == names(state_info)[i])$part_surv[[1]]
+          .strategy == names(state_info)[i])$part_surv[[1]]
       else
         this_tm <- tm_info[[i]]
       create_model_from_tabular(state_info[[i]], 
@@ -963,7 +963,7 @@ parse_multi_spec <- function(multi_spec,
   
   just_once <- multi_spec %>% 
     dplyr::group_by_(.dots = group_vars) %>% 
-    dplyr::filter_(~ n() == 1) %>%
+    dplyr::filter( n() == 1) %>%
     dplyr::select(-dplyr::one_of(split_on))
   
   just_once <- data.frame(
@@ -976,7 +976,7 @@ parse_multi_spec <- function(multi_spec,
   
   more_than_once <- multi_spec %>% 
     dplyr::group_by_(.dots = group_vars) %>%
-    dplyr::filter_(~ n() > 1)
+    dplyr::filter(n() > 1)
   
   multi_spec <- 
     dplyr::bind_rows(just_once, as.data.frame(more_than_once))

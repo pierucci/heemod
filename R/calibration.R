@@ -340,8 +340,8 @@ define_calibration_fn <- function(type, strategy_names,
       seq_along(ex_list),
       function(i) {
         (f_list[[i]](x) %>% 
-           dplyr::filter_(
-             .dots = ex_list[[i]]
+           dplyr::filter(
+             ex_list[[i]]
            ))[[type[i]]]
       })
     )

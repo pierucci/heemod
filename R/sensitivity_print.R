@@ -127,10 +127,7 @@ plot.dsa <- function(x, type = c("simple", "difference"),
       .col_icer = ifelse(.icer > .icer_ref, ">",
                            ifelse(.icer == .icer_ref, "=", "<"))
     ) %>% 
-    dplyr::filter_(
-      substitute(.strategy_names %in% strategy,
-                 list(strategy = strategy))
-    ) %>%
+    dplyr::filter(.strategy_names %in% strategy) %>%
     dplyr::arrange(
       .par_names, !!sym(var_plot)) %>%
     dplyr::group_by_(~ .par_names, ~ .strategy_names) %>%
@@ -139,8 +136,8 @@ plot.dsa <- function(x, type = c("simple", "difference"),
   if (remove_ns) {
     tab <- tab %>% 
       dplyr::group_by_(".par_names") %>% 
-      dplyr::filter_(
-        substitute(! all(var_col == "="), list(var_col = as.name(var_col)))
+      dplyr::filter(
+        ! all(var_col == "=")
       )
   }
   x_lazy <- lazyeval::as.lazy_dots(list(

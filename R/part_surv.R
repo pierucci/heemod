@@ -348,8 +348,8 @@ construct_part_surv_tib <-
     ## we handle directly defined distributions
     ##   (those defined with define_survival())
     ##   separately from fits
-    with_direct_dist <- dplyr::filter_(surv_def, ~ grepl("^define_survival", dist))
-    should_be_fits <- dplyr::filter_(surv_def, ~ !grepl("^define_survival", dist))
+    with_direct_dist <- dplyr::filter(surv_def, grepl("^define_survival", dist))
+    should_be_fits <- dplyr::filter(surv_def, !grepl("^define_survival", dist))
     
     should_be_fits_3 <- should_be_fits
     if (nrow(should_be_fits) > 0) {
@@ -385,9 +385,9 @@ construct_part_surv_tib <-
       dplyr::ungroup()
     surv_def_5 <-
       surv_def_4 %>%
-      dplyr::group_by_(~ .strategy) %>%
-      dplyr::rename_(type = ~ .type) %>%
-      dplyr::do_(part_surv = ~ make_part_surv_from_small_tibble(.,
+      dplyr::group_by(.strategy) %>%
+      dplyr::rename(type = .type) %>%
+      dplyr::do(part_surv = make_part_surv_from_small_tibble(.,
                                                                 state_names = state_names))
     surv_def_5
   }
