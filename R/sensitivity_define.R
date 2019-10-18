@@ -83,7 +83,7 @@ define_dsa_ <- function(par_names, low_dots, high_dots) {
   structure(
     list(
       dsa = tab %>% 
-        dplyr::mutate_all(dplyr::funs(clean_null)),
+        dplyr::mutate_all(clean_null),
       variables = par_names,
       low_dots = low_dots,
       high_dots = high_dots

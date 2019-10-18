@@ -38,7 +38,7 @@ run_dsa <- function(model, dsa) {
     res <- tab %>% 
       dplyr::mutate_if(
         names(tab) %in% dsa$variables,
-        dplyr::funs(to_text_dots),
+        to_text_dots,
         name = FALSE
       )
     

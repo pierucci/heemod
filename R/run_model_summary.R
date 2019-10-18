@@ -234,7 +234,7 @@ print_results <- function(res_values, res_comp, res_nmb) {
         -.cost,
         -.effect
       ) %>% 
-      dplyr::mutate_all(dplyr::funs(f))
+      dplyr::mutate_all(f)
     
     rownames(res_nmb) <- .strategy_names
     print(res_nmb)
