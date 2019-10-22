@@ -134,7 +134,7 @@ get_gho_mr <- function(sex, region, country, year) {
   
   mr_data_year <- mr_data[mr_data$YEAR == study_year, ]
   
-  if (nrow(mr_data_year) %% 44 != 0) {
+  if (nrow(mr_data_year) %% 38 != 0) {
     stop("Strange GHO mortality data.")
   }
   
@@ -166,7 +166,7 @@ pool_data <- function(mr_data, sex, region, country, year) {
   if (nrow(pop_data) == 0) {
     stop("No population structure for the selected year, cannot pool rates.")
   }
-  if (nrow(pop_data) %% 44 != 0) {
+  if (nrow(pop_data) %% 38 != 0) {
     stop("Strange population structure data.")
   }
   exists_col_country <- "COUNTRY" %in% colnames(pop_data)
@@ -175,7 +175,7 @@ pool_data <- function(mr_data, sex, region, country, year) {
   suppressMessages({
     pop_weight <- pop_data %>% 
       dplyr::select(
-        .dots = c(cols, weight = "Numeric")
+        c(cols, weight = "Numeric")
       ) %>% 
       dplyr::left_join(mr_data)
     

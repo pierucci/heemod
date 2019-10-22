@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Probabilistic Uncertainty Analysis • heemod</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Probabilistic Uncertainty Analysis">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -30,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">heemod</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.11.0</span>
       </span>
     </div>
 
@@ -38,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -91,14 +92,7 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/pierucci/heemod">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul>
+<ul class="nav navbar-nav navbar-right"></ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -107,14 +101,15 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Probabilistic Uncertainty Analysis</h1>
             
-            <h4 class="date">2019-02-22</h4>
+            <h4 class="date">2019-10-22</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/pierucci/heemod/blob/master/vignettes/e_probabilistic.Rmd"><code>vignettes/e_probabilistic.Rmd</code></a></small>
+      
       <div class="hidden name"><code>e_probabilistic.Rmd</code></div>
 
     </div>
@@ -127,113 +122,113 @@
 <a href="#model-definition" class="anchor"></a>Model definition</h2>
 <p>We will start by re-specifying the deterministic model of HIV therapy described previously (a monotherapy strategy <code>mono</code> and combined therapy strategy <code>comb</code>).</p>
 <p>But instead of defining transition probabilities and state values directly in <code><a href="../reference/define_transition.html">define_transition()</a></code> or <code><a href="../reference/define_state.html">define_state()</a></code> (as in the previous vignette), parameters will be defined first in a <code><a href="../reference/define_parameters.html">define_parameters()</a></code> step. This is because only parameters defined this way can be resampled in a probabilistic analysis.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">param &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_parameters.html">define_parameters</a></span>(
-  <span class="dt">rr =</span> <span class="fl">.509</span>,
-  
-  <span class="dt">p_AA_mono =</span> <span class="fl">.721</span>,
-  <span class="dt">p_AB_mono =</span> <span class="fl">.202</span>,
-  <span class="dt">p_AC_mono =</span> <span class="fl">.067</span>,
-  <span class="dt">p_AD_mono =</span> <span class="fl">.010</span>,
-  
-  <span class="dt">p_BC_mono =</span> <span class="fl">.407</span>,
-  <span class="dt">p_BD_mono =</span> <span class="fl">.012</span>,
-  
-  <span class="dt">p_CD_mono =</span> <span class="fl">.250</span>,
-  
-  
-  <span class="dt">p_AB_comb =</span> p_AB_mono <span class="op">*</span><span class="st"> </span>rr,
-  <span class="dt">p_AC_comb =</span> p_AC_mono <span class="op">*</span><span class="st"> </span>rr,
-  <span class="dt">p_AD_comb =</span> p_AD_mono <span class="op">*</span><span class="st"> </span>rr,
-  
-  <span class="dt">p_BC_comb =</span> p_BC_mono <span class="op">*</span><span class="st"> </span>rr,
-  <span class="dt">p_BD_comb =</span> p_BD_mono <span class="op">*</span><span class="st"> </span>rr,
-  
-  <span class="dt">p_CD_comb =</span> p_CD_mono <span class="op">*</span><span class="st"> </span>rr,
-  
-  <span class="dt">p_AA_comb =</span> <span class="dv">1</span> <span class="op">-</span><span class="st"> </span>(p_AB_comb <span class="op">+</span><span class="st"> </span>p_AC_comb <span class="op">+</span><span class="st"> </span>p_AD_comb),
-  
-  
-  <span class="dt">cost_zido =</span> <span class="dv">2278</span>,
-  <span class="dt">cost_lami =</span> <span class="dv">2086</span>,
-  
-  <span class="dt">cost_A =</span> <span class="dv">2756</span>,
-  <span class="dt">cost_B =</span> <span class="dv">3052</span>,
-  <span class="dt">cost_C =</span> <span class="dv">9007</span>
-)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">param &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_parameters.html">define_parameters</a></span>(</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">  <span class="dt">rr =</span> <span class="fl">.509</span>,</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">  </a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">  <span class="dt">p_AA_mono =</span> <span class="fl">.721</span>,</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">  <span class="dt">p_AB_mono =</span> <span class="fl">.202</span>,</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">  <span class="dt">p_AC_mono =</span> <span class="fl">.067</span>,</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7">  <span class="dt">p_AD_mono =</span> <span class="fl">.010</span>,</a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">  </a>
+<a class="sourceLine" id="cb1-9" data-line-number="9">  <span class="dt">p_BC_mono =</span> <span class="fl">.407</span>,</a>
+<a class="sourceLine" id="cb1-10" data-line-number="10">  <span class="dt">p_BD_mono =</span> <span class="fl">.012</span>,</a>
+<a class="sourceLine" id="cb1-11" data-line-number="11">  </a>
+<a class="sourceLine" id="cb1-12" data-line-number="12">  <span class="dt">p_CD_mono =</span> <span class="fl">.250</span>,</a>
+<a class="sourceLine" id="cb1-13" data-line-number="13">  </a>
+<a class="sourceLine" id="cb1-14" data-line-number="14">  </a>
+<a class="sourceLine" id="cb1-15" data-line-number="15">  <span class="dt">p_AB_comb =</span> p_AB_mono <span class="op">*</span><span class="st"> </span>rr,</a>
+<a class="sourceLine" id="cb1-16" data-line-number="16">  <span class="dt">p_AC_comb =</span> p_AC_mono <span class="op">*</span><span class="st"> </span>rr,</a>
+<a class="sourceLine" id="cb1-17" data-line-number="17">  <span class="dt">p_AD_comb =</span> p_AD_mono <span class="op">*</span><span class="st"> </span>rr,</a>
+<a class="sourceLine" id="cb1-18" data-line-number="18">  </a>
+<a class="sourceLine" id="cb1-19" data-line-number="19">  <span class="dt">p_BC_comb =</span> p_BC_mono <span class="op">*</span><span class="st"> </span>rr,</a>
+<a class="sourceLine" id="cb1-20" data-line-number="20">  <span class="dt">p_BD_comb =</span> p_BD_mono <span class="op">*</span><span class="st"> </span>rr,</a>
+<a class="sourceLine" id="cb1-21" data-line-number="21">  </a>
+<a class="sourceLine" id="cb1-22" data-line-number="22">  <span class="dt">p_CD_comb =</span> p_CD_mono <span class="op">*</span><span class="st"> </span>rr,</a>
+<a class="sourceLine" id="cb1-23" data-line-number="23">  </a>
+<a class="sourceLine" id="cb1-24" data-line-number="24">  <span class="dt">p_AA_comb =</span> <span class="dv">1</span> <span class="op">-</span><span class="st"> </span>(p_AB_comb <span class="op">+</span><span class="st"> </span>p_AC_comb <span class="op">+</span><span class="st"> </span>p_AD_comb),</a>
+<a class="sourceLine" id="cb1-25" data-line-number="25">  </a>
+<a class="sourceLine" id="cb1-26" data-line-number="26">  </a>
+<a class="sourceLine" id="cb1-27" data-line-number="27">  <span class="dt">cost_zido =</span> <span class="dv">2278</span>,</a>
+<a class="sourceLine" id="cb1-28" data-line-number="28">  <span class="dt">cost_lami =</span> <span class="dv">2086</span>,</a>
+<a class="sourceLine" id="cb1-29" data-line-number="29">  </a>
+<a class="sourceLine" id="cb1-30" data-line-number="30">  <span class="dt">cost_A =</span> <span class="dv">2756</span>,</a>
+<a class="sourceLine" id="cb1-31" data-line-number="31">  <span class="dt">cost_B =</span> <span class="dv">3052</span>,</a>
+<a class="sourceLine" id="cb1-32" data-line-number="32">  <span class="dt">cost_C =</span> <span class="dv">9007</span></a>
+<a class="sourceLine" id="cb1-33" data-line-number="33">)</a></code></pre></div>
 <p>We need to define <code>p_AA_mono</code> and <code>p_AA_comb</code> in <code><a href="../reference/define_parameters.html">define_parameters()</a></code> because we will need to resample that value. Only values defined with <code><a href="../reference/define_parameters.html">define_parameters()</a></code> can be resampled. So we cannot use the complement alias <code>C</code> to specify <code>p_AA_comb</code> in <code><a href="../reference/define_transition.html">define_transition()</a></code>, as we did before.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mat_trans_mono &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_transition.html">define_transition</a></span>(
-  p_AA_mono, p_AB_mono, p_AC_mono, p_AD_mono,
-  <span class="dv">0</span>,         C,         p_BC_mono, p_BD_mono,
-  <span class="dv">0</span>,         <span class="dv">0</span>,         C,         p_CD_mono,
-  <span class="dv">0</span>,         <span class="dv">0</span>,         <span class="dv">0</span>,         <span class="dv">1</span>
-)</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">mat_trans_mono &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_transition.html">define_transition</a></span>(</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">  p_AA_mono, p_AB_mono, p_AC_mono, p_AD_mono,</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">  <span class="dv">0</span>,         C,         p_BC_mono, p_BD_mono,</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">  <span class="dv">0</span>,         <span class="dv">0</span>,         C,         p_CD_mono,</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">  <span class="dv">0</span>,         <span class="dv">0</span>,         <span class="dv">0</span>,         <span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">)</a></code></pre></div>
 <pre><code>## No named state -&gt; generating names.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mat_trans_comb &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_transition.html">define_transition</a></span>(
-  p_AA_comb, p_AB_comb, p_AC_comb, p_AD_comb,
-  <span class="dv">0</span>,         C,         p_BC_comb, p_BD_comb,
-  <span class="dv">0</span>,         <span class="dv">0</span>,         C,         p_CD_comb,
-  <span class="dv">0</span>,         <span class="dv">0</span>,         <span class="dv">0</span>,         <span class="dv">1</span>
-)</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">mat_trans_comb &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_transition.html">define_transition</a></span>(</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">  p_AA_comb, p_AB_comb, p_AC_comb, p_AD_comb,</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">  <span class="dv">0</span>,         C,         p_BC_comb, p_BD_comb,</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">  <span class="dv">0</span>,         <span class="dv">0</span>,         C,         p_CD_comb,</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">  <span class="dv">0</span>,         <span class="dv">0</span>,         <span class="dv">0</span>,         <span class="dv">1</span></a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">)</a></code></pre></div>
 <pre><code>## No named state -&gt; generating names.</code></pre>
 <p>State definition remains the same in this example.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">state_A &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(
-    <span class="dt">cost_health =</span> <span class="dv">2756</span>,
-    <span class="dt">cost_drugs =</span> <span class="kw"><a href="../reference/dispatch_strategy.html">dispatch_strategy</a></span>(
-      <span class="dt">mono =</span> cost_zido,
-      <span class="dt">comb =</span> cost_zido <span class="op">+</span><span class="st"> </span>cost_lami
-    ),
-    <span class="dt">cost_total =</span> <span class="kw"><a href="../reference/discount.html">discount</a></span>(cost_health <span class="op">+</span><span class="st"> </span>cost_drugs, <span class="fl">.06</span>),
-    <span class="dt">life_year =</span> <span class="dv">1</span>
-  )
-state_B &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(
-    <span class="dt">cost_health =</span> <span class="dv">3052</span>,
-    <span class="dt">cost_drugs =</span> <span class="kw"><a href="../reference/dispatch_strategy.html">dispatch_strategy</a></span>(
-      <span class="dt">mono =</span> cost_zido,
-      <span class="dt">comb =</span> cost_zido <span class="op">+</span><span class="st"> </span>cost_lami
-    ),
-    <span class="dt">cost_total =</span> <span class="kw"><a href="../reference/discount.html">discount</a></span>(cost_health <span class="op">+</span><span class="st"> </span>cost_drugs, <span class="fl">.06</span>),
-    <span class="dt">life_year =</span> <span class="dv">1</span>
-  )
-state_C &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(
-    <span class="dt">cost_health =</span> <span class="dv">9007</span>,
-    <span class="dt">cost_drugs =</span> <span class="kw"><a href="../reference/dispatch_strategy.html">dispatch_strategy</a></span>(
-      <span class="dt">mono =</span> cost_zido,
-      <span class="dt">comb =</span> cost_zido <span class="op">+</span><span class="st"> </span>cost_lami
-    ),
-    <span class="dt">cost_total =</span> <span class="kw"><a href="../reference/discount.html">discount</a></span>(cost_health <span class="op">+</span><span class="st"> </span>cost_drugs, <span class="fl">.06</span>),
-    <span class="dt">life_year =</span> <span class="dv">1</span>
-  )
-state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(
-    <span class="dt">cost_health =</span> <span class="dv">0</span>,
-    <span class="dt">cost_drugs =</span> <span class="dv">0</span>,
-    <span class="dt">cost_total =</span> <span class="kw"><a href="../reference/discount.html">discount</a></span>(cost_health <span class="op">+</span><span class="st"> </span>cost_drugs, <span class="fl">.06</span>),
-    <span class="dt">life_year =</span> <span class="dv">0</span>
-  )</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">state_A &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">    <span class="dt">cost_health =</span> <span class="dv">2756</span>,</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">    <span class="dt">cost_drugs =</span> <span class="kw"><a href="../reference/dispatch_strategy.html">dispatch_strategy</a></span>(</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">      <span class="dt">mono =</span> cost_zido,</a>
+<a class="sourceLine" id="cb6-5" data-line-number="5">      <span class="dt">comb =</span> cost_zido <span class="op">+</span><span class="st"> </span>cost_lami</a>
+<a class="sourceLine" id="cb6-6" data-line-number="6">    ),</a>
+<a class="sourceLine" id="cb6-7" data-line-number="7">    <span class="dt">cost_total =</span> <span class="kw"><a href="../reference/discount.html">discount</a></span>(cost_health <span class="op">+</span><span class="st"> </span>cost_drugs, <span class="fl">.06</span>),</a>
+<a class="sourceLine" id="cb6-8" data-line-number="8">    <span class="dt">life_year =</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb6-9" data-line-number="9">  )</a>
+<a class="sourceLine" id="cb6-10" data-line-number="10">state_B &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(</a>
+<a class="sourceLine" id="cb6-11" data-line-number="11">    <span class="dt">cost_health =</span> <span class="dv">3052</span>,</a>
+<a class="sourceLine" id="cb6-12" data-line-number="12">    <span class="dt">cost_drugs =</span> <span class="kw"><a href="../reference/dispatch_strategy.html">dispatch_strategy</a></span>(</a>
+<a class="sourceLine" id="cb6-13" data-line-number="13">      <span class="dt">mono =</span> cost_zido,</a>
+<a class="sourceLine" id="cb6-14" data-line-number="14">      <span class="dt">comb =</span> cost_zido <span class="op">+</span><span class="st"> </span>cost_lami</a>
+<a class="sourceLine" id="cb6-15" data-line-number="15">    ),</a>
+<a class="sourceLine" id="cb6-16" data-line-number="16">    <span class="dt">cost_total =</span> <span class="kw"><a href="../reference/discount.html">discount</a></span>(cost_health <span class="op">+</span><span class="st"> </span>cost_drugs, <span class="fl">.06</span>),</a>
+<a class="sourceLine" id="cb6-17" data-line-number="17">    <span class="dt">life_year =</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb6-18" data-line-number="18">  )</a>
+<a class="sourceLine" id="cb6-19" data-line-number="19">state_C &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(</a>
+<a class="sourceLine" id="cb6-20" data-line-number="20">    <span class="dt">cost_health =</span> <span class="dv">9007</span>,</a>
+<a class="sourceLine" id="cb6-21" data-line-number="21">    <span class="dt">cost_drugs =</span> <span class="kw"><a href="../reference/dispatch_strategy.html">dispatch_strategy</a></span>(</a>
+<a class="sourceLine" id="cb6-22" data-line-number="22">      <span class="dt">mono =</span> cost_zido,</a>
+<a class="sourceLine" id="cb6-23" data-line-number="23">      <span class="dt">comb =</span> cost_zido <span class="op">+</span><span class="st"> </span>cost_lami</a>
+<a class="sourceLine" id="cb6-24" data-line-number="24">    ),</a>
+<a class="sourceLine" id="cb6-25" data-line-number="25">    <span class="dt">cost_total =</span> <span class="kw"><a href="../reference/discount.html">discount</a></span>(cost_health <span class="op">+</span><span class="st"> </span>cost_drugs, <span class="fl">.06</span>),</a>
+<a class="sourceLine" id="cb6-26" data-line-number="26">    <span class="dt">life_year =</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb6-27" data-line-number="27">  )</a>
+<a class="sourceLine" id="cb6-28" data-line-number="28">state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(</a>
+<a class="sourceLine" id="cb6-29" data-line-number="29">    <span class="dt">cost_health =</span> <span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb6-30" data-line-number="30">    <span class="dt">cost_drugs =</span> <span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb6-31" data-line-number="31">    <span class="dt">cost_total =</span> <span class="kw"><a href="../reference/discount.html">discount</a></span>(cost_health <span class="op">+</span><span class="st"> </span>cost_drugs, <span class="fl">.06</span>),</a>
+<a class="sourceLine" id="cb6-32" data-line-number="32">    <span class="dt">life_year =</span> <span class="dv">0</span></a>
+<a class="sourceLine" id="cb6-33" data-line-number="33">  )</a></code></pre></div>
 <p>Strategies must be first defined and run as in a standard deterministic analysis.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">strat_mono &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_strategy.html">define_strategy</a></span>(
-  <span class="dt">transition =</span> mat_trans_mono,
-  state_A,
-  state_B,
-  state_C,
-  state_D
-)</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">strat_mono &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_strategy.html">define_strategy</a></span>(</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">  <span class="dt">transition =</span> mat_trans_mono,</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">  state_A,</a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">  state_B,</a>
+<a class="sourceLine" id="cb7-5" data-line-number="5">  state_C,</a>
+<a class="sourceLine" id="cb7-6" data-line-number="6">  state_D</a>
+<a class="sourceLine" id="cb7-7" data-line-number="7">)</a></code></pre></div>
 <pre><code>## No named state -&gt; generating names.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">strat_comb &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_strategy.html">define_strategy</a></span>(
-  <span class="dt">transition =</span> mat_trans_comb,
-  state_A,
-  state_B,
-  state_C,
-  state_D
-)</code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">strat_comb &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_strategy.html">define_strategy</a></span>(</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2">  <span class="dt">transition =</span> mat_trans_comb,</a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">  state_A,</a>
+<a class="sourceLine" id="cb9-4" data-line-number="4">  state_B,</a>
+<a class="sourceLine" id="cb9-5" data-line-number="5">  state_C,</a>
+<a class="sourceLine" id="cb9-6" data-line-number="6">  state_D</a>
+<a class="sourceLine" id="cb9-7" data-line-number="7">)</a></code></pre></div>
 <pre><code>## No named state -&gt; generating names.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res_mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_model.html">run_model</a></span>(
-  <span class="dt">mono =</span> strat_mono,
-  <span class="dt">comb =</span> strat_comb,
-  <span class="dt">parameters =</span> param,
-  <span class="dt">cycles =</span> <span class="dv">50</span>,
-  <span class="dt">cost =</span> cost_total,
-  <span class="dt">effect =</span> life_year
-)</code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">res_mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_model.html">run_model</a></span>(</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2">  <span class="dt">mono =</span> strat_mono,</a>
+<a class="sourceLine" id="cb11-3" data-line-number="3">  <span class="dt">comb =</span> strat_comb,</a>
+<a class="sourceLine" id="cb11-4" data-line-number="4">  <span class="dt">parameters =</span> param,</a>
+<a class="sourceLine" id="cb11-5" data-line-number="5">  <span class="dt">cycles =</span> <span class="dv">50</span>,</a>
+<a class="sourceLine" id="cb11-6" data-line-number="6">  <span class="dt">cost =</span> cost_total,</a>
+<a class="sourceLine" id="cb11-7" data-line-number="7">  <span class="dt">effect =</span> life_year</a>
+<a class="sourceLine" id="cb11-8" data-line-number="8">)</a></code></pre></div>
 </div>
 <div id="resampling-distributions" class="section level2">
 <h2 class="hasAnchor">
@@ -248,43 +243,43 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 <p>Since the log of a relative risk follows a lognormal distribution, relative risk follows a lognormal distribution whose mean is <code>rr</code> and standard deviation on the log scale can be deduced from the relative risk confidence interval.</p>
 <p><span class="math display">\[rr \sim lognormal(\mu = .509, \sigma = .173)\]</span></p>
 <p>Programmed as:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rr <span class="op">~</span><span class="st"> </span><span class="kw"><a href="../reference/distributions.html">lognormal</a></span>(<span class="dt">mean =</span> <span class="fl">.509</span>, <span class="dt">sdlog =</span> <span class="fl">.173</span>)</code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">rr <span class="op">~</span><span class="st"> </span><span class="kw"><a href="../reference/distributions.html">lognormal</a></span>(<span class="dt">mean =</span> <span class="fl">.509</span>, <span class="dt">sdlog =</span> <span class="fl">.173</span>)</a></code></pre></div>
 <p>Usually costs are resampled on a gamma distribution, which has the property of being always positive. Shape and scale parameters of the gamma distribution can be calculated from the mean and standard deviation desired in the distribution. Here we assume that <em>mean = variance</em>.</p>
 <p><span class="math display">\[cost_A \sim \Gamma(\mu = 2756, \sigma = \sqrt{2756})\]</span></p>
 <p>This can be programmed as:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cost_A <span class="op">~</span><span class="st"> </span><span class="kw">make_gamma</span>(<span class="dt">mean =</span> <span class="dv">2756</span>, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(<span class="dv">2756</span>))</code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">cost_A <span class="op">~</span><span class="st"> </span><span class="kw">make_gamma</span>(<span class="dt">mean =</span> <span class="dv">2756</span>, <span class="dt">sd =</span> <span class="kw"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="dv">2756</span>))</a></code></pre></div>
 <p>Proportions follow a binomial distribution that can be estimated by giving the mean proportion and the size of the sample used to estimate that proportion with <code>p_CD ~ prop(prob = .25, size = 40)</code>.</p>
 <p>Finally multinomial distributions are declared with the number of individuals in each group in the sample used to estimate the proportions. These proportions follow a Dirichlet distribution:</p>
 <ul>
 <li><code>p_AA + p_AB + p_AC + p_AD ~ multinomial(721, 202, 67, 10)</code></li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rsp &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_psa.html">define_psa</a></span>(
-  rr <span class="op">~</span><span class="st"> </span><span class="kw"><a href="../reference/distributions.html">lognormal</a></span>(<span class="dt">mean =</span> <span class="fl">.509</span>, <span class="dt">sdlog =</span> <span class="fl">.173</span>),
-  
-  cost_A <span class="op">~</span><span class="st"> </span><span class="kw"><a href="../reference/distributions.html">gamma</a></span>(<span class="dt">mean =</span> <span class="dv">2756</span>, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(<span class="dv">2756</span>)),
-  cost_B <span class="op">~</span><span class="st"> </span><span class="kw"><a href="../reference/distributions.html">gamma</a></span>(<span class="dt">mean =</span> <span class="dv">3052</span>, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(<span class="dv">3052</span>)),
-  cost_C <span class="op">~</span><span class="st"> </span><span class="kw"><a href="../reference/distributions.html">gamma</a></span>(<span class="dt">mean =</span> <span class="dv">9007</span>, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(<span class="dv">9007</span>)),
-  
-  p_CD_mono <span class="op">~</span><span class="st"> </span><span class="kw"><a href="../reference/distributions.html">binomial</a></span>(<span class="dt">prob =</span> <span class="fl">.25</span>, <span class="dt">size =</span> <span class="dv">40</span>),
-  
-  p_AA_mono <span class="op">+</span><span class="st"> </span>p_AB_mono <span class="op">+</span><span class="st"> </span>p_AC_mono <span class="op">+</span><span class="st"> </span>p_AD_mono <span class="op">~</span><span class="st"> </span><span class="kw"><a href="../reference/distributions.html">multinomial</a></span>(<span class="dv">721</span>, <span class="dv">202</span>, <span class="dv">67</span>, <span class="dv">10</span>)
-)</code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">rsp &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_psa.html">define_psa</a></span>(</a>
+<a class="sourceLine" id="cb14-2" data-line-number="2">  rr <span class="op">~</span><span class="st"> </span><span class="kw"><a href="../reference/distributions.html">lognormal</a></span>(<span class="dt">mean =</span> <span class="fl">.509</span>, <span class="dt">sdlog =</span> <span class="fl">.173</span>),</a>
+<a class="sourceLine" id="cb14-3" data-line-number="3">  </a>
+<a class="sourceLine" id="cb14-4" data-line-number="4">  cost_A <span class="op">~</span><span class="st"> </span><span class="kw"><a href="../reference/distributions.html">gamma</a></span>(<span class="dt">mean =</span> <span class="dv">2756</span>, <span class="dt">sd =</span> <span class="kw"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="dv">2756</span>)),</a>
+<a class="sourceLine" id="cb14-5" data-line-number="5">  cost_B <span class="op">~</span><span class="st"> </span><span class="kw"><a href="../reference/distributions.html">gamma</a></span>(<span class="dt">mean =</span> <span class="dv">3052</span>, <span class="dt">sd =</span> <span class="kw"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="dv">3052</span>)),</a>
+<a class="sourceLine" id="cb14-6" data-line-number="6">  cost_C <span class="op">~</span><span class="st"> </span><span class="kw"><a href="../reference/distributions.html">gamma</a></span>(<span class="dt">mean =</span> <span class="dv">9007</span>, <span class="dt">sd =</span> <span class="kw"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="dv">9007</span>)),</a>
+<a class="sourceLine" id="cb14-7" data-line-number="7">  </a>
+<a class="sourceLine" id="cb14-8" data-line-number="8">  p_CD_mono <span class="op">~</span><span class="st"> </span><span class="kw"><a href="../reference/distributions.html">binomial</a></span>(<span class="dt">prob =</span> <span class="fl">.25</span>, <span class="dt">size =</span> <span class="dv">40</span>),</a>
+<a class="sourceLine" id="cb14-9" data-line-number="9">  </a>
+<a class="sourceLine" id="cb14-10" data-line-number="10">  p_AA_mono <span class="op">+</span><span class="st"> </span>p_AB_mono <span class="op">+</span><span class="st"> </span>p_AC_mono <span class="op">+</span><span class="st"> </span>p_AD_mono <span class="op">~</span><span class="st"> </span><span class="kw"><a href="../reference/distributions.html">multinomial</a></span>(<span class="dv">721</span>, <span class="dv">202</span>, <span class="dv">67</span>, <span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb14-11" data-line-number="11">)</a></code></pre></div>
 </div>
 <div id="run-probabilistic-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#run-probabilistic-model" class="anchor"></a>Run probabilistic model</h2>
 <p>Now that the distributions of parameters are set we can simply run the probabilistic model as follow:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_psa.html">run_psa</a></span>(
-  <span class="dt">model =</span> res_mod,
-  <span class="dt">psa =</span> rsp,
-  <span class="dt">N =</span> <span class="dv">100</span>
-)</code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">pm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_psa.html">run_psa</a></span>(</a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">  <span class="dt">model =</span> res_mod,</a>
+<a class="sourceLine" id="cb15-3" data-line-number="3">  <span class="dt">psa =</span> rsp,</a>
+<a class="sourceLine" id="cb15-4" data-line-number="4">  <span class="dt">N =</span> <span class="dv">100</span></a>
+<a class="sourceLine" id="cb15-5" data-line-number="5">)</a></code></pre></div>
 <pre><code>## Resampling strategy 'mono'...</code></pre>
 <pre><code>## Resampling strategy 'comb'...</code></pre>
-<p>The average results are computed. In theory these values are more accurate than simple estimates because of non-linearities. An optional <code>threshold</code> can be passed to <code><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary()</a></code> to compute net monetary benefit.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(
-  pm, 
-  <span class="dt">threshold =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1000</span>, <span class="dv">5000</span>, <span class="dv">6000</span>, <span class="fl">1e4</span>))</code></pre></div>
+<p>The average results are computed. In theory these values are more accurate than simple estimates because of non-linearities. An optional <code>threshold</code> can be passed to <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> to compute net monetary benefit.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(</a>
+<a class="sourceLine" id="cb18-2" data-line-number="2">  pm, </a>
+<a class="sourceLine" id="cb18-3" data-line-number="3">  <span class="dt">threshold =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1000</span>, <span class="dv">5000</span>, <span class="dv">6000</span>, <span class="fl">1e4</span>))</a></code></pre></div>
 <pre><code>## 2 strategies run for 50 cycles.
 ## 
 ## Initial state counts:
@@ -299,14 +294,14 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 ## Values:
 ## 
 ##      cost_health cost_drugs cost_total life_year
-## comb   100140522   79436681   94680320 18202.723
-## mono    49701537   20080187   49676381  8814.832
+## comb   102657055   80505562   95498758 18447.654
+## mono    51450464   20524674   50664856  9009.954
 ## 
 ## Net monetary benefit difference:
 ## 
-##          1000     5000     6000    10000
-## mono 35616.05    0.000     0.00     0.00
-## comb     0.00 1935.514 11323.41 48874.97
+##         1000   5000    6000   10000
+## mono 35396.2    0.0     0.0     0.0
+## comb     0.0 2354.6 11792.3 49543.1
 ## 
 ## Efficiency frontier:
 ## 
@@ -315,37 +310,39 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 ## Differences:
 ## 
 ##      Cost Diff. Effect Diff.     ICER Ref.
-## comb   45003.94     9.387891 4793.829 mono</code></pre>
+## comb    44833.9       9.4377 4750.511 mono</code></pre>
 </div>
 <div id="result-interpretation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#result-interpretation" class="anchor"></a>Result interpretation</h2>
 <p>The results of the analysis can be plotted on the cost-effectiveness plane. We can see there seem to be little uncertainty on the costs compared to the uncertainty on the effects, resulting in an uncertainty cloud that looks like a line.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(pm, <span class="dt">type =</span> <span class="st">"ce"</span>)</code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(pm, <span class="dt">type =</span> <span class="st">"ce"</span>)</a></code></pre></div>
 <p><img src="e_probabilistic_files/figure-html/unnamed-chunk-9-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>And as cost-effectiveness acceptability curves or EVPI:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(pm, <span class="dt">type =</span> <span class="st">"ac"</span>, <span class="dt">max_wtp =</span> <span class="dv">10000</span>, <span class="dt">log_scale =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(pm, <span class="dt">type =</span> <span class="st">"ac"</span>, <span class="dt">max_wtp =</span> <span class="dv">10000</span>, <span class="dt">log_scale =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 <p><img src="e_probabilistic_files/figure-html/unnamed-chunk-10-1.png" width="576" style="display: block; margin: auto;"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(pm, <span class="dt">type =</span> <span class="st">"evpi"</span>, <span class="dt">max_wtp =</span> <span class="dv">10000</span>, <span class="dt">log_scale =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(pm, <span class="dt">type =</span> <span class="st">"evpi"</span>, <span class="dt">max_wtp =</span> <span class="dv">10000</span>, <span class="dt">log_scale =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 <p><img src="e_probabilistic_files/figure-html/unnamed-chunk-10-2.png" width="576" style="display: block; margin: auto;"></p>
 <p>A covariance analysis can be performed on strategy results:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(pm, <span class="dt">type =</span> <span class="st">"cov"</span>)</code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(pm, <span class="dt">type =</span> <span class="st">"cov"</span>)</a></code></pre></div>
 <pre><code>## Le chargement a nécessité le package : mgcv</code></pre>
 <p><img src="e_probabilistic_files/figure-html/unnamed-chunk-11-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>Or on the difference between strategies:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(pm, <span class="dt">type =</span> <span class="st">"cov"</span>, <span class="dt">diff =</span> <span class="ot">TRUE</span>, <span class="dt">threshold =</span> <span class="dv">5000</span>)</code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(pm, <span class="dt">type =</span> <span class="st">"cov"</span>, <span class="dt">diff =</span> <span class="ot">TRUE</span>, <span class="dt">threshold =</span> <span class="dv">5000</span>)</a></code></pre></div>
+<pre><code>## Warning in compute_prop_var(mgcv::gam(formula = form_nmb, data = .data)):
+## Only 98% of variance explained, results may be inaccurate.</code></pre>
 <p><img src="e_probabilistic_files/figure-html/unnamed-chunk-12-1.png" width="384" style="display: block; margin: auto;"></p>
 <p>As usual plots can be modified with the standard <code>ggplot2</code> syntax.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ggplot2)
-
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(pm, <span class="dt">type =</span> <span class="st">"ce"</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span>(<span class="st">"Life-years gained"</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span>(<span class="st">"Additional cost"</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_color_brewer</a></span>(
-    <span class="dt">name =</span> <span class="st">"Strategy"</span>,
-    <span class="dt">palette =</span> <span class="st">"Set1"</span>
-  ) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span>()</code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggplot2)</a>
+<a class="sourceLine" id="cb27-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb27-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(pm, <span class="dt">type =</span> <span class="st">"ce"</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb27-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span>(<span class="st">"Life-years gained"</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb27-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span>(<span class="st">"Additional cost"</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb27-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_color_brewer</a></span>(</a>
+<a class="sourceLine" id="cb27-7" data-line-number="7">    <span class="dt">name =</span> <span class="st">"Strategy"</span>,</a>
+<a class="sourceLine" id="cb27-8" data-line-number="8">    <span class="dt">palette =</span> <span class="st">"Set1"</span></a>
+<a class="sourceLine" id="cb27-9" data-line-number="9">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb27-10" data-line-number="10"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span>()</a></code></pre></div>
 <p><img src="e_probabilistic_files/figure-html/unnamed-chunk-13-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div id="parallel-computing" class="section level2">
@@ -364,10 +361,10 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 <a href="#interface-with-bcea-and-savi" class="anchor"></a>Interface with BCEA and SAVI</h2>
 <p>To compute EVPPI the results can also be exported with <code><a href="../reference/export_savi.html">export_savi()</a></code> in a format compatible with the <a href="http://savi.shef.ac.uk/SAVI/">SAVI</a> software (Sheffield Accelerated Value of Information).</p>
 <p>The results can be post-processed by the <code>BCEA</code> package with the <code><a href="../reference/run_bcea.html">run_bcea()</a></code> function.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bcea &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_bcea.html">run_bcea</a></span>(pm, <span class="dt">plot =</span> <span class="ot">TRUE</span>, <span class="dt">Kmax =</span> <span class="dv">10000</span>)</code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1">bcea &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_bcea.html">run_bcea</a></span>(pm, <span class="dt">plot =</span> <span class="ot">TRUE</span>, <span class="dt">Kmax =</span> <span class="dv">10000</span>)</a></code></pre></div>
 <pre><code>## Le chargement a nécessité le package : BCEA</code></pre>
 <p><img src="e_probabilistic_files/figure-html/unnamed-chunk-14-1.png" width="576"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(bcea)</code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(bcea)</a></code></pre></div>
 <pre><code>## NB: k (wtp) is defined in the interval [0 - 10000]
 ## 
 ## Cost-effectiveness analysis summary 
@@ -375,25 +372,26 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 ## Reference intervention:  comb
 ## Comparator intervention: mono
 ## 
-## Optimal decision: choose comb for k&lt;4800 and mono for k&gt;=4800
+## Optimal decision: choose comb for k&lt;4760 and mono for k&gt;=4760
 ## 
 ## 
 ## Analysis for willingness to pay parameter k = 10000
 ## 
 ##      Expected utility
-## comb         38471938
-## mono         87346906
+## comb         39434680
+## mono         88977782
 ## 
 ##                    EIB CEAC   ICER
-## comb vs mono -48874968    0 4793.8
+## comb vs mono -49543101    0 4750.5
 ## 
 ## Optimal intervention (max expected utility) for k=10000: mono
 ##                      
-## EVPI -0.0000000010431</code></pre>
+## EVPI -0.0000000046183</code></pre>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
@@ -411,17 +409,20 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by Kevin Zarca, Antoine Filipovic-Pierucci.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

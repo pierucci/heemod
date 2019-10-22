@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check Strategy Index — check_strategy_index • heemod</title>
+<title>Get count number — get_mat_total • heemod</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Check Strategy Index — check_strategy_index" />
-<meta property="og:description" content="Check Strategy Index" />
+<meta property="og:title" content="Get count number — get_mat_total" />
+<meta property="og:description" content="Get count number" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -145,38 +145,35 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check Strategy Index</h1>
+    <h1>Get count number</h1>
     
-    <div class="hidden name"><code>check_strategy_index.Rd</code></div>
+    <div class="hidden name"><code>get_mat_total.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Check Strategy Index</p>
+    <p>Get count number</p>
     </div>
 
-    <pre class="usage"><span class='fu'>check_strategy_index</span>(<span class='no'>x</span>, <span class='no'>i</span>, <span class='kw'>allow_multiple</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>get_mat_total</span>(<span class='no'>x</span>, <span class='no'>init</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A result from <code><a href='run_model.html'>run_model()</a></code>.</p></td>
+      <td><p>transition matrix</p></td>
     </tr>
     <tr>
-      <th>i</th>
-      <td><p>A strategy index, character or numeric.</p></td>
-    </tr>
-    <tr>
-      <th>allow_multiple</th>
-      <td><p>logical. Allow multiple strategy
-index?</p></td>
+      <th>init</th>
+      <td><p>numeric vector, same length as number of
+model states. Number of individuals in each model state
+at the beginning.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Strategy names.</p>
+    <p>A count matrix</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

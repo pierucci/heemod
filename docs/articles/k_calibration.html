@@ -5,11 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calibrating <code>heemod</code> models • heemod</title>
+<title>Calibrating `heemod` models • heemod</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Calibrating &lt;code&gt;heemod&lt;/code&gt; models">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Calibrating `heemod` models">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -30,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">heemod</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.11.0</span>
       </span>
     </div>
 
@@ -38,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -91,14 +92,7 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/pierucci/heemod">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul>
+<ul class="nav navbar-nav navbar-right"></ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -107,14 +101,15 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Calibrating <code>heemod</code> models</h1>
             
-            <h4 class="date">2019-02-22</h4>
+            <h4 class="date">2019-10-22</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/pierucci/heemod/blob/master/vignettes/k_calibration.Rmd"><code>vignettes/k_calibration.Rmd</code></a></small>
+      
       <div class="hidden name"><code>k_calibration.Rmd</code></div>
 
     </div>
@@ -125,7 +120,7 @@
 <p>For example the shape and scale parameters of a Weibull survival model can be unknown parameter values. But from the litterature we can know the expected probability of being alive at time <em>t</em>. If this probability is a result from the model, we can find the value of the shape and scale parameters that allow the model results to match, as closely as possible, the observed probability of being alive.</p>
 <p>In order to perform calibration, the user must provide:</p>
 <ol style="list-style-type: decimal">
-<li>A heemod object from <code><a href="../reference/run_model.html">run_model()</a></code> of <code><a href="https://www.rdocumentation.org/packages/stats/topics/update">update()</a></code><a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>.</li>
+<li>A heemod object from <code><a href="../reference/run_model.html">run_model()</a></code> of <code><a href="https://rdrr.io/r/stats/update.html">update()</a></code><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</li>
 <li>The names of the parameters of the model to calibrate (the parameters for which we seek appropriate values).</li>
 <li>A function that when applied to the model returns the result we want to match with reference values.</li>
 <li>The target values we would like the model results to match.</li>
@@ -133,59 +128,59 @@
 <p>For this example we will use the result from the assessment of a new total hip replacement previously described in <code>vignette("d-non-homogeneous", "heemod")</code>.</p>
 <p>We will calibrate the parameters <code>gamma</code> (a Weibull survival parameter) and <code>rrNP1</code> (the relative risk associated with the new treatment), which originally have values of 1.45 and 0.26 respectively.</p>
 <p>The original number of patients with a THR revision after 20 cycles are found in this way:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(dplyr)
-<span class="kw"><a href="../reference/get_counts.html">get_counts</a></span>(res_mod) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(markov_cycle <span class="op">==</span><span class="st"> </span><span class="dv">20</span> <span class="op">&amp;</span><span class="st"> </span>state_names <span class="op">==</span><span class="st"> "RevisionTHR"</span>)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(dplyr)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="../reference/get_counts.html">get_counts</a></span>(res_mod) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(markov_cycle <span class="op">==</span><span class="st"> </span><span class="dv">20</span> <span class="op">&amp;</span><span class="st"> </span>state_names <span class="op">==</span><span class="st"> "RevisionTHR"</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 2 x 4
 ##   .strategy_names markov_cycle state_names count
 ##   &lt;chr&gt;                  &lt;int&gt; &lt;chr&gt;       &lt;dbl&gt;
 ## 1 standard                  20 RevisionTHR 2.60 
 ## 2 np1                       20 RevisionTHR 0.690</code></pre>
 <p>We want to calibrate <code>gamma</code> and <code>rrNP1</code> to obtain 3 patients for the <code>standard</code> strategy and 1 patient for the <code>np1</code> strategy at time 20. We need to define a function to extract the values we want to change from the model and return them as a numeric vector:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">extract_values &lt;-<span class="st"> </span><span class="cf">function</span>(x) {
-  dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(
-    <span class="kw"><a href="../reference/get_counts.html">get_counts</a></span>(x),
-    markov_cycle <span class="op">==</span><span class="st"> </span><span class="dv">20</span> <span class="op">&amp;</span><span class="st"> </span>state_names <span class="op">==</span><span class="st"> "RevisionTHR"</span>
-  )<span class="op">$</span>count
-}
-<span class="kw">extract_values</span>(res_mod)</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">extract_values &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">  dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">    <span class="kw"><a href="../reference/get_counts.html">get_counts</a></span>(x),</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">    markov_cycle <span class="op">==</span><span class="st"> </span><span class="dv">20</span> <span class="op">&amp;</span><span class="st"> </span>state_names <span class="op">==</span><span class="st"> "RevisionTHR"</span></a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">  )<span class="op">$</span>count</a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">}</a>
+<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="kw">extract_values</span>(res_mod)</a></code></pre></div>
 <pre><code>## [1] 2.5964891 0.6902178</code></pre>
 <p>Any arbitrary function of any model output would work, as long as it returns numeric values.</p>
 <p>A convenience function <code><a href="../reference/define_calibration_fn.html">define_calibration_fn()</a></code> exists to help easily define calibration functions.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">calib_fn &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_calibration_fn.html">define_calibration_fn</a></span>(
-  <span class="dt">type =</span> <span class="st">"count"</span>,
-  <span class="dt">strategy_names =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"standard"</span>, <span class="st">"np1"</span>),
-  <span class="dt">element_names =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"RevisionTHR"</span>, <span class="st">"RevisionTHR"</span>),
-  <span class="dt">cycles =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">20</span>, <span class="dv">20</span>)
-)
-<span class="kw">calib_fn</span>(res_mod)</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">calib_fn &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_calibration_fn.html">define_calibration_fn</a></span>(</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">  <span class="dt">type =</span> <span class="st">"count"</span>,</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">  <span class="dt">strategy_names =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"standard"</span>, <span class="st">"np1"</span>),</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">  <span class="dt">element_names =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"RevisionTHR"</span>, <span class="st">"RevisionTHR"</span>),</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">  <span class="dt">cycles =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">20</span>, <span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">)</a>
+<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="kw">calib_fn</span>(res_mod)</a></code></pre></div>
 <pre><code>## [1] 2.5964891 0.6902178</code></pre>
 <p>We can now call <code><a href="../reference/calibrate_model.html">calibrate_model()</a></code>, and give the values we want to reach as <code>target_values</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res_cal &lt;-<span class="st"> </span><span class="kw"><a href="../reference/calibrate_model.html">calibrate_model</a></span>(
-  res_mod,
-  <span class="dt">parameter_names =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"gamma"</span>, <span class="st">"rrNP1"</span>),
-  <span class="dt">fn_values =</span> extract_values,
-  <span class="dt">target_values =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">2.5</span>, <span class="fl">0.8</span>)
-)</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">res_cal &lt;-<span class="st"> </span><span class="kw"><a href="../reference/calibrate_model.html">calibrate_model</a></span>(</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">  res_mod,</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">  <span class="dt">parameter_names =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"gamma"</span>, <span class="st">"rrNP1"</span>),</a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">  <span class="dt">fn_values =</span> extract_values,</a>
+<a class="sourceLine" id="cb7-5" data-line-number="5">  <span class="dt">target_values =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2.5</span>, <span class="fl">0.8</span>)</a>
+<a class="sourceLine" id="cb7-6" data-line-number="6">)</a></code></pre></div>
 <pre><code>## Le chargement a nécessité le package : optimx</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res_cal</code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">res_cal</a></code></pre></div>
 <pre><code>##      gamma     rrNP1        value convcode
 ## 1 1.442252 0.3144459 8.630486e-11        0</code></pre>
 <p>The new parameter values are 1.44 for <code>gamma</code> and 0.31 for <code>rrNP1</code>. The <code>convcode</code> code at 0 indicates the calibration was successful.</p>
 <p>It is possible to specify several possible starting values for the calibration procedure in order to explore the parameter space:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">start &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(
-  <span class="dt">gamma =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">1.0</span>, <span class="fl">1.5</span>, <span class="fl">2.0</span>),
-  <span class="dt">rrNP1 =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">0.2</span>, <span class="fl">0.3</span>, <span class="fl">0.4</span>)
-)
-
-res_cal_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw"><a href="../reference/calibrate_model.html">calibrate_model</a></span>(
-  res_mod,
-  <span class="dt">parameter_names =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"gamma"</span>, <span class="st">"rrNP1"</span>),
-  <span class="dt">fn_values =</span> extract_values,
-  <span class="dt">target_values =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">3</span>, <span class="dv">1</span>),
-  <span class="dt">initial_values =</span> start,
-  <span class="dt">lower =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="dt">upper =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">2</span>, <span class="dv">1</span>)
-)</code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">start &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2">  <span class="dt">gamma =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1.0</span>, <span class="fl">1.5</span>, <span class="fl">2.0</span>),</a>
+<a class="sourceLine" id="cb11-3" data-line-number="3">  <span class="dt">rrNP1 =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0.2</span>, <span class="fl">0.3</span>, <span class="fl">0.4</span>)</a>
+<a class="sourceLine" id="cb11-4" data-line-number="4">)</a>
+<a class="sourceLine" id="cb11-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb11-6" data-line-number="6">res_cal_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw"><a href="../reference/calibrate_model.html">calibrate_model</a></span>(</a>
+<a class="sourceLine" id="cb11-7" data-line-number="7">  res_mod,</a>
+<a class="sourceLine" id="cb11-8" data-line-number="8">  <span class="dt">parameter_names =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"gamma"</span>, <span class="st">"rrNP1"</span>),</a>
+<a class="sourceLine" id="cb11-9" data-line-number="9">  <span class="dt">fn_values =</span> extract_values,</a>
+<a class="sourceLine" id="cb11-10" data-line-number="10">  <span class="dt">target_values =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb11-11" data-line-number="11">  <span class="dt">initial_values =</span> start,</a>
+<a class="sourceLine" id="cb11-12" data-line-number="12">  <span class="dt">lower =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="dt">upper =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb11-13" data-line-number="13">)</a></code></pre></div>
 <p>Additional options to control the optimization process can be passed to <code><a href="../reference/calibrate_model.html">calibrate_model()</a></code>. These options are parameters of the <a href="https://CRAN.R-project.org/package=optimx">optimx</a> function, such as <code>upper</code> and <code>lower</code> to specify upper and lower values, <code>method</code> to change the optimization method, etc.</p>
 <p>Calibration uses optimization to minimize the sum of squared errors between calculated and desired values, and so is subject to all the many difficulties of optimization. Different optimization methods, for example Nelder-Mead (which does not require gradients) and BFGS or conjugate gradient methods, which do require gradients but can approximate them numerically, may work better for different problems. Some attempted optimizations may not converge.</p>
 <p>It may be impossible to evaluate the function at badly-specified initial parameter values (for example, if a negative initial value is given for a parameter that must be positive); using box limits on some parameters may help with this.</p>
@@ -193,15 +188,17 @@ res_cal_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw"
 <div class="footnotes">
 <hr>
 <ol>
-<li id="fn1"><p>Calibrating models from <code><a href="https://www.rdocumentation.org/packages/stats/topics/update">update()</a></code> is <em>extremely</em> time-consuming.<a href="#fnref1">↩</a></p></li>
+<li id="fn1"><p>Calibrating models from <code><a href="https://rdrr.io/r/stats/update.html">update()</a></code> is <em>extremely</em> time-consuming.<a href="#fnref1" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
       </div>
 
 </div>
+
 
 
       <footer><div class="copyright">
@@ -209,12 +206,14 @@ res_cal_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw"
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

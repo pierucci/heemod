@@ -23,7 +23,7 @@ devtools::install_github("pierucci/heemod")
 Filipović-Pierucci A, Zarca K and Durand-Zaleski I (2017).
 [“Markov Models for Health Economic Evaluation: The R
 Package heemod.”](https://arxiv.org/abs/1702.03252) _ArXiv e-prints_. R package version
-0.8.0, 1702.03252, <URL: https://pierucci.org/heemod>.
+0.8.0, 1702.03252
 
 ## Features
 
@@ -55,7 +55,7 @@ To get started read the *An Introduction to `heemod`* vignette. Specific analysi
 
 ## Devs
 
-[Kevin Zarca](http://www.urc-eco.fr/Kevin-ZARCA,402) and [Antoine Filipović-Pierucci](https://pierucci.org).
+[Kevin Zarca](http://www.urc-eco.fr/Kevin-ZARCA,402) and Antoine Filipović-Pierucci.
 
 ## Contributors
 

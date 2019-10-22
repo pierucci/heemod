@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tabular Input • heemod</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Tabular Input">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -30,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">heemod</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.11.0</span>
       </span>
     </div>
 
@@ -38,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -91,14 +92,7 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/pierucci/heemod">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul>
+<ul class="nav navbar-nav navbar-right"></ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -107,14 +101,15 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Tabular Input</h1>
             
-            <h4 class="date">2019-02-22</h4>
+            <h4 class="date">2019-10-22</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/pierucci/heemod/blob/master/vignettes/h_tabular.Rmd"><code>vignettes/h_tabular.Rmd</code></a></small>
+      
       <div class="hidden name"><code>h_tabular.Rmd</code></div>
 
     </div>
@@ -126,7 +121,7 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>The inputs for state definition, transition matrices, model options, etc. (referenced as <em>tabular inputs</em>) must be provided via <code>csv</code>, <code>xls</code> or <code>xlsx</code> files.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> Columns starting by <code>.comment</code> are ignored, as well as blank rows.</p>
+<p>The inputs for state definition, transition matrices, model options, etc. (referenced as <em>tabular inputs</em>) must be provided via <code>csv</code>, <code>xls</code> or <code>xlsx</code> files.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> Columns starting by <code>.comment</code> are ignored, as well as blank rows.</p>
 <p>These inputs must be provided in separate files. The path to these files is specified in a <em>reference file</em>, that acts as an ‘umbrella’ file atop of the other inputs. The reference file default name is <code>REFERENCE.csv</code>.</p>
 <p><em>Warning for users of the <code>xls</code> format:</em><br>
 The <code>xls</code> files are read with the <code>readxl</code> package. As of version 0.1.1 if a column contains strings and numeric values the numeric values are rounded to 6 decimal places. We therefore recommend to use solely the <code>csv</code> or <code>xlsx</code> format.</p>
@@ -199,7 +194,7 @@ The <code>xls</code> files are read with the <code>readxl</code> package. As of 
 <h2 class="hasAnchor">
 <a href="#states-file" class="anchor"></a>States file</h2>
 <p>A state file contains 2 mandatory columns: <code>.model</code> and <code>.state</code>, corresponding to strategy and state names respectively. The other columns correspond to the state values.</p>
-<p>Discounting rates can be specified in <code>.discount.*</code> columns, where <code>*</code> stands for the name of the value to discount. Values are always discounted at the same rate in all states.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a></p>
+<p>Discounting rates can be specified in <code>.discount.*</code> columns, where <code><a href="https://rdrr.io/r/base/Arithmetic.html">*</a></code> stands for the name of the value to discount. Values are always discounted at the same rate in all states.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
 <p>Values specified for only one strategy will be carried over to others. Only values that differ from one strategy to another must be specified separately for each strategy.</p>
 <table class="table">
 <thead><tr class="header">
@@ -489,7 +484,7 @@ The <code>xls</code> files are read with the <code>readxl</code> package. As of 
 <div id="user-defined-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#user-defined-data" class="anchor"></a>User-defined data</h2>
-<p>Sometimes external data is required for an analysis (e.g. age-specific mortality rates). A <code>data</code> row in the reference file specifies a subdirectory containing data frames to be loaded (saved as <code>csv</code>, <code>xls</code>, or <code>xlsx</code> files). Multiple files can be placed here, and each filename (without the extension) is used as the dataframe name.<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a></p>
+<p>Sometimes external data is required for an analysis (e.g. age-specific mortality rates). A <code>data</code> row in the reference file specifies a subdirectory containing data frames to be loaded (saved as <code>csv</code>, <code>xls</code>, or <code>xlsx</code> files). Multiple files can be placed here, and each filename (without the extension) is used as the dataframe name.<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></p>
 </div>
 <div id="model-options" class="section level2">
 <h2 class="hasAnchor">
@@ -548,9 +543,9 @@ The <code>xls</code> files are read with the <code>readxl</code> package. As of 
 <h2 class="hasAnchor">
 <a href="#run-the-analysis" class="anchor"></a>Run the analysis</h2>
 <p>The entire set of analysis specified in the tabular files can be run by the function <code>run_model_from_tabular()</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_model_tabular.html">run_model_tabular</a></span>(
-  <span class="dt">location =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"tabular/thr"</span>, <span class="dt">package =</span> <span class="st">"heemod"</span>)
-)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_model_tabular.html">run_model_tabular</a></span>(</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">  <span class="dt">location =</span> <span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"tabular/thr"</span>, <span class="dt">package =</span> <span class="st">"heemod"</span>)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">)</a></code></pre></div>
 <pre><code>## Running DSA on strategy 'standard'...</code></pre>
 <pre><code>## Running DSA on strategy 'new'...</code></pre>
 <pre><code>## Resampling strategy 'standard'...</code></pre>
@@ -558,7 +553,7 @@ The <code>xls</code> files are read with the <code>readxl</code> package. As of 
 <pre><code>## Updating strategy 'standard'...</code></pre>
 <pre><code>## Updating strategy 'new'...</code></pre>
 <p>The results can then be interpreted as usual.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result<span class="op">$</span>model_runs</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">result<span class="op">$</span>model_runs</a></code></pre></div>
 <pre><code>## 2 strategies run for 50 cycles.
 ## 
 ## Initial state counts:
@@ -585,14 +580,15 @@ The <code>xls</code> files are read with the <code>readxl</code> package. As of 
 ## 
 ##     Cost Diff. Effect Diff.      ICER     Ref.
 ## new  -223.3065   0.04426563 -5044.693 standard</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(result<span class="op">$</span>psa,
-     <span class="dt">type =</span> <span class="st">"ce"</span>)</code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(result<span class="op">$</span>psa,</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2">     <span class="dt">type =</span> <span class="st">"ce"</span>)</a></code></pre></div>
 <p><img src="h_tabular_files/figure-html/unnamed-chunk-8-1.png" width="576" style="display: block; margin: auto;"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(result<span class="op">$</span>dsa,
-     <span class="dt">result =</span> <span class="st">"cost"</span>,
-     <span class="dt">strategy =</span> <span class="st">"new"</span>)</code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(result<span class="op">$</span>dsa,</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2">     <span class="dt">result =</span> <span class="st">"cost"</span>,</a>
+<a class="sourceLine" id="cb11-3" data-line-number="3">     <span class="dt">strategy =</span> <span class="st">"new"</span>)</a></code></pre></div>
+<pre><code>## Joining, by = ".strategy_names"</code></pre>
 <p><img src="h_tabular_files/figure-html/unnamed-chunk-8-2.png" width="576" style="display: block; margin: auto;"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result<span class="op">$</span>demographics</code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">result<span class="op">$</span>demographics</a></code></pre></div>
 <pre><code>## An analysis re-run on 8 parameter sets.
 ## 
 ## * Weigths distribution:
@@ -659,14 +655,15 @@ The <code>xls</code> files are read with the <code>readxl</code> package. As of 
 <div class="footnotes">
 <hr>
 <ol>
-<li id="fn1"><p>French <code>csv</code> (with <code>;</code> separator) are not supported.<a href="#fnref1">↩</a></p></li>
-<li id="fn2"><p>A single discount rate can be duplicated across states, or specified in one state and left blank elsewhere. Specifying two different discount rates for a single variable in different states will cause an error.<a href="#fnref2">↩</a></p></li>
-<li id="fn3"><p>Having multiple files with the same base name but different extensions in the directory will cause an error.<a href="#fnref3">↩</a></p></li>
+<li id="fn1"><p>French <code>csv</code> (with <code>;</code> separator) are not supported.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>A single discount rate can be duplicated across states, or specified in one state and left blank elsewhere. Specifying two different discount rates for a single variable in different states will cause an error.<a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>Having multiple files with the same base name but different extensions in the directory will cause an error.<a href="#fnref3" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
@@ -686,17 +683,20 @@ The <code>xls</code> files are read with the <code>readxl</code> package. As of 
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by Kevin Zarca, Antoine Filipovic-Pierucci.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

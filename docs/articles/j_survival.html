@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Survival models • heemod</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Survival models">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -30,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">heemod</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.11.0</span>
       </span>
     </div>
 
@@ -38,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -91,14 +92,7 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/pierucci/heemod">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul>
+<ul class="nav navbar-nav navbar-right"></ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -107,14 +101,15 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Survival models</h1>
             
-            <h4 class="date">2019-02-22</h4>
+            <h4 class="date">2019-10-22</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/pierucci/heemod/blob/master/vignettes/j_survival.Rmd"><code>vignettes/j_survival.Rmd</code></a></small>
+      
       <div class="hidden name"><code>j_survival.Rmd</code></div>
 
     </div>
@@ -127,66 +122,66 @@
 <p>The <code>heemod</code> package provides a number of ways to estimate transition probabilities from survival distributions. Survival distributions can come from at least three different sources:</p>
 <ul>
 <li>User-definded parametric distributions.</li>
-<li>Fitted parametric distributions with <code><a href="https://www.rdocumentation.org/packages/flexsurv/topics/flexsurvreg">flexsurv::flexsurvreg()</a></code>.</li>
-<li>Fitted Kaplan-Meiers with <code><a href="https://www.rdocumentation.org/packages/survival/topics/survfit">survival::survfit()</a></code>.</li>
+<li>Fitted parametric distributions with <code><a href="https://rdrr.io/pkg/flexsurv/man/flexsurvreg.html">flexsurv::flexsurvreg()</a></code>.</li>
+<li>Fitted Kaplan-Meiers with <code><a href="https://rdrr.io/pkg/survival/man/survfit.html">survival::survfit()</a></code>.</li>
 </ul>
 <p>Once defined, each of these types of distributions can be combined and modified using a standard set of operations.</p>
 <p>User-defined parametric distributions are created using the <code><a href="../reference/define_survival.html">define_survival()</a></code> and <code><a href="../reference/define_spline_survival.html">define_spline_survival()</a></code> functions:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">surv_dist_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_survival.html">define_survival</a></span>(
-  <span class="dt">distribution =</span> <span class="st">"exp"</span>,
-  <span class="dt">rate =</span> <span class="fl">.5</span>
-)
-
-surv_dist_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_spline_survival.html">define_spline_survival</a></span>(
-  <span class="dt">scale =</span> <span class="st">"odds"</span>,
-  <span class="dt">gamma =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="fl">11.643</span>, <span class="fl">1.843</span>, <span class="fl">0.208</span>),
-  <span class="dt">knots =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">4.077537</span>, <span class="fl">5.883183</span>, <span class="fl">6.458338</span>)
-)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">surv_dist_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_survival.html">define_survival</a></span>(</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">  <span class="dt">distribution =</span> <span class="st">"exp"</span>,</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">  <span class="dt">rate =</span> <span class="fl">.5</span></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">)</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">surv_dist_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_spline_survival.html">define_spline_survival</a></span>(</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7">  <span class="dt">scale =</span> <span class="st">"odds"</span>,</a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">  <span class="dt">gamma =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">11.643</span>, <span class="fl">1.843</span>, <span class="fl">0.208</span>),</a>
+<a class="sourceLine" id="cb1-9" data-line-number="9">  <span class="dt">knots =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">4.077537</span>, <span class="fl">5.883183</span>, <span class="fl">6.458338</span>)</a>
+<a class="sourceLine" id="cb1-10" data-line-number="10">)</a></code></pre></div>
 <pre><code>## Le chargement a nécessité le package : flexsurv</code></pre>
-<p>Fitted parametric models are created using <code><a href="https://www.rdocumentation.org/packages/flexsurv/topics/flexsurvreg">flexsurv::flexsurvreg()</a></code> and <code><a href="https://www.rdocumentation.org/packages/flexsurv/topics/flexsurvspline">flexsurv::flexsurvspline()</a></code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(flexsurv)</code></pre></div>
+<p>Fitted parametric models are created using <code><a href="https://rdrr.io/pkg/flexsurv/man/flexsurvreg.html">flexsurv::flexsurvreg()</a></code> and <code><a href="https://rdrr.io/pkg/flexsurv/man/flexsurvspline.html">flexsurv::flexsurvspline()</a></code>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(flexsurv)</a></code></pre></div>
 <pre><code>## Le chargement a nécessité le package : survival</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit_w &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/flexsurv/topics/flexsurvreg">flexsurvreg</a></span>(
-  <span class="dt">formula =</span> <span class="kw">Surv</span>(futime, fustat) <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,
-  <span class="dt">data =</span> ovarian, <span class="dt">dist =</span> <span class="st">"weibull"</span>
-)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(fit_w)</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">fit_w &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/flexsurv/man/flexsurvreg.html">flexsurvreg</a></span>(</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">  <span class="dt">formula =</span> <span class="kw">Surv</span>(futime, fustat) <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">  <span class="dt">data =</span> ovarian, <span class="dt">dist =</span> <span class="st">"weibull"</span></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">)</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(fit_w)</a></code></pre></div>
 <p><img src="j_survival_files/figure-html/unnamed-chunk-2-1.png" width="576"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit_spl &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/flexsurv/topics/flexsurvspline">flexsurvspline</a></span>(
-  <span class="dt">formula =</span> <span class="kw">Surv</span>(futime, fustat) <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,
-  <span class="dt">data =</span> ovarian,
-  <span class="dt">scale =</span> <span class="st">"odds"</span>,
-  <span class="dt">k=</span><span class="dv">1</span>
-)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(fit_spl)</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">fit_spl &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/flexsurv/man/flexsurvspline.html">flexsurvspline</a></span>(</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">  <span class="dt">formula =</span> <span class="kw">Surv</span>(futime, fustat) <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">  <span class="dt">data =</span> ovarian,</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">  <span class="dt">scale =</span> <span class="st">"odds"</span>,</a>
+<a class="sourceLine" id="cb6-5" data-line-number="5">  <span class="dt">k=</span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb6-6" data-line-number="6">)</a>
+<a class="sourceLine" id="cb6-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(fit_spl)</a></code></pre></div>
 <p><img src="j_survival_files/figure-html/unnamed-chunk-2-2.png" width="576"></p>
 <p>Fitted models can include covariates. In order to use a model with covariates in heemod, you can use the <code><a href="../reference/set_covariates.html">set_covariates()</a></code> function on the fitted model and provide as additional arguments the covariate values you want to model. You can also provide a data frame of covariate levels to aggregate survival probabilites over different groups. By default, heemod will aggregate over predicted survival probabilities for each subject in the dataset to which the model was fit.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit_cov &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/flexsurv/topics/flexsurvreg">flexsurvreg</a></span>(
-  <span class="dt">formula =</span> <span class="kw">Surv</span>(rectime, censrec) <span class="op">~</span><span class="st"> </span>group,
-  <span class="dt">dist =</span> <span class="st">"weibull"</span>,
-  <span class="dt">data =</span> bc
-)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(fit_cov)</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">fit_cov &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/flexsurv/man/flexsurvreg.html">flexsurvreg</a></span>(</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">  <span class="dt">formula =</span> <span class="kw">Surv</span>(rectime, censrec) <span class="op">~</span><span class="st"> </span>group,</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">  <span class="dt">dist =</span> <span class="st">"weibull"</span>,</a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">  <span class="dt">data =</span> bc</a>
+<a class="sourceLine" id="cb7-5" data-line-number="5">)</a>
+<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(fit_cov)</a></code></pre></div>
 <p><img src="j_survival_files/figure-html/unnamed-chunk-3-1.png" width="576"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fitcov_good   &lt;-<span class="st"> </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(fit_cov, <span class="dt">group =</span> <span class="st">"Good"</span>)
-fitcov_medium &lt;-<span class="st"> </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(fit_cov, <span class="dt">group =</span> <span class="st">"Medium"</span>)
-fitcov_poor   &lt;-<span class="st"> </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(fit_cov, <span class="dt">group =</span> <span class="st">"Poor"</span>)</code></pre></div>
-<p>Similar functionality is also available for Kaplan-Meiers created using <code><a href="https://www.rdocumentation.org/packages/survival/topics/survfit">survival::survfit()</a></code></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(survival)
-
-km_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/survival/topics/survfit">survfit</a></span>(
-  <span class="dt">formula =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/survival/topics/Surv">Surv</a></span>(futime, fustat) <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,
-  <span class="dt">data =</span> ovarian
-)
-km_cov &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/survival/topics/survfit">survfit</a></span>(
-  <span class="dt">formula =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/survival/topics/Surv">Surv</a></span>(rectime, censrec) <span class="op">~</span><span class="st"> </span>group,
-  <span class="dt">data =</span> bc
-)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(km_cov)</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">fitcov_good   &lt;-<span class="st"> </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(fit_cov, <span class="dt">group =</span> <span class="st">"Good"</span>)</a>
+<a class="sourceLine" id="cb8-2" data-line-number="2">fitcov_medium &lt;-<span class="st"> </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(fit_cov, <span class="dt">group =</span> <span class="st">"Medium"</span>)</a>
+<a class="sourceLine" id="cb8-3" data-line-number="3">fitcov_poor   &lt;-<span class="st"> </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(fit_cov, <span class="dt">group =</span> <span class="st">"Poor"</span>)</a></code></pre></div>
+<p>Similar functionality is also available for Kaplan-Meiers created using <code><a href="https://rdrr.io/pkg/survival/man/survfit.html">survival::survfit()</a></code></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(survival)</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">km_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit</a></span>(</a>
+<a class="sourceLine" id="cb9-4" data-line-number="4">  <span class="dt">formula =</span> <span class="kw"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span>(futime, fustat) <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb9-5" data-line-number="5">  <span class="dt">data =</span> ovarian</a>
+<a class="sourceLine" id="cb9-6" data-line-number="6">)</a>
+<a class="sourceLine" id="cb9-7" data-line-number="7">km_cov &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit</a></span>(</a>
+<a class="sourceLine" id="cb9-8" data-line-number="8">  <span class="dt">formula =</span> <span class="kw"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span>(rectime, censrec) <span class="op">~</span><span class="st"> </span>group,</a>
+<a class="sourceLine" id="cb9-9" data-line-number="9">  <span class="dt">data =</span> bc</a>
+<a class="sourceLine" id="cb9-10" data-line-number="10">)</a>
+<a class="sourceLine" id="cb9-11" data-line-number="11"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(km_cov)</a></code></pre></div>
 <p><img src="j_survival_files/figure-html/unnamed-chunk-4-1.png" width="576"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">km_good   &lt;-<span class="st"> </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(km_cov, <span class="dt">group =</span> <span class="st">"Good"</span>)
-km_medium &lt;-<span class="st"> </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(km_cov, <span class="dt">group =</span> <span class="st">"Medium"</span>)
-km_poor   &lt;-<span class="st"> </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(km_cov, <span class="dt">group =</span> <span class="st">"Poor"</span>)</code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">km_good   &lt;-<span class="st"> </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(km_cov, <span class="dt">group =</span> <span class="st">"Good"</span>)</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2">km_medium &lt;-<span class="st"> </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(km_cov, <span class="dt">group =</span> <span class="st">"Medium"</span>)</a>
+<a class="sourceLine" id="cb10-3" data-line-number="3">km_poor   &lt;-<span class="st"> </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(km_cov, <span class="dt">group =</span> <span class="st">"Poor"</span>)</a></code></pre></div>
 </div>
 <div id="operations" class="section level2">
 <h2 class="hasAnchor">
@@ -197,45 +192,45 @@ km_poor   &lt;-<span class="st"> </span><span class="kw"><a href="../reference/s
 <li>Odds ratio: <code><a href="../reference/apply_or.html">apply_or()</a></code>.</li>
 <li>Acceleration factor: <code><a href="../reference/apply_af.html">apply_af()</a></code>.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">km_poor_ph &lt;-<span class="st"> </span><span class="kw"><a href="../reference/apply_hr.html">apply_hr</a></span>(km_poor, <span class="dt">hr =</span> <span class="fl">0.5</span>)
-km_medium_af &lt;-<span class="st"> </span><span class="kw"><a href="../reference/apply_af.html">apply_af</a></span>(km_medium, <span class="dt">af =</span> <span class="fl">1.2</span>)</code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">km_poor_ph &lt;-<span class="st"> </span><span class="kw"><a href="../reference/apply_hr.html">apply_hr</a></span>(km_poor, <span class="dt">hr =</span> <span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2">km_medium_af &lt;-<span class="st"> </span><span class="kw"><a href="../reference/apply_af.html">apply_af</a></span>(km_medium, <span class="dt">af =</span> <span class="fl">1.2</span>)</a></code></pre></div>
 <p>In addition, distributions can be combined using a variety of operations:</p>
 <ul>
 <li>Join survival distributions together: <code><a href="../reference/join.html">join()</a></code>.</li>
 <li>Mix two (or more) survival distributions: <code><a href="../reference/mix.html">mix()</a></code>.</li>
 <li>Combine two (or more) survival distributions as independent risks: <code><a href="../reference/add_hazards.html">add_hazards()</a></code>.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">km_poor_join &lt;-<span class="st"> </span><span class="kw"><a href="../reference/join.html">join</a></span>(
-  km_poor,
-  fitcov_poor,
-  <span class="dt">at =</span> <span class="dv">365</span>
-)
-models_all &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mix.html">mix</a></span>(
-  fitcov_good, fitcov_medium, fitcov_poor,
-  <span class="dt">weights =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>)
-)
-combined_risks &lt;-<span class="st"> </span><span class="kw"><a href="../reference/add_hazards.html">add_hazards</a></span>(
-  fit_w, fitcov_good
-)</code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">km_poor_join &lt;-<span class="st"> </span><span class="kw"><a href="../reference/join.html">join</a></span>(</a>
+<a class="sourceLine" id="cb12-2" data-line-number="2">  km_poor,</a>
+<a class="sourceLine" id="cb12-3" data-line-number="3">  fitcov_poor,</a>
+<a class="sourceLine" id="cb12-4" data-line-number="4">  <span class="dt">at =</span> <span class="dv">365</span></a>
+<a class="sourceLine" id="cb12-5" data-line-number="5">)</a>
+<a class="sourceLine" id="cb12-6" data-line-number="6">models_all &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mix.html">mix</a></span>(</a>
+<a class="sourceLine" id="cb12-7" data-line-number="7">  fitcov_good, fitcov_medium, fitcov_poor,</a>
+<a class="sourceLine" id="cb12-8" data-line-number="8">  <span class="dt">weights =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb12-9" data-line-number="9">)</a>
+<a class="sourceLine" id="cb12-10" data-line-number="10">combined_risks &lt;-<span class="st"> </span><span class="kw"><a href="../reference/add_hazards.html">add_hazards</a></span>(</a>
+<a class="sourceLine" id="cb12-11" data-line-number="11">  fit_w, fitcov_good</a>
+<a class="sourceLine" id="cb12-12" data-line-number="12">)</a></code></pre></div>
 <p>The transition or survival probabilities are computed with <code><a href="../reference/compute_surv.html">compute_surv()</a></code>. Time (usually <code>model_time</code> or <code>state_time</code>) needs to be passed to the function as a <code>time</code> argument.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/compute_surv.html">compute_surv</a></span>(surv_dist_<span class="dv">2</span>, <span class="dt">time =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw"><a href="../reference/compute_surv.html">compute_surv</a></span>(surv_dist_<span class="dv">2</span>, <span class="dt">time =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</a></code></pre></div>
 <pre><code>## [1] 8.780223e-06 2.271877e-05 3.500128e-05 4.649850e-05 5.747782e-05</code></pre>
-<p>All these operations can be chained with the <code>%&gt;%</code> piping operator.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit_cov <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(<span class="dt">group =</span> <span class="st">"Good"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/apply_hr.html">apply_hr</a></span>(<span class="dt">hr =</span> <span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/join.html">join</a></span>(
-    fitcov_poor,
-    <span class="dt">at =</span> <span class="dv">3</span>
-  ) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="../reference/mix.html">mix</a></span>(
-    fitcov_medium,
-    <span class="dt">weights =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">0.25</span>, <span class="fl">0.75</span>)
-  ) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="../reference/add_hazards.html">add_hazards</a></span>(
-    fit_w
-  ) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/compute_surv.html">compute_surv</a></span>(<span class="dt">time =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</code></pre></div>
+<p>All these operations can be chained with the <code><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></code> piping operator.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">fit_cov <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/set_covariates.html">set_covariates</a></span>(<span class="dt">group =</span> <span class="st">"Good"</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb15-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/apply_hr.html">apply_hr</a></span>(<span class="dt">hr =</span> <span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb15-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/join.html">join</a></span>(</a>
+<a class="sourceLine" id="cb15-5" data-line-number="5">    fitcov_poor,</a>
+<a class="sourceLine" id="cb15-6" data-line-number="6">    <span class="dt">at =</span> <span class="dv">3</span></a>
+<a class="sourceLine" id="cb15-7" data-line-number="7">  ) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb15-8" data-line-number="8"><span class="st">  </span><span class="kw"><a href="../reference/mix.html">mix</a></span>(</a>
+<a class="sourceLine" id="cb15-9" data-line-number="9">    fitcov_medium,</a>
+<a class="sourceLine" id="cb15-10" data-line-number="10">    <span class="dt">weights =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0.25</span>, <span class="fl">0.75</span>)</a>
+<a class="sourceLine" id="cb15-11" data-line-number="11">  ) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb15-12" data-line-number="12"><span class="st">  </span><span class="kw"><a href="../reference/add_hazards.html">add_hazards</a></span>(</a>
+<a class="sourceLine" id="cb15-13" data-line-number="13">    fit_w</a>
+<a class="sourceLine" id="cb15-14" data-line-number="14">  ) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb15-15" data-line-number="15"><span class="st">  </span><span class="kw"><a href="../reference/compute_surv.html">compute_surv</a></span>(<span class="dt">time =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</a></code></pre></div>
 <pre><code>## [1] 0.0004011356 0.0004736851 0.0005069766 0.0005490092 0.0005692261</code></pre>
 </div>
 <div id="applications" class="section level2">
@@ -245,82 +240,83 @@ combined_risks &lt;-<span class="st"> </span><span class="kw"><a href="../refere
 <h3 class="hasAnchor">
 <a href="#transition-matrix" class="anchor"></a>Transition matrix</h3>
 <p>For the example we define a simple model with only 1 strategy.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">param &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_parameters.html">define_parameters</a></span>(
-  <span class="dt">p1 =</span> <span class="kw"><a href="../reference/compute_surv.html">compute_surv</a></span>(
-    surv_dist_<span class="dv">1</span>,
-    <span class="dt">time =</span> model_time <span class="co"># can also be state_time</span>
-  ),
-  <span class="dt">p2 =</span> km_<span class="dv">1</span> <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw"><a href="../reference/join.html">join</a></span>(fit_w, <span class="dt">at =</span> <span class="dv">730</span>) <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw"><a href="../reference/compute_surv.html">compute_surv</a></span>(
-      <span class="dt">time =</span> model_time,
-      <span class="dt">cycle_length =</span> <span class="dv">365</span>  <span class="co"># time is in days in km_medium, in years in model_time</span>
-    )
-)
-
-tm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_transition.html">define_transition</a></span>(
-  C, p1 <span class="op">-</span><span class="st"> </span>p2, p2,
-  <span class="dv">0</span>, C,       p2,
-  <span class="dv">0</span>, <span class="dv">0</span>,       C
-)</code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">param &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_parameters.html">define_parameters</a></span>(</a>
+<a class="sourceLine" id="cb17-2" data-line-number="2">  <span class="dt">p1 =</span> <span class="kw"><a href="../reference/compute_surv.html">compute_surv</a></span>(</a>
+<a class="sourceLine" id="cb17-3" data-line-number="3">    surv_dist_<span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb17-4" data-line-number="4">    <span class="dt">time =</span> model_time <span class="co"># can also be state_time</span></a>
+<a class="sourceLine" id="cb17-5" data-line-number="5">  ),</a>
+<a class="sourceLine" id="cb17-6" data-line-number="6">  <span class="dt">p2 =</span> km_<span class="dv">1</span> <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb17-7" data-line-number="7"><span class="st">    </span><span class="kw"><a href="../reference/join.html">join</a></span>(fit_w, <span class="dt">at =</span> <span class="dv">730</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb17-8" data-line-number="8"><span class="st">    </span><span class="kw"><a href="../reference/compute_surv.html">compute_surv</a></span>(</a>
+<a class="sourceLine" id="cb17-9" data-line-number="9">      <span class="dt">time =</span> model_time,</a>
+<a class="sourceLine" id="cb17-10" data-line-number="10">      <span class="dt">cycle_length =</span> <span class="dv">365</span>  <span class="co"># time is in days in km_medium, in years in model_time</span></a>
+<a class="sourceLine" id="cb17-11" data-line-number="11">    )</a>
+<a class="sourceLine" id="cb17-12" data-line-number="12">)</a>
+<a class="sourceLine" id="cb17-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb17-14" data-line-number="14">tm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_transition.html">define_transition</a></span>(</a>
+<a class="sourceLine" id="cb17-15" data-line-number="15">  C, p1 <span class="op">-</span><span class="st"> </span>p2, p2,</a>
+<a class="sourceLine" id="cb17-16" data-line-number="16">  <span class="dv">0</span>, C,       p2,</a>
+<a class="sourceLine" id="cb17-17" data-line-number="17">  <span class="dv">0</span>, <span class="dv">0</span>,       C</a>
+<a class="sourceLine" id="cb17-18" data-line-number="18">)</a></code></pre></div>
 <pre><code>## No named state -&gt; generating names.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(tm)</code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(tm)</a></code></pre></div>
 <pre><code>## Le chargement a nécessité le package : diagram</code></pre>
 <p><img src="j_survival_files/figure-html/unnamed-chunk-9-1.png" width="576"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sA &lt;-<span class="st">  </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(
-  <span class="dt">cost =</span> <span class="dv">10</span>, <span class="dt">ut =</span> <span class="dv">1</span>
-)
-sB &lt;-<span class="st">  </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(
-  <span class="dt">cost =</span> <span class="dv">20</span>, <span class="dt">ut =</span> <span class="fl">.5</span>
-)
-sC &lt;-<span class="st">  </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(
-  <span class="dt">cost =</span> <span class="dv">0</span>, <span class="dt">ut =</span> <span class="dv">0</span>
-)
-
-stratTM &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_strategy.html">define_strategy</a></span>(
-  <span class="dt">transition =</span> tm,
-  <span class="dt">A =</span> sA, <span class="dt">B =</span> sB, <span class="dt">C =</span> sC
-)
-
-resTM &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_model.html">run_model</a></span>(
-  <span class="dt">parameters =</span> param,
-  stratTM,
-  <span class="dt">cycles =</span> <span class="dv">15</span>,
-  <span class="dt">cost =</span> cost, <span class="dt">effect =</span> ut
-)</code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">sA &lt;-<span class="st">  </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(</a>
+<a class="sourceLine" id="cb21-2" data-line-number="2">  <span class="dt">cost =</span> <span class="dv">10</span>, <span class="dt">ut =</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb21-3" data-line-number="3">)</a>
+<a class="sourceLine" id="cb21-4" data-line-number="4">sB &lt;-<span class="st">  </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(</a>
+<a class="sourceLine" id="cb21-5" data-line-number="5">  <span class="dt">cost =</span> <span class="dv">20</span>, <span class="dt">ut =</span> <span class="fl">.5</span></a>
+<a class="sourceLine" id="cb21-6" data-line-number="6">)</a>
+<a class="sourceLine" id="cb21-7" data-line-number="7">sC &lt;-<span class="st">  </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(</a>
+<a class="sourceLine" id="cb21-8" data-line-number="8">  <span class="dt">cost =</span> <span class="dv">0</span>, <span class="dt">ut =</span> <span class="dv">0</span></a>
+<a class="sourceLine" id="cb21-9" data-line-number="9">)</a>
+<a class="sourceLine" id="cb21-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb21-11" data-line-number="11">stratTM &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_strategy.html">define_strategy</a></span>(</a>
+<a class="sourceLine" id="cb21-12" data-line-number="12">  <span class="dt">transition =</span> tm,</a>
+<a class="sourceLine" id="cb21-13" data-line-number="13">  <span class="dt">A =</span> sA, <span class="dt">B =</span> sB, <span class="dt">C =</span> sC</a>
+<a class="sourceLine" id="cb21-14" data-line-number="14">)</a>
+<a class="sourceLine" id="cb21-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb21-16" data-line-number="16">resTM &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_model.html">run_model</a></span>(</a>
+<a class="sourceLine" id="cb21-17" data-line-number="17">  <span class="dt">parameters =</span> param,</a>
+<a class="sourceLine" id="cb21-18" data-line-number="18">  stratTM,</a>
+<a class="sourceLine" id="cb21-19" data-line-number="19">  <span class="dt">cycles =</span> <span class="dv">15</span>,</a>
+<a class="sourceLine" id="cb21-20" data-line-number="20">  <span class="dt">cost =</span> cost, <span class="dt">effect =</span> ut</a>
+<a class="sourceLine" id="cb21-21" data-line-number="21">)</a></code></pre></div>
 <pre><code>## No named model -&gt; generating names.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(resTM)</code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(resTM)</a></code></pre></div>
 <p><img src="j_survival_files/figure-html/unnamed-chunk-10-1.png" width="576"></p>
 </div>
 <div id="partitioned-survival-model" class="section level3">
 <h3 class="hasAnchor">
 <a href="#partitioned-survival-model" class="anchor"></a>Partitioned survival model</h3>
 <p>A partitioned survival model can also be computed:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ps &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_part_surv.html">define_part_surv</a></span>(
-  <span class="dt">pfs =</span> surv_dist_<span class="dv">1</span>,
-  <span class="dt">os  =</span> km_<span class="dv">1</span> <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw"><a href="../reference/join.html">join</a></span>(fit_w, <span class="dt">at =</span> <span class="dv">730</span>),
-  <span class="dt">cycle_length =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">365</span>) <span class="co"># 1 for pfs, 365 for os</span>
-)</code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1">ps &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_part_surv.html">define_part_surv</a></span>(</a>
+<a class="sourceLine" id="cb24-2" data-line-number="2">  <span class="dt">pfs =</span> surv_dist_<span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb24-3" data-line-number="3">  <span class="dt">os  =</span> km_<span class="dv">1</span> <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb24-4" data-line-number="4"><span class="st">    </span><span class="kw"><a href="../reference/join.html">join</a></span>(fit_w, <span class="dt">at =</span> <span class="dv">730</span>),</a>
+<a class="sourceLine" id="cb24-5" data-line-number="5">  <span class="dt">cycle_length =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">365</span>) <span class="co"># 1 for pfs, 365 for os</span></a>
+<a class="sourceLine" id="cb24-6" data-line-number="6">)</a></code></pre></div>
 <pre><code>## No named state -&gt; generating names.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stratPS &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_strategy.html">define_strategy</a></span>(
-  <span class="dt">transition =</span> ps,
-  <span class="dt">A =</span> sA, <span class="dt">B =</span> sB, <span class="dt">C =</span> sC
-)
-
-resPS &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_model.html">run_model</a></span>(
-  stratPS,
-  <span class="dt">cycles =</span> <span class="dv">15</span>,
-  <span class="dt">cost =</span> cost, <span class="dt">effect =</span> ut
-)</code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1">stratPS &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_strategy.html">define_strategy</a></span>(</a>
+<a class="sourceLine" id="cb26-2" data-line-number="2">  <span class="dt">transition =</span> ps,</a>
+<a class="sourceLine" id="cb26-3" data-line-number="3">  <span class="dt">A =</span> sA, <span class="dt">B =</span> sB, <span class="dt">C =</span> sC</a>
+<a class="sourceLine" id="cb26-4" data-line-number="4">)</a>
+<a class="sourceLine" id="cb26-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb26-6" data-line-number="6">resPS &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_model.html">run_model</a></span>(</a>
+<a class="sourceLine" id="cb26-7" data-line-number="7">  stratPS,</a>
+<a class="sourceLine" id="cb26-8" data-line-number="8">  <span class="dt">cycles =</span> <span class="dv">15</span>,</a>
+<a class="sourceLine" id="cb26-9" data-line-number="9">  <span class="dt">cost =</span> cost, <span class="dt">effect =</span> ut</a>
+<a class="sourceLine" id="cb26-10" data-line-number="10">)</a></code></pre></div>
 <pre><code>## No named model -&gt; generating names.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(resPS)</code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(resPS)</a></code></pre></div>
 <p><img src="j_survival_files/figure-html/unnamed-chunk-11-1.png" width="576"></p>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
@@ -335,17 +331,20 @@ resPS &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_m
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by Kevin Zarca, Antoine Filipovic-Pierucci.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

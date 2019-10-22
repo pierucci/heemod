@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Simple Markov Models (Homogeneous) • heemod</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Simple Markov Models (Homogeneous)">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -30,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">heemod</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.11.0</span>
       </span>
     </div>
 
@@ -38,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -91,14 +92,7 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/pierucci/heemod">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul>
+<ul class="nav navbar-nav navbar-right"></ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -107,14 +101,15 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Simple Markov Models (Homogeneous)</h1>
             
-            <h4 class="date">2019-02-22</h4>
+            <h4 class="date">2019-10-22</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/pierucci/heemod/blob/master/vignettes/c_homogeneous.Rmd"><code>vignettes/c_homogeneous.Rmd</code></a></small>
+      
       <div class="hidden name"><code>c_homogeneous.Rmd</code></div>
 
     </div>
@@ -143,14 +138,14 @@
 <h2 class="hasAnchor">
 <a href="#transition-probabilities" class="anchor"></a>Transition probabilities</h2>
 <p>Transition probabilities for the monotherapy study group are rather simple to implement with <code><a href="../reference/define_transition.html">define_transition()</a></code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mat_mono &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_transition.html">define_transition</a></span>(
-    <span class="fl">.721</span>, <span class="fl">.202</span>, <span class="fl">.067</span>, <span class="fl">.010</span>,
-    <span class="dv">0</span>,    <span class="fl">.581</span>, <span class="fl">.407</span>, <span class="fl">.012</span>,
-    <span class="dv">0</span>,    <span class="dv">0</span>,    <span class="fl">.750</span>, <span class="fl">.250</span>,
-    <span class="dv">0</span>,    <span class="dv">0</span>,    <span class="dv">0</span>,    <span class="dv">1</span>
-  )</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">mat_mono &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_transition.html">define_transition</a></span>(</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">    <span class="fl">.721</span>, <span class="fl">.202</span>, <span class="fl">.067</span>, <span class="fl">.010</span>,</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">    <span class="dv">0</span>,    <span class="fl">.581</span>, <span class="fl">.407</span>, <span class="fl">.012</span>,</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">    <span class="dv">0</span>,    <span class="dv">0</span>,    <span class="fl">.750</span>, <span class="fl">.250</span>,</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">    <span class="dv">0</span>,    <span class="dv">0</span>,    <span class="dv">0</span>,    <span class="dv">1</span></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">  )</a></code></pre></div>
 <pre><code>## No named state -&gt; generating names.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mat_mono</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">mat_mono</a></code></pre></div>
 <pre><code>## A transition matrix, 4 states.
 ## 
 ##   A     B     C     D    
@@ -161,16 +156,16 @@
 <p>The combined therapy group has its transition probabilities multiplied by <span class="math inline">\(rr = 0.509\)</span>, the relative risk of event for the population treated by combined therapy. Since <span class="math inline">\(rr &lt; 1\)</span>, the combined therapy group has less chance to transition to worst health states.</p>
 <p>The probabilities to stay in the same state are equal to <span class="math inline">\(1 - \sum P_{trans}\)</span> where <span class="math inline">\(P_{trans}\)</span> are the probabilities to change to another state (because all transition probabilities from a given state must sum to 1).</p>
 <p>We use the alias <code>C</code> as a convenient way to specify the probability complement, equal to <span class="math inline">\(1 - \sum P_{trans}\)</span>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rr &lt;-<span class="st"> </span><span class="fl">.509</span>
-
-mat_comb &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_transition.html">define_transition</a></span>(
-    C, <span class="fl">.202</span><span class="op">*</span>rr, <span class="fl">.067</span><span class="op">*</span>rr, <span class="fl">.010</span><span class="op">*</span>rr,
-    <span class="dv">0</span>, C,       <span class="fl">.407</span><span class="op">*</span>rr, <span class="fl">.012</span><span class="op">*</span>rr,
-    <span class="dv">0</span>, <span class="dv">0</span>,       C,       <span class="fl">.250</span><span class="op">*</span>rr,
-    <span class="dv">0</span>, <span class="dv">0</span>,       <span class="dv">0</span>,       <span class="dv">1</span>
-  )</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">rr &lt;-<span class="st"> </span><span class="fl">.509</span></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">mat_comb &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_transition.html">define_transition</a></span>(</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">    C, <span class="fl">.202</span><span class="op">*</span>rr, <span class="fl">.067</span><span class="op">*</span>rr, <span class="fl">.010</span><span class="op">*</span>rr,</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">    <span class="dv">0</span>, C,       <span class="fl">.407</span><span class="op">*</span>rr, <span class="fl">.012</span><span class="op">*</span>rr,</a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">    <span class="dv">0</span>, <span class="dv">0</span>,       C,       <span class="fl">.250</span><span class="op">*</span>rr,</a>
+<a class="sourceLine" id="cb5-7" data-line-number="7">    <span class="dv">0</span>, <span class="dv">0</span>,       <span class="dv">0</span>,       <span class="dv">1</span></a>
+<a class="sourceLine" id="cb5-8" data-line-number="8">  )</a></code></pre></div>
 <pre><code>## No named state -&gt; generating names.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mat_comb</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">mat_comb</a></code></pre></div>
 <pre><code>## A transition matrix, 4 states.
 ## 
 ##   A B          C          D         
@@ -179,32 +174,32 @@ mat_comb &lt;-<span class="st"> </span><span class="kw"><a href="../reference/de
 ## C              C          0.25 * rr 
 ## D                         1</code></pre>
 <p>We can plot the transition matrix for the monotherapy group:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mat_mono)</code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(mat_mono)</a></code></pre></div>
 <pre><code>## Le chargement a nécessité le package : diagram</code></pre>
 <p><img src="c_homogeneous_files/figure-html/unnamed-chunk-4-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>And the combined therapy group:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mat_comb)</code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(mat_comb)</a></code></pre></div>
 <p><img src="c_homogeneous_files/figure-html/unnamed-chunk-5-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div id="state-values" class="section level2">
 <h2 class="hasAnchor">
 <a href="#state-values" class="anchor"></a>State values</h2>
 <p>The costs of lamivudine and zidovudine are defined:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cost_zido &lt;-<span class="st"> </span><span class="dv">2278</span>
-cost_lami &lt;-<span class="st"> </span><span class="dv">2086</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">cost_zido &lt;-<span class="st"> </span><span class="dv">2278</span></a>
+<a class="sourceLine" id="cb12-2" data-line-number="2">cost_lami &lt;-<span class="st"> </span><span class="dv">2086</span></a></code></pre></div>
 <p>In addition to drugs costs (called <code>cost_drugs</code> in the model), each state is associated to healthcare costs (called <code>cost_health</code>). Cost are discounted at a 6% rate with the <code>discount</code> function.</p>
 <p>Efficacy in this study is measured in terms of life expectancy (called <code>life_year</code> in the model). Each state thus has a value of 1 life year per year, except death who has a value of 0. Life-years are not discounted in this example.</p>
 <p>Only <code>cost_drug</code> differs between the monotherapy and the combined therapy treatment groups, the function <code><a href="../reference/dispatch_strategy.html">dispatch_strategy()</a></code> can be used to account for that. For example state A can be defined with <code><a href="../reference/define_state.html">define_state()</a></code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">state_A &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(
-    <span class="dt">cost_health =</span> <span class="kw"><a href="../reference/discount.html">discount</a></span>(<span class="dv">2756</span>, <span class="fl">.06</span>),
-    <span class="dt">cost_drugs =</span> <span class="kw"><a href="../reference/discount.html">discount</a></span>(<span class="kw"><a href="../reference/dispatch_strategy.html">dispatch_strategy</a></span>(
-      <span class="dt">mono =</span> cost_zido,
-      <span class="dt">comb =</span> cost_zido <span class="op">+</span><span class="st"> </span>cost_lami
-    ), <span class="fl">.06</span>),
-    <span class="dt">cost_total =</span> cost_health <span class="op">+</span><span class="st"> </span>cost_drugs,
-    <span class="dt">life_year =</span> <span class="dv">1</span>
-  )
-state_A</code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">state_A &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(</a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">    <span class="dt">cost_health =</span> <span class="kw"><a href="../reference/discount.html">discount</a></span>(<span class="dv">2756</span>, <span class="fl">.06</span>),</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3">    <span class="dt">cost_drugs =</span> <span class="kw"><a href="../reference/discount.html">discount</a></span>(<span class="kw"><a href="../reference/dispatch_strategy.html">dispatch_strategy</a></span>(</a>
+<a class="sourceLine" id="cb13-4" data-line-number="4">      <span class="dt">mono =</span> cost_zido,</a>
+<a class="sourceLine" id="cb13-5" data-line-number="5">      <span class="dt">comb =</span> cost_zido <span class="op">+</span><span class="st"> </span>cost_lami</a>
+<a class="sourceLine" id="cb13-6" data-line-number="6">    ), <span class="fl">.06</span>),</a>
+<a class="sourceLine" id="cb13-7" data-line-number="7">    <span class="dt">cost_total =</span> cost_health <span class="op">+</span><span class="st"> </span>cost_drugs,</a>
+<a class="sourceLine" id="cb13-8" data-line-number="8">    <span class="dt">life_year =</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb13-9" data-line-number="9">  )</a>
+<a class="sourceLine" id="cb13-10" data-line-number="10">state_A</a></code></pre></div>
 <pre><code>## A state with 4 values.
 ## 
 ## cost_health = discount(2756, 0.06)
@@ -213,77 +208,77 @@ state_A</code></pre></div>
 ## cost_total = cost_health + cost_drugs
 ## life_year = 1</code></pre>
 <p>The other states for the monotherapy treatment group can be specified in the same way:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">state_B &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(
-    <span class="dt">cost_health =</span> <span class="kw"><a href="../reference/discount.html">discount</a></span>(<span class="dv">3052</span>, <span class="fl">.06</span>),
-    <span class="dt">cost_drugs =</span> <span class="kw"><a href="../reference/discount.html">discount</a></span>(<span class="kw"><a href="../reference/dispatch_strategy.html">dispatch_strategy</a></span>(
-      <span class="dt">mono =</span> cost_zido,
-      <span class="dt">comb =</span> cost_zido <span class="op">+</span><span class="st"> </span>cost_lami
-    ), <span class="fl">.06</span>),
-    <span class="dt">cost_total =</span> cost_health <span class="op">+</span><span class="st"> </span>cost_drugs,
-    <span class="dt">life_year =</span> <span class="dv">1</span>
-  )
-state_C &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(
-    <span class="dt">cost_health =</span> <span class="kw"><a href="../reference/discount.html">discount</a></span>(<span class="dv">9007</span>, <span class="fl">.06</span>),
-    <span class="dt">cost_drugs =</span> <span class="kw"><a href="../reference/discount.html">discount</a></span>(<span class="kw"><a href="../reference/dispatch_strategy.html">dispatch_strategy</a></span>(
-      <span class="dt">mono =</span> cost_zido,
-      <span class="dt">comb =</span> cost_zido <span class="op">+</span><span class="st"> </span>cost_lami
-    ), <span class="fl">.06</span>),
-    <span class="dt">cost_total =</span> cost_health <span class="op">+</span><span class="st"> </span>cost_drugs,
-    <span class="dt">life_year =</span> <span class="dv">1</span>
-  )
-state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(
-    <span class="dt">cost_health =</span> <span class="dv">0</span>,
-    <span class="dt">cost_drugs =</span> <span class="dv">0</span>,
-    <span class="dt">cost_total =</span> <span class="dv">0</span>,
-    <span class="dt">life_year =</span> <span class="dv">0</span>
-  )</code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">state_B &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(</a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">    <span class="dt">cost_health =</span> <span class="kw"><a href="../reference/discount.html">discount</a></span>(<span class="dv">3052</span>, <span class="fl">.06</span>),</a>
+<a class="sourceLine" id="cb15-3" data-line-number="3">    <span class="dt">cost_drugs =</span> <span class="kw"><a href="../reference/discount.html">discount</a></span>(<span class="kw"><a href="../reference/dispatch_strategy.html">dispatch_strategy</a></span>(</a>
+<a class="sourceLine" id="cb15-4" data-line-number="4">      <span class="dt">mono =</span> cost_zido,</a>
+<a class="sourceLine" id="cb15-5" data-line-number="5">      <span class="dt">comb =</span> cost_zido <span class="op">+</span><span class="st"> </span>cost_lami</a>
+<a class="sourceLine" id="cb15-6" data-line-number="6">    ), <span class="fl">.06</span>),</a>
+<a class="sourceLine" id="cb15-7" data-line-number="7">    <span class="dt">cost_total =</span> cost_health <span class="op">+</span><span class="st"> </span>cost_drugs,</a>
+<a class="sourceLine" id="cb15-8" data-line-number="8">    <span class="dt">life_year =</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb15-9" data-line-number="9">  )</a>
+<a class="sourceLine" id="cb15-10" data-line-number="10">state_C &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(</a>
+<a class="sourceLine" id="cb15-11" data-line-number="11">    <span class="dt">cost_health =</span> <span class="kw"><a href="../reference/discount.html">discount</a></span>(<span class="dv">9007</span>, <span class="fl">.06</span>),</a>
+<a class="sourceLine" id="cb15-12" data-line-number="12">    <span class="dt">cost_drugs =</span> <span class="kw"><a href="../reference/discount.html">discount</a></span>(<span class="kw"><a href="../reference/dispatch_strategy.html">dispatch_strategy</a></span>(</a>
+<a class="sourceLine" id="cb15-13" data-line-number="13">      <span class="dt">mono =</span> cost_zido,</a>
+<a class="sourceLine" id="cb15-14" data-line-number="14">      <span class="dt">comb =</span> cost_zido <span class="op">+</span><span class="st"> </span>cost_lami</a>
+<a class="sourceLine" id="cb15-15" data-line-number="15">    ), <span class="fl">.06</span>),</a>
+<a class="sourceLine" id="cb15-16" data-line-number="16">    <span class="dt">cost_total =</span> cost_health <span class="op">+</span><span class="st"> </span>cost_drugs,</a>
+<a class="sourceLine" id="cb15-17" data-line-number="17">    <span class="dt">life_year =</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb15-18" data-line-number="18">  )</a>
+<a class="sourceLine" id="cb15-19" data-line-number="19">state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_state.html">define_state</a></span>(</a>
+<a class="sourceLine" id="cb15-20" data-line-number="20">    <span class="dt">cost_health =</span> <span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb15-21" data-line-number="21">    <span class="dt">cost_drugs =</span> <span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb15-22" data-line-number="22">    <span class="dt">cost_total =</span> <span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb15-23" data-line-number="23">    <span class="dt">life_year =</span> <span class="dv">0</span></a>
+<a class="sourceLine" id="cb15-24" data-line-number="24">  )</a></code></pre></div>
 </div>
 <div id="strategy-definitions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#strategy-definitions" class="anchor"></a>Strategy definitions</h2>
 <p>Strategies can now be defined by combining a transition matrix and a state list with <code><a href="../reference/define_strategy.html">define_strategy()</a></code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">strat_mono &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_strategy.html">define_strategy</a></span>(
-  <span class="dt">transition =</span> mat_mono,
-  state_A,
-  state_B,
-  state_C,
-  state_D
-)</code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">strat_mono &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_strategy.html">define_strategy</a></span>(</a>
+<a class="sourceLine" id="cb16-2" data-line-number="2">  <span class="dt">transition =</span> mat_mono,</a>
+<a class="sourceLine" id="cb16-3" data-line-number="3">  state_A,</a>
+<a class="sourceLine" id="cb16-4" data-line-number="4">  state_B,</a>
+<a class="sourceLine" id="cb16-5" data-line-number="5">  state_C,</a>
+<a class="sourceLine" id="cb16-6" data-line-number="6">  state_D</a>
+<a class="sourceLine" id="cb16-7" data-line-number="7">)</a></code></pre></div>
 <pre><code>## No named state -&gt; generating names.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">strat_mono</code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">strat_mono</a></code></pre></div>
 <pre><code>## A Markov model strategy:
 ## 
 ##     4 states,
 ##     4 state values</code></pre>
 <p>For the combined therapy model:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">strat_comb &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_strategy.html">define_strategy</a></span>(
-  <span class="dt">transition =</span> mat_comb,
-  state_A,
-  state_B,
-  state_C,
-  state_D
-)</code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">strat_comb &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_strategy.html">define_strategy</a></span>(</a>
+<a class="sourceLine" id="cb20-2" data-line-number="2">  <span class="dt">transition =</span> mat_comb,</a>
+<a class="sourceLine" id="cb20-3" data-line-number="3">  state_A,</a>
+<a class="sourceLine" id="cb20-4" data-line-number="4">  state_B,</a>
+<a class="sourceLine" id="cb20-5" data-line-number="5">  state_C,</a>
+<a class="sourceLine" id="cb20-6" data-line-number="6">  state_D</a>
+<a class="sourceLine" id="cb20-7" data-line-number="7">)</a></code></pre></div>
 <pre><code>## No named state -&gt; generating names.</code></pre>
 </div>
 <div id="running-the-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#running-the-model" class="anchor"></a>Running the model</h2>
 <p>Both strategies can then be combined in a model and run for 50 years with <code><a href="../reference/run_model.html">run_model()</a></code>. Strategies are given names (<code>mono</code> and <code>comb</code>) in order to facilitate result interpretation.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res_mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_model.html">run_model</a></span>(
-  <span class="dt">mono =</span> strat_mono,
-  <span class="dt">comb =</span> strat_comb,
-  <span class="dt">cycles =</span> <span class="dv">50</span>,
-  <span class="dt">cost =</span> cost_total,
-  <span class="dt">effect =</span> life_year
-)</code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">res_mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_model.html">run_model</a></span>(</a>
+<a class="sourceLine" id="cb22-2" data-line-number="2">  <span class="dt">mono =</span> strat_mono,</a>
+<a class="sourceLine" id="cb22-3" data-line-number="3">  <span class="dt">comb =</span> strat_comb,</a>
+<a class="sourceLine" id="cb22-4" data-line-number="4">  <span class="dt">cycles =</span> <span class="dv">50</span>,</a>
+<a class="sourceLine" id="cb22-5" data-line-number="5">  <span class="dt">cost =</span> cost_total,</a>
+<a class="sourceLine" id="cb22-6" data-line-number="6">  <span class="dt">effect =</span> life_year</a>
+<a class="sourceLine" id="cb22-7" data-line-number="7">)</a></code></pre></div>
 <p>By default models are run for 1000 persons starting in the first state (here state <strong>A</strong>).</p>
 </div>
 <div id="result-interpretation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#result-interpretation" class="anchor"></a>Result interpretation</h2>
-<p>Strategy values can then be compared with <code><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary()</a></code> (optionally net monetary benefits can be calculated with the <code>threshold</code> option):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(res_mod,
-        <span class="dt">threshold =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1000</span>, <span class="dv">5000</span>, <span class="dv">6000</span>, <span class="fl">1e4</span>))</code></pre></div>
+<p>Strategy values can then be compared with <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> (optionally net monetary benefits can be calculated with the <code>threshold</code> option):</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(res_mod,</a>
+<a class="sourceLine" id="cb23-2" data-line-number="2">        <span class="dt">threshold =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1000</span>, <span class="dv">5000</span>, <span class="dv">6000</span>, <span class="fl">1e4</span>))</a></code></pre></div>
 <pre><code>## 2 strategies run for 50 cycles.
 ## 
 ## Initial state counts:
@@ -317,38 +312,39 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 ## comb   44222.75     8.671094 5100.02 mono</code></pre>
 <p>The incremental cost-effectiveness ratio of the combined therapy strategy is thus £5100 per life-year gained.</p>
 <p>The counts per state can be plotted by model:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(res_mod, <span class="dt">type =</span> <span class="st">"counts"</span>, <span class="dt">panel =</span> <span class="st">"by_strategy"</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">xlab</span>(<span class="st">"Time"</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_color_brewer</span>(
-    <span class="dt">name =</span> <span class="st">"State"</span>,
-    <span class="dt">palette =</span> <span class="st">"Set1"</span>
-  )</code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(res_mod, <span class="dt">type =</span> <span class="st">"counts"</span>, <span class="dt">panel =</span> <span class="st">"by_strategy"</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb25-2" data-line-number="2"><span class="st">  </span><span class="kw">xlab</span>(<span class="st">"Time"</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb25-3" data-line-number="3"><span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb25-4" data-line-number="4"><span class="st">  </span><span class="kw">scale_color_brewer</span>(</a>
+<a class="sourceLine" id="cb25-5" data-line-number="5">    <span class="dt">name =</span> <span class="st">"State"</span>,</a>
+<a class="sourceLine" id="cb25-6" data-line-number="6">    <span class="dt">palette =</span> <span class="st">"Set1"</span></a>
+<a class="sourceLine" id="cb25-7" data-line-number="7">  )</a></code></pre></div>
 <p><img src="c_homogeneous_files/figure-html/unnamed-chunk-13-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>Or by state:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(res_mod, <span class="dt">type =</span> <span class="st">"counts"</span>, <span class="dt">panel =</span> <span class="st">"by_state"</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">xlab</span>(<span class="st">"Time"</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_color_brewer</span>(
-    <span class="dt">name =</span> <span class="st">"Strategy"</span>,
-    <span class="dt">palette =</span> <span class="st">"Set1"</span>
-  )</code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(res_mod, <span class="dt">type =</span> <span class="st">"counts"</span>, <span class="dt">panel =</span> <span class="st">"by_state"</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb26-2" data-line-number="2"><span class="st">  </span><span class="kw">xlab</span>(<span class="st">"Time"</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb26-3" data-line-number="3"><span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb26-4" data-line-number="4"><span class="st">  </span><span class="kw">scale_color_brewer</span>(</a>
+<a class="sourceLine" id="cb26-5" data-line-number="5">    <span class="dt">name =</span> <span class="st">"Strategy"</span>,</a>
+<a class="sourceLine" id="cb26-6" data-line-number="6">    <span class="dt">palette =</span> <span class="st">"Set1"</span></a>
+<a class="sourceLine" id="cb26-7" data-line-number="7">  )</a></code></pre></div>
 <p><img src="c_homogeneous_files/figure-html/unnamed-chunk-14-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>The values can also be represented:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(res_mod, <span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">panel =</span> <span class="st">"by_value"</span>,
-     <span class="dt">free_y =</span> <span class="ot">TRUE</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">xlab</span>(<span class="st">"Time"</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_color_brewer</span>(
-    <span class="dt">name =</span> <span class="st">"Strategy"</span>,
-    <span class="dt">palette =</span> <span class="st">"Set1"</span>
-  )</code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(res_mod, <span class="dt">type =</span> <span class="st">"values"</span>, <span class="dt">panel =</span> <span class="st">"by_value"</span>,</a>
+<a class="sourceLine" id="cb27-2" data-line-number="2">     <span class="dt">free_y =</span> <span class="ot">TRUE</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb27-3" data-line-number="3"><span class="st">  </span><span class="kw">xlab</span>(<span class="st">"Time"</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb27-4" data-line-number="4"><span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb27-5" data-line-number="5"><span class="st">  </span><span class="kw">scale_color_brewer</span>(</a>
+<a class="sourceLine" id="cb27-6" data-line-number="6">    <span class="dt">name =</span> <span class="st">"Strategy"</span>,</a>
+<a class="sourceLine" id="cb27-7" data-line-number="7">    <span class="dt">palette =</span> <span class="st">"Set1"</span></a>
+<a class="sourceLine" id="cb27-8" data-line-number="8">  )</a></code></pre></div>
 <p><img src="c_homogeneous_files/figure-html/unnamed-chunk-15-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>Note that classic <code>ggplot2</code> syntax can be used to modifiy plot appearance.</p>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
@@ -366,17 +362,20 @@ state_D &lt;-<span class="st"> </span><span class="kw"><a href="../reference/def
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by Kevin Zarca, Antoine Filipovic-Pierucci.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

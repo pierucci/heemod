@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Deterministic Sensitivity Analysis • heemod</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Deterministic Sensitivity Analysis">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -30,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">heemod</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.11.0</span>
       </span>
     </div>
 
@@ -38,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -91,14 +92,7 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/pierucci/heemod">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul>
+<ul class="nav navbar-nav navbar-right"></ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -107,14 +101,15 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Deterministic Sensitivity Analysis</h1>
             
-            <h4 class="date">2019-02-22</h4>
+            <h4 class="date">2019-10-22</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/pierucci/heemod/blob/master/vignettes/f_sensitivity.Rmd"><code>vignettes/f_sensitivity.Rmd</code></a></small>
+      
       <div class="hidden name"><code>f_sensitivity.Rmd</code></div>
 
     </div>
@@ -141,19 +136,19 @@
 <code>dr</code>, the discount rate.</li>
 </ul>
 <p>Upper and lower values for the paramters are given to <code><a href="../reference/define_dsa.html">define_dsa()</a></code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">se &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_dsa.html">define_dsa</a></span>(
-  rr, <span class="fl">.4</span>, <span class="fl">.6</span>,
-  
-  cost_zido, <span class="dv">1500</span>, <span class="dv">3000</span>,
-  cost_lami, <span class="dv">1500</span>, <span class="dv">3000</span>,
-  
-  dr, <span class="fl">.04</span>, <span class="fl">.08</span>
-)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">se &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_dsa.html">define_dsa</a></span>(</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">  rr, <span class="fl">.4</span>, <span class="fl">.6</span>,</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">  </a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">  cost_zido, <span class="dv">1500</span>, <span class="dv">3000</span>,</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">  cost_lami, <span class="dv">1500</span>, <span class="dv">3000</span>,</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">  </a>
+<a class="sourceLine" id="cb1-7" data-line-number="7">  dr, <span class="fl">.04</span>, <span class="fl">.08</span></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">)</a></code></pre></div>
 <p>We then run the sensitivity analysis with <code><a href="../reference/run_dsa.html">run_dsa()</a></code>, using <code>res_mod</code> the result from <code><a href="../reference/run_model.html">run_model()</a></code> as input.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res_dsa &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_dsa.html">run_dsa</a></span>(
-  <span class="dt">model =</span> res_mod,
-  <span class="dt">dsa =</span> se
-)</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">res_dsa &lt;-<span class="st"> </span><span class="kw"><a href="../reference/run_dsa.html">run_dsa</a></span>(</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">  <span class="dt">model =</span> res_mod,</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">  <span class="dt">dsa =</span> se</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">)</a></code></pre></div>
 <pre><code>## Running DSA on strategy 'mono'...</code></pre>
 <pre><code>## Running DSA on strategy 'comb'...</code></pre>
 </div>
@@ -161,7 +156,7 @@
 <h2 class="hasAnchor">
 <a href="#interpretation" class="anchor"></a>Interpretation</h2>
 <p>All the results can be displayed in a table.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res_dsa</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">res_dsa</a></code></pre></div>
 <pre><code>## A sensitivity analysis on 4 parameters.
 ## 
 ## Parameters:
@@ -225,45 +220,52 @@
 ## comb, rr = 0.6         32383.64   4.418583     mono 100173.8 100173.8</code></pre>
 <p>Two distinct plot types are available. The basic plot (<code>type = "simple"</code>) displays cost variations for each model, around the base cost.</p>
 <p>As expected <code>mono</code> model costs are not senstive to <code>cost_lami</code>, since this drug was not given to this group. Similarly it is not sensitive to <code>rr</code>, because this parameters only modifies transition probabilities in the other model.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(res_dsa,
-     <span class="dt">strategy =</span> <span class="st">"mono"</span>,
-     <span class="dt">result =</span> <span class="st">"cost"</span>,
-     <span class="dt">type =</span> <span class="st">"simple"</span>)</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(res_dsa,</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">     <span class="dt">strategy =</span> <span class="st">"mono"</span>,</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">     <span class="dt">result =</span> <span class="st">"cost"</span>,</a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">     <span class="dt">type =</span> <span class="st">"simple"</span>)</a></code></pre></div>
+<pre><code>## Joining, by = ".strategy_names"</code></pre>
 <p><img src="f_sensitivity_files/figure-html/unnamed-chunk-5-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>On the other hand the <code>comb</code> model cost is sensitive to all 4 parameters.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(res_dsa,
-     <span class="dt">strategy =</span> <span class="st">"comb"</span>,
-     <span class="dt">result =</span> <span class="st">"cost"</span>,
-     <span class="dt">type =</span> <span class="st">"simple"</span>)</code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(res_dsa,</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2">     <span class="dt">strategy =</span> <span class="st">"comb"</span>,</a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">     <span class="dt">result =</span> <span class="st">"cost"</span>,</a>
+<a class="sourceLine" id="cb9-4" data-line-number="4">     <span class="dt">type =</span> <span class="st">"simple"</span>)</a></code></pre></div>
+<pre><code>## Joining, by = ".strategy_names"</code></pre>
 <p><img src="f_sensitivity_files/figure-html/unnamed-chunk-6-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>And its effectiveness is sensitive to <code>rr</code></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(res_dsa, 
-     <span class="dt">strategy =</span> <span class="st">"comb"</span>,
-     <span class="dt">result =</span> <span class="st">"effect"</span>,
-     <span class="dt">type =</span> <span class="st">"simple"</span>)</code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(res_dsa, </a>
+<a class="sourceLine" id="cb11-2" data-line-number="2">     <span class="dt">strategy =</span> <span class="st">"comb"</span>,</a>
+<a class="sourceLine" id="cb11-3" data-line-number="3">     <span class="dt">result =</span> <span class="st">"effect"</span>,</a>
+<a class="sourceLine" id="cb11-4" data-line-number="4">     <span class="dt">type =</span> <span class="st">"simple"</span>)</a></code></pre></div>
+<pre><code>## Joining, by = ".strategy_names"</code></pre>
 <p><img src="f_sensitivity_files/figure-html/unnamed-chunk-7-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>The difference plot (<code>type = "difference"</code>) displays the difference between the specified model <code>comb</code> and the reference model <code>mono</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(res_dsa,
-     <span class="dt">strategy =</span> <span class="st">"comb"</span>,
-     <span class="dt">result =</span> <span class="st">"cost"</span>,
-     <span class="dt">type =</span> <span class="st">"difference"</span>)</code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(res_dsa,</a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">     <span class="dt">strategy =</span> <span class="st">"comb"</span>,</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3">     <span class="dt">result =</span> <span class="st">"cost"</span>,</a>
+<a class="sourceLine" id="cb13-4" data-line-number="4">     <span class="dt">type =</span> <span class="st">"difference"</span>)</a></code></pre></div>
+<pre><code>## Joining, by = ".strategy_names"</code></pre>
 <p><img src="f_sensitivity_files/figure-html/unnamed-chunk-8-1.png" width="576" style="display: block; margin: auto;"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(res_dsa,
-     <span class="dt">strategy =</span> <span class="st">"comb"</span>,
-     <span class="dt">result =</span> <span class="st">"icer"</span>,
-     <span class="dt">type =</span> <span class="st">"difference"</span>)</code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(res_dsa,</a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">     <span class="dt">strategy =</span> <span class="st">"comb"</span>,</a>
+<a class="sourceLine" id="cb15-3" data-line-number="3">     <span class="dt">result =</span> <span class="st">"icer"</span>,</a>
+<a class="sourceLine" id="cb15-4" data-line-number="4">     <span class="dt">type =</span> <span class="st">"difference"</span>)</a></code></pre></div>
+<pre><code>## Joining, by = ".strategy_names"</code></pre>
 <p><img src="f_sensitivity_files/figure-html/unnamed-chunk-8-2.png" width="576" style="display: block; margin: auto;"></p>
 <p>It is also possible to leave the high and low parameter values off the plot:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(res_dsa,
-     <span class="dt">strategy =</span> <span class="st">"comb"</span>,
-     <span class="dt">result =</span> <span class="st">"icer"</span>,
-     <span class="dt">type =</span> <span class="st">"difference"</span>,
-     <span class="dt">limits_by_bars =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(res_dsa,</a>
+<a class="sourceLine" id="cb17-2" data-line-number="2">     <span class="dt">strategy =</span> <span class="st">"comb"</span>,</a>
+<a class="sourceLine" id="cb17-3" data-line-number="3">     <span class="dt">result =</span> <span class="st">"icer"</span>,</a>
+<a class="sourceLine" id="cb17-4" data-line-number="4">     <span class="dt">type =</span> <span class="st">"difference"</span>,</a>
+<a class="sourceLine" id="cb17-5" data-line-number="5">     <span class="dt">limits_by_bars =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<pre><code>## Joining, by = ".strategy_names"</code></pre>
 <p><img src="f_sensitivity_files/figure-html/unnamed-chunk-9-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
@@ -278,17 +280,20 @@
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by Kevin Zarca, Antoine Filipovic-Pierucci.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>
