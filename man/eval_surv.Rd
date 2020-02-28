@@ -19,8 +19,7 @@
 \usage{
 eval_surv(x, time, ...)
 
-compute_surv_(x, time, cycle_length = 1, type = c("prob", "survival"),
-  ...)
+compute_surv_(x, time, cycle_length = 1, type = c("prob", "survival"), ...)
 
 \method{eval_surv}{survfit}(x, time, ...)
 

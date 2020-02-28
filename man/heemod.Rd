@@ -3,7 +3,6 @@
 \docType{package}
 \name{heemod}
 \alias{heemod}
-\alias{heemod-package}
 \title{Markov Models for Health Economic Evaluations}
 \description{
 An implementation of the modelling and

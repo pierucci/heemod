@@ -4,8 +4,15 @@
 \alias{plot.surv_obj}
 \title{Plot general survival models}
 \usage{
-\method{plot}{surv_obj}(x, times, type = c("surv", "prob"),
-  join_col = "red", join_pch = 20, join_size = 3, ...)
+\method{plot}{surv_obj}(
+  x,
+  times,
+  type = c("surv", "prob"),
+  join_col = "red",
+  join_pch = 20,
+  join_size = 3,
+  ...
+)
 }
 \arguments{
 \item{x}{a survival object of class \code{surv_aft}, \code{surv_add_haz},

@@ -5,8 +5,13 @@
 \alias{define_part_surv_}
 \title{Define Partitioned Survival}
 \usage{
-define_part_surv(pfs, os, state_names, terminal_state = FALSE,
-  cycle_length = 1)
+define_part_surv(
+  pfs,
+  os,
+  state_names,
+  terminal_state = FALSE,
+  cycle_length = 1
+)
 
 define_part_surv_(pfs, os, state_names, cycle_length = 1)
 }

@@ -32,7 +32,7 @@ Imports:
 License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 Suggests:
     BCEA,
     diagram,

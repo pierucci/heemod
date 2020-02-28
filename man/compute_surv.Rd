@@ -4,8 +4,7 @@
 \alias{compute_surv}
 \title{Evaluate Survival Distributions}
 \usage{
-compute_surv(x, time, cycle_length = 1, type = c("prob", "survival"),
-  ...)
+compute_surv(x, time, cycle_length = 1, type = c("prob", "survival"), ...)
 }
 \arguments{
 \item{x}{A survival distribution object}

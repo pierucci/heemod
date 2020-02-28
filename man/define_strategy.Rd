@@ -5,8 +5,11 @@
 \alias{define_strategy_}
 \title{Define a Markov Model}
 \usage{
-define_strategy(..., transition = define_transition(),
-  starting_values = define_starting_values())
+define_strategy(
+  ...,
+  transition = define_transition(),
+  starting_values = define_starting_values()
+)
 
 define_strategy_(transition, states, starting_values)
 }

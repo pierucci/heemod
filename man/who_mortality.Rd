@@ -6,11 +6,23 @@
 \alias{get_who_mr}
 \title{Use WHO Mortality Rate}
 \usage{
-get_who_mr_memo(age, sex = NULL, region = NULL, country = NULL,
-  year = "latest", local = FALSE)
+get_who_mr_memo(
+  age,
+  sex = NULL,
+  region = NULL,
+  country = NULL,
+  year = "latest",
+  local = FALSE
+)
 
-get_who_mr(age, sex = NULL, region = NULL, country = NULL,
-  year = "latest", local = FALSE)
+get_who_mr(
+  age,
+  sex = NULL,
+  region = NULL,
+  country = NULL,
+  year = "latest",
+  local = FALSE
+)
 }
 \arguments{
 \item{age}{age as a continuous variable.}
