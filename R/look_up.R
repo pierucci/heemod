@@ -120,11 +120,19 @@ look_up <- function(data, ..., bin = FALSE, value = "value") {
   }
   
   if (any(is.na(res))) {
+    
+    did_not_find <- suppressMessages(dplyr::anti_join(df_vars, data)) %>% 
+      as.data.frame()
+    
+    
+    missing_values <- purrr::map_chr(seq_len(ncol(did_not_find)), function(column_number){
+      missing <- stringr::str_flatten(did_not_find[,column_number], collapse = ", ")
+      stringr::str_glue("{colnames(did_not_find)[column_number]} : {missing}")
+    }) %>% 
+      stringr::str_flatten(collapse = "\n") 
+    
     warning("Some values were not found, returning missing data:\n",
-            "arguments to look_up: ",
-            paste(names(list_specs), "=", unlist(list_specs), collapse = ", "),
-                  ", value = ", value
-    )
+            "arguments to look_up:\n ", missing_values)
   }
    
   res
