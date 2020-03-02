@@ -42,6 +42,23 @@ test_that(
       "Some values were not found, returning missing data"
     )
     
+    tempdf <- expand.grid(arg1 = c("A", "B", "C"), arg2 = 1:4, arg3 = 1:5)
+    tempdf$value <- 1:60
+    
+    expect_warning(
+      look_up(
+        data = tempdf,
+        value = "value",
+        arg1 = c("A", "B", "C", "B", "A"),
+        arg2 = c(1, 1, 3.2, 3.0, 5), 
+        arg3 = c(-1, 1, 1, 2, 3)
+      ),
+      "arguments to look_up:
+arg1 : A, C, A
+arg2 : 1, 3.2, 5
+arg3 : -1, 1, 3"
+    )
+    
   }
 )
 

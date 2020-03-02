@@ -1,5 +1,8 @@
 ## heemod 0.11.9000
 
+### Bugfixes
+  * `look_up()` displays a more informative message when searching several values at once
+
 ## heemod 0.11.0
 
 ### Backend changes

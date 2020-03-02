@@ -24,6 +24,7 @@
 #' @importFrom dplyr ungroup
 #' @importFrom dplyr mutate_if
 #' @importFrom dplyr funs
+#' @importFrom dplyr antijoin
 #' 
 #' @importFrom plyr ldply
 #' @importFrom plyr ddply

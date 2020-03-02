@@ -12,7 +12,7 @@
 #' reference value that is directly inferior.
 #' 
 #' @param data A reference data frame.
-#' @param value The value to extract ffrom the reference 
+#' @param value The value to extract from the reference 
 #'   data frame.
 #' @param ... Individual characteristics, should be named 
 #'   like the columns of `data`.
@@ -120,11 +120,16 @@ look_up <- function(data, ..., bin = FALSE, value = "value") {
   }
   
   if (any(is.na(res))) {
-    warning("Some values were not found, returning missing data:\n",
-            "arguments to look_up: ",
-            paste(names(list_specs), "=", unlist(list_specs), collapse = ", "),
-                  ", value = ", value
-    )
+    did_not_find <- suppressMessages(dplyr::anti_join(df_vars, data)) %>% 
+      as.data.frame()
+    
+    missing_values <- purrr::map_chr(seq_len(ncol(did_not_find)), function(column_number){
+      missing <- paste(did_not_find[,column_number], collapse = ", ")
+      sprintf("%s : %s", colnames(did_not_find)[column_number], missing)
+    }) %>% 
+      paste(collapse = "\n") 
+            warning("Some values were not found, returning missing data:\n",
+                    "arguments to look_up:\n", missing_values)
   }
    
   res
