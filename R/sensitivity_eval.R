@@ -46,7 +46,7 @@ run_dsa <- function(model, dsa) {
       list_res,
       list(res)
     )
-    
+
     e_newdata <- c(
       e_newdata,
       list(unlist(lapply(
@@ -67,6 +67,15 @@ run_dsa <- function(model, dsa) {
       gather_cols = dsa$variables, na.rm = TRUE) %>% 
     dplyr::rowwise()
   
+  
+  e_newdata <- lapply(e_newdata, function(x){
+    split(x, ceiling(seq_along(x)/2))
+  }) %>%
+    tibble::as_tibble() %>%
+    apply(1, FUN = c) %>% 
+    unlist()
+  
+  
   res <- res %>% 
     dplyr::do(get_total_state_values(.data$.mod)) %>% 
     dplyr::bind_cols(res %>% dplyr::select(-.data$.mod)) %>% 
@@ -75,6 +84,7 @@ run_dsa <- function(model, dsa) {
       .par_value_eval = unlist(e_newdata)) %>% 
     dplyr::mutate(
       !!! compat_lazy_dots(get_ce(model)))
+  
   
   structure(
     list(
