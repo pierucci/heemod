@@ -295,10 +295,10 @@ test_that("we can run construct_part_surv_tib",
             )
             for_A <- dplyr::filter(explicit_dist_part_surv, .strategy == "A")
             for_B <- dplyr::filter(explicit_dist_part_surv, .strategy == "B")
-            expect_equal(round(compute_surv(for_A[[1, "part_surv"]]$pfs, 1), 4), 0.0332)
-            expect_equal(round(compute_surv(for_A[[1, "part_surv"]]$os, 1), 4), 0.0150)
-            expect_equal(round(compute_surv(for_B[[1, "part_surv"]]$pfs, 1), 4), 0.0472)
-            expect_equal(round(compute_surv(for_B[[1, "part_surv"]]$os, 1), 4), 0.0213)
+            expect_equal(round(compute_surv(for_A[["part_surv"]][[1]]$pfs, 1), 4), 0.0332)
+            expect_equal(round(compute_surv(for_A[["part_surv"]][[1]]$os, 1), 4), 0.0150)
+            expect_equal(round(compute_surv(for_B[["part_surv"]][[1]]$pfs, 1), 4), 0.0472)
+            expect_equal(round(compute_surv(for_B[["part_surv"]][[1]]$os, 1), 4), 0.0213)
 
             use_fits <- read_file(system.file("tabular/surv",
                                               "use_fits_mixed.csv",
@@ -314,13 +314,13 @@ test_that("we can run construct_part_surv_tib",
                                                        "ProgressiveDisease", 
                                                        "Terminal", "Death")
               )
-            expect_identical(class(mixed_dist_part_surv[[1, "part_surv"]]$os),
+            expect_identical(class(mixed_dist_part_surv[["part_surv"]][[1]]$os),
                              "lazy")
-            expect_identical(lazyeval::lazy_eval(mixed_dist_part_surv[[1, "part_surv"]]$pfs),
+            expect_identical(lazyeval::lazy_eval(mixed_dist_part_surv[["part_surv"]][[1]]$pfs),
                              'define_survival(distribution = "exp", rate = 1/100)')
-            expect_identical(class(lazyeval::lazy_eval(mixed_dist_part_surv[[1, "part_surv"]]$os)),
+            expect_identical(class(lazyeval::lazy_eval(mixed_dist_part_surv[["part_surv"]][[1]]$os)),
                              "flexsurvreg")
-            prob <- compute_surv(lazyeval::lazy_eval(mixed_dist_part_surv[[1, "part_surv"]]$os), 1)
+            prob <- compute_surv(lazyeval::lazy_eval(mixed_dist_part_surv[["part_surv"]][[1]]$os), 1)
             expect_equal(round(prob, 5), 0.00213)
                       })
 

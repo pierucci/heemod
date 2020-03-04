@@ -417,8 +417,8 @@ make_part_surv_from_small_tibble <- function(st, state_names){
   stopifnot(length(pfs_row) == 1,
             length(os_row) == 1
   )
-  define_part_surv(pfs = st[[pfs_row, "fit"]],
-                   os = st[[os_row, "fit"]],
+  define_part_surv(pfs = st[["fit"]][[pfs_row]],
+                   os = st[["fit"]][[os_row]],
                    state_names = state_names)
 }
 

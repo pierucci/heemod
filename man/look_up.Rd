@@ -16,7 +16,7 @@ like the columns of \code{data}.}
 binned, or character vector giving the names of
 variables to bin (see examples).}
 
-\item{value}{The value to extract ffrom the reference
+\item{value}{The value to extract from the reference
 data frame.}
 }
 \value{

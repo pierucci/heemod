@@ -57,8 +57,8 @@ define_dsa_ <- function(par_names, low_dots, high_dots) {
     all(par_names == names(low_dots)),
     all(par_names == names(high_dots))
   )
-  dots <- interleave(low_dots, high_dots)
-  
+  dots <- interleave(low_dots, high_dots) 
+  class(dots) <- c("list")
   if (any(duplicated(par_names))) {
     stop("Some names are duplicated.")
   }
@@ -72,6 +72,7 @@ define_dsa_ <- function(par_names, low_dots, high_dots) {
       )
     })
   }
+  
   
   clean_null <- function(x) {
     Map(
