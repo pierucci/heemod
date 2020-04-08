@@ -4,11 +4,19 @@
 \alias{plot.dsa}
 \title{Plot Sensitivity Analysis}
 \usage{
-\method{plot}{dsa}(x, type = c("simple", "difference"),
-  result = c("cost", "effect", "icer"), strategy = NULL,
-  widest_on_top = TRUE, limits_by_bars = TRUE,
-  resolve_labels = FALSE, shorten_labels = FALSE, remove_ns = FALSE,
-  bw = FALSE, ...)
+\method{plot}{dsa}(
+  x,
+  type = c("simple", "difference"),
+  result = c("cost", "effect", "icer"),
+  strategy = NULL,
+  widest_on_top = TRUE,
+  limits_by_bars = TRUE,
+  resolve_labels = FALSE,
+  shorten_labels = FALSE,
+  remove_ns = FALSE,
+  bw = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{A result of \code{\link[=run_dsa]{run_dsa()}}.}

@@ -1,6 +1,6 @@
 Package: heemod
 Title: Markov Models for Health Economic Evaluations
-Version: 0.11.9001
+Version: 0.12.0
 Authors@R: c(
     person("Kevin", "Zarca", email = "kevin.zarca@gmail.com", role = c("aut", "cre")),
     person("Antoine", "Filipovic-Pierucci", role = "aut"),
@@ -28,11 +28,12 @@ Imports:
     plyr (>= 1.8.0),
     pryr (>= 0.1.2),
     tibble (>= 1.3.0),
-    rlang (>= 0.3)
+    rlang (>= 0.3), 
+    purrr (>= 0.3)
 License: GPL (>= 3)
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 Suggests:
     BCEA,
     diagram,
@@ -50,6 +51,7 @@ Suggests:
     survival,
     testthat,
     triangle,
-    magrittr
+    magrittr,
+    cli
 BugReports: https://github.com/pierucci/heemod/issues
 Roxygen: list(markdown = TRUE)

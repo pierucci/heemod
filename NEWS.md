@@ -1,6 +1,7 @@
-## heemod 0.11.9000
+## heemod 0.12.0
 
 ### Bugfixes
+  * Ready for tibble 3.0
   * `look_up()` displays a more informative message when searching several values at once
 
 ## heemod 0.11.0

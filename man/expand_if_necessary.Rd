@@ -4,8 +4,16 @@
 \alias{expand_if_necessary}
 \title{Expand States and Transition}
 \usage{
-expand_if_necessary(strategy, parameters, cycles, init, method,
-  expand_limit, inflow, strategy_name)
+expand_if_necessary(
+  strategy,
+  parameters,
+  cycles,
+  init,
+  method,
+  expand_limit,
+  inflow,
+  strategy_name
+)
 }
 \arguments{
 \item{strategy}{An \code{uneval_strategy} object.}

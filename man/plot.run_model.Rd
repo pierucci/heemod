@@ -4,9 +4,17 @@
 \alias{plot.run_model}
 \title{Plot Results of a Markov Model}
 \usage{
-\method{plot}{run_model}(x, type = c("counts", "ce", "values"),
-  panels = c("by_strategy", "by_state", "by_value"), values = NULL,
-  strategy = NULL, states = NULL, free_y = FALSE, bw = FALSE, ...)
+\method{plot}{run_model}(
+  x,
+  type = c("counts", "ce", "values"),
+  panels = c("by_strategy", "by_state", "by_value"),
+  values = NULL,
+  strategy = NULL,
+  states = NULL,
+  free_y = FALSE,
+  bw = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{Result from \code{\link[=run_model]{run_model()}}.}
@@ -48,7 +56,7 @@ Various plots for Markov models.
 }
 \examples{
 
-## These examples require \\code{res_mod} from the hip replacement model discussed in
+## These examples require \code{res_mod} from the hip replacement model discussed in
 ## `vignette("non-homogeneous", package = "heemod")`.
 
 \dontrun{

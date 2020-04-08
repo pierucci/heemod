@@ -4,9 +4,11 @@
 \alias{define_survival}
 \title{Define a Survival Distribution}
 \usage{
-define_survival(distribution = c("exp", "weibull", "weibullPH", "lnorm",
-  "llogis", "gamma", "gompertz", "gengamma", "gengamma.orig", "genf",
-  "genf.orig"), ...)
+define_survival(
+  distribution = c("exp", "weibull", "weibullPH", "lnorm", "llogis", "gamma",
+    "gompertz", "gengamma", "gengamma.orig", "genf", "genf.orig"),
+  ...
+)
 }
 \arguments{
 \item{distribution}{A parametric survival distribution.}

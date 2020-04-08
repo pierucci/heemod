@@ -13,8 +13,7 @@ define_transition_(.dots, state_names)
 
 \method{modify}{uneval_matrix}(.OBJECT, ...)
 
-\method{plot}{uneval_matrix}(x, relsize = 0.75, shadow.size = 0,
-  latex = TRUE, ...)
+\method{plot}{uneval_matrix}(x, relsize = 0.75, shadow.size = 0, latex = TRUE, ...)
 }
 \arguments{
 \item{...}{Name-value pairs of expressions definig matrix

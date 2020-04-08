@@ -93,6 +93,8 @@
 #' @importFrom tibble tibble
 #' 
 #' @importFrom rlang sym syms quo .data
+#' 
+#' @importFrom purrr map map_chr map_dbl map_lgl
 NULL
 
 #' @export

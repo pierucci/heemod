@@ -4,8 +4,12 @@
 \alias{eval_models_from_tabular}
 \title{Evaluate Models From a Tabular Source}
 \usage{
-eval_models_from_tabular(inputs, run_dsa = TRUE, run_psa = TRUE,
-  run_demo = TRUE)
+eval_models_from_tabular(
+  inputs,
+  run_dsa = TRUE,
+  run_psa = TRUE,
+  run_demo = TRUE
+)
 }
 \arguments{
 \item{inputs}{Result from

@@ -4,8 +4,14 @@
 \alias{define_calibration_fn}
 \title{Define Calibration Function}
 \usage{
-define_calibration_fn(type, strategy_names, element_names, cycles,
-  groups = NULL, aggreg_fn = sum)
+define_calibration_fn(
+  type,
+  strategy_names,
+  element_names,
+  cycles,
+  groups = NULL,
+  aggreg_fn = sum
+)
 }
 \arguments{
 \item{type}{Type of model values (\code{count} or \code{value}).}

@@ -80,7 +80,8 @@ test_that(
     )
     expect_output(
       str(e_par1),
-      "\\[10 × 5\\]"
+      paste("\\[10", cli::symbol$times, "5\\]")
+      
     )
     expect_equal(
       get_parameter_names(e_par1),

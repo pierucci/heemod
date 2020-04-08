@@ -4,9 +4,17 @@
 \alias{plot.psa}
 \title{Plot Results of Probabilistic Analysis}
 \usage{
-\method{plot}{psa}(x, type = c("ce", "ac", "cov", "evpi"),
-  max_wtp = 1e+05, n = 100, log_scale = TRUE, diff = FALSE,
-  threshold, bw = FALSE, ...)
+\method{plot}{psa}(
+  x,
+  type = c("ce", "ac", "cov", "evpi"),
+  max_wtp = 1e+05,
+  n = 100,
+  log_scale = TRUE,
+  diff = FALSE,
+  threshold,
+  bw = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{Result from \code{\link[=run_model]{run_model()}}.}

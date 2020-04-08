@@ -123,7 +123,7 @@ look_up <- function(data, ..., bin = FALSE, value = "value") {
     did_not_find <- suppressMessages(dplyr::anti_join(df_vars, data)) %>% 
       as.data.frame()
     
-    missing_values <- purrr::map_chr(seq_len(ncol(did_not_find)), function(column_number){
+    missing_values <- map_chr(seq_len(ncol(did_not_find)), function(column_number){
       missing <- paste(did_not_find[,column_number], collapse = ", ")
       sprintf("%s : %s", colnames(did_not_find)[column_number], missing)
     }) %>% 
