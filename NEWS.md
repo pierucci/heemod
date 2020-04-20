@@ -1,5 +1,9 @@
 ## heemod 0.12.0.9000
 
+### Bugfixes
+  * Fix problem with state_time
+
+
 ## heemod 0.12.0
 
 ### Bugfixes
