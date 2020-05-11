@@ -287,7 +287,8 @@ test_that("Exactly match THR model",
                 0.88040225, 	 0.00168398, 	 0.00618146, 	 0.11173231 
               ),
               nc = 4, byrow = TRUE,
-              dimnames = list(1:8, c("SuccessP",	"RevisionTHR",	"SuccessR", "Death")))
+              dimnames = list(1:8, c("SuccessP",	"RevisionTHR",	"SuccessR", "Death"))) %>% 
+              as_tibble()
             expect_equal(round(get_counts(thr$eval_strategy_list$standard)[2:9, -1],
                                8),
                          briggs_std_counts)
@@ -303,7 +304,8 @@ test_that("Exactly match THR model",
                 0.90415327, 	 0.00041201, 	 0.00129686, 	 0.09413786, 
                 0.88631355, 	 0.00044144, 	 0.00161577, 	 0.11162924 
               ), nc = 4, byrow = TRUE,
-              dimnames = list(1:8, c("SuccessP",	"RevisionTHR",	"SuccessR", "Death")))
+              dimnames = list(1:8, c("SuccessP",	"RevisionTHR",	"SuccessR", "Death"))) %>%
+              as_tibble()
             expect_equal(round(get_counts(thr$eval_strategy_list$np1)[2:9, -1],
                                8),
                          briggs_new_counts)

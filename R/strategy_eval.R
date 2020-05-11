@@ -174,7 +174,7 @@ compute_counts.eval_matrix <- function(x, init, inflow, ...) {
 
   list_counts <- lapply(counts_and_diff, `[[`, 1) 
 
-  res <- dplyr::as.tbl(
+  res <- dplyr::as_tibble(
     as.data.frame(
       matrix(
         unlist(list_counts),
