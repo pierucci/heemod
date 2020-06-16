@@ -259,8 +259,11 @@ compute_values <- function(states, count_list, strategy_starting_values) {
   }) %>% 
     unlist() 
   
+  
   new_starting_states <- if (length(new_starting_states)) {
-    matrix(new_starting_states, nrow = num_cycles, byrow = TRUE)
+    m <- matrix(new_starting_states, nrow = num_cycles, byrow = TRUE)
+    m[1,] <- as.numeric(counts[1,])
+    m
   } else {
     matrix(rep(0, num_states), ncol = num_states)
   }

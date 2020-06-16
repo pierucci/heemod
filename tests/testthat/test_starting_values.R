@@ -110,7 +110,7 @@ test_that("starting_values only adds values at first cycle", {
 })
 
 
-test_that("starting_values is consistant", {
+test_that("starting_values is consistent", {
   ru <- run_model(mod1, mod2, parameters = par1, cost = x, effect = y)
   val1 <- ru$eval_strategy_list[[1]]$values
   val2 <- ru$eval_strategy_list[[2]]$values
@@ -132,6 +132,7 @@ test_that("starting_values works with parameters", {
     X1 = s1,
     X2 = s3
   )
+
   mod4 = define_strategy(
     transition = mat1,
     X1 = s1,
@@ -143,8 +144,8 @@ test_that("starting_values works with parameters", {
   ru0 <- run_model(mod1, parameters = par1, cost = x, effect = y)
   ru1 <- run_model(mod3, parameters = par1, cost = x, effect = y)
   ru2 <- run_model(mod4, parameters = par1, cost = x, effect = y)
-  expect_equal(ru1$eval_strategy_list[[1]]$values, ru0$eval_strategy_list[[1]]$values + c(0,0,50 * 10), 0)
-  expect_equal(ru2$eval_strategy_list[[1]]$values, ru0$eval_strategy_list[[1]]$values + c(0, 1000 * 10, 1000* 20) + c(0, 0, 50 * 10))
+  expect_equal(ru1$eval_strategy_list[[1]]$values, ru0$eval_strategy_list[[1]]$values + c(0,0,50 * 10))
+  expect_equal(ru2$eval_strategy_list[[1]]$values, ru0$eval_strategy_list[[1]]$values + c(0, 1000 * 10, 1000 * 20) + c(0, 0, 50 * 10))
 })
 
 
