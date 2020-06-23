@@ -40,5 +40,5 @@ correct_counts <- function(x, method = c("life-table",
     stop("State membership correction applied to an n-row table should return a table with n-1 rows.")
   }
   
-  return(out)
+  return(structure(out, method=method))
 }
