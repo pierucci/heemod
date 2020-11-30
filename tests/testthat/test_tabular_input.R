@@ -389,7 +389,7 @@ test_that(
     opt_pb <- structure(list(
       option = c("cost", "effect", "method", "method", 
                  "n"),
-      value = c("cost", "qaly", "end", "50", "100")),
+      value = c("cost", "qaly", "beginning", "50", "100")),
       .Names = c("option", 
                  "value"),
       row.names = c(1L, 2L, 4L, 5L, 6L),
@@ -404,7 +404,7 @@ test_that(
     opt_pb <- structure(list(
       option = c("cost", "effect", "method", "cycleszzz", 
                  "n"),
-      value = c("cost", "qaly", "end", "50", "100")),
+      value = c("cost", "qaly", "beginning", "50", "100")),
       .Names = c("option", 
                  "value"),
       row.names = c(1L, 2L, 4L, 5L, 6L),
@@ -419,7 +419,7 @@ test_that(
     opt_pb <- structure(list(
       option = c("cost", "effect", "method", "cycles", 
                  "n", "init"),
-      value = c("cost", "qaly", "end", "50", "100", "c(1, 0, 0, 0)")),
+      value = c("cost", "qaly", "beginning", "50", "100", "c(1, 0, 0, 0)")),
       .Names = c("option", 
                  "value"),
       row.names = c(1L, 2L, 3L, 4L, 5L, 6L),

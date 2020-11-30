@@ -44,5 +44,5 @@ The cluster status is given by \code{status_cluster}.
 
 A custom cluster can be passed to \code{use_cluster} with
 the \code{cluster} argument. This custom custer needs to
-work with \code{\link[parallel:parLapply]{parallel::parLapply()}}.
+work with \code{\link[parallel:clusterApply]{parallel::parLapply()}}.
 }

@@ -9,7 +9,7 @@ eval_resample(psa, N)
 \arguments{
 \item{psa}{A \code{\link[=define_psa]{define_psa()}} object.}
 
-\item{N}{Number of simulation to run.}
+\item{N}{> 0. Number of simulation to run.}
 }
 \value{
 A \code{data.frame} of resampled values with on

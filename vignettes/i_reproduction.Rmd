@@ -25,8 +25,8 @@ Key differences in DMHEE:
   3. treatment stops after 2 years,
   4. rounding errors.
 
-It is possible to reproduce 1. and 2. by making transition happen at the *beginning* of each year (equivalent to transition happening at the *end* + ignoring the first year) with `method = "beginning"`. Since with this method the first year is actually the second, costs should be discounted from the start with the argument `first = TRUE` in `discount()`.
 
+It is possible to reproduce 1. and 2. by making transition happen at the end of each year with method = "end". Since with this method the transition occur 1 year after the beginning, costs should be discounted from the first cycle with the argument first = TRUE in discount().
 Point 3. is reproduced by making `rr` and `cost_lami` a time changing variable like this `rr = ifelse(markov_cycle <= 2, .509, 1.00)`.
 
 The last point is reproduced by writing transition probabilities as fractions.
@@ -132,7 +132,7 @@ res_mod <- run_model(
   cycles = 20,
   cost = cost_total,
   effect = life_year,
-  method = "beginning",
+  method = "end",
   init = c(1, 0, 0, 0)
 )
 summary(res_mod)
@@ -289,7 +289,7 @@ res_mod <- run_model(
   cycles = 60,
   cost = cost,
   effect = utility,
-  method = "end",
+  method = "beginning",
   init = c(1, 0, 0, 0, 0)
 )
 summary(res_mod)

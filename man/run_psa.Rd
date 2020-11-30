@@ -12,7 +12,7 @@ run_psa(model, psa, N, resample)
 \item{psa}{Resampling distribution for parameters defined
 by \code{\link[=define_psa]{define_psa()}}.}
 
-\item{N}{Number of simulation to run.}
+\item{N}{> 0. Number of simulation to run.}
 
 \item{resample}{Deprecated. Resampling distribution for
 parameters defined by \code{\link[=define_psa]{define_psa()}}.}

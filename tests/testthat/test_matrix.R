@@ -209,7 +209,7 @@ test_that(
     sample_mod <- define_strategy(transition = sampleTM, A = A,
                                   B = B, C = C)
     res <- run_model(sample_mod, cost = cost, effect = utility,
-                     method = "beginning")
+                     method = "end")
     
     
     expect_equal(

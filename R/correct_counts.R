@@ -14,11 +14,11 @@ correct_counts <- function(x, method = c("life-table",
     
     switch(
       method,
-      "beginning" = {
+      "end" = {
         out$counts <- n1
         if(!is.null(diff)) out$diff <- diff
       },
-      "end" = {
+      "beginning" = {
         out$counts <- n0
         if(!is.null(diff)) out$diff <- diff
       },

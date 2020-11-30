@@ -206,7 +206,7 @@ test_that(
     expect_equal(
       run_model(mod1, mod2,
                 parameters = par1, cost = x, effect = y,
-                method = "beginning")$run_model$.cost,
+                method = "end")$run_model$.cost,
       c(309300, 933900)
     )
     
@@ -214,7 +214,7 @@ test_that(
       run_model(
         mod1, mod2,
         parameters = par1, cost = x, effect = y,
-        method = "beginning"))
+        method = "end"))
     expect_equal(
       s_mod$res_values$x, c(309300, 933900)
     )
@@ -230,10 +230,10 @@ test_that(
     
     res_b <- run_model(mod1, mod2,
                         parameters = par1, cost = x, effect = y,
-                        method = "beginning")
+                        method = "end")
     res_e <- run_model(mod1, mod2,
                         parameters = par1, cost = x, effect = y,
-                        method = "end")
+                        method = "beginning")
     res_l <- run_model(mod1, mod2,
                         parameters = par1, cost = x, effect = y,
                         method = "life-table")
@@ -349,16 +349,16 @@ test_that("Discounting", {
   )
   res <- run_model(mod1, mod2, cycles = 10,
                     parameters = par1, cost = x, effect = y,
-                    method = "beginning")
+                    method = "end")
   expect_equal(
     round(summary(res)$res_comp$.icer[2], 3), 0.785
   )
   res1 <- run_model(mod1, mod2, cycles = 10,
                      parameters = par1, cost = x, effect = y,
-                     method = "beginning")
+                     method = "end")
   res2 <- run_model(mod3, mod2, cycles = 10,
                      parameters = par1, cost = x, effect = y,
-                     method = "beginning")
+                     method = "end")
   
   expect_equal(
     round(summary(res1)$res_comp$.icer[2], 3), 0.785

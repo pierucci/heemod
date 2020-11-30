@@ -10,7 +10,7 @@ run_model(
   parameters = define_parameters(),
   init = c(1000L, rep(0L, get_state_number(get_states(list(...)[[1]])) - 1)),
   cycles = 1,
-  method = "life-table",
+  method = c("life-table", "beginning", "end"),
   cost = NULL,
   effect = NULL,
   state_time_limit = NULL,
@@ -44,7 +44,7 @@ in each state at the beginning.}
 \item{cycles}{positive integer. Number of Markov Cycles
 to compute.}
 
-\item{method}{Counting method.}
+\item{method}{Counting method. See details.}
 
 \item{cost}{Names or expression to compute cost on the
 cost-effectiveness plane.}
@@ -93,6 +93,10 @@ names, for all strategies. 3. As a named list of named
 vectors: the limits are applied to the given state names
 for the given strategies.
 }
+
+Counting method represents where the transition should occur,
+based on https://journals.sagepub.com/doi/10.1177/0272989X09340585:
+"beginning" overestimates costs and "end" underestimates costs.
 }
 \examples{
 # running a single model

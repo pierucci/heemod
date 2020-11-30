@@ -97,7 +97,7 @@ test_that(
       cycles = 5,
       cost = x,
       effect = y,
-      method = "beginning"
+      method = "end"
     )
     expect_equal(
       round(e_mod$run_model$x), 1593
@@ -197,7 +197,7 @@ test_that(
       cycles = 5,
       cost = x,
       effect = y,
-      method = "beginning"
+      method = "end"
     )
     
     expect_equal(
@@ -281,11 +281,11 @@ test_that(
     
     expect_error(
       heemod:::compute_counts(
-        lm, init = c(10, 0, 0), method = "end")
+        lm, init = c(10, 0, 0), method = "beginning")
     )
     expect_error(
       heemod:::compute_counts(
-        lm, init = c(10), method = "end")
+        lm, init = c(10), method = "beginning")
     )
     expect_error(
       heemod:::compute_counts(
@@ -306,18 +306,18 @@ test_that(
     infw <- data.frame(c(0, 0), c(0, 0))
     
     expect_equal(names(heemod:::compute_counts(
-      lm, init = c(10, 0), method = "beginning", inflow = infw)), c("counts", "diff"))
+      lm, init = c(10, 0), method = "end", inflow = infw)), c("counts", "diff"))
     expect_identical(
       dim(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "end", inflow = infw) %>% 
-          heemod:::correct_counts(method = "end") %>%
+        lm, init = c(10, 0), method = "beginning", inflow = infw) %>% 
+          heemod:::correct_counts(method = "beginning") %>%
           magrittr::extract2("counts")),
       c(2L, 2L)
     )
     expect_identical(
       dim(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "beginning", inflow = infw) %>% 
-          heemod:::correct_counts(method = "beginning") %>%
+        lm, init = c(10, 0), method = "end", inflow = infw) %>% 
+          heemod:::correct_counts(method = "end") %>%
           magrittr::extract2("counts")) ,
       c(2L, 2L)
     )
@@ -331,15 +331,15 @@ test_that(
     
     expect_equivalent(
       unlist(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "end", inflow = infw) %>% 
-          heemod:::correct_counts(method = "end") %>%
+        lm, init = c(10, 0), method = "beginning", inflow = infw) %>% 
+          heemod:::correct_counts(method = "beginning") %>%
           magrittr::extract2("counts")),
       c(10, 5, 0, 5)
     )
     expect_equivalent(
       unlist(heemod:::compute_counts(
-        lm, init = c(10, 0), method = "beginning", inflow = infw) %>% 
-          heemod:::correct_counts(method = "beginning") %>%
+        lm, init = c(10, 0), method = "end", inflow = infw) %>% 
+          heemod:::correct_counts(method = "end") %>%
           magrittr::extract2("counts")),
       c(5.00, 4.35, 5.00, 5.65)
     )

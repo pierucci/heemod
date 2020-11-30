@@ -42,7 +42,7 @@ test_that(
       cycles = 10,
       cost = cost,
       effect = ly,
-      method = "beginning"
+      method = "end"
     )
     
     # generating table with demographic data
@@ -120,7 +120,7 @@ test_that(
       cycles = 10,
       cost = cost,
       effect = ly,
-      method = "beginning"
+      method = "end"
     )
     
     # generating table with new parameter sets

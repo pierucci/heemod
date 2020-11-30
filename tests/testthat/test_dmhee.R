@@ -106,7 +106,7 @@ test_that("exactly match HIV model",
               cycles = 20,
               cost = cost_total,
               effect = life_year,
-              method = "beginning",
+              method = "end",
               init = c(1, 0, 0, 0)
             )
             briggs_hiv <- list(
@@ -271,7 +271,7 @@ test_that("Exactly match THR model",
               cycles = 61,
               cost = cost,
               effect = utility,
-              method = "end",
+              method = "beginning",
               init = c(1, 0, 0, 0, 0)
             )
             

@@ -47,7 +47,7 @@ test_that(
       cycles = 10,
       cost = cost,
       effect = ly,
-      method = "beginning"
+      method = "end"
     )
     
     rsp1 <- define_psa(
@@ -179,7 +179,7 @@ test_that(
       ),
       init = 1:0,
       cycles = 10,
-      method = "beginning"
+      method = "end"
     ))
     expect_error(run_psa(res3, psa = rsp2, N = 10))
     expect_error(

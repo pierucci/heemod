@@ -264,7 +264,7 @@ compute_values <- function(states, count_list, strategy_starting_values) {
   
   new_starting_states <- if (length(new_starting_states)) {
     m <- matrix(new_starting_states, nrow = num_cycles, byrow = TRUE)
-    if (method == "end"){
+    if (method == "beginning"){
       m <- rbind(as.numeric(counts[1,]), m[seq_len(num_cycles -1), ])
     } else {
       m[1,] <- as.numeric(counts[1,])

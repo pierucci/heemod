@@ -29,7 +29,7 @@ res_mod <- run_model(
   cycles = 10,
   cost = cost,
   effect = effect,
-  method = "end"
+  method = "beginning"
 )
 
 f <- function(x) {
@@ -267,7 +267,7 @@ test_that("multi-dimensional calibration",
     cycles = 60,
     cost = cost,
     effect = utility,
-    method = "end"
+    method = "beginning"
   )
   extract_values <- function(x) {
     dplyr::filter(

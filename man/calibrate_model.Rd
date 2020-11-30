@@ -62,8 +62,8 @@ the same results from different starting points.
 
 Multi-dimensional problems are optimized with
 \code{\link[optimx:optimx]{optimx::optimx()}}, 1-dimensional problems with
-\code{\link[stats:optimise]{stats::optimise()}} (except when a \code{method} is given).
-\code{convcode} is always \code{NA} with \code{\link[stats:optimise]{stats::optimise()}}.
+\code{\link[stats:optimize]{stats::optimise()}} (except when a \code{method} is given).
+\code{convcode} is always \code{NA} with \code{\link[stats:optimize]{stats::optimise()}}.
 
 Running \code{\link[=calibrate_model]{calibrate_model()}} does not change the model
 parameters; the user must create a new model and run it

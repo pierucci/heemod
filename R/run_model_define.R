@@ -33,7 +33,7 @@
 #'   cost-effectiveness plane.
 #' @param effect Names or expression to compute effect on
 #'   the cost-effectiveness plane.
-#' @param method Counting method.
+#' @param method Counting method. See details.
 #' @param uneval_strategy_list List of models, only used by
 #'   [run_model_()] to avoid using `...`.
 #' @param state_time_limit Optional expansion limit for
@@ -45,6 +45,9 @@
 #'   [define_inflow()], similar to `init`. Number of new
 #'   individuals in each state per cycle.
 #'   
+#' @details Counting method represents where the transition should occur,
+#' based on https://journals.sagepub.com/doi/10.1177/0272989X09340585:
+#' "beginning" overestimates costs and "end" underestimates costs.
 #' @return A list of evaluated models with computed values.
 #' @export
 #' 
@@ -54,7 +57,7 @@ run_model <- function(...,
                       parameters = define_parameters(),
                       init = c(1000L, rep(0L, get_state_number(get_states(list(...)[[1]])) - 1)),
                       cycles = 1,
-                      method = "life-table",
+                      method = c("life-table", "beginning", "end"),
                       cost = NULL, effect = NULL,
                       state_time_limit = NULL,
                       central_strategy = NULL,
@@ -64,7 +67,7 @@ run_model <- function(...,
   
   init <- check_init(init, get_state_names(uneval_strategy_list[[1]]))
   inflow <- check_inflow(inflow, get_state_names(uneval_strategy_list[[1]]))
-  
+
   run_model_(
     uneval_strategy_list = uneval_strategy_list,
     parameters = parameters,

@@ -5,7 +5,7 @@
 #'   by [define_psa()].
 #' @param resample Deprecated. Resampling distribution for
 #'   parameters defined by [define_psa()].
-#' @param N > 0. Number of simulation to run.
+#' @param N &gt; 0. Number of simulation to run.
 #'   
 #' @return A list with one `data.frame` per model.
 #' @export
@@ -133,7 +133,7 @@ eval_correlation <- function(x, var_names) {
 #' Evaluate Resampling Definition
 #' 
 #' @param psa A [define_psa()] object.
-#' @param N > 0. Number of simulation to run.
+#' @param N &gt; 0. Number of simulation to run.
 #'   
 #' @return A `data.frame` of resampled values with on 
 #'   column per parameter and `N` rows.

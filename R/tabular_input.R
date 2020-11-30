@@ -3,7 +3,6 @@
 #' This function runs a model from tabular input.
 #' 
 #' The reference file should have two columns, `data` 
-#' and `file`. An optional `absolute_path` column 
 #' can be added, having value `TRUE` where an absolute 
 #' file path is provided. `data` values must include 
 #' `state`, `tm`, and `parameters`, and can 
