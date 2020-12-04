@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -40,7 +44,6 @@
 individual and a number of cycle to compute, returns the
 evaluated version of the objects and the count of
 individual per state per model cycle." />
-<meta name="twitter:card" content="summary" />
 
 
 
@@ -58,7 +61,7 @@ individual per state per model cycle." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -72,7 +75,7 @@ individual per state per model cycle." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">heemod</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.11.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.14.0</span>
       </span>
     </div>
 
@@ -87,54 +90,20 @@ individual per state per model cycle." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/a_introduction.html">An Introduction to `heemod`</a>
-    </li>
-    <li>
-      <a href="../articles/b_time_dependency.html">Time-varying values</a>
-    </li>
-    <li>
-      <a href="../articles/c_homogeneous.html">Simple Markov Models (Homogeneous)</a>
-    </li>
-    <li>
-      <a href="../articles/d_non_homogeneous.html">Time-varying Markov Models (Non-Homogeneous)</a>
-    </li>
-    <li>
-      <a href="../articles/e_probabilistic.html">Probabilistic Uncertainty Analysis</a>
-    </li>
-    <li>
-      <a href="../articles/f_sensitivity.html">Deterministic Sensitivity Analysis</a>
-    </li>
-    <li>
-      <a href="../articles/g_heterogeneity.html">Heterogeneity &amp; Demographic Analysis</a>
-    </li>
-    <li>
-      <a href="../articles/h_tabular.html">Tabular Input</a>
-    </li>
-    <li>
-      <a href="../articles/i_reproduction.html">Reproducing Exact Results from DMHEE</a>
-    </li>
-    <li>
-      <a href="../articles/j_survival.html">Survival models</a>
-    </li>
-    <li>
-      <a href="../articles/k_calibration.html">Calibrating `heemod` models</a>
-    </li>
-  </ul>
+<li>
+  <a href="../articles/index.html">Articles</a>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/pierucci/heemod/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -149,7 +118,7 @@ individual per state per model cycle." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Evaluate Strategy</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/pierucci/heemod/blob/master/R/strategy_eval.R'><code>R/strategy_eval.R</code></a></small>
     <div class="hidden name"><code>eval_strategy.Rd</code></div>
     </div>
 
@@ -160,8 +129,16 @@ evaluated version of the objects and the count of
 individual per state per model cycle.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>eval_strategy</span>(<span class='no'>strategy</span>, <span class='no'>parameters</span>, <span class='no'>cycles</span>, <span class='no'>init</span>, <span class='no'>method</span>, <span class='no'>expand_limit</span>,
-  <span class='no'>inflow</span>, <span class='no'>strategy_name</span>)</pre>
+    <pre class="usage"><span class='fu'>eval_strategy</span><span class='op'>(</span>
+  <span class='va'>strategy</span>,
+  <span class='va'>parameters</span>,
+  <span class='va'>cycles</span>,
+  <span class='va'>init</span>,
+  <span class='va'>method</span>,
+  <span class='va'>expand_limit</span>,
+  <span class='va'>inflow</span>,
+  <span class='va'>strategy_name</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -216,44 +193,46 @@ counts).</p>
     <p><code>init</code> need not be integer. E.g. <code><a href='https://rdrr.io/r/base/c.html'>c(A = 1, B = 0.5, C = 0.1, ...)</a></code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>param</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='define_parameters.html'>define_parameters</a></span>(
-  <span class='kw'>a</span> <span class='kw'>=</span> <span class='no'>markov_cycle</span> + <span class='fl'>1</span> * <span class='fl'>2</span>
-)
+    <pre class="examples"><div class='input'><span class='va'>param</span> <span class='op'>&lt;-</span> <span class='fu'><a href='define_parameters.html'>define_parameters</a></span><span class='op'>(</span>
+  a <span class='op'>=</span> <span class='va'>markov_cycle</span> <span class='op'>+</span> <span class='fl'>1</span> <span class='op'>*</span> <span class='fl'>2</span>
+<span class='op'>)</span>
 
-<span class='no'>mat</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='define_transition.html'>define_transition</a></span>(
-  <span class='fl'>1</span>-<span class='fl'>1</span>/<span class='no'>a</span>, <span class='fl'>1</span>/<span class='no'>a</span>,
+<span class='va'>mat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='define_transition.html'>define_transition</a></span><span class='op'>(</span>
+  <span class='fl'>1</span><span class='op'>-</span><span class='fl'>1</span><span class='op'>/</span><span class='va'>a</span>, <span class='fl'>1</span><span class='op'>/</span><span class='va'>a</span>,
   <span class='fl'>.1</span>,    <span class='fl'>.9</span>
-)</div><div class='output co'>#&gt; <span class='message'>No named state -&gt; generating names.</span></div><div class='input'>
-<span class='no'>mod</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='define_strategy.html'>define_strategy</a></span>(
-  <span class='kw'>transition</span> <span class='kw'>=</span> <span class='no'>mat</span>,
-  <span class='kw'>A</span> <span class='kw'>=</span> <span class='fu'><a href='define_state.html'>define_state</a></span>(<span class='kw'>cost</span> <span class='kw'>=</span> <span class='fl'>10</span>),
-  <span class='kw'>B</span> <span class='kw'>=</span> <span class='fu'><a href='define_state.html'>define_state</a></span>(<span class='kw'>cost</span> <span class='kw'>=</span> <span class='fl'>2</span>)
-)
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>No named state -&gt; generating names.</span></div><div class='input'>
+<span class='va'>mod</span> <span class='op'>&lt;-</span> <span class='fu'><a href='define_strategy.html'>define_strategy</a></span><span class='op'>(</span>
+  transition <span class='op'>=</span> <span class='va'>mat</span>,
+  A <span class='op'>=</span> <span class='fu'><a href='define_state.html'>define_state</a></span><span class='op'>(</span>cost <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>,
+  B <span class='op'>=</span> <span class='fu'><a href='define_state.html'>define_state</a></span><span class='op'>(</span>cost <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+<span class='op'>)</span>
 
-<span class='kw pkg'>heemod</span><span class='kw ns'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/heemod/man/eval_strategy.html'>eval_strategy</a></span>(
-  <span class='kw'>strategy</span> <span class='kw'>=</span> <span class='no'>mod</span>,
-  <span class='kw'>parameters</span> <span class='kw'>=</span> <span class='no'>param</span>,
-  <span class='kw'>init</span> <span class='kw'>=</span> <span class='fu'><a href='define_init.html'>define_init</a></span>(<span class='kw'>A</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>B</span> <span class='kw'>=</span> <span class='fl'>5</span>),
-  <span class='kw'>cycles</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"end"</span>,
-  <span class='kw'>inflow</span> <span class='kw'>=</span> <span class='fu'><a href='define_inflow.html'>define_inflow</a></span>(<span class='kw'>A</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>B</span> <span class='kw'>=</span> <span class='fl'>0</span>),
-  <span class='kw'>strategy_name</span> <span class='kw'>=</span> <span class='st'>"A"</span>,
-  <span class='kw'>expand_limit</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>A</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>B</span> <span class='kw'>=</span> <span class='fl'>5</span>)
-)</div><div class='output co'>#&gt; $parameters
-#&gt; # A tibble: 5 x 4
+<span class='fu'>heemod</span><span class='fu'>:::</span><span class='fu'>eval_strategy</span><span class='op'>(</span>
+  strategy <span class='op'>=</span> <span class='va'>mod</span>,
+  parameters <span class='op'>=</span> <span class='va'>param</span>,
+  init <span class='op'>=</span> <span class='fu'><a href='define_init.html'>define_init</a></span><span class='op'>(</span>A <span class='op'>=</span> <span class='fl'>10</span>, B <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>,
+  cycles <span class='op'>=</span> <span class='fl'>5</span>,
+  method <span class='op'>=</span> <span class='st'>"end"</span>,
+  inflow <span class='op'>=</span> <span class='fu'><a href='define_inflow.html'>define_inflow</a></span><span class='op'>(</span>A <span class='op'>=</span> <span class='fl'>0</span>, B <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span>,
+  strategy_name <span class='op'>=</span> <span class='st'>"A"</span>,
+  expand_limit <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>A <span class='op'>=</span> <span class='fl'>5</span>, B <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; $parameters
+#&gt; <span style='color: #949494;'># A tibble: 5 x 4</span><span>
 #&gt;   model_time markov_cycle strategy     a
-#&gt; *      &lt;int&gt;        &lt;int&gt; &lt;chr&gt;    &lt;dbl&gt;
-#&gt; 1          1            1 A            3
-#&gt; 2          2            2 A            4
-#&gt; 3          3            3 A            5
-#&gt; 4          4            4 A            6
-#&gt; 5          5            5 A            7
+#&gt; </span><span style='color: #BCBCBC;'>*</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>        </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span>          1            1 A            3
+#&gt; </span><span style='color: #BCBCBC;'>2</span><span>          2            2 A            4
+#&gt; </span><span style='color: #BCBCBC;'>3</span><span>          3            3 A            5
+#&gt; </span><span style='color: #BCBCBC;'>4</span><span>          4            4 A            6
+#&gt; </span><span style='color: #BCBCBC;'>5</span><span>          5            5 A            7
 #&gt; 
 #&gt; $complete_parameters
-#&gt; # A tibble: 1 x 4
+#&gt; </span><span style='color: #949494;'># A tibble: 1 x 4</span><span>
 #&gt;   model_time markov_cycle strategy     a
-#&gt;        &lt;int&gt;        &lt;int&gt; &lt;chr&gt;    &lt;dbl&gt;
-#&gt; 1          1            1 A            3
+#&gt;        </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>        </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span>          1            1 A            3
 #&gt; 
 #&gt; $transition
 #&gt; An evaluated transition matrix, 2 states, 5 markov cycles.
@@ -293,36 +272,36 @@ counts).</p>
 #&gt; 2 evaluated states, 5 Markov cycles.
 #&gt; 
 #&gt; $counts
-#&gt; # A tibble: 5 x 2
+#&gt; </span><span style='color: #949494;'># A tibble: 5 x 2</span><span>
 #&gt;       A     B
-#&gt;   &lt;dbl&gt; &lt;dbl&gt;
-#&gt; 1 10     5   
-#&gt; 2  7.17  7.83
-#&gt; 3  6.16  8.84
-#&gt; 4  5.81  9.19
-#&gt; 5  5.76  9.24
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span>  7.17  7.83
+#&gt; </span><span style='color: #BCBCBC;'>2</span><span>  6.16  8.84
+#&gt; </span><span style='color: #BCBCBC;'>3</span><span>  5.81  9.19
+#&gt; </span><span style='color: #BCBCBC;'>4</span><span>  5.76  9.24
+#&gt; </span><span style='color: #BCBCBC;'>5</span><span>  5.86  9.14
 #&gt; 
 #&gt; $values
-#&gt;   markov_cycle      cost
-#&gt; 1            1 110.00000
-#&gt; 2            2  87.33333
-#&gt; 3            3  79.26667
-#&gt; 4            4  76.48667
-#&gt; 5            5  76.09022
+#&gt;   markov_cycle     cost
+#&gt; 1            1 87.33333
+#&gt; 2            2 79.26667
+#&gt; 3            3 76.48667
+#&gt; 4            4 76.09022
+#&gt; 5            5 76.89688
 #&gt; 
 #&gt; $e_init
 #&gt;  A  B 
 #&gt; 10  5 
 #&gt; 
 #&gt; $e_inflow
-#&gt; # A tibble: 5 x 2
+#&gt; </span><span style='color: #949494;'># A tibble: 5 x 2</span><span>
 #&gt;       A     B
-#&gt;   &lt;dbl&gt; &lt;dbl&gt;
-#&gt; 1     0     0
-#&gt; 2     0     0
-#&gt; 3     0     0
-#&gt; 4     0     0
-#&gt; 5     0     0
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     0     0
+#&gt; </span><span style='color: #BCBCBC;'>2</span><span>     0     0
+#&gt; </span><span style='color: #BCBCBC;'>3</span><span>     0     0
+#&gt; </span><span style='color: #BCBCBC;'>4</span><span>     0     0
+#&gt; </span><span style='color: #BCBCBC;'>5</span><span>     0     0
 #&gt; 
 #&gt; $n_indiv
 #&gt; [1] 15
@@ -335,17 +314,12 @@ counts).</p>
 #&gt; 5 5 
 #&gt; 
 #&gt; attr(,"class")
-#&gt; [1] "eval_strategy"</div></pre>
+#&gt; [1] "eval_strategy"</div></span></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#details">Details</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -356,7 +330,7 @@ counts).</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

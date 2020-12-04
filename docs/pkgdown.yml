@@ -1,5 +1,5 @@
-pandoc: 2.3.1
-pkgdown: 1.4.1
+pandoc: 2.7.3
+pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   a_introduction: a_introduction.html
@@ -13,4 +13,5 @@ articles:
   i_reproduction: i_reproduction.html
   j_survival: j_survival.html
   k_calibration: k_calibration.html
+last_built: 2020-12-07T09:09Z
 

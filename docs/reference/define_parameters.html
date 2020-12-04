@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -40,7 +44,6 @@
 or state values for a Markov model. Parameters can be
 time dependent by using the markov_cycle
 parameter." />
-<meta name="twitter:card" content="summary" />
 
 
 
@@ -58,7 +61,7 @@ parameter." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -72,7 +75,7 @@ parameter." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">heemod</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.11.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.14.0</span>
       </span>
     </div>
 
@@ -87,54 +90,20 @@ parameter." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/a_introduction.html">An Introduction to `heemod`</a>
-    </li>
-    <li>
-      <a href="../articles/b_time_dependency.html">Time-varying values</a>
-    </li>
-    <li>
-      <a href="../articles/c_homogeneous.html">Simple Markov Models (Homogeneous)</a>
-    </li>
-    <li>
-      <a href="../articles/d_non_homogeneous.html">Time-varying Markov Models (Non-Homogeneous)</a>
-    </li>
-    <li>
-      <a href="../articles/e_probabilistic.html">Probabilistic Uncertainty Analysis</a>
-    </li>
-    <li>
-      <a href="../articles/f_sensitivity.html">Deterministic Sensitivity Analysis</a>
-    </li>
-    <li>
-      <a href="../articles/g_heterogeneity.html">Heterogeneity &amp; Demographic Analysis</a>
-    </li>
-    <li>
-      <a href="../articles/h_tabular.html">Tabular Input</a>
-    </li>
-    <li>
-      <a href="../articles/i_reproduction.html">Reproducing Exact Results from DMHEE</a>
-    </li>
-    <li>
-      <a href="../articles/j_survival.html">Survival models</a>
-    </li>
-    <li>
-      <a href="../articles/k_calibration.html">Calibrating `heemod` models</a>
-    </li>
-  </ul>
+<li>
+  <a href="../articles/index.html">Articles</a>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/pierucci/heemod/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -149,7 +118,7 @@ parameter." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Define Markov Model Parameters</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/pierucci/heemod/blob/master/R/param_define.R'><code>R/param_define.R</code></a></small>
     <div class="hidden name"><code>define_parameters.Rd</code></div>
     </div>
 
@@ -160,12 +129,12 @@ time dependent by using the <code>markov_cycle</code>
 parameter.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>define_parameters</span>(<span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>define_parameters</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>define_parameters_</span>(<span class='no'>.dots</span>)
+<span class='fu'>define_parameters_</span><span class='op'>(</span><span class='va'>.dots</span><span class='op'>)</span>
 
 <span class='co'># S3 method for uneval_parameters</span>
-<span class='fu'><a href='modify.html'>modify</a></span>(<span class='no'>.OBJECT</span>, <span class='no'>...</span>)</pre>
+<span class='fu'><a href='modify.html'>modify</a></span><span class='op'>(</span><span class='va'>.OBJECT</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -198,7 +167,7 @@ earlier can be called in later expressions.</p>
 instead be stated relatively to <code>markov_cycle</code>
 (whose length depends on the number of simulation
 cycles). Alternatively, <code>dplyr</code> functions such as
-<code><a href='https://dplyr.tidyverse.org/reference/n.html'>dplyr::n()</a></code> or <code><a href='https://dplyr.tidyverse.org/reference/ranking.html'>dplyr::row_number()</a></code> can be used.</p>
+<code><a href='https://dplyr.tidyverse.org/reference/context.html'>dplyr::n()</a></code> or <code><a href='https://dplyr.tidyverse.org/reference/ranking.html'>dplyr::row_number()</a></code> can be used.</p>
 <p>This function relies heavily on the <code>dplyr</code> package.
 Parameter definitions should thus mimic the use of
 functions such as <code><a href='https://dplyr.tidyverse.org/reference/mutate.html'>dplyr::mutate()</a></code>.</p>
@@ -216,25 +185,28 @@ be referenced in later expressions.</p>
 <span class='co'># parameter 'age' depends on time:</span>
 <span class='co'># simulating a cohort starting at 60 yo</span>
 
-<span class='fu'>define_parameters</span>(
-  <span class='kw'>age_start</span> <span class='kw'>=</span> <span class='fl'>60</span>,
-  <span class='kw'>age</span> <span class='kw'>=</span> <span class='no'>age_start</span> + <span class='no'>markov_cycle</span>
-)</div><div class='output co'>#&gt; 2 unevaluated parameters.
+<span class='fu'>define_parameters</span><span class='op'>(</span>
+  age_start <span class='op'>=</span> <span class='fl'>60</span>,
+  age <span class='op'>=</span> <span class='va'>age_start</span> <span class='op'>+</span> <span class='va'>markov_cycle</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; 2 unevaluated parameters.
 #&gt; 
 #&gt; age_start = 60
 #&gt; age = age_start + markov_cycle</div><div class='input'>
 <span class='co'># other uses of markov_cycle are possible</span>
 
-<span class='fu'>define_parameters</span>(
-  <span class='kw'>top_time</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span>(<span class='no'>markov_cycle</span> <span class='kw'>&lt;</span> <span class='fl'>10</span>, <span class='fl'>1</span>, <span class='fl'>0</span>)
-)</div><div class='output co'>#&gt; 1 unevaluated parameter.
+<span class='fu'>define_parameters</span><span class='op'>(</span>
+  top_time <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='va'>markov_cycle</span> <span class='op'>&lt;</span> <span class='fl'>10</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; 1 unevaluated parameter.
 #&gt; 
 #&gt; top_time = ifelse(markov_cycle &lt; 10, 1, 0)</div><div class='input'>
 <span class='co'># more elaborate: risk function</span>
 
-<span class='fu'>define_parameters</span>(
-  <span class='kw'>rate</span> <span class='kw'>=</span> <span class='fl'>1</span> - <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span>(- <span class='no'>markov_time</span> * <span class='fl'>.5</span>)
-)</div><div class='output co'>#&gt; 1 unevaluated parameter.
+<span class='fu'>define_parameters</span><span class='op'>(</span>
+  rate <span class='op'>=</span> <span class='fl'>1</span> <span class='op'>-</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='op'>-</span> <span class='va'>markov_time</span> <span class='op'>*</span> <span class='fl'>.5</span><span class='op'>)</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; 1 unevaluated parameter.
 #&gt; 
 #&gt; rate = 1 - exp(-markov_time * 0.5)</div><div class='input'>
 <span class='co'># dont explicitly state lengths</span>
@@ -246,46 +218,43 @@ be referenced in later expressions.</p>
 <span class='co'># instead rely on markov_cycle or dplyr </span>
 <span class='co'># functions such as n() or row_number()</span>
 
-<span class='fu'>define_parameters</span>(
-  <span class='kw'>var</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span>(<span class='kw'>from</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>length.out</span> <span class='kw'>=</span> <span class='fu'>n</span>(), <span class='kw'>by</span> <span class='kw'>=</span> <span class='fl'>3</span>),
-  <span class='kw'>var2</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span>(<span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span>(<span class='no'>markov_cycle</span>), <span class='fl'>2</span>)
-)</div><div class='output co'>#&gt; 2 unevaluated parameters.
+<span class='fu'>define_parameters</span><span class='op'>(</span>
+  var <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='fl'>1</span>, length.out <span class='op'>=</span> <span class='fu'>n</span><span class='op'>(</span><span class='op'>)</span>, by <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>,
+  var2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>markov_cycle</span><span class='op'>)</span>, <span class='fl'>2</span><span class='op'>)</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; 2 unevaluated parameters.
 #&gt; 
 #&gt; var = seq(from = 1, length.out = n(), by = 3)
 #&gt; var2 = seq(1, length(markov_cycle), 2)</div><div class='input'>
-<span class='no'>param</span> <span class='kw'>&lt;-</span> <span class='fu'>define_parameters</span>(
-  <span class='kw'>age_start</span> <span class='kw'>=</span> <span class='fl'>60</span>,
-  <span class='kw'>age</span> <span class='kw'>=</span> <span class='no'>age_start</span> + <span class='no'>markov_cycle</span>
-)
+<span class='va'>param</span> <span class='op'>&lt;-</span> <span class='fu'>define_parameters</span><span class='op'>(</span>
+  age_start <span class='op'>=</span> <span class='fl'>60</span>,
+  age <span class='op'>=</span> <span class='va'>age_start</span> <span class='op'>+</span> <span class='va'>markov_cycle</span>
+<span class='op'>)</span>
 
 <span class='co'># modify existing parameters</span>
 
-<span class='fu'><a href='modify.html'>modify</a></span>(
-  <span class='no'>param</span>,
-  <span class='kw'>age_start</span> <span class='kw'>=</span> <span class='fl'>40</span>
-)</div><div class='output co'>#&gt; 2 unevaluated parameters.
+<span class='fu'><a href='modify.html'>modify</a></span><span class='op'>(</span>
+  <span class='va'>param</span>,
+  age_start <span class='op'>=</span> <span class='fl'>40</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; 2 unevaluated parameters.
 #&gt; 
 #&gt; age_start = 40
 #&gt; age = age_start + markov_cycle</div><div class='input'>
-# cannot add new parameters
+<span class='co'># cannot add new parameters</span>
 
-# modify(
-#   param,
-#   const = 4.4,
-#   age_2 = age ^ 2
-# )
+<span class='co'># modify(</span>
+<span class='co'>#   param,</span>
+<span class='co'>#   const = 4.4,</span>
+<span class='co'>#   age_2 = age ^ 2</span>
+<span class='co'># )</span>
 
 </div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#details">Details</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -296,7 +265,7 @@ be referenced in later expressions.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

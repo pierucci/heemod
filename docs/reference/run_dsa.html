@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -37,7 +41,6 @@
 
 <meta property="og:title" content="Run Sensitivity Analysis — run_dsa" />
 <meta property="og:description" content="Run Sensitivity Analysis" />
-<meta name="twitter:card" content="summary" />
 
 
 
@@ -55,7 +58,7 @@
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -69,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">heemod</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.11.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.14.0</span>
       </span>
     </div>
 
@@ -84,54 +87,20 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/a_introduction.html">An Introduction to `heemod`</a>
-    </li>
-    <li>
-      <a href="../articles/b_time_dependency.html">Time-varying values</a>
-    </li>
-    <li>
-      <a href="../articles/c_homogeneous.html">Simple Markov Models (Homogeneous)</a>
-    </li>
-    <li>
-      <a href="../articles/d_non_homogeneous.html">Time-varying Markov Models (Non-Homogeneous)</a>
-    </li>
-    <li>
-      <a href="../articles/e_probabilistic.html">Probabilistic Uncertainty Analysis</a>
-    </li>
-    <li>
-      <a href="../articles/f_sensitivity.html">Deterministic Sensitivity Analysis</a>
-    </li>
-    <li>
-      <a href="../articles/g_heterogeneity.html">Heterogeneity &amp; Demographic Analysis</a>
-    </li>
-    <li>
-      <a href="../articles/h_tabular.html">Tabular Input</a>
-    </li>
-    <li>
-      <a href="../articles/i_reproduction.html">Reproducing Exact Results from DMHEE</a>
-    </li>
-    <li>
-      <a href="../articles/j_survival.html">Survival models</a>
-    </li>
-    <li>
-      <a href="../articles/k_calibration.html">Calibrating `heemod` models</a>
-    </li>
-  </ul>
+<li>
+  <a href="../articles/index.html">Articles</a>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/pierucci/heemod/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -146,7 +115,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Run Sensitivity Analysis</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/pierucci/heemod/blob/master/R/sensitivity_eval.R'><code>R/sensitivity_eval.R</code></a></small>
     <div class="hidden name"><code>run_dsa.Rd</code></div>
     </div>
 
@@ -154,7 +123,7 @@
     <p>Run Sensitivity Analysis</p>
     </div>
 
-    <pre class="usage"><span class='fu'>run_dsa</span>(<span class='no'>model</span>, <span class='no'>dsa</span>)</pre>
+    <pre class="usage"><span class='fu'>run_dsa</span><span class='op'>(</span><span class='va'>model</span>, <span class='va'>dsa</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -176,66 +145,73 @@
 parameter value.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>param</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='define_parameters.html'>define_parameters</a></span>(
-  <span class='kw'>p1</span> <span class='kw'>=</span> <span class='fl'>.5</span>,
-  <span class='kw'>p2</span> <span class='kw'>=</span> <span class='fl'>.2</span>,
-  <span class='kw'>r</span> <span class='kw'>=</span> <span class='fl'>.05</span>
-)
-<span class='no'>mod1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='define_strategy.html'>define_strategy</a></span>(
-  <span class='kw'>transition</span> <span class='kw'>=</span> <span class='fu'><a href='define_transition.html'>define_transition</a></span>(
-    <span class='no'>C</span>, <span class='no'>p1</span>,
-    <span class='no'>p2</span>, <span class='no'>C</span>
-  ),
-  <span class='fu'><a href='define_state.html'>define_state</a></span>(
-    <span class='kw'>cost</span> <span class='kw'>=</span> <span class='fu'><a href='discount.html'>discount</a></span>(<span class='fl'>543</span>, <span class='no'>r</span>),
-    <span class='kw'>ly</span> <span class='kw'>=</span> <span class='fl'>1</span>
-  ),
-  <span class='fu'><a href='define_state.html'>define_state</a></span>(
-    <span class='kw'>cost</span> <span class='kw'>=</span> <span class='fu'><a href='discount.html'>discount</a></span>(<span class='fl'>432</span>, <span class='no'>r</span>),
-    <span class='kw'>ly</span> <span class='kw'>=</span> <span class='fl'>.5</span>
-  )
-)</div><div class='output co'>#&gt; <span class='message'>No named state -&gt; generating names.</span></div><div class='output co'>#&gt; <span class='message'>No named state -&gt; generating names.</span></div><div class='input'>
-<span class='no'>mod2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='define_strategy.html'>define_strategy</a></span>(
-  <span class='kw'>transition</span> <span class='kw'>=</span> <span class='fu'><a href='define_transition.html'>define_transition</a></span>(
-    <span class='no'>C</span>, <span class='no'>p1</span>,
-    <span class='no'>p2</span>, <span class='no'>C</span>
-  ),
-  <span class='fu'><a href='define_state.html'>define_state</a></span>(
-    <span class='kw'>cost</span> <span class='kw'>=</span> <span class='fl'>789</span>,
-    <span class='kw'>ly</span> <span class='kw'>=</span> <span class='fl'>1</span>
-  ),
-  <span class='fu'><a href='define_state.html'>define_state</a></span>(
-    <span class='kw'>cost</span> <span class='kw'>=</span> <span class='fl'>456</span>,
-    <span class='kw'>ly</span> <span class='kw'>=</span> <span class='fl'>.8</span>
-  )
-)</div><div class='output co'>#&gt; <span class='message'>No named state -&gt; generating names.</span></div><div class='output co'>#&gt; <span class='message'>No named state -&gt; generating names.</span></div><div class='input'>
-<span class='no'>res2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='run_model.html'>run_model</a></span>(
-  <span class='no'>mod1</span>, <span class='no'>mod2</span>,
-  <span class='kw'>parameters</span> <span class='kw'>=</span> <span class='no'>param</span>,
-  <span class='kw'>init</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>100</span>, <span class='fl'>0</span>),
-  <span class='kw'>cycles</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>cost</span> <span class='kw'>=</span> <span class='no'>cost</span>,
-  <span class='kw'>effect</span> <span class='kw'>=</span> <span class='no'>ly</span>
-)</div><div class='output co'>#&gt; <span class='message'>No named model -&gt; generating names.</span></div><div class='input'>
-<span class='no'>ds</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='define_dsa.html'>define_dsa</a></span>(
-  <span class='no'>p1</span>, <span class='fl'>.1</span>, <span class='fl'>.9</span>,
-  <span class='no'>p2</span>, <span class='fl'>.1</span>, <span class='fl'>.3</span>,
-  <span class='no'>r</span>, <span class='fl'>.05</span>, <span class='fl'>.1</span>
-)
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>ds</span>)</div><div class='output co'>#&gt;    Low  High
+    <pre class="examples"><div class='input'><span class='va'>param</span> <span class='op'>&lt;-</span> <span class='fu'><a href='define_parameters.html'>define_parameters</a></span><span class='op'>(</span>
+  p1 <span class='op'>=</span> <span class='fl'>.5</span>,
+  p2 <span class='op'>=</span> <span class='fl'>.2</span>,
+  r <span class='op'>=</span> <span class='fl'>.05</span>
+<span class='op'>)</span>
+<span class='va'>mod1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='define_strategy.html'>define_strategy</a></span><span class='op'>(</span>
+  transition <span class='op'>=</span> <span class='fu'><a href='define_transition.html'>define_transition</a></span><span class='op'>(</span>
+    <span class='va'>C</span>, <span class='va'>p1</span>,
+    <span class='va'>p2</span>, <span class='va'>C</span>
+  <span class='op'>)</span>,
+  <span class='fu'><a href='define_state.html'>define_state</a></span><span class='op'>(</span>
+    cost <span class='op'>=</span> <span class='fu'><a href='discount.html'>discount</a></span><span class='op'>(</span><span class='fl'>543</span>, <span class='va'>r</span><span class='op'>)</span>,
+    ly <span class='op'>=</span> <span class='fl'>1</span>
+  <span class='op'>)</span>,
+  <span class='fu'><a href='define_state.html'>define_state</a></span><span class='op'>(</span>
+    cost <span class='op'>=</span> <span class='fu'><a href='discount.html'>discount</a></span><span class='op'>(</span><span class='fl'>432</span>, <span class='va'>r</span><span class='op'>)</span>,
+    ly <span class='op'>=</span> <span class='fl'>.5</span>
+  <span class='op'>)</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>No named state -&gt; generating names.</span></div><div class='output co'>#&gt; <span class='message'>No named state -&gt; generating names.</span></div><div class='input'>
+<span class='va'>mod2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='define_strategy.html'>define_strategy</a></span><span class='op'>(</span>
+  transition <span class='op'>=</span> <span class='fu'><a href='define_transition.html'>define_transition</a></span><span class='op'>(</span>
+    <span class='va'>C</span>, <span class='va'>p1</span>,
+    <span class='va'>p2</span>, <span class='va'>C</span>
+  <span class='op'>)</span>,
+  <span class='fu'><a href='define_state.html'>define_state</a></span><span class='op'>(</span>
+    cost <span class='op'>=</span> <span class='fl'>789</span>,
+    ly <span class='op'>=</span> <span class='fl'>1</span>
+  <span class='op'>)</span>,
+  <span class='fu'><a href='define_state.html'>define_state</a></span><span class='op'>(</span>
+    cost <span class='op'>=</span> <span class='fl'>456</span>,
+    ly <span class='op'>=</span> <span class='fl'>.8</span>
+  <span class='op'>)</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>No named state -&gt; generating names.</span></div><div class='output co'>#&gt; <span class='message'>No named state -&gt; generating names.</span></div><div class='input'>
+<span class='va'>res2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='run_model.html'>run_model</a></span><span class='op'>(</span>
+  <span class='va'>mod1</span>, <span class='va'>mod2</span>,
+  parameters <span class='op'>=</span> <span class='va'>param</span>,
+  init <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>100</span>, <span class='fl'>0</span><span class='op'>)</span>,
+  cycles <span class='op'>=</span> <span class='fl'>10</span>,
+  cost <span class='op'>=</span> <span class='va'>cost</span>,
+  effect <span class='op'>=</span> <span class='va'>ly</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>No named model -&gt; generating names.</span></div><div class='input'>
+<span class='va'>ds</span> <span class='op'>&lt;-</span> <span class='fu'><a href='define_dsa.html'>define_dsa</a></span><span class='op'>(</span>
+  <span class='va'>p1</span>, <span class='fl'>.1</span>, <span class='fl'>.9</span>,
+  <span class='va'>p2</span>, <span class='fl'>.1</span>, <span class='fl'>.3</span>,
+  <span class='va'>r</span>, <span class='fl'>.05</span>, <span class='fl'>.1</span>
+<span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>ds</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;    Low  High
 #&gt; p1 0.1  0.9 
 #&gt; p2 0.1  0.3 
 #&gt; r  0.05 0.1 </div><div class='input'>
-<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>run_dsa</span>(<span class='no'>res2</span>, <span class='no'>ds</span>)</div><div class='output co'>#&gt; <span class='message'>Running DSA on strategy 'I'...</span></div><div class='output co'>#&gt; <span class='message'>Running DSA on strategy 'II'...</span></div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>x</span>, <span class='kw'>value</span> <span class='kw'>=</span> <span class='st'>"cost"</span>)</div><div class='output co'>#&gt; <span class='message'>Joining, by = ".strategy_names"</span></div><div class='img'><img src='run_dsa-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>run_dsa</span><span class='op'>(</span><span class='va'>res2</span>, <span class='va'>ds</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Running DSA on strategy 'I'...</span></div><div class='output co'>#&gt; <span class='message'>Running DSA on strategy 'II'...</span></div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, value <span class='op'>=</span> <span class='st'>"cost"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Joining, by = ".strategy_names"</span></div><div class='img'><img src='run_dsa-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># can be specified as a function of other parameters</span>
 
 
-<span class='no'>ds2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='define_dsa.html'>define_dsa</a></span>(
-  <span class='no'>p2</span>, <span class='no'>p1</span> - <span class='fl'>.1</span>, <span class='no'>p1</span> + <span class='fl'>.1</span>
-)
+<span class='va'>ds2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='define_dsa.html'>define_dsa</a></span><span class='op'>(</span>
+  <span class='va'>p2</span>, <span class='va'>p1</span> <span class='op'>-</span> <span class='fl'>.1</span>, <span class='va'>p1</span> <span class='op'>+</span> <span class='fl'>.1</span>
+<span class='op'>)</span>
 
-<span class='fu'>run_dsa</span>(<span class='no'>res2</span>, <span class='no'>ds2</span>)</div><div class='output co'>#&gt; <span class='message'>Running DSA on strategy 'I'...</span></div><div class='output co'>#&gt; <span class='message'>Running DSA on strategy 'II'...</span></div><div class='output co'>#&gt; A sensitivity analysis on 1 parameters.
+<span class='fu'>run_dsa</span><span class='op'>(</span><span class='va'>res2</span>, <span class='va'>ds2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Running DSA on strategy 'I'...</span></div><div class='output co'>#&gt; <span class='message'>Running DSA on strategy 'II'...</span></div><div class='output co'>#&gt; A sensitivity analysis on 1 parameters.
 #&gt; 
 #&gt; Parameters:
 #&gt;   -p2
@@ -253,14 +229,10 @@ parameter value.</p>
 #&gt; I, p2 = p1 + 0.1  -        -          -            -        0.00 -       
 #&gt; II, p2 = p1 + 0.1 1853.486 2424.084   1.307851     I    36811.45 36811.45</div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -271,7 +243,7 @@ parameter value.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

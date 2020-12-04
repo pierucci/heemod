@@ -24,8 +24,8 @@ Columns of state_info besides .model and state include
 costs and utilities we want to keep track of, with
 appropriate values (these may include parameters). For
 any cost or utility that should be discounted, an
-additional column with the name ".discount.<cost>" or
-".discount.<effect>", for the appropriate cost or effect,
+additional column with the name ".discount.\<cost\>" or
+".discount.\<effect\>", for the appropriate cost or effect,
 can be included. If no discounting is desired for a
 particular cost or effect, the corresponding column can
 be omitted.

@@ -11,23 +11,27 @@ Values — eval_strategy_newdata • heemod</title>
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -41,7 +45,6 @@ Values — eval_strategy_newdata" />
 <meta property="og:description" content="Given a data.frame with on set of new parameters values
 per row, iteratively evaluate the model over the set of
 new values." />
-<meta name="twitter:card" content="summary" />
 
 
 
@@ -59,7 +62,7 @@ new values." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -73,7 +76,7 @@ new values." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">heemod</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.11.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.14.0</span>
       </span>
     </div>
 
@@ -88,54 +91,20 @@ new values." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/a_introduction.html">An Introduction to `heemod`</a>
-    </li>
-    <li>
-      <a href="../articles/b_time_dependency.html">Time-varying values</a>
-    </li>
-    <li>
-      <a href="../articles/c_homogeneous.html">Simple Markov Models (Homogeneous)</a>
-    </li>
-    <li>
-      <a href="../articles/d_non_homogeneous.html">Time-varying Markov Models (Non-Homogeneous)</a>
-    </li>
-    <li>
-      <a href="../articles/e_probabilistic.html">Probabilistic Uncertainty Analysis</a>
-    </li>
-    <li>
-      <a href="../articles/f_sensitivity.html">Deterministic Sensitivity Analysis</a>
-    </li>
-    <li>
-      <a href="../articles/g_heterogeneity.html">Heterogeneity &amp; Demographic Analysis</a>
-    </li>
-    <li>
-      <a href="../articles/h_tabular.html">Tabular Input</a>
-    </li>
-    <li>
-      <a href="../articles/i_reproduction.html">Reproducing Exact Results from DMHEE</a>
-    </li>
-    <li>
-      <a href="../articles/j_survival.html">Survival models</a>
-    </li>
-    <li>
-      <a href="../articles/k_calibration.html">Calibrating `heemod` models</a>
-    </li>
-  </ul>
+<li>
+  <a href="../articles/index.html">Articles</a>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/pierucci/heemod/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -151,7 +120,7 @@ new values." />
     <div class="page-header">
     <h1>Iteratively Evaluate a Markov Model With New Parameter
 Values</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/pierucci/heemod/blob/master/R/newdata.R'><code>R/newdata.R</code></a></small>
     <div class="hidden name"><code>eval_strategy_newdata.Rd</code></div>
     </div>
 
@@ -161,7 +130,7 @@ per row, iteratively evaluate the model over the set of
 new values.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>eval_strategy_newdata</span>(<span class='no'>x</span>, <span class='kw'>strategy</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='no'>newdata</span>)</pre>
+    <pre class="usage"><span class='fu'>eval_strategy_newdata</span><span class='op'>(</span><span class='va'>x</span>, strategy <span class='op'>=</span> <span class='fl'>1</span>, <span class='va'>newdata</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -193,56 +162,55 @@ taking successive values from each row.</p></td>
 replace existing parameters.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>par1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='define_parameters.html'>define_parameters</a></span>(
-  <span class='kw'>a</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>b</span> <span class='kw'>=</span> <span class='fl'>1</span> / (<span class='no'>markov_cycle</span> + <span class='no'>a</span>)
-)
+    <pre class="examples"><div class='input'><span class='va'>par1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='define_parameters.html'>define_parameters</a></span><span class='op'>(</span>
+  a <span class='op'>=</span> <span class='fl'>1</span>,
+  b <span class='op'>=</span> <span class='fl'>1</span> <span class='op'>/</span> <span class='op'>(</span><span class='va'>markov_cycle</span> <span class='op'>+</span> <span class='va'>a</span><span class='op'>)</span>
+<span class='op'>)</span>
 
-<span class='no'>mat1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='define_transition.html'>define_transition</a></span>(
-  <span class='fl'>1</span>-<span class='no'>b</span>, <span class='no'>b</span>,
+<span class='va'>mat1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='define_transition.html'>define_transition</a></span><span class='op'>(</span>
+  <span class='fl'>1</span><span class='op'>-</span><span class='va'>b</span>, <span class='va'>b</span>,
   <span class='fl'>0</span>, <span class='fl'>1</span>
-)</div><div class='output co'>#&gt; <span class='message'>No named state -&gt; generating names.</span></div><div class='input'><span class='no'>mod1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='define_strategy.html'>define_strategy</a></span>(
-  <span class='kw'>transition</span> <span class='kw'>=</span> <span class='no'>mat1</span>,
-  <span class='fu'><a href='define_state.html'>define_state</a></span>(<span class='kw'>var</span> <span class='kw'>=</span> <span class='no'>a</span>),
-  <span class='fu'><a href='define_state.html'>define_state</a></span>(<span class='kw'>var</span> <span class='kw'>=</span> <span class='no'>a</span> * <span class='no'>markov_cycle</span>)
-)</div><div class='output co'>#&gt; <span class='message'>No named state -&gt; generating names.</span></div><div class='input'>
-<span class='no'>res1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='run_model.html'>run_model</a></span>(
-  <span class='no'>mod1</span>,
-  <span class='kw'>parameters</span> <span class='kw'>=</span> <span class='no'>par1</span>,
-  <span class='kw'>cycles</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>init</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>0</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"end"</span>
-)</div><div class='output co'>#&gt; <span class='message'>No named model -&gt; generating names.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: No cost and/or effect defined, cannot find root strategy.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: No effect defined, cannot find noncomparable strategy.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: No cost and/or effect defined, cannot find root strategy.</span></div><div class='input'>
-<span class='no'>new_tab</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(
-  <span class='kw'>a</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>10</span>
-)
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>No named state -&gt; generating names.</span></div><div class='input'><span class='va'>mod1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='define_strategy.html'>define_strategy</a></span><span class='op'>(</span>
+  transition <span class='op'>=</span> <span class='va'>mat1</span>,
+  <span class='fu'><a href='define_state.html'>define_state</a></span><span class='op'>(</span>var <span class='op'>=</span> <span class='va'>a</span><span class='op'>)</span>,
+  <span class='fu'><a href='define_state.html'>define_state</a></span><span class='op'>(</span>var <span class='op'>=</span> <span class='va'>a</span> <span class='op'>*</span> <span class='va'>markov_cycle</span><span class='op'>)</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>No named state -&gt; generating names.</span></div><div class='input'>
+<span class='va'>res1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='run_model.html'>run_model</a></span><span class='op'>(</span>
+  <span class='va'>mod1</span>,
+  parameters <span class='op'>=</span> <span class='va'>par1</span>,
+  cycles <span class='op'>=</span> <span class='fl'>5</span>,
+  init <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>0</span>,
+  method <span class='op'>=</span> <span class='st'>"end"</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>No named model -&gt; generating names.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: No cost and/or effect defined, cannot find root strategy.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: No effect defined, cannot find noncomparable strategy.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: No cost and/or effect defined, cannot find root strategy.</span></div><div class='input'>
+<span class='va'>new_tab</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>
+  a <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>
+<span class='op'>)</span>
 
-<span class='kw pkg'>heemod</span><span class='kw ns'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/heemod/man/eval_strategy_newdata.html'>eval_strategy_newdata</a></span>(
-  <span class='no'>res1</span>,
-  <span class='kw'>newdata</span> <span class='kw'>=</span> <span class='no'>new_tab</span>
-)</div><div class='output co'>#&gt; # A tibble: 10 x 2
+<span class='fu'>heemod</span><span class='fu'>:::</span><span class='fu'>eval_strategy_newdata</span><span class='op'>(</span>
+  <span class='va'>res1</span>,
+  newdata <span class='op'>=</span> <span class='va'>new_tab</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 10 x 2</span><span>
 #&gt;    .mod           a
-#&gt;    &lt;list&gt;     &lt;int&gt;
-#&gt;  1 &lt;evl_strt&gt;     1
-#&gt;  2 &lt;evl_strt&gt;     2
-#&gt;  3 &lt;evl_strt&gt;     3
-#&gt;  4 &lt;evl_strt&gt;     4
-#&gt;  5 &lt;evl_strt&gt;     5
-#&gt;  6 &lt;evl_strt&gt;     6
-#&gt;  7 &lt;evl_strt&gt;     7
-#&gt;  8 &lt;evl_strt&gt;     8
-#&gt;  9 &lt;evl_strt&gt;     9
-#&gt; 10 &lt;evl_strt&gt;    10</div></pre>
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> </span><span style='color: #949494;'>&lt;evl_strt&gt;</span><span>     1
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> </span><span style='color: #949494;'>&lt;evl_strt&gt;</span><span>     2
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> </span><span style='color: #949494;'>&lt;evl_strt&gt;</span><span>     3
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> </span><span style='color: #949494;'>&lt;evl_strt&gt;</span><span>     4
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> </span><span style='color: #949494;'>&lt;evl_strt&gt;</span><span>     5
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> </span><span style='color: #949494;'>&lt;evl_strt&gt;</span><span>     6
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> </span><span style='color: #949494;'>&lt;evl_strt&gt;</span><span>     7
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> </span><span style='color: #949494;'>&lt;evl_strt&gt;</span><span>     8
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> </span><span style='color: #949494;'>&lt;evl_strt&gt;</span><span>     9
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> </span><span style='color: #949494;'>&lt;evl_strt&gt;</span><span>    10</div></span></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#details">Details</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -253,7 +221,7 @@ replace existing parameters.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

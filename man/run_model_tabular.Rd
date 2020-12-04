@@ -14,6 +14,40 @@ run_model_tabular(
   overwrite = FALSE
 )
 }
+\arguments{
+\item{location}{Directory where the files are located.}
+
+\item{reference}{Name of the reference file.}
+
+\item{run_dsa}{Run DSA?}
+
+\item{run_psa}{Run PSA?.}
+
+\item{run_demo}{Run demographic analysis?}
+
+\item{save}{Should the outputs be saved?}
+
+\item{overwrite}{Should the outputs be overwritten?}
+}
+\value{
+A list of evaluated models (always), and, if
+appropriate input is provided, dsa (deterministic
+sensitivity analysis), psa (probabilistic sensitivity
+analysis) and demographics (results across different
+demographic groups).
+}
 \description{
-Run Analyses From Files
+This function runs a model from tabular input.
+}
+\details{
+The reference file should have two columns. \code{data}
+can be added, having value \code{TRUE} where an absolute
+file path is provided. \code{data} values must include
+\code{state}, \code{tm}, and \code{parameters}, and can
+also include \code{options}, \code{demographics} and
+\code{data}.  The corresponding values in the \code{file}
+column give the names of the files (located in
+\code{base_dir}) that contain the corresponding
+information - or, in the case of \code{data}, the
+directory containing the tables to be loaded.
 }

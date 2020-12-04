@@ -2,7 +2,7 @@
 #' 
 #' This function runs a model from tabular input.
 #' 
-#' The reference file should have two columns, `data` 
+#' The reference file should have two columns. `data` 
 #' can be added, having value `TRUE` where an absolute 
 #' file path is provided. `data` values must include 
 #' `state`, `tm`, and `parameters`, and can 
@@ -17,7 +17,7 @@
 #' @param reference Name of the reference file.
 #' @param run_dsa Run DSA?
 #' @param run_psa Run PSA?.
-#' @param run_demo Run demgraphic analysis?
+#' @param run_demo Run demographic analysis?
 #' @param save Should the outputs be saved?
 #' @param overwrite Should the outputs be overwritten?
 #'   
@@ -377,8 +377,8 @@ create_model_list_from_tabular <- function(ref, df_env = globalenv()) {
 #' costs and utilities we want to keep track of, with 
 #' appropriate values (these may include parameters). For 
 #' any cost or utility that should be discounted, an 
-#' additional column with the name ".discount.<cost>" or 
-#' ".discount.<effect>", for the appropriate cost or effect,
+#' additional column with the name ".discount.\<cost\>" or 
+#' ".discount.\<effect\>", for the appropriate cost or effect,
 #' can be included. If no discounting is desired for a 
 #' particular cost or effect, the corresponding column can 
 #' be omitted.
