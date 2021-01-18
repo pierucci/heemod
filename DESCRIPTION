@@ -1,6 +1,6 @@
 Package: heemod
 Title: Markov Models for Health Economic Evaluations
-Version: 0.14.0.9000
+Version: 0.14.1
 Authors@R: c(
     person("Kevin", "Zarca", email = "kevin.zarca@gmail.com", role = c("aut", "cre")),
     person("Antoine", "Filipovic-Pierucci", role = "aut"),

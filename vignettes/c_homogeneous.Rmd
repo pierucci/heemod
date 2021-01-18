@@ -19,7 +19,7 @@ The most simple Markov models in health economic evaluation are models were tran
 
 ## Model description
 
-In this example we will model the cost effectiveness of lamivudine/zidovudine combination therapy in HIV infection ([Chancellor, 1997](https://pubmed.ncbi.nlm.nih.gov/10169387/) further described in [Decision Modelling for Health Economic Evaluation](http://ukcatalogue.oup.com/product/9780198526629.do), page 32. For the sake of simplicity we will not reproduce exactly the analysis from the book. See vignette `vignette("i-reproduction", "heemod")` for an exact reproduction of the analysis.
+In this example we will model the cost effectiveness of lamivudine/zidovudine combination therapy in HIV infection ([Chancellor, 1997](https://pubmed.ncbi.nlm.nih.gov/10169387/) further described in [Decision Modelling for Health Economic Evaluation](https://global.oup.com/academic/product/decision-modelling-for-health-economic-evaluation-9780198526629/), page 32. For the sake of simplicity we will not reproduce exactly the analysis from the book. See vignette `vignette("i-reproduction", "heemod")` for an exact reproduction of the analysis.
 
 This model aims to compare costs and utilities of two treatment strategies, *monotherapy* and *combined therapy*.
 

@@ -1,4 +1,5 @@
-## heemod 0.14.0.9000
+## heemod 0.14.1
+  * checks cairo_pdf availability
 
 ## heemod 0.14.0
 
