@@ -5,7 +5,7 @@ output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{Calibrating heemod models}
+  %\VignetteIndexEntry{Calibrating `heemod` models}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -13,7 +13,7 @@ vignette: >
 ```{r, echo=FALSE, include=FALSE}
 library(heemod)
 ```
- 
+
 ```{r, define, include = FALSE}
 param <- define_parameters(
     age_init = 60,

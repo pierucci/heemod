@@ -5,13 +5,24 @@ output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{An Introduction to heemod}
+  %\VignetteIndexEntry{An Introduction to `heemod`}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
 
 ```{r, echo=FALSE, include=FALSE}
 library(heemod)
+```
+
+```{r, echo = FALSE} 
+NOT_CRAN <- identical(tolower(Sys.getenv("NOT_CRAN")), "true")
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  purl = NOT_CRAN,
+  eval = NOT_CRAN,
+  screenshot.force = FALSE
+)
 ```
 
 This document is a presentation of the basic steps to define and run a model in `heemod`. Note that decision trees are actually a subset even of *Markov model*, and thus can be specified easily with this package.

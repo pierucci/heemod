@@ -13,6 +13,16 @@ vignette: >
 ```{r, echo=FALSE, include=FALSE}
 library(heemod)
 ```
+```{r, echo = FALSE} 
+NOT_CRAN <- identical(tolower(Sys.getenv("NOT_CRAN")), "true")
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  purl = NOT_CRAN,
+  eval = NOT_CRAN,
+  screenshot.force = FALSE
+)
+```
 
 This vignette shows how to transform the deterministic Markov model presented in `vignette("c-homogeneous", "heemod")` in a probabilistic model.
 

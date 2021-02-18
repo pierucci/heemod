@@ -15,6 +15,13 @@ library(heemod)
 library(ggplot2)
 ```
 
+```{r, echo = FALSE} 
+NOT_CRAN <- identical(tolower(Sys.getenv("NOT_CRAN")), "true")
+knitr::opts_chunk$set(
+  screenshot.force = FALSE
+)
+```
+
 The most simple Markov models in health economic evaluation are models were transition probabilities between states do not change with time. Those are called *homogeneous* or *time-homogeneous* Markov models.
 
 ## Model description

@@ -14,6 +14,17 @@ vignette: >
 library(heemod)
 ```
 
+```{r, echo = FALSE} 
+NOT_CRAN <- identical(tolower(Sys.getenv("NOT_CRAN")), "true")
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  purl = NOT_CRAN,
+  eval = NOT_CRAN,
+  screenshot.force = FALSE
+)
+```
+
 ## Distributions
 
 The `heemod` package provides a number of ways to estimate transition probabilities from survival distributions.  Survival distributions can come from at least three different sources:
