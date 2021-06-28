@@ -113,7 +113,7 @@ plot.dsa <- function(x, type = c("simple", "difference"),
           .deffect_ref = .data$.deffect,
           .icer_ref = .data$.icer
         ),
-      by = .data$.strategy_names
+      by = ".strategy_names"
     ) %>% 
     dplyr::mutate(
       .col_cost = ifelse(.data$.cost > .data$.cost_ref, ">",
