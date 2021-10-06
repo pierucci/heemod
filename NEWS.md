@@ -1,3 +1,6 @@
+## heemod 0.14.4
+  * updates for compatibility with rlang 1.0.0
+
 ## heemod 0.14.2
   * checks cairo_pdf availability
 

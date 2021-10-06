@@ -6,7 +6,7 @@ output:
     toc: true
 vignette: >
   %\VignetteIndexEntry{Heterogeneity & Demographic Analysis}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{knitr::rmarkdown_notangle}
   \usepackage[utf8]{inputenc}
 ---
 
