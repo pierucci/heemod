@@ -1,5 +1,5 @@
 # from Corson N. Areshenkoff
-# http://areshenk-research-notes.com/publication-quality-plots-in-r/
+# https://areshenk-research-notes.com/publication-quality-plots-in-r/
 
 theme_pub_bw <- function (base_size = 12, base_family = "") {
   

@@ -13,6 +13,6 @@ archivePrefix = "arXiv",
   eprint = "1702.03252",
   note = sprintf("R package version %s", meta$Version),
     month = "feb",
-   adsurl = "http://adsabs.harvard.edu/abs/2017arXiv170203252F",
+   adsurl = "https://adsabs.harvard.edu/abs/2017arXiv170203252F",
   adsnote = "Provided by the SAO/NASA Astrophysics Data System"
 )

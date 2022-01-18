@@ -1,6 +1,6 @@
 # heemod - Health Economic Evaluation MODelling
 
-[![Travis-CI Build Status](https://travis-ci.org/pierucci/heemod.svg?branch=devel)](https://travis-ci.org/pierucci/heemod) [![](http://www.r-pkg.org/badges/version/heemod)](https://www.r-pkg.org/pkg/heemod) 
+[![Travis-CI Build Status](https://travis-ci.org/pierucci/heemod.svg?branch=devel)](https://travis-ci.org/pierucci/heemod) [![](https://www.r-pkg.org/badges/version/heemod)](https://www.r-pkg.org/pkg/heemod) 
 
 Markov Models for Health Economic Evaluations. An implementation of the modelling and reporting features described in reference textbooks and guidelines: deterministic and probabilistic sensitivity analysis, heterogeneity analysis, time dependency on state-time and model-time (semi-Markov and non-homogeneous Markov models), etc.
 
@@ -45,7 +45,7 @@ Other features:
   * Heterogeneity analysis.
   * Parallel computing support.
   * Features for budget impact analysis.
-  * Interface with [SAVI](http://savi.shef.ac.uk/SAVI/) and [BCEA](https://sites.google.com/a/statistica.it/gianluca/bcea).
+  * Interface with [SAVI](https://savi.shef.ac.uk/SAVI/) and [BCEA](https://sites.google.com/a/statistica.it/gianluca/bcea).
 
 Most of the analyses presented in [Decision Modelling for Health Economic Evaluation](https://global.oup.com/academic/product/decision-modelling-for-health-economic-evaluation-9780198526629) can be performed with `heemod`. See the *Reproducing Exact Results from DMHEE* vignette for an exact reproduction of the analyses from the book.
 

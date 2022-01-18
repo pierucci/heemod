@@ -37,7 +37,7 @@ compute_evpi <- function(x, wtp_thresholds) {
 #' results.
 #' 
 #' The official SAVI website can be found at this URL: 
-#' http://http://savi.shef.ac.uk/SAVI/
+#' https://https://savi.shef.ac.uk/SAVI/
 #' 
 #' @param x PSA result.
 #' @param folder A folder where to save the `csv` files.

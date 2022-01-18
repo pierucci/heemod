@@ -275,7 +275,7 @@ Results may vary depending on the machine, but we found speed gains to be quite 
 
 ## Interface with BCEA and SAVI
 
-To compute EVPPI the results can also be exported with `export_savi()` in a format compatible with the [SAVI](http://savi.shef.ac.uk/SAVI/) software (Sheffield Accelerated Value of Information).
+To compute EVPPI the results can also be exported with `export_savi()` in a format compatible with the [SAVI](https://savi.shef.ac.uk/SAVI/) software (Sheffield Accelerated Value of Information).
 
 The results can be post-processed by the `BCEA` package with the `run_bcea()` function.
 

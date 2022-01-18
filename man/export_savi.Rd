@@ -25,5 +25,5 @@ This function saves 3 files at the path given by
 results.
 
 The official SAVI website can be found at this URL:
-http://http://savi.shef.ac.uk/SAVI/
+https://savi.shef.ac.uk/SAVI/
 }

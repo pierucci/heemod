@@ -1,6 +1,6 @@
 context("Transformation functions")
 
-# from http://www.hsrd.research.va.gov/for_researchers/cyber_seminars/archives/819-notes.pdf
+# from https://www.hsrd.research.va.gov/for_researchers/cyber_seminars/archives/819-notes.pdf
 test_that(
   "Transformation functions produce correct results", {
     expect_equal(
