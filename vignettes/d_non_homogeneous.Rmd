@@ -15,13 +15,6 @@ library(heemod)
 library(ggplot2)
 ```
 
-```{r, echo = FALSE} 
-NOT_CRAN <- identical(tolower(Sys.getenv("NOT_CRAN")), "true")
-knitr::opts_chunk$set(
-  screenshot.force = FALSE
-)
-```
-
 ## Model description
 
 This example is an implementation of the assessment of a new total hip replacement (THR) technology described in chapter 3.5 of [Decision Modelling for Health Economic Evaluation](https://global.oup.com/academic/product/decision-modelling-for-health-economic-evaluation-9780198526629). A more detailed report is available [at this location](https://www.york.ac.uk/media/che/documents/papers/technicalpapers/CHE%20Technical%20Paper%2028.pdf). This reports goes a bit further in the analysis. For the sake of simplicity we will not reproduce exactly the analysis from the book. See vignette `vignette("i-reproduction", "heemod")` for an exact reproduction.

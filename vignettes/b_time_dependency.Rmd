@@ -14,17 +14,6 @@ vignette: >
 library(heemod)
 ```
 
-```{r, echo = FALSE} 
-NOT_CRAN <- identical(tolower(Sys.getenv("NOT_CRAN")), "true")
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  purl = NOT_CRAN,
-  eval = NOT_CRAN,
-  screenshot.force = FALSE
-)
-```
-
 In more complex Markov models state values or transition probabilities can vary with time. These models are called *non-homogeneous* or *time-inhomogeneous* Markov models. A further distinction can be made depending on whether state values or transition probabilities:
 
   1. depend on how long __the entire model__ has been running (model-time dependency);
