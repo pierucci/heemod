@@ -1,3 +1,7 @@
+## heemod 0.14.5
+  * Rebuild vignettes
+  * fix guides(<scale> = FALSE)
+
 ## heemod 0.14.4
   * updates for compatibility with rlang 1.0.0
 
