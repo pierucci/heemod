@@ -75,8 +75,18 @@ discount <- function(x, r, first = FALSE, period = 1) {
     r <= 1,
     period > 0
   )
-  
   dr <- trunc((seq_along(x) - (1 - isTRUE(first))) / period)
+  x / (1 + r) ^ dr
+}
+
+
+discount2 <- function(x, r, first = FALSE, period = 1, time) {
+  if (length(r) > 1) r <- r[1]
+  stopifnot(
+    r >= 0,
+    r <= 1
+  )
+  dr <- trunc((time - as.numeric(!isTRUE(first)))/period)
   x / (1 + r) ^ dr
 }
 

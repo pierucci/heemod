@@ -17,17 +17,20 @@ eval_state_list <- function(x, parameters) {
     x <- dispatch_strategy_hack(x)
     
     x_tidy <- compat_lazy_dots(x)
-    
     # bottleneck!
-    dplyr::mutate(parameters, !!!x_tidy)[c("markov_cycle",
-                                            names(x))]
+    lapply(seq_along(x_tidy), function(i){
+      #parameters[names(x)[i]] <<- eval(rlang::quo_squash(x_tidy[[i]]), parameters)
+      parameters[names(x)[i]] <<- rlang::eval_tidy(x_tidy[[i]], data = parameters)
+    })
+    parameters[c("markov_cycle", names(x))]
+    #dplyr::mutate(parameters, !!!x_tidy)[c("markov_cycle", names(x))]
+    
   }
   
   res <- list(
     .dots = lapply(x, f, ".dots"),
     starting_values = lapply(x, f, "starting_values")
   )
-  
   structure(res,
             class = c("eval_state_list", class(res)))
 }
@@ -57,7 +60,9 @@ discount_hack <- function(.dots) {
     } else if (is.call(x)) {
       if (discount_check(x[[1]], env)) {
         x <- pryr::standardise_call(x)
-        x$x <- substitute((.x * rep(x = 1, times = dplyr::n())), list(.x = x$x))
+        #x$x <- substitute((.x * rep(x = 1, times = dplyr::n())), list(.x = x$x))
+        x[[1]] <- substitute(discount2)
+        x$time <- substitute(model_time)
       }
       as.call(lapply(x, f, env = env))
     } else if (is.pairlist(x)) {
