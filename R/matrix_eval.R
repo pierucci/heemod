@@ -86,15 +86,18 @@ eval_transition.uneval_matrix <- function(x, parameters) {
   
   x_tidy <- compat_lazy_dots(x)
   
-  tab_res <- dplyr::mutate(
-    parameters,
-    C = -pi,
-    !!!x_tidy
-  )[names(x)]
+  p2 <- parameters
+  p2$C <- -pi
+  # p2 <- dplyr::mutate(
+  #   parameters,
+  #   C = -pi,
+  # ) 
+  tab_res <- lapply(x_tidy, rlang::eval_tidy, p2) %>%
+    as_tibble(.rows = nrow(p2))
   
   n <- get_matrix_order(x)
   
-  array_res <- array(unlist(tab_res), dim = c(nrow(tab_res), n, n))
+  array_res <- array(unlist(tab_res, use.names = FALSE), dim = c(nrow(tab_res), n, n))
   # possible optimisation
   # dont transpose
   # but tweak dimensions in replace_C
@@ -116,9 +119,10 @@ eval_transition.uneval_matrix <- function(x, parameters) {
 
 split_along_dim <- function(a, n) {
   # could be maybe optimized?
+  dima <- dim(a)
   setNames(lapply(
-    split(a, arrayInd(seq_along(a), dim(a))[, n]),
-    array, dim = dim(a)[-n], dimnames(a)[-n]),
+    split(a, arrayInd(seq_along(a), dima)[, n]),
+    array, dim = dima[-n], dimnames(a)[-n]),
     dimnames(a)[[n]])
 }
 
@@ -128,7 +132,7 @@ replace_C <- function(x) {
   if (! all(rowSums(posC, dims = 2) <= 1)) {
     stop("Only one 'C' is allowed per matrix row.")
   }
-  
+
   x[posC] <- 0
   
   valC <- 1 - rowSums(x, dims = 2)[which(posC, arr.ind = TRUE)[, -3]] 

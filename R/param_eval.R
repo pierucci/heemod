@@ -22,20 +22,27 @@ eval_parameters <- function(x, cycles = 1,
   # if (length(x)) x <- structure(x[!has_state_time(x)],
   #                          class = old_classes)
   
-  start_tibble <- tibble::tibble(
+  start_tibble <- data.frame(
     model_time = seq_len(cycles),
     markov_cycle = seq_len(cycles),
-    strategy = strategy_name
-  )
+    strategy = strategy_name,row.names = NULL,stringsAsFactors = F
+  ) #%>% 
+    #tibble::as_tibble()
   
   x_tidy <- compat_lazy_dots(x)
   
   # other datastructure?
-  res <- try(
-    dplyr::mutate(
-      start_tibble,
-      !!!x_tidy
-    ), silent = TRUE
+  res <- try({
+    lapply(seq_along(x_tidy), function(i){
+      #parameters[names(x)[i]] <<- eval(rlang::quo_squash(x_tidy[[i]]), parameters)
+      start_tibble[names(x)[i]] <<- rlang::eval_tidy(x_tidy[[i]], data = start_tibble)
+    })
+    start_tibble
+  }, silent = TRUE
+    # dplyr::mutate(
+    #   start_tibble,
+    #   !!!x_tidy
+    # ), silent = TRUE
   )
   
   if ((use_fn <- options()$heemod.inf_parameter) != "ignore") {
@@ -91,7 +98,13 @@ eval_init <- function(x, parameters) {
   to_keep <- names(x)
   x_tidy <- compat_lazy_dots(x)
   if (length(to_keep)) {
-    dplyr::mutate(.data = parameters, !!!x_tidy)[to_keep]
+    lapply(seq_along(x_tidy), function(i){
+      #parameters[to_keep[i]] <<- eval(rlang::quo_squash(x_tidy[[i]]), parameters)
+      parameters[to_keep[i]] <<- rlang::eval_tidy(x_tidy[[i]], data = parameters)
+    })
+    parameters[to_keep]
+        
+    #dplyr::mutate(.data = parameters, !!!x_tidy)[to_keep]
   } else {
     tibble::tibble()
   }
