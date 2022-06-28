@@ -30,7 +30,7 @@ get_mat_total <- function(x, init) {
 get_counts_diff <- function(x, init, inflow) {
   lapply(seq(1, length(x) + 1), function(i){
     if (i == length(x) + 1) return(list(init, NULL))
-    init <- init + unlist(inflow[i, ])
+    init <- init + unlist(inflow[i, ], use.names = FALSE)
     mat <- get_mat_total(x[[i]], init)
     res <- list(init, mat)
     init <<- colSums(mat) + init
