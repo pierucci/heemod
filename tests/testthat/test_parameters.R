@@ -79,7 +79,7 @@ test_that(
       par1, 10
     )
     expect_output(
-      str(e_par1),
+      str(as_tibble(e_par1)),
       paste("\\[10", cli::symbol$times, "5\\]")
       
     )

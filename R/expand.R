@@ -55,6 +55,7 @@ expand_state <- function(x, ...) {
 #' @rdname expand_state
 expand_state.uneval_matrix <- function(x, state_pos,
                                        state_name, cycles, n = 1) {
+
   L <- length(x)
   N <- sqrt(L)
   
@@ -63,26 +64,26 @@ expand_state.uneval_matrix <- function(x, state_pos,
     i <- seq(0, L - 1, N) + state_pos
     i[state_pos] <- i[state_pos] - 1
     res <- insert(x, i, list(lazyeval::lazy(0)))
-    
+
     # row to duplicate
     new <- res[seq(
       from = get_tm_pos(state_pos, 1, N+1),
       to = get_tm_pos(state_pos, N+1, N+1))]
-    
+
     # edit state_time
     new <- substitute_dots(new, list(state_time = n))
-    
+
     # and reinsert
     res <- insert(res, (N+1)*(state_pos-1),
                   new)
-    
+
     sn <- get_state_names(x)
     sn[state_pos] <- sprintf(".%s_%i", state_name, n)
     sn <- insert(sn, state_pos, sprintf(".%s_%i", state_name, n + 1))
-    
+
     tm_ext <- define_transition_(res, sn)
-    
-    expand_state(
+
+   expand_state(
       x = tm_ext,
       state_pos = state_pos + 1,
       state_name = state_name,
@@ -197,7 +198,7 @@ interpolate.default <- function(x, more = NULL, ...) {
     to_interp <- x[[i]]
     for_interp <- c(more, as_expr_list(res))
     funs <- all.funs(to_interp$expr)
-    
+   
     if (any(pb <- funs %in% names(for_interp))) {
       stop(sprintf(
         "Some parameters are named like a function, this is incompatible with the use of 'state_time': %s.",
@@ -255,13 +256,11 @@ interpolate.uneval_state_list <- function(x, ...) {
 }
 
 all.funs <- function(expr) {
-  with_funs <- table(all.names(expr))
-  without_funs <- table(all.names(expr, functions = FALSE))
-  
-  with_funs[names(without_funs)] <-
-    with_funs[names(without_funs)] -
-    without_funs
-  names(with_funs)[with_funs > 0]
+  with_funs <- tabulate(factor(all.names(expr), levels = unique(all.names(expr))))
+    without_funs <- tabulate(factor(all.names(expr, functions = FALSE), levels = unique(all.names(expr))))
+  res <- with_funs - without_funs
+  names(res) <- unique(all.names(expr))
+  names(res)[res > 0]
 }
 
 complete_stl <- function(scl, state_names,
