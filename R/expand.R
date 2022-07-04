@@ -273,10 +273,12 @@ interpolate.uneval_state_list <- function(x, ...) {
 }
 
 all.funs <- function(expr) {
-  with_funs <- tabulate(factor(all.names(expr), levels = unique(all.names(expr))))
-    without_funs <- tabulate(factor(all.names(expr, functions = FALSE), levels = unique(all.names(expr))))
+  an <- all.names(expr)
+  uan <- unique(an)
+  with_funs <- tabulate(factor(an, levels = uan))
+  without_funs <- tabulate(factor(all.names(expr, functions = FALSE), levels = uan))
   res <- with_funs - without_funs
-  names(res) <- unique(all.names(expr))
+  names(res) <- uan
   names(res)[res > 0]
 }
 
