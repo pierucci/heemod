@@ -590,3 +590,22 @@ reshape_wide <- function(data, key_col, value_col, fill = NA) {
     )
   )
 }
+
+matrix_expand_grid <- function(...){
+    nargs <- length(args <- list(...))
+    iArgs <- seq_len(nargs)
+    rep.fac <- 1L
+    d <- lengths(args)
+    orep <- prod(d)
+    cargs <- matrix(ncol = nargs, nrow = orep)
+    for (i in iArgs) {
+      x <- args[[i]]
+      nx <- length(x)
+      orep <- orep/nx
+      x <- x[rep.int(rep.int(seq_len(nx), rep.int(rep.fac, 
+                                                  nx)), orep)]
+      cargs[, i] <- x
+      rep.fac <- rep.fac * nx
+    }
+    cargs
+}
