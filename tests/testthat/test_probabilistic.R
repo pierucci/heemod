@@ -68,7 +68,7 @@ test_that(
     )
     
     rsp2_lazy <- define_psa_(
-      lazyeval::lazy_dots(
+      rlang::quos(
         age_init ~ normal(60, 10),
         cost_init ~ normal(1000, 100)
       ),
@@ -100,7 +100,7 @@ test_that(
     )
     
     x_lazy <- define_psa_(
-      lazyeval::lazy_dots(
+      rlang::quos(
         rate1 + rate2 + rate3 ~ multinomial(10, 50, 40),
         a + b ~ multinomial(15, 30)
       )

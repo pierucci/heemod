@@ -17,7 +17,7 @@
 #' @param ... Formulas defining parameter distributions.
 #' @param correlation A correlation matrix for parameters or
 #'   the output of [define_correlation()].
-#' @param .dots Pair/values of expressions coercible to lazy objects.
+#' @param .dots Pair/values of expressions coercible to quosures.
 #'   
 #' @return An object of class `resamp_definition`. 
 #'   Contains `list_qdist`, a list of quantile 
@@ -28,14 +28,14 @@
 #'   
 define_psa <- function(...,
                        correlation) {
-  .dots <- lazyeval::lazy_dots(...)
+  .dots <- rlang::quos(...)
   define_psa_(.dots, correlation)
 }
 
 #' @export
 #' @rdname define_psa
 define_psa_ <- function(.dots = list(), correlation) {
-  eval_dots <- lazyeval::lazy_eval(.dots)
+  eval_dots <- lapply(.dots, rlang::eval_tidy)
   lapply(
     eval_dots,
     function(x) {
@@ -154,8 +154,7 @@ define_psa_ <- function(.dots = list(), correlation) {
 #'   )
 #' 
 define_correlation <- function(...) {
-  .dots <- lazyeval::lazy_dots(...)
-  
+  .dots <- rlang::quos(...)
   define_correlation_(.dots)
 }
 
@@ -167,9 +166,9 @@ define_correlation_ <- function(.dots) {
   
   f <- function(i) {
     if (i %% 3 == 0) {
-      lazyeval::lazy_eval(.dots[[i]])
+      rlang::eval_tidy(.dots[[i]])
     } else {
-      deparse(.dots[[i]]$expr)
+      deparse(rlang::quo_get_expr(.dots[[i]]))
     }
   }
   
