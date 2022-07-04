@@ -311,7 +311,6 @@ test_that(
     f <- function(x) {
       abs(sin(x)) / 2
     }
-    f(1:10)
     mat_mc <- define_transition(
       C, f(markov_cycle),
       0, 1
@@ -342,3 +341,98 @@ test_that(
     )
   }
 )
+test_that(
+  "Expansion works with 3x3 transition matrix", {
+    f <- function(x) abs(sin(x))/2
+tm_exp <- define_transition(
+  .4, .5, .1,
+  .5, f(state_time), C,
+  0, 0, 1
+)
+
+sA <- define_state(
+  c = 5,
+  e = 3
+)
+sB <- define_state(
+  c = 3,
+  e = 9
+)
+sC <- define_state(
+  c = 0,
+  e = 0
+)
+
+res <- run_model(
+  define_strategy(
+    transition = tm_exp,
+    sA, sB, sC
+  ),
+  cycles = 2,
+  cost = c, effect = e
+)
+expected_matrix <- matrix(rep(0, 5^2), ncol = 5)
+expected_matrix[, 1] <- c(0.4, rep(0.5,3), 0)
+expected_matrix[1, 2] <- 0.5
+expected_matrix[2,3] <- f(1)
+expected_matrix[3,4] <- f(2)
+expected_matrix[4,4] <- f(3)
+expected_matrix[,5] <- 1-rowSums(expected_matrix[,1:4])
+
+expect_equal(res$eval_strategy_list$I$transition[[1]],
+             expected_matrix
+             )
+
+
+})
+
+test_that(
+  "Expansion works with 5x5 transition matrix", {
+    f <- function(x) abs(sin(x))/4
+  tm_exp <- define_transition(
+    .3, .3, .2, .1, .1, 
+    .2, .2, .4, .1, .1, 
+    .2, 0.2, f(state_time), 0.1, C,
+    .3, .3, .2, .1, .1, 
+    0, 0, 0, 0, 1 
+  )
+  sA <- define_state(
+    c = 5,
+    e = 3
+  )
+  sB <- define_state(
+    c = 3,
+    e = 9
+  )
+  sC <- define_state(
+    c = 0,
+    e = 1
+  )
+  sD <- define_state(
+    c = 4,
+    e = 5
+  )
+  sE<- define_state(
+    c = 0,
+    e = 0
+  )
+  res <- run_model(
+    define_strategy(
+      transition = tm_exp,
+      sA, sB, sC, sD, sE
+    ),
+    cycles = 2,
+    cost = c, effect = e
+  )
+  expected_matrix <- matrix(rep(0, 7^2), ncol = 7)
+  expected_matrix[,1] <- expected_matrix[,2] <- c(0.3, rep(0.2,4), 0.3, 0)
+  expected_matrix[,3] <- c(0.2, 0.4,  rep(0,3), 0.2, 0)
+  expected_matrix[3,4] <- f(1)
+  expected_matrix[4, 5] <- f(2)
+  expected_matrix[5,5] <- f(3)
+  expected_matrix[, 6] <- c(rep(0.1, 6), 0)
+  expected_matrix[, 7] <- 1-rowSums(expected_matrix[,1:6])
+  expect_equal(res$eval_strategy_list$I$transition[[1]],
+               expected_matrix
+  )
+})

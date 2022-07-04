@@ -56,111 +56,65 @@ expand_state <- function(x, ...) {
 expand_state.uneval_matrix <- function(x, state_pos,
                                        state_name, cycles, n = 1) {
 
-  # while (n <= cycles){
-  #   L <- length(x)
-  #   N <- sqrt(L)
-  #   i <- seq(0, L - 1, N) + state_pos
-  #   i[state_pos] <- i[state_pos] - 1
-  #   res <- insert(x, i, list(lazyeval::lazy(0)))
-  # 
-  #   # row to duplicate
-  #   new <- res[seq(
-  #     from = get_tm_pos(state_pos, 1, N+1),
-  #     to = get_tm_pos(state_pos, N+1, N+1))]
-  # 
-  #   # edit state_time
-  #   new <- substitute_dots(new, list(state_time = n))
-  # 
-  #   # and reinsert
-  #   res <- insert(res, (N+1)*(state_pos-1),
-  #                 new)
-  # 
-  #   sn <- get_state_names(x)
-  #   sn[state_pos] <- sprintf(".%s_%i", state_name, n)
-  #   sn <- insert(sn, state_pos, sprintf(".%s_%i", state_name, n + 1))
-  # 
-  #   x <- define_transition_(res, sn)
-  #   state_pos <- state_pos + 1
-  #   n <- n + 1
-  # }
   L <- length(x)
   N <- sqrt(L)
-  
   m <-  matrix(list(lazyeval::lazy(0)), nrow = cycles + N, ncol = cycles + N)
-  
+
   tm <- matrix(x,
                byrow = TRUE,
                ncol = get_matrix_order(x))
-  
-  
+
   val_to_expand <- tm[state_pos, state_pos][[1]]
   for (i in seq.int(1L, cycles)){
-    m[i + state_pos -1,i+state_pos] <- list(interp(val_to_expand, state_time = i))
+    m[i + state_pos -1, i+state_pos] <- list(interp(val_to_expand, state_time = i))
   }
-  
+
+
   m[i+ state_pos,i+ state_pos] <- list(val_to_expand)
-  
-  
 
-              # dimnames = list(sprintf(".%s_%i", state_name, seq_len(cycles)),
-              #                 sprintf(".%s_%i", state_name, seq_len(cycles)+1)))
 
-## tester avec pls colonnes avant et après
   pre_col <- tm[,  seq_len(state_pos-1), drop = FALSE]
-  
   m[seq.int(1L, cycles + 1L) + state_pos - 1, seq_len(state_pos-1)] <- rep(pre_col[state_pos,], cycles + 1)
-  pre_col_ext <- rep(pre_col[state_pos, ], cycles +1)
-  added_col <- matrix(list(lazyeval::lazy(0)), cycles+1)
   
-  rbind(pre_col[])
-  pre_col[seq(state_pos, cycles+1),, drop = FALSE] <- pre_col_ext
-  if (state_pos < ncol(tm)){
-    post_col <- tm[, seq(state_pos+1, ncol(tm))]
-  }
-  # 
-  # 
- 
+  for (i in seq.int(N)){
+    for (j in seq.int(N)){
+      if (i == state_pos & j == state_pos) next
+      if (i <= state_pos & j <= state_pos) {
+        m[i, j] <- tm[i, j]
+        if (i == state_pos){
+          m[seq.int(i, i + cycles), j]  <- tm[i,j]
+        }
+      } else if (i <= state_pos & j > state_pos){
+        m[seq.int(i, i + cycles), j + cycles] <-tm[i, j]
+      } else if (i > state_pos & j <= state_pos){
+        m[seq.int(i + cycles, N + cycles), j] <- tm[i, j]
+      } else if (i > state_pos & j > state_pos){
+        m[seq.int(i + cycles, N + cycles),
+          seq.int(j + cycles, N + cycles)] <- tm[i, j]
+      }
 
-  
-  # if (n <= cycles) {
-  #   # positions to insert 0
-  #   i <- seq(0, L - 1, N) + state_pos
-  #   i[state_pos] <- i[state_pos] - 1
-  #   res <- insert(x, i, list(lazyeval::lazy(0)))
-  # 
-  #   # row to duplicate
-  #   new <- res[seq(
-  #     from = get_tm_pos(state_pos, 1, N+1),
-  #     to = get_tm_pos(state_pos, N+1, N+1))]
-  # 
-  #   # edit state_time
-  #   new <- substitute_dots(new, list(state_time = n))
-  # 
-  #   # and reinsert
-  #   res <- insert(res, (N+1)*(state_pos-1),
-  #                 new)
-  # 
-  #   sn <- get_state_names(x)
-  #   sn[state_pos] <- sprintf(".%s_%i", state_name, n)
-  #   sn <- insert(sn, state_pos, sprintf(".%s_%i", state_name, n + 1))
-  # 
-  #   tm_ext <- define_transition_(res, sn)
-  # 
-  #  expand_state(
-  #     x = tm_ext,
-  #     state_pos = state_pos + 1,
-  #     state_name = state_name,
-  #     n = n + 1,
-  #     cycles = cycles
-  #   )
-  # } else {
-    x[get_tm_pos(state_pos, 1, N):get_tm_pos(state_pos, N, N)] <-
-      substitute_dots(
-        x[get_tm_pos(state_pos, 1, N):get_tm_pos(state_pos, N, N)],
-        list(state_time = n)
-      )
-    x
-  #}
+  }
+  }
+
+  for (i in seq.int(1, cycles)){
+    m[i + state_pos -1, ] <- substitute_dots(m[i + state_pos -1, ], list(state_time = i))
+  }
+
+  sn <- get_state_names(x)
+
+  sn <- insert(sn, state_pos, sprintf(".%s_%i", state_name, seq.int(1, cycles+1L)))
+  sn <- sn[-state_pos]
+
+  x <- define_transition_(as.lazy_dots(t(m)), sn)
+
+
+  x[get_tm_pos(state_pos+cycles, 1, N+cycles):get_tm_pos(state_pos+cycles, N+cycles, N+cycles)] <-
+    substitute_dots(
+      x[get_tm_pos(state_pos+cycles, 1, N+cycles):get_tm_pos(state_pos+cycles, N+cycles, N+cycles)],
+      list(state_time = unname(cycles) + 1L)
+    )
+
+  x
 }
 
 #' @export
